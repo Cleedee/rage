@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+<div class="panel">
+  <p class="panel-heading">New Card</p>
+  <a class="panel-block" href="{{ url_for('cards.new_character') }}"
+    >Character</a
+  >
+  <a class="panel-block" href="{{ url_for('cards.new_equipment') }}"
+    >Equipment</a
+  >
+  <a class="panel-block" href="{{ url_for('cards.new_card') }}">Card</a>
+</div>
+{% endblock %}

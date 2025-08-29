@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block content %}
+<h1 class="title">Register Character Card</h1>
+<form method="POST" action="{{ url_for('cards.save_character') }}">
+  {{ form.hidden_tag() }}
+  <div class="field">
+    {{ form.name.label(for='name') }}
+    <div class="control">{{ form.name(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.rage.label(for='rage') }}
+    <div class="control">{{ form.rage(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.gnosis.label(for='gnosis') }}
+    <div class="control">{{ form.gnosis(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.health.label(for='health') }}
+    <div class="control">{{ form.health(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.text.label(for='text') }}
+    <div class="control">{{ form.text(class="textarea") }}</div>
+  </div>
+  <div class="field">{{ form.submit(class='button')}}</div>
+</form>
+{% endblock %}

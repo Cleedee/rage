@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redislabs/redismod
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data # Mount the named volume to /data inside the container
+
+volumes:
+  redis_data: # Define the named volume

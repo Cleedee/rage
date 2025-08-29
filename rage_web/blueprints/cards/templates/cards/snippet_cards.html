@@ -1,0 +1,20 @@
+<tbody id="search">
+  {% for card in cards %}
+  <tr>
+    <td>
+      <a href="{{ url_for('cards.read_card',id=card.pk) }}"
+        >{{ card.name }} ({{ card.tipo }})</a
+      >
+    </td>
+    <td>
+      <button
+        class="button"
+        hx-delete="{{ url_for('cards.delete_card', id=card.pk) }}"
+        hx-target="#search"
+      >
+        <i class="bi bi-trash"></i> Excluir
+      </button>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>

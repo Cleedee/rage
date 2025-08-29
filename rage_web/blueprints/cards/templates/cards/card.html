@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block content %}
+<h1 class="title">Register Card</h1>
+<form method="POST" action="{{ url_for('cards.save_card') }}">
+  {{ form.hidden_tag() }}
+  <div class="field">
+    {{ form.name.label(for='name') }}
+    <div class="control">{{ form.name(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.tipo.label(for='tipo') }}
+    <div class="control">{{ form.tipo(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.text.label(for='text') }}
+    <div class="control">{{ form.text(class="textarea") }}</div>
+  </div>
+  <div class="field">{{ form.submit(class='button')}}</div>
+</form>
+{% endblock %}
