@@ -184,23 +184,26 @@ def delete_picture(picture: Picture):
 # --- Agrupamento de cartas para decks ---
 
 CHARACTER_TYPES = {
-    'Character', 'Character (Rogue)', 'Character (Wyrm)',
-    'Character - Gaia', 'Character - Rogue', 'Character - Wyrm',
+    'Character',
+    'Character - Gaia', 'Character - Wyrm', 'Character - Rogue',
+    'Character (Rogue)', 'Character (Wyrm)',
     'Character-Gaia', 'Character-Wyrm',
-    'Ally', 'Ally - Caern', 'Ally - Enemy', 'Ally - Victim',
-    'Enemy', 'Enemy - Victim', 'Victim', 'Past Life',
-}
-
-SEPT_TYPES = {
-    'Action', 'Battlefield', 'Board Meeting', 'Caern', 'Event',
-    'Moot', 'Quest', 'Realm', 'Rite', 'Territory', 'Territory - Realm',
-    'combat Event', 'quest',
 }
 
 COMBAT_TYPES = {
     'Combat Action', 'Combat Event',
     'Equipment', 'Equipment - Fetish - Bane Fetish',
     'Gift',
+    'Ally', 'Ally - Caern', 'Ally - Enemy', 'Ally - Victim',
+    'Enemy', 'Enemy - Victim',
+    'Victim',
+}
+
+SEPT_TYPES = {
+    'Action', 'Battlefield', 'Board Meeting', 'Caern', 'Event',
+    'Moot', 'Past Life', 'Quest', 'Realm', 'Rite',
+    'Territory', 'Territory - Realm',
+    'combat Event', 'quest',
 }
 
 
@@ -208,9 +211,9 @@ def grupo_carta(tipo: str) -> str:
     """Retorna o grupo de uma carta: 'characters', 'sept' ou 'combat'."""
     if tipo in CHARACTER_TYPES:
         return 'characters'
-    if tipo in SEPT_TYPES:
-        return 'sept'
-    return 'combat'
+    if tipo in COMBAT_TYPES:
+        return 'combat'
+    return 'sept'
 
 
 def agrupar_cartas_do_deck(cards: list[dict]) -> dict[str, list[dict]]:
