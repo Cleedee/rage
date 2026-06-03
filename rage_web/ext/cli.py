@@ -47,3 +47,39 @@ def init_app(app):
             click.echo("-" * 50)
             click.echo(f"  Total: {total_criadas} cartas importadas, "
                        f"{total_ignoradas} ignoradas, {total_erros} erros")
+
+    @app.cli.command("import-deck")
+    @click.argument("arquivo", required=False)
+    @click.option("--url", help="URL do deck (.dek ou texto).")
+    @click.option("--nome", help="Nome do deck.")
+    @click.option("--texto", help="Texto do deck (entre aspas).")
+    def import_deck(arquivo, url, nome, texto):
+        """Importa um deck a partir de arquivo, URL ou texto."""
+        from rage_web.ext.deck_importer import import_deck_from_text, import_deck_from_url
+
+        if arquivo:
+            with open(arquivo, 'r') as f:
+                texto = f.read()
+        elif url:
+            stats = import_deck_from_url(url, deck_name=nome or '')
+            _show_deck_stats(stats)
+            return
+        elif not texto:
+            click.echo("Forneça --arquivo, --url ou --texto.")
+            return
+
+        stats = import_deck_from_text(texto, deck_name=nome or '')
+        _show_deck_stats(stats)
+
+
+def _show_deck_stats(stats):
+    click.echo("\nResumo da importação do deck:")
+    click.echo("-" * 50)
+    click.echo(f"  Total de linhas: {stats['total']}")
+    click.echo(f"  Cartas encontradas: {stats['encontradas']}")
+    click.echo(f"  Cartas NÃO encontradas: {stats['nao_encontradas']}")
+    if stats['nao_encontradas']:
+        click.echo("\n  Cartas não encontradas no banco:")
+        for c in stats['cards']:
+            if not c['found']:
+                click.echo(f"    - {c['name']}")

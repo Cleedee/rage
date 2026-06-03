@@ -173,6 +173,37 @@ def update_quantity(id):
     return redirect(url_for('decks.read_deck', id=deck.id))
 
 
+@bp.route('/import', methods=['GET', 'POST'])
+def import_deck():
+    """Importa um deck a partir de texto colado ou upload."""
+    from rage_web.ext.deck_importer import import_deck_from_text
+
+    if request.method == 'POST':
+        content = request.form.get('content', '')
+        deck_name = request.form.get('name', '').strip()
+        description = request.form.get('description', '').strip()
+
+        if not content.strip():
+            flash('Cole o texto do deck primeiro.')
+            return render_template('decks/import.html')
+
+        try:
+            stats = import_deck_from_text(content, deck_name=deck_name,
+                                          description=description)
+            if stats['encontradas'] > 0:
+                flash(f'Deck importado com {stats["encontradas"]} cartas!')
+                if stats['nao_encontradas'] > 0:
+                    flash(f'{stats["nao_encontradas"]} cartas não encontradas.')
+                return redirect(url_for('decks.read_deck', id=stats.get('deck_id')))
+            else:
+                flash('Nenhuma carta encontrada. Verifique o formato.')
+        except Exception as e:
+            flash(f'Erro ao importar: {e}')
+            logger.exception('Erro na importação do deck')
+
+    return render_template('decks/import.html')
+
+
 @bp.get('/deck/<id>/search-cards')
 def search_cards(id):
     """Busca cartas via HTMX para adicionar ao deck."""

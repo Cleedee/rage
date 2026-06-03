@@ -11,9 +11,14 @@
 {% block content %}
 <h1 class="title">Decks</h1>
 
-<a class="button is-primary mb-4" href="{{ url_for('decks.new') }}">
-  <i class="bi bi-plus-lg"></i> Novo Deck
-</a>
+<div class="buttons mb-4">
+  <a class="button is-primary" href="{{ url_for('decks.new') }}">
+    <i class="bi bi-plus-lg"></i> Novo Deck
+  </a>
+  <a class="button is-info" href="{{ url_for('decks.import_deck') }}">
+    <i class="bi bi-upload"></i> Importar
+  </a>
+</div>
 
 {% if decks %}
 <table class="table is-fullwidth is-hoverable" id="search">
@@ -57,6 +62,9 @@
   <p>Nenhum deck criado ainda.</p>
   <a class="button is-primary mt-3" href="{{ url_for('decks.new') }}">
     <i class="bi bi-plus-lg"></i> Criar primeiro deck
+  </a>
+  <a class="button is-info mt-3" href="{{ url_for('decks.import_deck') }}">
+    <i class="bi bi-upload"></i> Importar deck
   </a>
 </div>
 {% endif %}

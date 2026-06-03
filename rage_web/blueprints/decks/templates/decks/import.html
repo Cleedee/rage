@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  .deck-textarea {
+    font-family: monospace;
+    min-height: 300px;
+  }
+  .format-help {
+    font-size: 0.9rem;
+  }
+  .format-help code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="title">Importar Deck</h1>
+
+<div class="columns">
+  <div class="column is-two-thirds">
+    <form method="POST" action="{{ url_for('decks.import_deck') }}">
+      <div class="field">
+        <label class="label">Nome do Deck (opcional)</label>
+        <div class="control">
+          <input class="input" type="text" name="name" placeholder="Ex: Meu Deck de Fúria">
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Descrição (opcional)</label>
+        <div class="control">
+          <input class="input" type="text" name="description" placeholder="Descrição do deck">
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Texto do Deck</label>
+        <div class="control">
+          <textarea class="textarea deck-textarea" name="content"
+                    placeholder="Cole o texto do deck aqui...&#10;&#10;3 Body Wrack&#10;2 Mother&#x27;s Touch&#10;1 Sniper Rifle&#10;..."></textarea>
+        </div>
+        <p class="help">Aceita formato <code>quantidade Nome da Carta</code> ou XML .dek do LackeyCCG</p>
+      </div>
+      <div class="field">
+        <button class="button is-primary" type="submit">
+          <i class="bi bi-upload"></i> Importar Deck
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="column is-one-third">
+    <div class="box format-help">
+      <h4 class="subtitle is-6">Formatos aceitos</h4>
+
+      <p><strong>Texto simples:</strong></p>
+      <pre><code>3 Body Wrack
+2 Mother's Touch
+1 Sniper Rifle
+3 Flak Jacket</code></pre>
+
+      <p><strong>Com seções:</strong></p>
+      <pre><code>Characters:
+1 Dharma Bum
+1 Roger Daly
+
+Sept:
+3 Arms Dealer
+2 Flak Jacket</code></pre>
+
+      <p><strong>XML .dek (LackeyCCG):</strong></p>
+      <p class="is-size-7">Arquivos .dek exportados do LackeyCCG também são aceitos.</p>
+
+      <hr>
+      <p class="is-size-7 has-text-grey">
+        <i class="bi bi-info-circle"></i>
+        O sistema busca as cartas pelo nome no banco de 1.797 cartas importadas.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
