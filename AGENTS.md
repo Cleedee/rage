@@ -192,15 +192,45 @@
 
 ---
 
-## 🔮 Sugestões de Melhorias
+## 📦 Importação de Cartas (Concluído)
 
-1. Remover `database.db` do versionamento e adicionar ao `.gitignore`
-2. Corrigir formulário de Character — adicionar campo `tipo` ou setar automaticamente
+### Dados importados do LackeyCCG
+
+**Fonte:** http://www.werepenguin.com/rage/lackey/
+
+| Base | Cartas |
+|---|---|
+| `setinfo.txt` (oficiais) | 1.627 |
+| `conclavetest.txt` (teste) | 44 |
+| `hyplaytest.txt` (playtest) | 126 |
+| **Total** | **1.797** |
+
+**Comando de importação:**
+```bash
+flask import-cards          # Importa todas as fontes
+flask import-cards --dry-run # Preview sem inserir
+flask import-cards --fonte oficial  # Apenas oficiais
+```
+
+### Principais tipos de carta
+Character (Gaia/Wyrm/Rogue), Gift, Equipment, Combat Action, Event, Ally, Enemy, Victim, Territory, Quest, Caern, Rite, Moot, Action
+
+### Modelos atualizados
+- **Card** — Novos campos: `expansion`, `image_file`, `sealed`, `notes`, `renown`, `damage`, `errata`
+- **Deck** — Agora com relacionamento `cards` (muitos-para-muitos)
+- **deck_cards** — Tabela associativa com `quantity`
+
+---
+
+## 🔮 Sugestões de Melhorias (Pendentes)
+
+1. ~~Remover `database.db` do versionamento~~ ✅ (`.gitignore`)
+2. ~~Corrigir formulário de Character~~ ✅ (campo `tipo` adicionado)
 3. Padronizar as rotas — seguir um padrão RESTful consistente
-4. Corrigir/Criar testes — o teste atual está quebrado
+4. ~~Corrigir testes~~ ✅ (18 testes passando)
 5. Implementar upload de imagens completo com rotas e templates
-6. Implementar Redis se for realmente necessário, ou remover do docker-compose
-7. Adicionar autenticação (sign up / log in estão no template mas não implementados)
-8. Usar variáveis de ambiente para SECRET_KEY em produção
-9. Adicionar relacionamento Deck ↔ Card (muitos-para-muitos) — atualmente não existe ligação entre decks e cartas
+6. ~~Adicionar relacionamento Deck ↔ Card~~ ✅ (tabela `deck_cards`)
+7. Implementar Redis se for realmente necessário, ou remover do docker-compose
+8. Adicionar autenticação (sign up / log in estão no template mas não implementados)
+9. Usar variáveis de ambiente para SECRET_KEY em produção
 10. Adicionar validação e tratamento de erros mais robustos (páginas 404, flash messages consistentes)
