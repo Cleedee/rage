@@ -1,4 +1,5 @@
 
+import os
 from typing import List, Optional
 from sqlalchemy import select, func
 
@@ -162,3 +163,21 @@ def save_picture(picture: Picture):
 def delete_picture(picture: Picture):
     db.session.delete(picture)
     db.session.commit()
+
+
+def get_card_image_url(card: Card) -> str | None:
+    """Retorna URL da primeira imagem disponível para uma carta.
+
+    Verifica primeiro localmente, depois retorna None se não existir.
+    """
+    if not card.image_file:
+        return None
+    first_img = card.image_file.split(',')[0].strip()
+    if not first_img:
+        return None
+    from flask import current_app
+    instance_path = current_app.instance_path
+    local_path = os.path.join(instance_path, 'images', first_img + '.jpg')
+    if os.path.exists(local_path):
+        return f'/instance/images/{first_img}.jpg'
+    return None

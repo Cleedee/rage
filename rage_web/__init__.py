@@ -1,11 +1,12 @@
 import os
 
-from flask import Flask, session
+from flask import Flask, send_from_directory, session
 from flask_migrate import Migrate
 
 from rage_web.config import configs
 
 migrate = Migrate()
+
 
 def create_app(name_config='production'):
 
@@ -29,5 +30,19 @@ def create_app(name_config='production'):
     app.register_blueprint(raiz)
     app.register_blueprint(cards)
     app.register_blueprint(decks)
+
+    # Disponibiliza funcao get_card_image_url em todos os templates
+    @app.context_processor
+    def inject_helpers():
+        from rage_web.ext.repository import get_card_image_url
+        return dict(get_card_image_url=get_card_image_url)
+
+    # Servir imagens das cartas de instance/images/
+    @app.route('/instance/images/<path:filename>')
+    def card_image(filename):
+        return send_from_directory(
+            os.path.join(app.instance_path, 'images'),
+            filename
+        )
 
     return app

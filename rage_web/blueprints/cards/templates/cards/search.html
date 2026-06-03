@@ -30,6 +30,26 @@
   .card-item .card-title a:hover {
     color: #485fc7;
   }
+  .card-item .card-image {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-item .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card-item .card-image .no-image {
+    font-size: 0.75rem;
+    color: #bbb;
+  }
   .card-item .card-type {
     font-size: 0.75rem;
     color: #666;
@@ -142,6 +162,12 @@
   <div class="card-grid">
     {% for card in cards %}
     <div class="card-item">
+      {% set img_url = get_card_image_url(card) %}
+      {% if img_url %}
+      <div class="card-image">
+        <img src="{{ img_url }}" alt="{{ card.name }}" loading="lazy">
+      </div>
+      {% endif %}
       <div class="card-title">
         <a href="{{ url_for('cards.read_card', id=card.id) }}">{{ card.name }}</a>
       </div>

@@ -1,4 +1,5 @@
 import logging
+import os
 
 import click
 
@@ -70,6 +71,30 @@ def init_app(app):
 
         stats = import_deck_from_text(texto, deck_name=nome or '')
         _show_deck_stats(stats)
+
+
+    @app.cli.command("download-images")
+    @click.option("--max-workers", default=8, help="Número de downloads paralelos.")
+    @click.option("--dry-run", is_flag=True, help="Apenas mostra o que seria baixado.")
+    def download_images(max_workers, dry_run):
+        """Baixa imagens das cartas do servidor LackeyCCG."""
+        from rage_web.ext.image_downloader import download_card_images
+        from flask import current_app
+
+        dest_dir = os.path.join(current_app.instance_path, 'images')
+        click.echo(f'Baixando imagens para {dest_dir}...')
+        stats = download_card_images(dest_dir, max_workers=max_workers,
+                                      dry_run=dry_run)
+
+        if dry_run:
+            click.echo(f'[DRY RUN] {stats["total"]} cartas, '
+                       f'imagens a baixar')
+        else:
+            click.echo(f'\nResumo:')
+            click.echo(f'  Total de arquivos: {stats["total"]}')
+            click.echo(f'  Baixados: {stats["baixadas"]}')
+            click.echo(f'  Já existiam: {stats["puladas"]}')
+            click.echo(f'  Erros: {stats["erros"]}')
 
 
 def _show_deck_stats(stats):
