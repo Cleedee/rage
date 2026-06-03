@@ -234,17 +234,27 @@ def agrupar_cartas_do_deck(cards: list[dict]) -> dict[str, list[dict]]:
 
 
 def get_card_image_url(card: Card) -> str | None:
-    """Retorna URL da primeira imagem disponível para uma carta.
+    """Retorna URL da imagem a ser exibida para uma carta.
 
-    Verifica primeiro localmente, depois retorna None se não existir.
+    Prioridade:
+    1. Fan image (upload do usuário) em /instance/fan_images/
+    2. Primeira imagem original do LackeyCCG em /instance/images/
     """
+    from flask import current_app
+    instance_path = current_app.instance_path
+
+    # 1. Fan image
+    if card.fan_image:
+        local_path = os.path.join(instance_path, 'fan_images', card.fan_image)
+        if os.path.exists(local_path):
+            return f'/instance/fan_images/{card.fan_image}'
+
+    # 2. Original image
     if not card.image_file:
         return None
     first_img = card.image_file.split(',')[0].strip()
     if not first_img:
         return None
-    from flask import current_app
-    instance_path = current_app.instance_path
     local_path = os.path.join(instance_path, 'images', first_img + '.jpg')
     if os.path.exists(local_path):
         return f'/instance/images/{first_img}.jpg'

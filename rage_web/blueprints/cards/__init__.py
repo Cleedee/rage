@@ -17,6 +17,61 @@ bp = Blueprint(
     static_folder="static",
     url_prefix="/cards")
 
+
+@bp.post('/<id>/upload-fan')
+def upload_fan(id):
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
+
+    if 'fan_image' not in request.files:
+        flash('Nenhum arquivo enviado.')
+        return redirect(url_for('cards.view_card', id=card.id))
+
+    file = request.files['fan_image']
+    if file.filename == '':
+        flash('Nenhum arquivo selecionado.')
+        return redirect(url_for('cards.view_card', id=card.id))
+
+    if file:
+        ext = os.path.splitext(file.filename)[1] or '.jpg'
+        safe_name = secure_filename(f"fan_{card.id}_{card.name}{ext}")
+
+        dest_dir = os.path.join(current_app.instance_path, 'fan_images')
+        os.makedirs(dest_dir, exist_ok=True)
+        dest_path = os.path.join(dest_dir, safe_name)
+        file.save(dest_path)
+
+        if card.fan_image and os.path.exists(os.path.join(dest_dir, card.fan_image)):
+            os.remove(os.path.join(dest_dir, card.fan_image))
+
+        card.fan_image = safe_name
+        rep.save_card(card)
+        flash(f'Imagem alternativa salva para {card.name}.')
+        return redirect(url_for('cards.view_card', id=card.id))
+
+    flash('Erro ao fazer upload.')
+    return redirect(url_for('cards.view_card', id=card.id))
+
+
+@bp.post('/<id>/remove-fan')
+def remove_fan(id):
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
+
+    if card.fan_image:
+        dest_dir = os.path.join(current_app.instance_path, 'fan_images')
+        old_path = os.path.join(dest_dir, card.fan_image)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+        card.fan_image = ''
+        rep.save_card(card)
+        flash('Imagem alternativa removida.')
+
+    return redirect(url_for('cards.view_card', id=card.id))
+
+
 @bp.get('/new-character')
 def new_character():
     form = CharacterCardForm()

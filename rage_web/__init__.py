@@ -41,11 +41,19 @@ def create_app(name_config='production'):
             agrupar_cartas_do_deck=agrupar_cartas_do_deck,
         )
 
-    # Servir imagens das cartas de instance/images/
+    # Servir imagens originais (LackeyCCG)
     @app.route('/instance/images/<path:filename>')
     def card_image(filename):
         return send_from_directory(
             os.path.join(app.instance_path, 'images'),
+            filename
+        )
+
+    # Servir fan images (upload do usuario)
+    @app.route('/instance/fan_images/<path:filename>')
+    def fan_image(filename):
+        return send_from_directory(
+            os.path.join(app.instance_path, 'fan_images'),
             filename
         )
 

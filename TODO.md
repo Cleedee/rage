@@ -11,13 +11,13 @@
 - [x] **Busca visual de cartas** — Grid com filtros (nome, tipo, expansão), stats coloridos
 - [x] **Dashboard (home)** — Estatísticas, barras por tipo/expansão, decks recentes
 - [x] **Baixar imagens** — Script com rate limiting, backoff, 1650+ imagens baixadas
-- [x] **Exibir imagens** — Na busca (thumb), no deck (tooltip 390px no hover)
+- [x] **Exibir imagens** — Na busca (thumb), no deck (tooltip 250px no hover)
 - [x] **Agrupar cartas no deck** — Seções Characters / Sept / Combat
+- [x] **Visualizar carta** — Página dedicada com imagem, texto completo, errata
 
 ## 🔄 Pendente
 
 ### Interface
-- [ ] **Visualizar carta** — Página dedicada com imagem, texto completo, errata
 - [ ] **Exportar deck** — Download em formato texto ou .dek
 - [ ] **Filtros avançados** — Por renown, damage, atributos min/max
 
