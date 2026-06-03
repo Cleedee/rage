@@ -1,44 +1,68 @@
-{% for entry in cards %}
-<div class="deck-card-item" id="deck-card-{{ entry.card.id }}">
-  <div class="deck-card-info">
-    <strong>{{ entry.card.name }}</strong>
-    <span class="tag is-light is-small">{{ entry.card.tipo }}</span>
-    {% if entry.card.renown %}
-      <span class="tag is-light is-small">Renome: {{ entry.card.renown }}</span>
-    {% endif %}
-    <div class="card-stats">
-      R{{ entry.card.rage }} G{{ entry.card.gnosis }} H{{ entry.card.health }}
-      · {{ entry.card.expansion }}
+{% set grupos = agrupar_cartas_do_deck(cards) %}
+
+{% for grupo_id, grupo_label, grupo_icon in [
+  ('characters', 'Characters', 'bi-people-fill'),
+  ('sept',      'Sept',      'bi-building'),
+  ('combat',    'Combat',    'bi-shield-fill'),
+] %}
+  {% if grupos[grupo_id] %}
+  <div class="mb-4">
+    <h3 class="subtitle is-6 mb-2" style="display:flex;align-items:center;gap:0.5rem;">
+      <i class="bi {{ grupo_icon }}"></i>
+      {{ grupo_label }}
+      <span class="tag is-light is-small">
+        {{ grupos[grupo_id]|length }} cartas
+      </span>
+    </h3>
+    {% for entry in grupos[grupo_id] %}
+    <div class="deck-card-item" id="deck-card-{{ entry.card.id }}">
+      <div class="deck-card-info">
+        <strong>{{ entry.card.name }}</strong>
+        <span class="tag is-light is-small">{{ entry.card.tipo }}</span>
+        {% if entry.card.renown %}
+          <span class="tag is-warning is-light is-small">Renome {{ entry.card.renown }}</span>
+        {% endif %}
+        <div class="card-stats">
+          {% if entry.card.rage > 0 %}<span class="stat-rage">R{{ entry.card.rage }}</span>{% endif %}
+          {% if entry.card.gnosis > 0 %}<span class="stat-gnosis">G{{ entry.card.gnosis }}</span>{% endif %}
+          {% if entry.card.health > 0 %}<span class="stat-health">H{{ entry.card.health }}</span>{% endif %}
+          {% if entry.card.renown > 0 %}<span class="stat-renown">N{{ entry.card.renown }}</span>{% endif %}
+          · {{ entry.card.expansion }}
+        </div>
+      </div>
+      <div class="quantity-control">
+        <form method="POST" action="{{ url_for('decks.update_quantity', id=deck.id) }}"
+              hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
+              hx-target="#deck-card-list" hx-swap="outerHTML">
+          <input type="hidden" name="card_id" value="{{ entry.card.id }}">
+          <button class="button is-small is-outlined"
+                  onclick="event.preventDefault(); var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=Math.max(1,parseInt(inp.value||1)-1); this.closest('form').requestSubmit();">−</button>
+          <input class="input is-small" type="number" name="quantity"
+                 value="{{ entry.quantity }}" min="1" style="width:45px;text-align:center;">
+          <button class="button is-small is-outlined"
+                  onclick="event.preventDefault(); var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=parseInt(inp.value||1)+1; this.closest('form').requestSubmit();">+</button>
+        </form>
+        <form method="POST" action="{{ url_for('decks.remove_card', id=deck.id) }}"
+              hx-post="{{ url_for('decks.remove_card', id=deck.id) }}"
+              hx-target="#deck-card-list" hx-swap="outerHTML">
+          <input type="hidden" name="card_id" value="{{ entry.card.id }}">
+          <button class="button is-small is-danger is-light" title="Remover">
+            <i class="bi bi-x"></i>
+          </button>
+        </form>
+      </div>
     </div>
+    {% endfor %}
   </div>
-  <div class="quantity-control">
-    <form method="POST" action="{{ url_for('decks.update_quantity', id=deck.id) }}"
-          hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
-          hx-target="#deck-card-list" hx-swap="outerHTML">
-      <input type="hidden" name="card_id" value="{{ entry.card.id }}">
-      <button class="button is-small"
-              onclick="this.nextElementSibling.stepDown(); this.closest('form').requestSubmit()">−</button>
-      <input class="input is-small" type="number" name="quantity"
-             value="{{ entry.quantity }}" min="1" style="width:45px"
-             hx-trigger="change" hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
-             hx-target="#deck-card-list" hx-swap="outerHTML">
-      <button class="button is-small"
-              onclick="this.previousElementSibling.stepUp(); this.closest('form').requestSubmit()">+</button>
-    </form>
-    <form method="POST" action="{{ url_for('decks.remove_card', id=deck.id) }}"
-          hx-post="{{ url_for('decks.remove_card', id=deck.id) }}"
-          hx-target="#deck-card-list" hx-swap="outerHTML">
-      <input type="hidden" name="card_id" value="{{ entry.card.id }}">
-      <button class="button is-small is-danger is-light" title="Remover">
-        <i class="bi bi-x"></i>
-      </button>
-    </form>
-  </div>
-</div>
-{% else %}
-<p class="has-text-grey">Nenhuma carta neste deck ainda.</p>
+  {% endif %}
 {% endfor %}
+
+{% if not cards %}
+<p class="has-text-grey">Nenhuma carta neste deck ainda.</p>
+{% endif %}
 
 <div class="total-cards">
   Total: <span id="total-cards">{{ cards|length }}</span> cartas diferentes
+  {% set soma = grupos['characters']|sum(attribute='quantity') + grupos['sept']|sum(attribute='quantity') + grupos['combat']|sum(attribute='quantity') %}
+  · <strong>{{ soma }}</strong> cópias no total
 </div>

@@ -31,11 +31,15 @@ def create_app(name_config='production'):
     app.register_blueprint(cards)
     app.register_blueprint(decks)
 
-    # Disponibiliza funcao get_card_image_url em todos os templates
+    # Disponibiliza helpers em todos os templates
     @app.context_processor
     def inject_helpers():
-        from rage_web.ext.repository import get_card_image_url
-        return dict(get_card_image_url=get_card_image_url)
+        from rage_web.ext.repository import get_card_image_url, \
+            agrupar_cartas_do_deck
+        return dict(
+            get_card_image_url=get_card_image_url,
+            agrupar_cartas_do_deck=agrupar_cartas_do_deck,
+        )
 
     # Servir imagens das cartas de instance/images/
     @app.route('/instance/images/<path:filename>')

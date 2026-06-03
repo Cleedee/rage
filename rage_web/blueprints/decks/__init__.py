@@ -42,11 +42,13 @@ def read_deck(id):
     form.description.data = deck.description
 
     cards = rep.deck_get_cards(deck)
+    grupos = rep.agrupar_cartas_do_deck(cards)
     tipos = rep.get_tipos()
     expansoes = rep.get_expansions()
 
     return render_template('decks/deck.html', form=form, deck=deck,
-                           cards=cards, tipos=tipos, expansoes=expansoes)
+                           cards=cards, grupos=grupos,
+                           tipos=tipos, expansoes=expansoes)
 
 
 @bp.get('/new')
