@@ -17,7 +17,13 @@
     {% for entry in grupos[grupo_id] %}
     <div class="deck-card-item" id="deck-card-{{ entry.card.id }}">
       <div class="deck-card-info">
-        <strong>{{ entry.card.name }}</strong>
+        {% set card_img = get_card_image_url(entry.card) %}
+        <span class="card-name-tooltip">
+          <strong>{{ entry.card.name }}</strong>
+          {% if card_img %}
+          <span class="tooltip-img"><img src="{{ card_img }}" alt="{{ entry.card.name }}"></span>
+          {% endif %}
+        </span>
         <span class="tag is-light is-small">{{ entry.card.tipo }}</span>
         {% if entry.card.renown %}
           <span class="tag is-warning is-light is-small">Renome {{ entry.card.renown }}</span>

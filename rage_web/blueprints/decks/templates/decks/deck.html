@@ -71,6 +71,48 @@
     margin-top: 0.5rem;
     text-align: right;
   }
+
+  /* Tooltip de imagem no hover */
+  .card-name-tooltip {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .card-name-tooltip .tooltip-img {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 100;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.2s, visibility 0.2s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    border-radius: 6px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .card-name-tooltip .tooltip-img img {
+    display: block;
+    width: 180px;
+    height: auto;
+    border-radius: 6px;
+  }
+  .card-name-tooltip:hover .tooltip-img {
+    visibility: visible;
+    opacity: 1;
+  }
+  /* Seta do tooltip */
+  .card-name-tooltip .tooltip-img::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+  }
   .stat-rage   { color: #c0392b; font-weight: 600; }
   .stat-gnosis { color: #2980b9; font-weight: 600; }
   .stat-health { color: #27ae60; font-weight: 600; }
