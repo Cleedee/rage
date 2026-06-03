@@ -13,19 +13,69 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     />
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+      /* Navbar custom */
+      .navbar.is-dark .navbar-item,
+      .navbar.is-dark .navbar-link { color: rgba(255,255,255,0.85); }
+      .navbar.is-dark .navbar-item:hover,
+      .navbar.is-dark .navbar-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
+      .navbar.is-dark .navbar-dropdown .navbar-item { color: #4a4a4a; }
+      .navbar.is-dark .navbar-dropdown .navbar-item:hover { background: #f0f0f0; }
+      .navbar-brand .navbar-item.logo {
+        font-weight: 700;
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+        color: #fff !important;
+      }
+      .navbar-brand .navbar-item.logo i {
+        margin-right: 0.4rem;
+        color: #e8a838;
+      }
+
+      /* Footer custom */
+      .footer-rage {
+        background: #1a1a2e;
+        color: rgba(255,255,255,0.7);
+        padding: 2rem 1.5rem 1.5rem;
+        margin-top: 3rem;
+      }
+      .footer-rage .footer-title {
+        font-weight: 700;
+        color: #fff;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+      }
+      .footer-rage .footer-title i { color: #e8a838; margin-right: 0.3rem; }
+      .footer-rage a { color: rgba(255,255,255,0.7); }
+      .footer-rage a:hover { color: #e8a838; }
+      .footer-rage .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+      .footer-rage .footer-links a { font-size: 0.85rem; }
+      .footer-rage .footer-bottom {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 1rem;
+        font-size: 0.8rem;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .footer-rage .footer-bottom .social i { font-size: 1.1rem; margin-left: 0.75rem; }
+
+      /* Page min-height for sticky footer */
+      body { display: flex; flex-direction: column; min-height: 100vh; }
+      .page-content { flex: 1; }
+    </style>
     {% block head %}{% endblock %}
   </head>
   <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <!-- Navbar -->
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a
-          role="button"
-          class="navbar-burger"
-          aria-label="menu"
-          aria-expanded="false"
-          data-target="navbarBasic"
-        >
-          <span aria-hidden="true"></span>
+        <a class="navbar-item logo" href="{{ url_for('home.index') }}">
+          <i class="bi bi-moon-stars-fill"></i> Rage CCG
+        </a>
+        <a role="button" class="navbar-burger" aria-label="menu"
+           aria-expanded="false" data-target="navbarBasic">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -34,30 +84,37 @@
 
       <div id="navbarBasic" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="{{ url_for('home.index') }}"> Home </a>
-
-          <a class="navbar-item"> Documentation </a>
+          <a class="navbar-item" href="{{ url_for('home.index') }}">
+            <i class="bi bi-house-fill" style="margin-right:0.3rem;"></i> Home
+          </a>
 
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link"> Cards </a>
-
+            <a class="navbar-link">
+              <i class="bi bi-collection-fill" style="margin-right:0.3rem;"></i> Cards
+            </a>
             <div class="navbar-dropdown">
               <a class="navbar-item" href="{{ url_for('cards.search') }}">
-                Search
+                <i class="bi bi-search" style="margin-right:0.3rem;"></i> Search
               </a>
-              <a class="navbar-item" href="{{ url_for('cards.new') }}"> New </a>
+              <a class="navbar-item" href="{{ url_for('cards.new') }}">
+                <i class="bi bi-plus-circle" style="margin-right:0.3rem;"></i> New
+              </a>
             </div>
           </div>
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link"> Decks </a>
 
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              <i class="bi bi-layers-fill" style="margin-right:0.3rem;"></i> Decks
+            </a>
             <div class="navbar-dropdown">
               <a class="navbar-item" href="{{ url_for('decks.search') }}">
-                Search
+                <i class="bi bi-search" style="margin-right:0.3rem;"></i> Search
               </a>
-              <a class="navbar-item" href="{{ url_for('decks.new') }}"> New </a>
+              <a class="navbar-item" href="{{ url_for('decks.new') }}">
+                <i class="bi bi-plus-circle" style="margin-right:0.3rem;"></i> New
+              </a>
               <a class="navbar-item" href="{{ url_for('decks.import_deck') }}">
-                Import
+                <i class="bi bi-upload" style="margin-right:0.3rem;"></i> Import
               </a>
             </div>
           </div>
@@ -66,28 +123,68 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                <strong>Sign up</strong>
+              <a class="button is-primary is-small">
+                <strong><i class="bi bi-person-plus"></i> Sign up</strong>
               </a>
-              <a class="button is-light"> Log in </a>
+              <a class="button is-light is-small">
+                <i class="bi bi-box-arrow-in-right"></i> Log in
+              </a>
             </div>
           </div>
         </div>
       </div>
     </nav>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %}
-    <section class="section">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <section class="section py-3">
       {% for category, message in messages %}
-      <div class="notification is-info">{{ message }}</div>
+      <div class="notification is-info is-light py-3">{{ message }}</div>
       {% endfor %}
     </section>
-    {% endif %} {% endwith %}
-    <section class="section">
-      <div class="container">{% block content %} {% endblock %}</div>
-    </section>
-    <section class="fooert">
-      <div class="container">Rage Web</div>
-    </section>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Page content -->
+    <div class="page-content">
+      <section class="section">
+        <div class="container">
+          {% block content %}{% endblock %}
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-rage">
+      <div class="container">
+        <div class="footer-links">
+          <div>
+            <div class="footer-title"><i class="bi bi-moon-stars-fill"></i> Rage CCG</div>
+            <p style="font-size:0.8rem; margin-top:0.25rem;">Gerenciador de cartas do Rage Collectible Card Game</p>
+          </div>
+          <div>
+            <strong style="color:#fff;font-size:0.85rem;">Navegação</strong><br>
+            <a href="{{ url_for('home.index') }}">Home</a><br>
+            <a href="{{ url_for('cards.search') }}">Cartas</a><br>
+            <a href="{{ url_for('decks.search') }}">Decks</a>
+          </div>
+          <div>
+            <strong style="color:#fff;font-size:0.85rem;">Ações</strong><br>
+            <a href="{{ url_for('decks.import_deck') }}">Importar Deck</a><br>
+            <a href="{{ url_for('cards.new') }}">Nova Carta</a><br>
+            <a href="{{ url_for('decks.new') }}">Novo Deck</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; 2026 Rage CCG Web</span>
+          <span class="social">
+            <i class="bi bi-github"></i>
+            <i class="bi bi-twitter-x"></i>
+            <i class="bi bi-discord"></i>
+          </span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -4,7 +4,7 @@ def test_home_page(client):
     assert response.status_code == 200
     assert b"Rage CCG" in response.data
     assert b"Home" in response.data
-    assert b"Rage Web" in response.data
+    assert b"Gerenciador de cartas" in response.data
 
 
 def test_cards_search(client, sample_card):
