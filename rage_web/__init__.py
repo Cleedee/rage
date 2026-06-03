@@ -1,11 +1,19 @@
 import os
 
-from flask import Flask, send_from_directory, session
+from flask import Flask, render_template, send_from_directory, session
 from flask_migrate import Migrate
 
 from rage_web.config import configs
 
 migrate = Migrate()
+
+
+def page_not_found(e):
+    return render_template('errors/404.html'), 404
+
+
+def internal_server_error(e):
+    return render_template('errors/500.html'), 500
 
 
 def create_app(name_config='production'):
@@ -30,6 +38,10 @@ def create_app(name_config='production'):
     app.register_blueprint(raiz)
     app.register_blueprint(cards)
     app.register_blueprint(decks)
+
+    # Error handlers
+    app.register_error_handler(404, page_not_found)
+    app.register_error_handler(500, internal_server_error)
 
     # Disponibiliza helpers em todos os templates
     @app.context_processor
