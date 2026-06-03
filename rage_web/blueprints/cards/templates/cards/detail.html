@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  .card-layout {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .card-image-panel {
+    flex: 0 0 350px;
+  }
+  .card-image-panel .img-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    background: #f5f5f5;
+  }
+  .card-image-panel .img-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .card-image-panel .img-container .no-image {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #bbb;
+    font-size: 0.9rem;
+  }
+  .card-info-panel {
+    flex: 1;
+    min-width: 320px;
+  }
+  .card-info-panel .title {
+    margin-bottom: 0.25rem;
+  }
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-meta .tag { font-size: 0.8rem; }
+  .stat-bar {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    min-width: 80px;
+  }
+  .stat-item .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .stat-item .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .stat-item.is-rage   { background: #fdecea; color: #c0392b; }
+  .stat-item.is-gnosis { background: #eaf2f8; color: #2980b9; }
+  .stat-item.is-health { background: #eafaf1; color: #27ae60; }
+  .stat-item.is-renown { background: #fef5e7; color: #e67e22; }
+  .stat-item.is-damage { background: #f5eef8; color: #8e44ad; }
+
+  .card-text {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #fafafa;
+    border-left: 4px solid #485fc7;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .card-errata {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #fff8e1;
+    border-left: 4px solid #f39c12;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .card-notes {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f0f4ff;
+    border-left: 4px solid #485fc7;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .field-item {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+  .field-item .field-label {
+    font-weight: 600;
+    min-width: 100px;
+    color: #555;
+  }
+  .deck-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+  }
+  .deck-link:hover { background: #fafafa; }
+</style>
+{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb mb-4" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="{{ url_for('cards.search') }}">Cartas</a></li>
+    <li class="is-active"><a href="#" aria-current="page">{{ card.name }}</a></li>
+  </ul>
+</nav>
+
+<div class="card-layout">
+  <!-- Imagem -->
+  <div class="card-image-panel">
+    <div class="img-container">
+      {% set img_url = get_card_image_url(card) %}
+      {% if img_url %}
+        <img src="{{ img_url }}" alt="{{ card.name }}">
+      {% else %}
+        <div class="no-image">
+          <i class="bi bi-image" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+          Sem imagem disponível
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Ações -->
+    <div class="buttons mt-3 is-centered">
+      <a class="button is-small is-outlined" href="{{ url_for('cards.read_card', id=card.id) }}">
+        <i class="bi bi-pencil"></i> Editar
+      </a>
+      <a class="button is-small is-danger is-light"
+         href="{{ url_for('cards.delete_card', id=card.id) }}"
+         onclick="return confirm('Excluir {{ card.name }}?')">
+        <i class="bi bi-trash"></i> Excluir
+      </a>
+    </div>
+  </div>
+
+  <!-- Informações -->
+  <div class="card-info-panel">
+    <h1 class="title">{{ card.name }}</h1>
+    <div class="card-meta">
+      <span class="tag is-info is-light">{{ card.tipo }}</span>
+      {% if card.expansion %}
+      <span class="tag is-light">{{ card.expansion }}</span>
+      {% endif %}
+      {% if card.requires %}
+      <span class="tag is-warning is-light">Requer {{ card.requires }}</span>
+      {% endif %}
+      {% if card.keywords %}
+      <span class="tag is-link is-light">{{ card.keywords }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Stats -->
+    {% if card.rage or card.gnosis or card.health or card.renown or card.damage %}
+    <div class="stat-bar">
+      {% if card.rage %}
+      <div class="stat-item is-rage">
+        <div class="stat-value">{{ card.rage }}</div>
+        <div class="stat-label">Rage</div>
+      </div>
+      {% endif %}
+      {% if card.gnosis %}
+      <div class="stat-item is-gnosis">
+        <div class="stat-value">{{ card.gnosis }}</div>
+        <div class="stat-label">Gnosis</div>
+      </div>
+      {% endif %}
+      {% if card.health %}
+      <div class="stat-item is-health">
+        <div class="stat-value">{{ card.health }}</div>
+        <div class="stat-label">Health</div>
+      </div>
+      {% endif %}
+      {% if card.renown %}
+      <div class="stat-item is-renown">
+        <div class="stat-value">{{ card.renown }}</div>
+        <div class="stat-label">Renown</div>
+      </div>
+      {% endif %}
+      {% if card.damage %}
+      <div class="stat-item is-damage">
+        <div class="stat-value">{{ card.damage }}</div>
+        <div class="stat-label">Damage</div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Texto -->
+    {% if card.text %}
+    <div class="card-text">{{ card.text }}</div>
+    {% endif %}
+
+    <!-- Errata -->
+    {% if card.errata %}
+    <div class="card-errata">
+      <strong><i class="bi bi-exclamation-triangle"></i> Errata:</strong>
+      {{ card.errata }}
+    </div>
+    {% endif %}
+
+    <!-- Notes -->
+    {% if card.notes %}
+    <div class="card-notes">
+      <strong><i class="bi bi-sticky"></i> Notes:</strong>
+      {{ card.notes }}
+    </div>
+    {% endif %}
+
+    <!-- Campos adicionais -->
+    {% if card.rage or card.gnosis or card.crage or card.cgnosis or card.chealth or card.sealed %}
+    <hr>
+    <h3 class="subtitle is-6">Detalhes Adicionais</h3>
+    {% if card.sealed %}
+    <div class="field-item"><span class="field-label">Sealed:</span> {{ card.sealed }}</div>
+    {% endif %}
+    {% if card.crage %}
+    <div class="field-item"><span class="field-label">Rage (Crinos):</span> {{ card.crage }}</div>
+    {% endif %}
+    {% if card.cgnosis %}
+    <div class="field-item"><span class="field-label">Gnosis (Crinos):</span> {{ card.cgnosis }}</div>
+    {% endif %}
+    {% if card.chealth %}
+    <div class="field-item"><span class="field-label">Health (Crinos):</span> {{ card.chealth }}</div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Image File info -->
+    {% if card.image_file %}
+    <hr>
+    <h3 class="subtitle is-6">Imagens</h3>
+    {% for img_name in card.image_file.split(',') %}
+    <div class="field-item">
+      <span class="field-label">{{ loop.index }}:</span>
+      <code>{{ img_name.strip() }}.jpg</code>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Decks que contêm esta carta -->
+    {% if decks %}
+    <hr>
+    <h3 class="subtitle is-6">Decks com esta carta</h3>
+    {% for deck in decks %}
+    <a href="{{ url_for('decks.read_deck', id=deck.id) }}" class="deck-link">
+      <span><i class="bi bi-collection"></i> {{ deck.name }}</span>
+      <span class="tag is-light is-small">Ver deck</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

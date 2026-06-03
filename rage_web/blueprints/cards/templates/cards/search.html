@@ -169,7 +169,7 @@
       </div>
       {% endif %}
       <div class="card-title">
-        <a href="{{ url_for('cards.read_card', id=card.id) }}">{{ card.name }}</a>
+        <a href="{{ url_for('cards.view_card', id=card.id) }}">{{ card.name }}</a>
       </div>
       <div class="card-type">
         <span class="tag is-light is-small">{{ card.tipo }}</span>

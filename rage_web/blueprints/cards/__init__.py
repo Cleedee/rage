@@ -156,6 +156,18 @@ def delete_card(id):
 def new():
     return render_template('cards/new.html')
 
+@bp.get('/<id>/view')
+def view_card(id):
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
+
+    # Decks que contem esta carta
+    decks = rep.find_decks_with_card(card)
+
+    return render_template('cards/detail.html', card=card, decks=decks)
+
+
 @bp.get('/search')
 def search():
     query = request.args.get('q', '')

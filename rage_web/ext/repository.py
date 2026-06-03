@@ -144,6 +144,14 @@ def deck_get_cards(deck: Deck) -> list[dict]:
     ]
 
 
+def find_decks_with_card(card: Card) -> list[Deck]:
+    """Retorna todos os decks que contêm uma determinada carta."""
+    stmt = select(Deck).join(deck_cards).where(
+        deck_cards.c.card_id == card.id
+    ).order_by(Deck.name)
+    return list(db.session.scalars(stmt).all())
+
+
 def get_expansions() -> list[str]:
     """Retorna lista de expansões disponíveis."""
     stmt = select(Card.expansion).distinct().order_by(Card.expansion)

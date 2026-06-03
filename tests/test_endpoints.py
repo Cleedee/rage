@@ -92,6 +92,23 @@ def test_cards_create_equipment(client):
     assert b"Equipamento salvo" in response.data or b"salvo" in response.data
 
 
+def test_cards_view_card(client, sample_card):
+    """A página de visualização da carta deve carregar."""
+    response = client.get(f'/cards/{sample_card}/view')
+    assert response.status_code == 200
+    assert b"Test Card" in response.data
+    assert b"Character" in response.data
+    assert b"Rage" in response.data
+    assert b"Editar" in response.data
+    assert b"Excluir" in response.data
+
+
+def test_cards_view_card_not_found(client):
+    """Carta inexistente na view deve retornar 404."""
+    response = client.get('/cards/99999/view')
+    assert response.status_code == 404
+
+
 def test_cards_read_card(client, sample_card):
     """Visualizar uma carta existente deve mostrar seus dados."""
     response = client.get(f'/cards/card/{sample_card}')
