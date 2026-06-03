@@ -1,0 +1,31 @@
+{% if cards %}
+  {% for card in cards %}
+  <div class="panel-block">
+    <span style="flex:1">
+      <strong>{{ card.name }}</strong>
+      <span class="tag is-light is-small">{{ card.tipo }}</span>
+      {% if card.renown %}
+        <span class="tag is-light is-small">R{{ card.rage }} G{{ card.gnosis }} H{{ card.health }}</span>
+      {% endif %}
+      <span class="has-text-grey-light is-size-7"> {{ card.expansion }}</span>
+    </span>
+    <span>
+      {% if card.id in deck_card_ids %}
+      <span class="tag is-success is-light">
+        <i class="bi bi-check"></i> No deck
+      </span>
+      {% else %}
+      <form method="POST" action="{{ url_for('decks.add_card', id=deck.id) }}"
+            hx-post="{{ url_for('decks.add_card', id=deck.id) }}"
+            hx-target="#deck-card-list" hx-swap="outerHTML">
+        <input type="hidden" name="card_id" value="{{ card.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button class="button is-small is-primary">+ Adicionar</button>
+      </form>
+      {% endif %}
+    </span>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="panel-block has-text-grey">Nenhuma carta encontrada.</div>
+{% endif %}

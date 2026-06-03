@@ -1,15 +1,182 @@
-{% extends 'base.html' %} {% block content %}
-<h1 class="title">Deck</h1>
-<form method="POST" action="{{ url_for('decks.save') }}">
-  {{ form.hidden_tag() }}
-  <div class="field">
-    {{ form.name.label(for='name') }}
-    <div class="control">{{ form.name(class="input") }}</div>
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  .deck-layout {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .deck-info {
+    flex: 0 0 320px;
+  }
+  .deck-cards {
+    flex: 1;
+    min-width: 400px;
+  }
+  .card-search-panel {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+  .card-search-panel .field {
+    margin-bottom: 0.5rem;
+  }
+  .card-search-results {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+    background: white;
+  }
+  .card-search-results .panel-block {
+    cursor: pointer;
+  }
+  .card-search-results .panel-block:hover {
+    background: #eff1f5;
+  }
+  .deck-card-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .deck-card-item:last-child {
+    border-bottom: none;
+  }
+  .deck-card-info {
+    flex: 1;
+  }
+  .deck-card-info .card-type {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  .deck-card-info .card-stats {
+    font-size: 0.8rem;
+    color: #888;
+  }
+  .quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .quantity-control input {
+    width: 50px;
+    text-align: center;
+  }
+  .total-cards {
+    font-weight: bold;
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="deck-layout">
+  <div class="deck-info">
+    <h1 class="title">{% if deck %}Editar Deck{% else %}Novo Deck{% endif %}</h1>
+
+    <form method="POST" action="{{ url_for('decks.save') }}">
+      {{ form.hidden_tag() }}
+      <div class="field">
+        {{ form.name.label(for='name') }}
+        <div class="control">{{ form.name(class="input") }}</div>
+      </div>
+      <div class="field">
+        {{ form.description.label(for='description') }}
+        <div class="control">{{ form.description(class="textarea") }}</div>
+      </div>
+      <div class="field">
+        <div class="buttons">
+          {{ form.submit(class='button is-primary') }}
+          {% if deck %}
+          <a class="button is-danger is-light"
+             href="{{ url_for('decks.delete_deck', id=deck.id) }}"
+             onclick="return confirm('Excluir este deck?')">
+            <i class="bi bi-trash"></i> Excluir
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
   </div>
-  <div class="field">
-    {{ form.description.label(for='description') }}
-    <div class="control">{{ form.description(class="textarea") }}</div>
+
+  <div class="deck-cards">
+    {% if deck %}
+    <h2 class="subtitle">
+      Cartas no Deck
+      <span class="tag is-info is-light" id="card-count">{{ cards|length }}</span>
+    </h2>
+
+    <!-- Lista de cartas do deck -->
+    <div id="deck-card-list" class="box">
+      {% if cards %}
+        {% include 'decks/_card_list.html' %}
+      {% else %}
+        <p class="has-text-grey">Nenhuma carta neste deck ainda.</p>
+      {% endif %}
+    </div>
+
+    <hr>
+
+    <!-- Busca de cartas para adicionar -->
+    <div class="card-search-panel">
+      <h3 class="subtitle is-5">Adicionar Carta</h3>
+      <form hx-get="{{ url_for('decks.search_cards', id=deck.id) }}"
+            hx-target="#search-results"
+            hx-trigger="keyup delay:300ms, submit delay:300ms"
+            hx-indicator="#search-indicator">
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" type="text" name="q" placeholder="Buscar por nome..."
+                   hx-get="{{ url_for('decks.search_cards', id=deck.id) }}"
+                   hx-trigger="keyup changed delay:300ms"
+                   hx-target="#search-results">
+          </div>
+          <div class="control">
+            <button class="button is-info" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="field is-grouped">
+          <div class="control is-expanded">
+            <div class="select is-fullwidth">
+              <select name="tipo" hx-get="{{ url_for('decks.search_cards', id=deck.id) }}"
+                      hx-trigger="change" hx-target="#search-results">
+                <option value="">Todos os tipos</option>
+                {% for t in tipos %}
+                <option value="{{ t }}">{{ t }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="control is-expanded">
+            <div class="select is-fullwidth">
+              <select name="expansion" hx-get="{{ url_for('decks.search_cards', id=deck.id) }}"
+                      hx-trigger="change" hx-target="#search-results">
+                <option value="">Todas as expansões</option>
+                {% for e in expansoes %}
+                <option value="{{ e }}">{{ e }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div id="search-indicator" class="htmx-indicator">
+        <span class="tag is-info is-light">Buscando...</span>
+      </div>
+
+      <div id="search-results" class="card-search-results">
+        {% include 'decks/_card_search.html' %}
+      </div>
+    </div>
+    {% endif %}
   </div>
-  <div class="field">{{ form.submit(class='button')}}</div>
-</form>
+</div>
 {% endblock %}

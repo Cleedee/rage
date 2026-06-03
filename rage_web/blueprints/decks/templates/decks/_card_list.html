@@ -1,0 +1,44 @@
+{% for entry in cards %}
+<div class="deck-card-item" id="deck-card-{{ entry.card.id }}">
+  <div class="deck-card-info">
+    <strong>{{ entry.card.name }}</strong>
+    <span class="tag is-light is-small">{{ entry.card.tipo }}</span>
+    {% if entry.card.renown %}
+      <span class="tag is-light is-small">Renome: {{ entry.card.renown }}</span>
+    {% endif %}
+    <div class="card-stats">
+      R{{ entry.card.rage }} G{{ entry.card.gnosis }} H{{ entry.card.health }}
+      · {{ entry.card.expansion }}
+    </div>
+  </div>
+  <div class="quantity-control">
+    <form method="POST" action="{{ url_for('decks.update_quantity', id=deck.id) }}"
+          hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
+          hx-target="#deck-card-list" hx-swap="outerHTML">
+      <input type="hidden" name="card_id" value="{{ entry.card.id }}">
+      <button class="button is-small"
+              onclick="this.nextElementSibling.stepDown(); this.closest('form').requestSubmit()">−</button>
+      <input class="input is-small" type="number" name="quantity"
+             value="{{ entry.quantity }}" min="1" style="width:45px"
+             hx-trigger="change" hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
+             hx-target="#deck-card-list" hx-swap="outerHTML">
+      <button class="button is-small"
+              onclick="this.previousElementSibling.stepUp(); this.closest('form').requestSubmit()">+</button>
+    </form>
+    <form method="POST" action="{{ url_for('decks.remove_card', id=deck.id) }}"
+          hx-post="{{ url_for('decks.remove_card', id=deck.id) }}"
+          hx-target="#deck-card-list" hx-swap="outerHTML">
+      <input type="hidden" name="card_id" value="{{ entry.card.id }}">
+      <button class="button is-small is-danger is-light" title="Remover">
+        <i class="bi bi-x"></i>
+      </button>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="has-text-grey">Nenhuma carta neste deck ainda.</p>
+{% endfor %}
+
+<div class="total-cards">
+  Total: <span id="total-cards">{{ cards|length }}</span> cartas diferentes
+</div>

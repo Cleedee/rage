@@ -1,21 +1,63 @@
-{% extends 'base.html' %} {% block content %}
-<table class="table" id="search">
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  .deck-row:hover {
+    background: #f5f5f5;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="title">Decks</h1>
+
+<a class="button is-primary mb-4" href="{{ url_for('decks.new') }}">
+  <i class="bi bi-plus-lg"></i> Novo Deck
+</a>
+
+{% if decks %}
+<table class="table is-fullwidth is-hoverable" id="search">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Cartas</th>
+      <th>Descrição</th>
+      <th></th>
+    </tr>
+  </thead>
   <tbody>
     {% for deck in decks %}
-    <tr>
+    <tr class="deck-row">
       <td>
-        <a href="{{ url_for('decks.read_deck', id=deck.id) }}">{{ deck.name }}</a>
+        <a href="{{ url_for('decks.read_deck', id=deck.id) }}">
+          <strong>{{ deck.name }}</strong>
+        </a>
       </td>
       <td>
-        <a
-          class="button"
-          href="{{ url_for('decks.delete_deck', id=deck.id) }}"
-        >
-          <i class="bi bi-trash"></i> Excluir
+        <span class="tag is-info is-light">
+          {{ deck_card_counts.get(deck.id, 0) }}
+        </span>
+      </td>
+      <td class="has-text-grey is-size-7">
+        {{ deck.description or '' }}
+      </td>
+      <td>
+        <a class="button is-small is-danger is-light"
+           href="{{ url_for('decks.delete_deck', id=deck.id) }}"
+           onclick="return confirm('Excluir deck {{ deck.name }}?')">
+          <i class="bi bi-trash"></i>
         </a>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+{% else %}
+<div class="box has-text-centered has-text-grey">
+  <p>Nenhum deck criado ainda.</p>
+  <a class="button is-primary mt-3" href="{{ url_for('decks.new') }}">
+    <i class="bi bi-plus-lg"></i> Criar primeiro deck
+  </a>
+</div>
+{% endif %}
 {% endblock %}
