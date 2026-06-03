@@ -9,7 +9,8 @@ def test_home_page(client):
 
 def test_cards_search(client, sample_card):
     """A listagem de cartas deve mostrar as cartas cadastradas."""
-    response = client.get('/cards/search')
+    # Busca especificamente pela carta de teste
+    response = client.get(f'/cards/search?q=Test+Card')
     assert response.status_code == 200
     assert b"Test Card" in response.data
     assert b"Character" in response.data

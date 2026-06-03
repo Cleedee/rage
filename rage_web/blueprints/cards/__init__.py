@@ -158,6 +158,19 @@ def new():
 
 @bp.get('/search')
 def search():
+    query = request.args.get('q', '')
+    tipo = request.args.get('tipo', '')
+    expansion = request.args.get('expansion', '')
     form = CardForm()
-    cards = rep.find_all_cards()
-    return render_template('cards/search.html', cards=cards, form=form)
+
+    cards = rep.search_cards(query=query, tipo=tipo, expansion=expansion,
+                             limit=200)
+    tipos = rep.get_tipos()
+    expansoes = rep.get_expansions()
+
+    return render_template('cards/search.html',
+                           cards=cards, form=form,
+                           tipos=tipos, expansoes=expansoes,
+                           filtro_query=query,
+                           filtro_tipo=tipo,
+                           filtro_expansion=expansion)

@@ -1,23 +1,193 @@
-{% extends 'base.html' %} {% block content %}
-<table class="table" id="search">
-  <tbody>
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .card-item {
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: box-shadow 0.2s;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .card-item .card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+  .card-item .card-title a {
+    color: #363636;
+  }
+  .card-item .card-title a:hover {
+    color: #485fc7;
+  }
+  .card-item .card-type {
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.4rem;
+  }
+  .card-item .card-stats {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .card-item .card-stats .stat {
+    font-size: 0.75rem;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: #f5f5f5;
+  }
+  .card-item .card-stats .stat.rage { background: #fee2e2; color: #991b1b; }
+  .card-item .card-stats .stat.gnosis { background: #dbeafe; color: #1e40af; }
+  .card-item .card-stats .stat.health { background: #dcfce7; color: #166534; }
+  .card-item .card-stats .stat.renown { background: #fef3c7; color: #92400e; }
+  .card-item .card-text {
+    font-size: 0.8rem;
+    color: #555;
+    flex: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
+  }
+  .card-item .card-expansion {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 0.4rem;
+  }
+  .card-item .card-actions {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+  }
+  .filters-panel {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+  }
+  .result-count {
+    margin-bottom: 1rem;
+    color: #666;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="title">Buscar Cartas</h1>
+
+<!-- Filtros -->
+<div class="filters-panel">
+  <form method="GET" action="{{ url_for('cards.search') }}" id="search-form">
+    <div class="field has-addons mb-2">
+      <div class="control is-expanded">
+        <input class="input" type="text" name="q" placeholder="Buscar por nome..."
+               value="{{ filtro_query }}"
+               hx-get="{{ url_for('cards.search') }}"
+               hx-trigger="keyup changed delay:300ms"
+               hx-target="#cards-container"
+               hx-select="#cards-container"
+               hx-swap="outerHTML"
+               hx-include="#search-form">
+      </div>
+      <div class="control">
+        <button class="button is-info" type="submit">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="field is-grouped is-grouped-multiline">
+      <div class="control is-expanded">
+        <div class="select is-fullwidth">
+          <select name="tipo" onchange="this.form.submit()">
+            <option value="">Todos os tipos</option>
+            {% for t in tipos %}
+            <option value="{{ t }}" {% if filtro_tipo == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="control is-expanded">
+        <div class="select is-fullwidth">
+          <select name="expansion" onchange="this.form.submit()">
+            <option value="">Todas as expansões</option>
+            {% for e in expansoes %}
+            <option value="{{ e }}" {% if filtro_expansion == e %}selected{% endif %}>{{ e }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Resultados -->
+<div id="cards-container">
+  <div class="result-count">
+    <span class="tag is-info is-light">{{ cards|length }}</span> cartas encontradas
+  </div>
+
+  {% if cards %}
+  <div class="card-grid">
     {% for card in cards %}
-    <tr>
-      <td>
-        <a href="{{ url_for('cards.read_card',id=card.id) }}"
-          >{{ card.name }} ({{ card.tipo }})</a
-        >
-      </td>
-      <td>
-        <a
-          class="button"
-          href="{{ url_for('cards.delete_card', id=card.id) }}"
-        >
-          <i class="bi bi-trash"></i> Excluir
+    <div class="card-item">
+      <div class="card-title">
+        <a href="{{ url_for('cards.read_card', id=card.id) }}">{{ card.name }}</a>
+      </div>
+      <div class="card-type">
+        <span class="tag is-light is-small">{{ card.tipo }}</span>
+        {% if card.requires %}
+        <span class="has-text-grey-light is-size-7">Requires: {{ card.requires }}</span>
+        {% endif %}
+      </div>
+
+      {% if card.rage or card.gnosis or card.health or card.renown %}
+      <div class="card-stats">
+        {% if card.rage %}<span class="stat rage">R{{ card.rage }}</span>{% endif %}
+        {% if card.gnosis %}<span class="stat gnosis">G{{ card.gnosis }}</span>{% endif %}
+        {% if card.health %}<span class="stat health">H{{ card.health }}</span>{% endif %}
+        {% if card.renown %}<span class="stat renown">★{{ card.renown }}</span>{% endif %}
+      </div>
+      {% endif %}
+
+      {% if card.text %}
+      <div class="card-text">{{ card.text }}</div>
+      {% endif %}
+
+      <div class="card-expansion">{{ card.expansion }}</div>
+
+      <div class="card-actions">
+        <a class="button is-small is-outlined" href="{{ url_for('cards.read_card', id=card.id) }}">
+          <i class="bi bi-pencil"></i> Editar
         </a>
-      </td>
-    </tr>
+        <a class="button is-small is-danger is-outlined"
+           href="{{ url_for('cards.delete_card', id=card.id) }}"
+           onclick="return confirm('Excluir {{ card.name }}?')">
+          <i class="bi bi-trash"></i>
+        </a>
+      </div>
+    </div>
     {% endfor %}
-  </tbody>
-</table>
+  </div>
+  {% else %}
+  <div class="box has-text-centered has-text-grey">
+    {% if filtro_query or filtro_tipo or filtro_expansion %}
+    <p>Nenhuma carta encontrada com esses filtros.</p>
+    {% else %}
+    <p>Nenhuma carta cadastrada.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
