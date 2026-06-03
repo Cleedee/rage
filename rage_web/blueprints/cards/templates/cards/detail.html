@@ -117,6 +117,68 @@
     margin-bottom: 0.25rem;
   }
   .deck-link:hover { background: #fafafa; }
+
+  /* Fan art preview panel */
+  .fan-preview {
+    margin-top: 1rem;
+    border-top: 1px solid #eee;
+    padding-top: 0.75rem;
+  }
+  .fan-preview .fan-thumb {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .fan-preview .fan-thumb:hover {
+    opacity: 0.85;
+  }
+
+  /* Modal for full fan art */
+  .modal-fan {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-fan.is-active {
+    display: flex;
+  }
+  .modal-fan img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .modal-fan .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+    background: none;
+    border: none;
+    opacity: 0.7;
+  }
+  .modal-fan .modal-close:hover { opacity: 1; }
+  .modal-fan .modal-label {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    background: rgba(0,0,0,0.5);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+  }
 </style>
 {% endblock %}
 
@@ -129,12 +191,12 @@
 </nav>
 
 <div class="card-layout">
-  <!-- Imagem -->
+  <!-- Imagem Original -->
   <div class="card-image-panel">
     <div class="img-container">
-      {% set img_url = get_card_image_url(card) %}
-      {% if img_url %}
-        <img src="{{ img_url }}" alt="{{ card.name }}">
+      {% set orig_url = get_original_image_url(card) %}
+      {% if orig_url %}
+        <img src="{{ orig_url }}" alt="{{ card.name }}">
       {% else %}
         <div class="no-image">
           <i class="bi bi-image" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
@@ -143,7 +205,7 @@
       {% endif %}
     </div>
 
-    <!-- Upload fan image -->
+    <!-- Fan art upload & preview -->
     <div class="mt-3 box" style="padding:0.75rem;">
       <h4 class="subtitle is-7 mb-2">Imagem Alternativa (fan art)</h4>
       <form method="POST" action="{{ url_for('cards.upload_fan', id=card.id) }}"
@@ -159,10 +221,18 @@
           </div>
         </div>
       </form>
-      {% if card.fan_image %}
+
+      {% set fan_url = get_card_image_url(card) %}
+      {% if card.fan_image and fan_url %}
+      <div class="fan-preview">
+        <p class="is-size-7 has-text-grey mb-1">Fan art (clique para ampliar):</p>
+        <img class="fan-thumb" src="{{ fan_url }}"
+             alt="Fan art: {{ card.name }}"
+             onclick="document.getElementById('fan-modal').classList.add('is-active')">
+      </div>
       <form method="POST" action="{{ url_for('cards.remove_fan', id=card.id) }}">
-        <button class="button is-small is-danger is-light mt-1" type="submit">
-          <i class="bi bi-x"></i> Remover imagem alternativa
+        <button class="button is-small is-danger is-light mt-2" type="submit">
+          <i class="bi bi-x"></i> Remover fan art
         </button>
       </form>
       {% endif %}
@@ -284,7 +354,7 @@
     {% endfor %}
     {% endif %}
 
-    <!-- Decks que contêm esta carta -->
+    <!-- Decks que contem esta carta -->
     {% if decks %}
     <hr>
     <h3 class="subtitle is-6">Decks com esta carta</h3>
@@ -296,5 +366,17 @@
     {% endfor %}
     {% endif %}
   </div>
+</div>
+
+<!-- Modal para fan art em tela cheia -->
+<div id="fan-modal" class="modal-fan" onclick="this.classList.remove('is-active')">
+  <button class="modal-close" onclick="event.stopPropagation(); document.getElementById('fan-modal').classList.remove('is-active')">&times;</button>
+  {% if card.fan_image %}
+    {% set fan_url = get_card_image_url(card) %}
+    {% if fan_url %}
+    <img src="{{ fan_url }}" alt="Fan art: {{ card.name }}">
+    <span class="modal-label">Fan art &mdash; clique fora para fechar</span>
+    {% endif %}
+  {% endif %}
 </div>
 {% endblock %}

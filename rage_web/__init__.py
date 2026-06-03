@@ -35,9 +35,10 @@ def create_app(name_config='production'):
     @app.context_processor
     def inject_helpers():
         from rage_web.ext.repository import get_card_image_url, \
-            agrupar_cartas_do_deck
+            get_original_image_url, agrupar_cartas_do_deck
         return dict(
             get_card_image_url=get_card_image_url,
+            get_original_image_url=get_original_image_url,
             agrupar_cartas_do_deck=agrupar_cartas_do_deck,
         )
 

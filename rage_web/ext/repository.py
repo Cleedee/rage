@@ -233,6 +233,21 @@ def agrupar_cartas_do_deck(cards: list[dict]) -> dict[str, list[dict]]:
     return grupos
 
 
+def get_original_image_url(card: Card) -> str | None:
+    """Retorna URL apenas da imagem original (LackeyCCG), ignorando fan art."""
+    if not card.image_file:
+        return None
+    first_img = card.image_file.split(',')[0].strip()
+    if not first_img:
+        return None
+    from flask import current_app
+    instance_path = current_app.instance_path
+    local_path = os.path.join(instance_path, 'images', first_img + '.jpg')
+    if os.path.exists(local_path):
+        return f'/instance/images/{first_img}.jpg'
+    return None
+
+
 def get_card_image_url(card: Card) -> str | None:
     """Retorna URL da imagem a ser exibida para uma carta.
 
