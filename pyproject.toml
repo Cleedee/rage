@@ -12,6 +12,9 @@ dependencies = [
     "python-slugify>=8.0.4",
 ]
 
+[tool.setuptools.packages]
+find = {}
+
 [dependency-groups]
 dev = [
     "pytest>=8.4.1",

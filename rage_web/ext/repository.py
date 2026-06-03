@@ -154,6 +154,22 @@ def get_tipos() -> list[str]:
     stmt = select(Card.tipo).distinct().order_by(Card.tipo)
     return [r[0] for r in db.session.execute(stmt).all() if r[0]]
 
+
+def count_cards_by_tipo(limit: int = 10) -> list[tuple[str, int]]:
+    """Conta cartas agrupadas por tipo."""
+    stmt = select(
+        Card.tipo, func.count(Card.id)
+    ).group_by(Card.tipo).order_by(func.count(Card.id).desc()).limit(limit)
+    return [(r[0], r[1]) for r in db.session.execute(stmt).all() if r[0]]
+
+
+def count_cards_by_expansion(limit: int = 10) -> list[tuple[str, int]]:
+    """Conta cartas agrupadas por expansão."""
+    stmt = select(
+        Card.expansion, func.count(Card.id)
+    ).group_by(Card.expansion).order_by(func.count(Card.id).desc()).limit(limit)
+    return [(r[0], r[1]) for r in db.session.execute(stmt).all() if r[0]]
+
 # --- Picture ---
 
 def save_picture(picture: Picture):

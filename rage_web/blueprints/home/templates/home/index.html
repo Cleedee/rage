@@ -1,2 +1,191 @@
 {% extends 'base.html' %}
 
+{% block head %}
+<style>
+  .stat-card {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 8px;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+  }
+  .stat-card .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+  .stat-card .stat-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.25rem;
+  }
+  .stat-card.is-primary { background: #e8f0fe; }
+  .stat-card.is-success { background: #e6f7e6; }
+  .stat-card.is-info    { background: #e8f4fd; }
+  .stat-card.is-warning { background: #fef7e0; }
+
+  .quick-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+  }
+  .quick-actions .button { flex: 1; min-width: 140px; }
+
+  .deck-mini {
+    padding: 0.75rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .deck-mini:hover {
+    background: #fafafa;
+  }
+  .deck-mini .deck-name {
+    font-weight: 500;
+  }
+  .deck-mini .deck-count {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  .bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+  .bar-label {
+    width: 140px;
+    font-size: 0.8rem;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-track {
+    flex: 1;
+    height: 16px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.5s;
+  }
+  .bar-count {
+    width: 40px;
+    font-size: 0.75rem;
+    color: #888;
+    text-align: right;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero / Welcome -->
+<div class="mb-5">
+  <h1 class="title">Rage CCG</h1>
+  <p class="subtitle">Bem-vindo ao gerenciador de cartas do Rage Collectible Card Game</p>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+  <a class="button is-primary" href="{{ url_for('cards.search') }}">
+    <i class="bi bi-search"></i> Buscar Cartas
+  </a>
+  <a class="button is-success" href="{{ url_for('cards.new') }}">
+    <i class="bi bi-plus-circle"></i> Nova Carta
+  </a>
+  <a class="button is-info" href="{{ url_for('decks.search') }}">
+    <i class="bi bi-collection"></i> Meus Decks
+  </a>
+  <a class="button is-warning" href="{{ url_for('decks.import_deck') }}">
+    <i class="bi bi-upload"></i> Importar Deck
+  </a>
+</div>
+
+<!-- Stats Cards -->
+<div class="columns mb-5">
+  <div class="column">
+    <div class="stat-card is-primary">
+      <div class="stat-number">{{ total_cards }}</div>
+      <div class="stat-label">Cartas no Banco</div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="stat-card is-success">
+      <div class="stat-number">{{ total_decks }}</div>
+      <div class="stat-label">Decks Criados</div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="stat-card is-info">
+      <div class="stat-number">{{ imagens_baixadas }}</div>
+      <div class="stat-label">Imagens Baixadas</div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="stat-card is-warning">
+      <div class="stat-number">{{ tipos|length }}</div>
+      <div class="stat-label">Tipos de Carta</div>
+    </div>
+  </div>
+</div>
+
+<div class="columns">
+  <!-- Cartas por Tipo -->
+  <div class="column is-half">
+    <div class="box">
+      <h3 class="subtitle is-5">Cartas por Tipo</h3>
+      {% for tipo, count in tipos %}
+      <div class="bar-container">
+        <span class="bar-label">{{ tipo }}</span>
+        <div class="bar-track">
+          {% set pct = (count / tipos[0][1] * 100)|round %}
+          <div class="bar-fill" style="width:{{ pct }}%; background:#485fc7;"></div>
+        </div>
+        <span class="bar-count">{{ count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Cartas por Expansão -->
+  <div class="column is-half">
+    <div class="box">
+      <h3 class="subtitle is-5">Cartas por Expansão</h3>
+      {% for exp, count in expansoes %}
+      <div class="bar-container">
+        <span class="bar-label">{{ exp }}</span>
+        <div class="bar-track">
+          {% set pct = (count / expansoes[0][1] * 100)|round %}
+          <div class="bar-fill" style="width:{{ pct }}%; background:#48c774;"></div>
+        </div>
+        <span class="bar-count">{{ count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Decks Recentes -->
+{% if decks %}
+<div class="box">
+  <h3 class="subtitle is-5">Decks Recentes</h3>
+  {% for deck in decks %}
+  <a href="{{ url_for('decks.read_deck', id=deck.id) }}" class="deck-mini">
+    <span class="deck-name">
+      <i class="bi bi-collection"></i> {{ deck.name }}
+    </span>
+    <span class="deck-count">{{ deck.cards|length }} cartas</span>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
