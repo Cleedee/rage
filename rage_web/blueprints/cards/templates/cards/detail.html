@@ -325,20 +325,20 @@
     {% endif %}
 
     <!-- Campos adicionais -->
-    {% if card.rage or card.gnosis or card.crage or card.cgnosis or card.chealth or card.sealed %}
+    {% if card.rage_morph or card.gnosis_morph or card.health_morph or card.sealed %}
     <hr>
     <h3 class="subtitle is-6">Detalhes Adicionais</h3>
     {% if card.sealed %}
     <div class="field-item"><span class="field-label">Sealed:</span> {{ card.sealed }}</div>
     {% endif %}
-    {% if card.crage %}
-    <div class="field-item"><span class="field-label">Rage (Crinos):</span> {{ card.crage }}</div>
+    {% if card.rage_morph %}
+    <div class="field-item"><span class="field-label">Rage (Crinos):</span> {{ card.rage_morph }}</div>
     {% endif %}
-    {% if card.cgnosis %}
-    <div class="field-item"><span class="field-label">Gnosis (Crinos):</span> {{ card.cgnosis }}</div>
+    {% if card.gnosis_morph %}
+    <div class="field-item"><span class="field-label">Gnosis (Crinos):</span> {{ card.gnosis_morph }}</div>
     {% endif %}
-    {% if card.chealth %}
-    <div class="field-item"><span class="field-label">Health (Crinos):</span> {{ card.chealth }}</div>
+    {% if card.health_morph %}
+    <div class="field-item"><span class="field-label">Health (Crinos):</span> {{ card.health_morph }}</div>
     {% endif %}
     {% endif %}
 

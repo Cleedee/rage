@@ -5,7 +5,7 @@ from flask import Blueprint, abort, current_app, flash, redirect, render_templat
 from werkzeug.utils import secure_filename
 from slugify import slugify
 
-from rage_web.helpers.forms import CardForm, CharacterCardForm, EquipmentCardForm
+from rage_web.helpers.forms import CardForm, CardEditForm, CharacterCardForm, EquipmentCardForm
 from rage_web.models.card import Card
 import rage_web.ext.repository as rep
 
@@ -120,35 +120,13 @@ def save_equipment():
 
 @bp.get('/card/<id>')
 def read_card(id):
+    """Pagina de edicao da carta (usa formulario universal)."""
     card = rep.find_card_by_id(id)
     if card is None:
         abort(404)
-    if card.tipo == 'Character':
-        form = CharacterCardForm()
-        form.id.data = card.id
-        form.name.data = card.name
-        form.tipo.data = card.tipo
-        form.rage.data = card.rage
-        form.gnosis.data = card.gnosis
-        form.health.data = card.health
-        form.text.data = card.text
-        return render_template('cards/character.html', form=form)
-    elif card.tipo == 'Equipment':
-        form = EquipmentCardForm()
-        form.id.data = card.id
-        form.name.data = card.name
-        form.tipo.data = card.tipo
-        form.gnosis.data = card.gnosis
-        form.requires.data = card.requires
-        form.text.data = card.text
-        return render_template('cards/equipment.html', form=form)
-    else:
-        form = CardForm()
-        form.id.data = card.id
-        form.tipo.data = card.tipo
-        form.name.data = card.name
-        form.text.data = card.text
-        return render_template('cards/card.html', form=form)
+    form = CardEditForm(obj=card)
+    form.id.data = card.id
+    return render_template('cards/edit.html', form=form, card=card)
 
 @bp.post('/character')
 def save_character():
@@ -221,6 +199,41 @@ def view_card(id):
     decks = rep.find_decks_with_card(card)
 
     return render_template('cards/detail.html', card=card, decks=decks)
+
+
+@bp.post('/save-edit/<id>')
+def save_card_edit(id):
+    """Salva edicao completa de uma carta."""
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
+
+    form = CardEditForm()
+    if form.validate_on_submit():
+        card.name = form.name.data
+        card.tipo = form.tipo.data
+        card.expansion = form.expansion.data or ''
+        card.rage = form.rage.data or 0
+        card.gnosis = form.gnosis.data or 0
+        card.health = form.health.data or 0
+        card.renown = form.renown.data or 0
+        card.damage = form.damage.data or ''
+        card.requires = form.requires.data or ''
+        card.keyword = form.keyword.data or ''
+        card.text = form.text.data or ''
+        card.notes = form.notes.data or ''
+        card.errata = form.errata.data or ''
+        card.sealed = form.sealed.data or ''
+        card.rage_morph = form.rage_morph.data or 0
+        card.gnosis_morph = form.gnosis_morph.data or 0
+        card.health_morph = form.health_morph.data or 0
+        rep.save_card(card)
+        flash(f'{card.name} salvo.')
+        return redirect(url_for('cards.view_card', id=card.id))
+
+    current_app.logger.error(form.errors)
+    flash('Erro ao salvar. Verifique os campos.')
+    return render_template('cards/edit.html', form=form, card=card)
 
 
 @bp.get('/search')

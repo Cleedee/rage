@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  .edit-layout {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .edit-layout .title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-group {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .section-group .group-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .section-group .group-title i {
+    margin-right: 0.4rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-layout">
+  <h1 class="title is-4 mb-4">
+    <i class="bi bi-pencil-square"></i>
+    Editar Carta
+    <span class="tag is-light is-medium">{{ card.name }}</span>
+  </h1>
+
+  <form method="POST" action="{{ url_for('cards.save_card_edit', id=card.id) }}">
+    {{ form.hidden_tag() }}
+
+    <!-- Informacoes Basicas -->
+    <div class="section-group">
+      <div class="group-title"><i class="bi bi-info-circle"></i> Informações Básicas</div>
+      <div class="columns is-multiline">
+        <div class="column is-half">
+          <div class="field">
+            {{ form.name.label(class='label') }}
+            <div class="control">{{ form.name(class='input', placeholder='Nome da carta') }}</div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            {{ form.tipo.label(class='label') }}
+            <div class="control">
+              <div class="select is-fullwidth">
+                {{ form.tipo(class='', placeholder='Ex: Character - Gaia') }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            {{ form.expansion.label(class='label') }}
+            <div class="control">{{ form.expansion(class='input', placeholder='Ex: Unlimited') }}</div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            {{ form.sealed.label(class='label') }}
+            <div class="control">{{ form.sealed(class='input', placeholder='Sealed info') }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atributos / Stats -->
+    <div class="section-group">
+      <div class="group-title"><i class="bi bi-bar-chart-fill"></i> Atributos</div>
+      <div class="columns is-multiline">
+        <div class="column is-3">
+          <div class="field">
+            {{ form.rage.label(class='label') }}
+            <div class="control">{{ form.rage(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            {{ form.gnosis.label(class='label') }}
+            <div class="control">{{ form.gnosis(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            {{ form.health.label(class='label') }}
+            <div class="control">{{ form.health(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            {{ form.renown.label(class='label') }}
+            <div class="control">{{ form.renown(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            {{ form.damage.label(class='label') }}
+            <div class="control">{{ form.damage(class='input', placeholder='Ex: 4S, 3M') }}</div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            {{ form.requires.label(class='label') }}
+            <div class="control">{{ form.requires(class='input', placeholder='Requisitos') }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atributos Crinos -->
+    <div class="section-group">
+      <div class="group-title"><i class="bi bi-shield-fill"></i> Atributos Crinos</div>
+      <div class="columns is-multiline">
+        <div class="column is-4">
+          <div class="field">
+            {{ form.rage_morph.label(class='label') }}
+            <div class="control">{{ form.rage_morph(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="field">
+            {{ form.gnosis_morph.label(class='label') }}
+            <div class="control">{{ form.gnosis_morph(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="field">
+            {{ form.health_morph.label(class='label') }}
+            <div class="control">{{ form.health_morph(class='input', type='number', min=0) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keywords -->
+    <div class="section-group">
+      <div class="group-title"><i class="bi bi-tags-fill"></i> Classificação</div>
+      <div class="field">
+        {{ form.keyword.label(class='label') }}
+        <div class="control">{{ form.keyword(class='input', placeholder='Palavras-chave separadas por vírgula') }}</div>
+      </div>
+    </div>
+
+    <!-- Texto -->
+    <div class="section-group">
+      <div class="group-title"><i class="bi bi-card-text"></i> Texto</div>
+      <div class="field">
+        {{ form.text.label(class='label') }}
+        <div class="control">{{ form.text(class='textarea', rows=6, placeholder='Texto da carta') }}</div>
+      </div>
+      <div class="field">
+        {{ form.notes.label(class='label') }}
+        <div class="control">{{ form.notes(class='textarea', rows=3, placeholder='Notas pessoais') }}</div>
+      </div>
+    </div>
+
+    <!-- Errata -->
+    <div class="section-group">
+      <div class="group-title"><i class="bi bi-exclamation-triangle"></i> Errata</div>
+      <div class="field">
+        {{ form.errata.label(class='label') }}
+        <div class="control">{{ form.errata(class='textarea', rows=3, placeholder='Correções oficiais') }}</div>
+      </div>
+    </div>
+
+    <!-- Acoes -->
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-primary" type="submit">
+          <i class="bi bi-check-lg"></i> Salvar
+        </button>
+      </div>
+      <div class="control">
+        <a class="button is-light" href="{{ url_for('cards.view_card', id=card.id) }}">
+          <i class="bi bi-x-lg"></i> Cancelar
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

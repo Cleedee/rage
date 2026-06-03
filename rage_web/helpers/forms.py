@@ -16,8 +16,32 @@ class CardForm(FlaskForm):
     id = HiddenField()
     name = StringField('Name', validators=[DataRequired()])
     tipo = StringField('Type', validators=[DataRequired()])
-    text = TextAreaField('Text', validators=[DataRequired()])
+    text = TextAreaField('Text')
     submit = SubmitField("SAVE")
+
+
+class CardEditForm(FlaskForm):
+    """Formulario universal de edicao de carta com todos os campos."""
+    id = HiddenField()
+    name = StringField('Name', validators=[DataRequired()])
+    tipo = StringField('Type', validators=[DataRequired()])
+    expansion = StringField('Expansion')
+    rage = IntegerField('Rage', default=0)
+    gnosis = IntegerField('Gnosis', default=0)
+    health = IntegerField('Health', default=0)
+    renown = IntegerField('Renown', default=0)
+    damage = StringField('Damage')
+    requires = StringField('Requires')
+    keyword = StringField('Keywords')
+    text = TextAreaField('Text')
+    notes = TextAreaField('Notes')
+    errata = TextAreaField('Errata')
+    sealed = StringField('Sealed')
+    rage_morph = IntegerField('Rage (Crinos)', default=0)
+    gnosis_morph = IntegerField('Gnosis (Crinos)', default=0)
+    health_morph = IntegerField('Health (Crinos)', default=0)
+    submit = SubmitField("Salvar")
+
 
 class CharacterCardForm(FlaskForm):
     id = HiddenField()
