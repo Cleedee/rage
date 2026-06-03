@@ -1,8 +1,13 @@
 import logging
+import os
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, url_for
+from werkzeug.utils import secure_filename
+from slugify import slugify
+
 from rage_web.helpers.forms import CardForm, CharacterCardForm, EquipmentCardForm
 from rage_web.models.card import Card
+import rage_web.ext.repository as rep
 
 
 bp = Blueprint(
@@ -31,15 +36,14 @@ def new_card():
 def save_new_character():
     form = CharacterCardForm()
     if form.validate_on_submit():
-        card = Card(
-            name=form.name.data,
-            tipo='Character',
-            rage=form.rage.data,
-            gnosis=form.gnosis.data,
-            health=form.health.data,
-            text=form.text.data
-        )
-        card.save()
+        card = Card()
+        card.name = form.name.data
+        card.tipo = form.tipo.data
+        card.rage = form.rage.data
+        card.gnosis = form.gnosis.data
+        card.health = form.health.data
+        card.text = form.text.data
+        rep.save_card(card)
         flash('Personagem salvo.')
     logging.error(form.errors)
     return redirect(url_for('home.index'))
@@ -48,25 +52,27 @@ def save_new_character():
 def save_equipment():
     form = EquipmentCardForm()
     if form.validate_on_submit():
-        card = Card(
-            name=form.name.data,
-            tipo='Equipment',
-            gnosis=form.gnosis.data,
-            requires=form.requires.data,
-            text=form.text.data
-        )
-        card.save()
+        card = Card()
+        card.name = form.name.data
+        card.tipo = form.tipo.data
+        card.gnosis = form.gnosis.data
+        card.requires = form.requires.data
+        card.text = form.text.data
+        rep.save_card(card)
         flash('Equipamento salvo.')
     logging.error(form.errors)
     return redirect(url_for('home.index'))
 
 @bp.get('/card/<id>')
 def read_card(id):
-    card = Card.get(id)
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
     if card.tipo == 'Character':
         form = CharacterCardForm()
-        form.id.data = card.pk
+        form.id.data = card.id
         form.name.data = card.name
+        form.tipo.data = card.tipo
         form.rage.data = card.rage
         form.gnosis.data = card.gnosis
         form.health.data = card.health
@@ -74,15 +80,16 @@ def read_card(id):
         return render_template('cards/character.html', form=form)
     elif card.tipo == 'Equipment':
         form = EquipmentCardForm()
-        form.id.data = card.pk
+        form.id.data = card.id
         form.name.data = card.name
+        form.tipo.data = card.tipo
         form.gnosis.data = card.gnosis
         form.requires.data = card.requires
         form.text.data = card.text
         return render_template('cards/equipment.html', form=form)
     else:
         form = CardForm()
-        form.id.data = card.pk
+        form.id.data = card.id
         form.tipo.data = card.tipo
         form.name.data = card.name
         form.text.data = card.text
@@ -93,21 +100,24 @@ def save_character():
     form = CharacterCardForm()
     if form.validate_on_submit():
         if form.id.data:
-            card = Card.get(form.id.data)
+            card = rep.find_card_by_id(form.id.data)
+            if card is None:
+                abort(404)
             card.name = form.name.data
+            card.tipo = form.tipo.data
             card.rage = form.rage.data
             card.gnosis = form.gnosis.data
             card.health = form.health.data
             card.text = form.text.data
         else:
-            card = Card(
-                name = form.name.data,
-                rage = form.rage.data,
-                gnosis = form.gnosis.data,
-                health = form.health.data,
-                text = form.text.data
-            )
-        card.save()
+            card = Card()
+            card.name = form.name.data
+            card.tipo = form.tipo.data
+            card.rage = form.rage.data
+            card.gnosis = form.gnosis.data
+            card.health = form.health.data
+            card.text = form.text.data
+        rep.save_card(card)
         flash(f'{card.name} salvo.')
     logging.error(form.errors)
     return redirect(url_for('home.index'))
@@ -117,27 +127,30 @@ def save_card():
     form = CardForm()
     if form.validate_on_submit():
         if form.id.data:
-            card = Card.get(form.id.data)
+            card = rep.find_card_by_id(form.id.data)
+            if card is None:
+                abort(404)
             card.name = form.name.data
             card.tipo = form.tipo.data
             card.text = form.text.data
         else:
-            card = Card(
-                name=form.name.data,
-                tipo=form.tipo.data,
-                text=form.text.data
-            )
-        card.save()
+            card = Card()
+            card.name = form.name.data
+            card.tipo = form.tipo.data
+            card.text = form.text.data
+        rep.save_card(card)
         flash('Card salvo.')
+    current_app.logger.error(form.errors)
     return redirect(url_for('cards.search'))
 
-@bp.delete('/card/<id>')
+@bp.get('/delete-card/<id>')
 def delete_card(id):
-    card = Card.get(id)
-    card.expire(0)
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
+    rep.delete_card(card)
     flash('Card excluído.')
-    cards = Card.find().all()
-    return render_template('cards/snippet_cards.html', cards=cards)
+    return redirect(url_for('cards.search'))
 
 @bp.get('/new')
 def new():
@@ -146,5 +159,5 @@ def new():
 @bp.get('/search')
 def search():
     form = CardForm()
-    cards = Card.find().all()
+    cards = rep.find_all_cards()
     return render_template('cards/search.html', cards=cards, form=form)

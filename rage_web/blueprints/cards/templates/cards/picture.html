@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% block content %}
+<h1 class="title">Register Card</h1>
+<form method="POST" action="{{ url_for('cards.save_picture') }}" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div class="field">
+    {{ form.side.label(for='side') }}
+    <div class="control">{{ form.side(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.version.label(for='version') }}
+    <div class="control">{{ form.version(class="input") }}</div>
+  </div>
+  <div class="file">
+    <label class="file-label">
+      {{ form.image(class="file-input") }}
+      <span class="file-cta">
+        <span class="file-icon">
+          <i class="fas fa-upload"></i>
+        </span>
+      </span>
+      <span class="file-label"> Escolha um arquivo...</span>
+    </label>
+  </div>
+  <div class="field">{{ form.submit(class='button')}}</div>
+</form>
+{% endblock %}

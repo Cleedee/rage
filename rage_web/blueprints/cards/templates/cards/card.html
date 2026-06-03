@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 <h1 class="title">Register Card</h1>
-<form method="POST" action="{{ url_for('cards.save_card') }}">
+<form method="POST" action="{{ url_for('cards.save_card') }}" enctype="multipart/form-data">
   {{ form.hidden_tag() }}
   <div class="field">
     {{ form.name.label(for='name') }}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% block content %}
+<h1 class="title">Deck</h1>
+<form method="POST" action="{{ url_for('decks.save') }}">
+  {{ form.hidden_tag() }}
+  <div class="field">
+    {{ form.name.label(for='name') }}
+    <div class="control">{{ form.name(class="input") }}</div>
+  </div>
+  <div class="field">
+    {{ form.description.label(for='description') }}
+    <div class="control">{{ form.description(class="textarea") }}</div>
+  </div>
+  <div class="field">{{ form.submit(class='button')}}</div>
+</form>
+{% endblock %}

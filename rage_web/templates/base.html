@@ -52,8 +52,10 @@
             <a class="navbar-link"> Decks </a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item"> Search </a>
-              <a class="navbar-item"> New </a>
+              <a class="navbar-item" href="{{ url_for('decks.search') }}">
+                Search
+              </a>
+              <a class="navbar-item" href="{{ url_for('decks.new') }}"> New </a>
             </div>
           </div>
         </div>
@@ -70,12 +72,14 @@
         </div>
       </div>
     </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
     <section class="section">
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if
-      messages %} {% for category, message in messages %}
+      {% for category, message in messages %}
       <div class="notification is-info">{{ message }}</div>
-      {% endfor %} {% endif %} {% endwith %}
+      {% endfor %}
     </section>
+    {% endif %} {% endwith %}
     <section class="section">
       <div class="container">{% block content %} {% endblock %}</div>
     </section>

@@ -1,14 +1,17 @@
-from typing import Optional
+from sqlalchemy.orm import Mapped, mapped_column
 
-from redis_om import HashModel, Field
+from rage_web.ext.database import db
 
-class Card(HashModel):
-    name: str = Field(index=True)
-    tipo: str = Field(index=True)
-    rage: Optional[int] = None
-    gnosis: Optional[int] = None
-    health: Optional[int] = None
-    requires: str = ''
-    keyword: str = ''
-    text: str = ''
-
+class Card(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    tipo: Mapped[str]
+    rage: Mapped[int] = mapped_column(default=0)
+    gnosis: Mapped[int] = mapped_column(default=0)
+    health: Mapped[int] = mapped_column(default=0)
+    rage_morph: Mapped[int] = mapped_column(default=0)
+    gnosis_morph: Mapped[int] = mapped_column(default=0)
+    health_morph: Mapped[int] = mapped_column(default=0)
+    requires: Mapped[str] = mapped_column(default='')
+    keyword: Mapped[str] = mapped_column(default='')
+    text: Mapped[str] = mapped_column(default='')

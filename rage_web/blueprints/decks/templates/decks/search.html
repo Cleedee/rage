@@ -1,17 +1,15 @@
 {% extends 'base.html' %} {% block content %}
 <table class="table" id="search">
   <tbody>
-    {% for card in cards %}
+    {% for deck in decks %}
     <tr>
       <td>
-        <a href="{{ url_for('cards.read_card',id=card.id) }}"
-          >{{ card.name }} ({{ card.tipo }})</a
-        >
+        <a href="{{ url_for('decks.read_deck', id=deck.id) }}">{{ deck.name }}</a>
       </td>
       <td>
         <a
           class="button"
-          href="{{ url_for('cards.delete_card', id=card.id) }}"
+          href="{{ url_for('decks.delete_deck', id=deck.id) }}"
         >
           <i class="bi bi-trash"></i> Excluir
         </a>
