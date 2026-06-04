@@ -62,6 +62,7 @@ class EfeitoTipo(str, Enum):
     FUGIR = 'fugir'
     INICIAR_COMBATE = 'iniciar_combate'
     RESTRICAO = 'restringir'  # Adicionar restricao temporaria a criatura
+    COMPRAR_ATE = 'comprar_ate'  # Comprar ate ter N cartas na mao
 
 
 # -----------------------------------------------------------------------
@@ -99,6 +100,8 @@ class Efeito:
     condicao: Optional[str] = None  # Nome da funcao de condicao
     modo_idx: int = 0  # Indice do modo (para cartas modais)
     duracao: str = ''  # 'end_of_turn', 'end_of_combat', 'end_of_phase', ''
+    se_sucesso: list[Efeito] = field(default_factory=list)
+    se_fracasso: list[Efeito] = field(default_factory=list)
 
     def __post_init__(self):
         if isinstance(self.tipo, str):
@@ -171,7 +174,10 @@ class ResolvedorEfeitos:
 
         resultado = resolvedor(efeito, origem, jogador, alvo)
         if resultado:
-            nome_alvo = getattr(alvo, 'name', str(alvo or jogador.name))
+            if isinstance(alvo, list):
+                nome_alvo = f'{len(alvo)} cartas'
+            else:
+                nome_alvo = getattr(alvo, 'name', str(alvo or jogador.name))
             self.log.append(
                 f'{origem.name}: {efeito.tipo.value} em {nome_alvo}'
             )
@@ -196,6 +202,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.PERDER_VP: self._resolver_perder_vp,
             EfeitoTipo.ANULAR: self._resolver_anular,
             EfeitoTipo.RESTRICAO: self._resolver_restringir,
+            EfeitoTipo.COMPRAR_ATE: self._resolver_comprar_ate,
         }
         return resolvedores.get(tipo)
 
@@ -336,6 +343,32 @@ class ResolvedorEfeitos:
         qtd = efeito.quantidade or 1
         jogador.draw_combat(qtd)
         self.game.add_log(f'{jogador.name} comprou {qtd} carta(s)')
+        return True
+
+    def _resolver_comprar_ate(self, efeito: Efeito, origem: CardInstance,
+                              jogador: PlayerState, alvo) -> bool:
+        """Compra cartas ate ter N na mao.
+
+        Se efeito.alvo == 'combate', conta apenas cartas de combate.
+        Senao conta a mao inteira.
+        """
+        qtd_alvo = efeito.quantidade or 5
+        tipo_mao = efeito.alvo or ''
+
+        if tipo_mao == 'combate':
+            atuais = len(jogador._cartas_combate())
+            draw_fn = jogador.draw_combat
+        else:
+            atuais = len(jogador.hand)
+            draw_fn = jogador.draw_combat
+
+        needed = max(0, qtd_alvo - atuais)
+        if needed > 0:
+            draw_fn(needed)
+            self.game.add_log(
+                f'{jogador.name} comprou {needed} carta(s) '
+                f'para ter {qtd_alvo} na mao'
+            )
         return True
 
     def _resolver_tapar(self, efeito: Efeito, origem: CardInstance,
@@ -533,7 +566,13 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
 
     resolvedor = ResolvedorEfeitos(game)
     for efeito in modo.efeitos:
-        resolvedor.aplicar_efeito(efeito, origem, jogador)
+        resultado = resolvedor.aplicar_efeito(efeito, origem, jogador)
+        if resultado and efeito.se_sucesso:
+            for sub in efeito.se_sucesso:
+                resolvedor.aplicar_efeito(sub, origem, jogador)
+        elif not resultado and efeito.se_fracasso:
+            for sub in efeito.se_fracasso:
+                resolvedor.aplicar_efeito(sub, origem, jogador)
 
     game.add_log(f'{jogador.name} usou {modelo.nome} ({modo.descricao})')
     return resolvedor.log
@@ -558,13 +597,7 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
     for m in dados.get('modos', []):
         efeitos = []
         for e in m.get('efeitos', []):
-            efeitos.append(Efeito(
-                tipo=e['tipo'],
-                condicao=e.get('condicao_alvo'),
-                alvo=e.get('alvo'),
-                quantidade=e.get('quantidade', 0),
-                duracao=e.get('duracao', ''),
-            ))
+            efeitos.append(_efeito_from_json(e))
         modos.append(Modo(
             descricao=m['descricao'],
             efeitos=efeitos,
@@ -573,8 +606,20 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
         id=dados['id'],
         nome=dados['nome'],
         tipo=dados.get('tipo', 'event'),
-        # Rage e o custo primario no Rage CCG, nao "custo_acoes"
         modos=modos,
+    )
+
+
+def _efeito_from_json(e: dict) -> Efeito:
+    """Converte um dict de efeito JSON para Efeito (recursivo)."""
+    return Efeito(
+        tipo=e['tipo'],
+        condicao=e.get('condicao_alvo'),
+        alvo=e.get('alvo'),
+        quantidade=e.get('quantidade', 0),
+        duracao=e.get('duracao', ''),
+        se_sucesso=[_efeito_from_json(s) for s in e.get('se_sucesso', [])],
+        se_fracasso=[_efeito_from_json(f) for f in e.get('se_fracasso', [])],
     )
 
 

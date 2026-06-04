@@ -4,25 +4,33 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 1 de dano",
+      "descricao": "Causar 1 de dano; se acertar, recarregar mao de combate para 5",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
-          "quantidade": 1
+          "quantidade": 1,
+          "se_sucesso": [
+            {
+              "tipo": "comprar_ate",
+              "condicao_alvo": "mao_aliada",
+              "alvo": "combate",
+              "quantidade": 5
+            }
+          ]
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1470,
     "texto_original": "Combat Restricted. Slow Striking. If Desperate Struggles damages an opponent, refill your combat hand to five cards.",
-    "keywords": "",
+    "keywords": "Combat Restricted - Slow Striking",
     "damage": "1",
     "rage": 1,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }
