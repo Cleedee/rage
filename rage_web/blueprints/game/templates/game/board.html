@@ -1,5 +1,75 @@
 {% extends "base.html" %}
 {% block title %}Partida {{ game.id }} - Rage CCG{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+  /* Tooltip de carta no tabuleiro */
+  .card-tooltip-wrap {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .card-tooltip-wrap .tooltip-box {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 200;
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    transition: opacity 0.15s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    pointer-events: none;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 0.75rem;
+    text-align: left;
+  }
+  .card-tooltip-wrap:hover .tooltip-box {
+    visibility: visible;
+    opacity: 1;
+  }
+  .card-tooltip-wrap .tooltip-box img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .tooltip-box .tooltip-body {
+    padding: 6px 8px;
+  }
+  .tooltip-box .tooltip-body .tt-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .tooltip-box .tooltip-body .tt-type {
+    color: #aaa;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+  }
+  .tooltip-box .tooltip-body .tt-stats {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .tooltip-box .tooltip-body .tt-stats span { font-weight: 600; }
+  .tt-rage   { color: #e74c3c; }
+  .tt-gnosis { color: #3498db; }
+  .tt-health { color: #2ecc71; }
+  .tt-renown { color: #f1c40f; }
+  .tooltip-box .tooltip-body .tt-text {
+    color: #ccc;
+    font-size: 0.7rem;
+    line-height: 1.3;
+    max-height: 80px;
+    overflow-y: auto;
+  }
+</style>
+{% endblock %}
 {% block content %}
 
 <div id="game-board"

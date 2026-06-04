@@ -38,11 +38,27 @@
         <div class="control">
           <div class="tags has-addons">
             <span class="tag {% if c.is_tapped %}is-dark{% else %}is-success{% endif %}"
-                  title="{{ c.name }} (R{{ c.rage }} G{{ c.gnosis }} R{{ c.renown }})">
+                  <div class="card-tooltip-wrap" style="display:inline-flex">
+                  >
               <img src="{{ c.image_url }}" style="width:20px;height:28px;object-fit:cover;margin-right:4px"
                    onerror="this.style.display='none'">
               {{ c.name }}
-              {% if c.is_tapped %}<span class="ml-1">💤</span>{% endif %}
+                    </span>
+                    <div class="tooltip-box">
+                      <img src="{{ c.image_url }}" onerror="this.style.display='none'">
+                      <div class="tooltip-body">
+                        <div class="tt-name">{{ c.name }}</div>
+                        <div class="tt-type">{{ c.card_type }}</div>
+                        <div class="tt-stats">
+                          {% if c.rage %}<span class="tt-rage">R{{ c.rage }}</span>{% endif %}
+                          {% if c.gnosis %}<span class="tt-gnosis">G{{ c.gnosis }}</span>{% endif %}
+                          {% if c.health %}<span class="tt-health">❤️{{ c.health_current }}/{{ c.health }}</span>{% endif %}
+                          {% if c.renown %}<span class="tt-renown">★{{ c.renown }}</span>{% endif %}
+                        </div>
+                        {% if c.text %}<div class="tt-text">{{ c.text[:200] }}</div>{% endif %}
+                      </div>
+                    </div>
+                  </div>
             </span>
             <span class="tag is-light">
               ❤️{{ c.health_current }}/{{ c.health }}
@@ -79,8 +95,23 @@
         {% for c in p.umbra %}
         <div class="control">
           <div class="tags has-addons">
+        <div class="card-tooltip-wrap" style="display:inline-flex">
             <span class="tag is-purple">{{ c.name }}</span>
             <span class="tag is-light">❤️{{ c.health_current }}/{{ c.health }}</span>
+          <div class="tooltip-box">
+            <img src="{{ c.image_url }}" onerror="this.style.display='none'">
+            <div class="tooltip-body">
+              <div class="tt-name">{{ c.name }}</div>
+              <div class="tt-type">{{ c.card_type }}</div>
+              <div class="tt-stats">
+                {% if c.rage %}<span class="tt-rage">R{{ c.rage }}</span>{% endif %}
+                {% if c.gnosis %}<span class="tt-gnosis">G{{ c.gnosis }}</span>{% endif %}
+                {% if c.health %}<span class="tt-health">❤️{{ c.health_current }}/{{ c.health }}</span>{% endif %}
+                {% if c.renown %}<span class="tt-renown">★{{ c.renown }}</span>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
             <a class="tag is-warning is-small"
                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                hx-vals='{"action":"step_back","card_id":"{{ c.card_id }}"}'
@@ -101,11 +132,26 @@
         {% for c in p.hand %}
         <div class="control">
           <div class="tags has-addons">
-            <span class="tag is-info is-light" title="{{ c.name }}">
+        <div class="card-tooltip-wrap" style="display:inline-flex">
+            <span class="tag is-info is-light" >
               <img src="{{ c.image_url }}" style="width:16px;height:22px;object-fit:cover;margin-right:2px"
                    onerror="this.style.display='none'">
               {{ c.name[:20] }}
               {% if c.modelo_id %}<span class="ml-1">✨</span>{% endif %}
+          <div class="tooltip-box">
+            <img src="{{ c.image_url }}" onerror="this.style.display='none'">
+            <div class="tooltip-body">
+              <div class="tt-name">{{ c.name }}</div>
+              <div class="tt-type">{{ c.card_type }}</div>
+              <div class="tt-stats">
+                {% if c.rage %}<span class="tt-rage">R{{ c.rage }}</span>{% endif %}
+                {% if c.gnosis %}<span class="tt-gnosis">G{{ c.gnosis }}</span>{% endif %}
+                {% if c.health %}<span class="tt-health">❤️{{ c.health_current }}/{{ c.health }}</span>{% endif %}
+                {% if c.renown %}<span class="tt-renown">★{{ c.renown }}</span>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
             </span>
             {% if is_current and game.combat.is_active and loop.index0 < 10 %}
             <span class="tag is-small">{{ loop.index0 }}</span>
