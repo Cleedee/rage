@@ -56,8 +56,16 @@ def start_combat(game: GameState, attackers: list[str],
 
 
 def get_combatants(game: GameState) -> list[str]:
-    """Retorna lista de IDs de todas as criaturas no combate."""
-    return game.combat.attackers + game.combat.defenders
+    """Retorna lista de IDs de todas as criaturas no combate.
+
+    Exclui alvos especiais como 'hg' (hunting grounds) que
+    nao sao criaturas e nao declaram acoes.
+    """
+    result = []
+    for cid in game.combat.attackers + game.combat.defenders:
+        if cid != 'hg':
+            result.append(cid)
+    return result
 
 
 def declare_action(game: GameState, card_id: str, action: str) -> bool:
