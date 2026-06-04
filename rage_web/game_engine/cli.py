@@ -652,5 +652,123 @@ def main():
         sys.exit(0)
 
 
+# ------------------------------------------------------------------
+# Construir partida a partir de decks do banco de dados
+# ------------------------------------------------------------------
+
+def build_game_from_decks(deck1_id: int, deck2_id: int,
+                          seed: int = 42) -> GameState:
+    """Cria uma partida com cartas reais do banco de dados.
+
+    Args:
+        deck1_id: ID do deck do jogador 1.
+        deck2_id: ID do deck do jogador 2.
+        seed: Semente aleatoria.
+
+    Returns:
+        GameState pronto para jogar.
+    """
+    random.seed(seed)
+
+    from rage_web import create_app
+    from rage_web.ext.database import db
+    from rage_web.models.deck import Deck, deck_cards
+    from rage_web.models.card import Card as CardModel
+
+    flask_app = create_app()
+
+    def _load_deck(deck_id: int) -> list[CardInstance]:
+        """Carrega as cartas de um deck do banco."""
+        cards = []
+        with flask_app.app_context():
+            d = db.session.get(Deck, deck_id)
+            if not d:
+                raise ValueError(f'Deck {deck_id} nao encontrado')
+
+            stmt = db.select(deck_cards).where(deck_cards.c.deck_id == deck_id)
+            rows = db.session.execute(stmt).fetchall()
+
+            uid = 1
+            for row in rows:
+                card_model = db.session.get(CardModel, row.card_id)
+                if not card_model:
+                    continue
+                qtd = row.quantity
+                for _ in range(qtd):
+                    ci = CardInstance(
+                        card_id=card_model.id,
+                        name=card_model.name,
+                        card_type=card_model.tipo,
+                        zone=Zone.OUT_OF_PLAY,
+                        owner_id='',
+                        controller_id='',
+                        rage=card_model.rage or 0,
+                        gnosis=card_model.gnosis or 0,
+                        health=card_model.health or 0,
+                        health_current=0,
+                        renown=card_model.renown or 0,
+                        damage=card_model.damage or '',
+                        text=card_model.text or '',
+                        keywords=card_model.keyword or '',
+                    )
+                    cards.append(ci)
+                    uid += 1
+        return cards
+
+    p1 = PlayerState(id='p1', name=f'Jogador 1 (Deck {deck1_id})')
+    p2 = PlayerState(id='p2', name=f'Jogador 2 (Deck {deck2_id})')
+
+    all_cards_p1 = _load_deck(deck1_id)
+    all_cards_p2 = _load_deck(deck2_id)
+
+    # Separa personagens para Pack Home, resto vai para os decks
+    combat_types = {'Combat Action', 'Combat Event', 'Equipment',
+                    'Gift', 'Victim', 'Enemy'}
+    sept_types = {'Event', 'Action', 'Territory', 'Quest',
+                  'Battlefield', 'Rite', 'Moot', 'Board Meeting'}
+
+    for cards, player in [(all_cards_p1, p1), (all_cards_p2, p2)]:
+        random.shuffle(cards)
+        for c in cards:
+            c.owner_id = player.id
+            c.controller_id = player.id
+
+            if 'Character' in c.card_type:
+                c.zone = Zone.PACK_HOME
+                c.health_current = c.health
+                player.pack_home.append(c)
+            elif c.card_type in sept_types:
+                c.zone = Zone.DECK_SEPT
+                player.deck_sept.append(c)
+            else:
+                c.zone = Zone.DECK_COMBAT
+                player.deck_combat.append(c)
+
+    # Adiciona cartas de efeito (CARTAS_EXEMPLO) no deck de combate
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+    efeito_ids = list(CARTAS_EXEMPLO.keys())
+    for i, mid in enumerate(efeito_ids):
+        modelo = CARTAS_EXEMPLO[mid]
+        owner = 'p1' if i % 2 == 0 else 'p2'
+        player = p1 if i % 2 == 0 else p2
+        card = CardInstance(
+            card_id=9000 + i, name=modelo.nome, card_type=modelo.tipo,
+            zone=Zone.DECK_COMBAT, owner_id=owner, controller_id=owner,
+            modelo_id=mid,
+            rage=0, gnosis=0, health=0, health_current=0,
+        )
+        player.deck_combat.insert(0, card)
+
+    g = GameState(players=[p1, p2])
+
+    # Mao inicial
+    for p in g.players:
+        p.draw_combat(5)
+        if p.deck_sept:
+            p.draw_sept(2)
+
+    return g
+
+
 if __name__ == '__main__':
     main()

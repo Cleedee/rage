@@ -14,7 +14,7 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from rage_web.game_engine.cli import create_sample_game
+from rage_web.game_engine.cli import create_sample_game, build_game_from_decks
 from rage_web.game_engine.bot.priority_bot import PriorityBot
 from rage_web.game_engine.combat_queue import get_declaration_summary, get_combatants
 from rage_web.game_engine.state import GameState
@@ -48,13 +48,22 @@ def print_board(game: GameState):
 def run_match(seed: int = 42, max_turns: int = 30,
               difficulty_p1: str = 'hard',
               difficulty_p2: str = 'hard',
+              deck1_id: int | None = None,
+              deck2_id: int | None = None,
               delay: float = 0.3) -> str:
     """Roda uma partida entre dois bots.
 
     Returns:
         'p1' | 'p2' | 'draw' | 'timeout'
     """
-    game = create_sample_game(seed=seed)
+    if deck1_id and deck2_id:
+        try:
+            game = build_game_from_decks(deck1_id, deck2_id, seed=seed)
+        except ValueError as e:
+            print(f'Erro ao carregar decks: {e}')
+            return 'error'
+    else:
+        game = create_sample_game(seed=seed)
     bots = {
         'p1': PriorityBot(game, 'p1', difficulty=difficulty_p1),
         'p2': PriorityBot(game, 'p2', difficulty=difficulty_p2),
@@ -65,7 +74,10 @@ def run_match(seed: int = 42, max_turns: int = 30,
 
     print_separator()
     print(f'  RAGE CCG — PARTIDA ENTRE BOTS')
-    print(f'  P1: {difficulty_p1.upper()} | P2: {difficulty_p2.upper()} | Max: {max_turns}t')
+    deck_info = ''
+    if deck1_id and deck2_id:
+        deck_info = f' | Decks: {deck1_id} vs {deck2_id}'
+    print(f'  P1: {difficulty_p1.upper()} | P2: {difficulty_p2.upper()}{deck_info} | Max: {max_turns}t')
     print_separator()
     print_board(game)
 
@@ -163,6 +175,10 @@ def main():
                         choices=['easy', 'medium', 'hard'])
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--max-turns', type=int, default=30)
+    parser.add_argument('--deck1', type=int, default=None,
+                        help='ID do deck do Jogador 1 (usa sample se vazio)')
+    parser.add_argument('--deck2', type=int, default=None,
+                        help='ID do deck do Jogador 2 (usa sample se vazio)')
     parser.add_argument('--delay', type=float, default=0.3,
                         help='Delay entre acoes (segundos)')
     parser.add_argument('--watch', action='store_true',
@@ -179,6 +195,8 @@ def main():
         max_turns=args.max_turns,
         difficulty_p1=args.p1,
         difficulty_p2=args.p2,
+        deck1_id=args.deck1,
+        deck2_id=args.deck2,
         delay=delay,
     )
 
