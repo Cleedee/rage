@@ -142,6 +142,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'  {color}{cp.name}: 🗣️  {action}{reset}')
             elif action.startswith('feint_'):
                 print(f'  {color}{cp.name}: 🎭 {action}{reset}')
+            elif action.startswith('umbra_'):
+                print(f'  {color}{cp.name}: 🌙 {action}{reset}')
             elif action == 'reveal':
                 print(f'  {color}{cp.name}: 👁️  REVELAR{reset}')
             elif action in ('end_combat', 'combat_end'):

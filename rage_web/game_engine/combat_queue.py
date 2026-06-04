@@ -26,6 +26,30 @@ COMBAT_ACTIONS = {
 }
 
 
+def _mesmo_lado_gauntlet(game: GameState, card_id_a: str,
+                          card_id_b: str) -> bool:
+    """Verifica se duas criaturas estao no mesmo lado do Gauntlet.
+
+    Regra (5):
+    - Criaturas na Umbra so podem atacar com outras na Umbra.
+    - Criaturas no mundo fisico so com outras no mundo fisico.
+    - Hunting Grounds ('hg') existe em ambos os lados.
+    """
+    if card_id_a == 'hg' or card_id_b == 'hg':
+        return True
+
+    def _esta_na_umbra(cid: str) -> bool:
+        for p in game.players:
+            for c in p.umbra:
+                if str(c.card_id) == cid:
+                    return True
+        return False
+
+    a_umbra = _esta_na_umbra(card_id_a)
+    b_umbra = _esta_na_umbra(card_id_b)
+    return a_umbra == b_umbra
+
+
 def start_combat(game: GameState, attackers: list[str],
                  defenders: list[str]) -> bool:
     """Inicia um combate entre atacantes e defensores.
@@ -40,6 +64,15 @@ def start_combat(game: GameState, attackers: list[str],
     """
     if game.combat.is_active:
         return False
+
+    # Verifica Gauntlet
+    for atk in attackers:
+        for dfd in defenders:
+            if not _mesmo_lado_gauntlet(game, atk, dfd):
+                game.add_log(
+                    f'Combate cancelado: {atk} e {dfd} estao em '
+                    f'lados diferentes do Gauntlet')
+                return False
 
     game.combat = CombatState(
         is_active=True,

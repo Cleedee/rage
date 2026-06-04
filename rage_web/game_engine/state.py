@@ -200,6 +200,50 @@ class PlayerState:
             return pagador.name
         return None
 
+    def personagens_que_podem_step(self) -> list[CardInstance]:
+        """Retorna personagens que podem stepping sideways.
+
+        Usa o Caern do pack (se houver) ou Gauntlet padrao.
+        """
+        from rage_web.game_engine.rules import (encontrar_caern,
+                                                  pode_step_sideways,
+                                                  GAUNTLET_DEFAULT)
+        caern = encontrar_caern(self)
+        # Se tem Caern, usa o Gauntlet dele; se nao, padrao
+        gauntlet = getattr(caern, 'damage', GAUNTLET_DEFAULT)
+        try:
+            gauntlet = int(gauntlet) if gauntlet else GAUNTLET_DEFAULT
+        except (ValueError, TypeError):
+            gauntlet = GAUNTLET_DEFAULT
+
+        # Personagens em Pack Home que podem ir para Umbra
+        podem_ir = []
+        for c in self.pack_home:
+            if pode_step_sideways(c, caern, gauntlet):
+                podem_ir.append(c)
+        # Personagens na Umbra que podem voltar
+        podem_voltar = [c for c in self.umbra
+                        if pode_step_sideways(c, caern, gauntlet)]
+        return podem_ir, podem_voltar
+
+    def step_sideways(self, card: CardInstance) -> bool:
+        """Move um personagem do Pack Home para a Umbra."""
+        if card in self.pack_home:
+            self.pack_home.remove(card)
+            card.zone = Zone.UMBRA
+            self.umbra.append(card)
+            return True
+        return False
+
+    def step_back(self, card: CardInstance) -> bool:
+        """Move um personagem da Umbra de volta ao Pack Home."""
+        if card in self.umbra:
+            self.umbra.remove(card)
+            card.zone = Zone.PACK_HOME
+            self.pack_home.append(card)
+            return True
+        return False
+
     def pass_turn(self):
         """Marca que o jogador passou a vez."""
         self.has_passed = True
@@ -297,6 +341,12 @@ class GameState:
                     logs = p.regeneration()
                     for log in logs:
                         self.add_log(log)
+            elif self.phase == 'umbra':
+                # Closed Play: personagens com Gnosis >= Gauntlet
+                # PODEM stepping sideways (decisao do jogador/bot)
+                # Nao fazemos auto-step aqui; o bot decide em _agir_umbra
+                pass
+
             elif self.phase == 'combat':
                 # Redraw de combate ao entrar no Combat phase
                 for p in self.players:

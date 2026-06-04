@@ -100,8 +100,7 @@ class PriorityBot:
             return self._agir_recurso()
 
         if g.phase == 'umbra':
-            self._pass_turn()
-            return 'pass_umbra'
+            return self._agir_umbra()
 
         if g.phase == 'moot':
             self._pass_turn()
@@ -129,6 +128,43 @@ class PriorityBot:
 
         self._pass_turn()
         return 'pass_resource'
+
+    def _agir_umbra(self) -> str:
+        """Age na fase de Umbra: stepping sideways.
+
+        Regra (2.2.4):
+        - Personagens com Gnosis >= Gauntlet podem step.
+        - So pode IR ou VOLTAR, nunca ambos no mesmo turno.
+        - Bot: step quem tiver Rage mais alta.
+        """
+        podem_ir, podem_voltar = self.player.personagens_que_podem_step()
+
+        if not self.player.umbra and podem_ir:
+            # Ainda nao esta na Umbra: pode entrar
+            # Step o personagem mais forte (menos Rage = acumulou muita raiva)
+            # Na verdade: quem tem Rage alta e util no combate fisico
+            # fica; quem tem Gnosis alta vai para Umbra usar gifts
+            personagem = max(podem_ir, key=lambda c: c.gnosis)
+            self.player.step_sideways(personagem)
+            self.game.add_log(
+                f'[BOT] {self.player.name}: {personagem.name} '
+                f'entrou na Umbra')
+            return f'umbra_step_{personagem.card_id}'
+
+        if self.player.umbra and podem_voltar:
+            # Esta na Umbra: pode voltar
+            # So volta se o personagem na Umbra for util no combate fisico
+            # (Rage alta para atacar)
+            for c in self.player.umbra[:]:
+                if c.rage >= 3:  # So volta se Rage >= 3
+                    self.player.step_back(c)
+                    self.game.add_log(
+                        f'[BOT] {self.player.name}: {c.name} '
+                        f'voltou da Umbra')
+                    return f'umbra_back_{c.card_id}'
+
+        self._pass_turn()
+        return 'pass_umbra'
 
     def _agir_combate(self) -> str:
         """Age na fase de Combat: eliminar ameacas + atacar."""

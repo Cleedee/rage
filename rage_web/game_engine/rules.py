@@ -24,6 +24,18 @@ SEPT_CARD_MAX_COPIES = 3
 STANDARD_RENOWN_LEVEL = 20
 VP_TO_WIN = 20
 
+# Umbra / Gauntlet
+GAUNTLET_DEFAULT = 6  # Dificuldade padrao do Gauntlet
+# Tipos de criatura que podem stepping sideways (todas por padrao)
+CLASSES_QUE_STEPPAM = {'werewolf', 'garou', 'bastet', 'uktena',
+                       'fianna', 'stargazer', 'black fury', 'wendigo',
+                       'silver fang', 'shadow lord', 'get of fenris',
+                       'bone gnawer', 'child of gaia', 'red talon',
+                       'ratkin', 'ananasi', 'nakea', 'corax', 'gurahl',
+                       'kitsune', 'nagah', 'mokole',  # Shifters
+                       'spirit', 'incarna', 'totem',  # Spirits
+                       }
+
 # Fases do turno
 PHASES = [
     'redraw',       # 1. Redraw: comprar/descartar sept hand
@@ -135,3 +147,56 @@ def encontrar_pagador_gnosis(jogador: 'PlayerState', custo: int
         if not c.is_tapped and c.gnosis >= custo:
             return c
     return None
+
+
+def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
+    """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
+
+    Regra (2.2.4):
+    - Um pack pode ter apenas um Caern em jogo.
+    - Caerns sao Unique.
+    - Caern existe em ambos os lados do Gauntlet.
+    - Pode ser usado por todos os membros do pack.
+
+    Returns:
+        CardInstance do Caern, ou None se nao houver.
+    """
+    for c in jogador.pack_home:
+        if c.card_type == 'Caern':
+            return c
+    # Tambem pode estar no Hunting Grounds
+    for c in jogador.hunting_grounds:
+        if c.card_type == 'Caern':
+            return c
+    return None
+
+
+def pode_step_sideways(personagem: 'CardInstance',
+                       caern: Optional['CardInstance'] = None,
+                       gauntlet: int = GAUNTLET_DEFAULT) -> bool:
+    """Verifica se um personagem pode stepping sideways.
+
+    Regra (2.2.4):
+    - Precisa ser um Character.
+    - Sua Creature Class pode stepping sideways.
+    - Gnosis >= Gauntlet do Caern.
+
+    Args:
+        personagem: O personagem a verificar.
+        caern: O Caern usado (opcional, usa padrao se None).
+        gauntlet: Rating do Gauntlet (padrao 6 se nao houver Caern).
+
+    Returns:
+        True se o personagem pode stepping sideways.
+    """
+    if 'Character' not in (personagem.card_type or ''):
+        return False
+    # Verifica Gnosis
+    gnosis_req = gauntlet
+    if personagem.gnosis < gnosis_req:
+        return False
+    # Verifica Creature Class (keywords)
+    kw = (personagem.keywords or '').lower()
+    if kw and not any(c in kw for c in CLASSES_QUE_STEPPAM):
+        return False
+    return True
