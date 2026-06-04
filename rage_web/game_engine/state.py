@@ -109,45 +109,76 @@ class PlayerState:
                 drawn.append(card)
         return drawn
 
-    def redraw_sept(self) -> list[CardInstance]:
-        """Redraw de sept: compra cartas ate encher a mao de sept.
+    def _cartas_sept(self) -> list[CardInstance]:
+        """Retorna cartas de sept na mao (nao-combate)."""
+        return [c for c in self.hand if c.card_type not in
+                ('Combat Action', 'Combat Event', '')]
+
+    def _cartas_combate(self) -> list[CardInstance]:
+        """Retorna cartas de combate na mao."""
+        return [c for c in self.hand if c.card_type in
+                ('Combat Action', 'Combat Event')]
+
+    def descartar_da_mao(self, indices: list[int]) -> list[CardInstance]:
+        """Descarta cartas da mao para o descarte apropriado.
+
+        Args:
+            indices: Lista de indices na mao para descartar.
+
+        Returns:
+            Lista de cartas descartadas.
+        """
+        descartadas = []
+        # Ordena reverso para remover sem baguncar indices
+        for idx in sorted(indices, reverse=True):
+            if 0 <= idx < len(self.hand):
+                card = self.hand.pop(idx)
+                card.zone = Zone.DISCARD_COMBAT
+                descartadas.append(card)
+                self.discard_combat.append(card)
+        return descartadas
+
+    def redraw_sept(self, descartar_primeiro: bool = True
+                    ) -> list[CardInstance]:
+        """Redraw de sept: descarta opcional + compra ate encher.
 
         Regra (2.2.2):
-        - Primeiro turno: compra mao inicial de sept
-        - Turnos seguintes: descarte (externo) + compra ate encher
+        - Primeiro turno: compra mao inicial de sept (sem descarte).
+        - Turnos seguintes: pode descartar qualquer carta de sept
+          da mao, DEPOIS compra ate encher.
 
-        O descarte e opcional e feito pelo jogador/bot ANTES
-        de chamar este metodo.
+        Args:
+            descartar_primeiro: Se True, o jogador/bot pode descartar
+                                antes de comprar. O descarte e opcional
+                                e feito externamente.
 
         Returns:
             Lista de cartas compradas.
         """
-        # Conta cartas que NAO sao de combate (sept cards)
-        sept_cards = [c for c in self.hand if c.card_type not in
-                      ('Combat Action', 'Combat Event', '')]
-        current = len(sept_cards)
+        sept_hand = self._cartas_sept()
+        current = len(sept_hand)
         if current < self.hand_size_sept:
             qtd = self.hand_size_sept - current
             return self.draw_sept(qtd)
         return []
 
-    def redraw_combat(self) -> list[CardInstance]:
-        """Redraw de combate (inicio do Combat phase).
+    def redraw_combat(self, descartar_primeiro: bool = True
+                      ) -> list[CardInstance]:
+        """Redraw de combate: descarta opcional + compra ate encher.
 
         Regra (2.2.6):
-        - Pode descartar qualquer carta de combate da mao
-        - DEPOIS compra ate encher a mao de combate
+        - Ao entrar no Combat phase, pode descartar qualquer carta
+          de combate da mao, DEPOIS compra ate encher.
 
-        O descarte e opcional e feito pelo jogador/bot ANTES
-        de chamar este metodo.
+        Args:
+            descartar_primeiro: Se True, o jogador/bot pode descartar
+                                antes de comprar.
 
         Returns:
             Lista de cartas compradas.
         """
-        # Conta cartas de combate na mao
-        combat_cards = [c for c in self.hand if c.card_type in
-                        ('Combat Action', 'Combat Event')]
-        current = len(combat_cards)
+        combat_hand = self._cartas_combate()
+        current = len(combat_hand)
         if current < self.hand_size_combat:
             qtd = self.hand_size_combat - current
             return self.draw_combat(qtd)
@@ -409,8 +440,11 @@ class GameState:
             for p in self.players:
                 p.reset_pass()
             # Redraw de sept no inicio do turno
+            # Regra (2.2.2): primeiro turno ja comprou mao inicial
+            # nos turnos seguintes: pode descartar + compra ate encher
+            # O descarte e opcional e feito pelo bot/jogador antes
             for p in self.players:
-                drawn = p.redraw_sept()
+                drawn = p.redraw_sept(descartar_primeiro=False)
                 if drawn:
                     self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de sept')
 

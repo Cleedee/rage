@@ -90,8 +90,7 @@ class PriorityBot:
         # --- Acoes por fase ---
 
         if g.phase == 'redraw':
-            self._pass_turn()
-            return 'pass_redraw'
+            return self._agir_redraw()
 
         if g.phase == 'regeneration':
             self._pass_turn()
@@ -129,6 +128,46 @@ class PriorityBot:
 
         self._pass_turn()
         return 'pass_resource'
+
+    def _agir_redraw(self) -> str:
+        """Age na fase de Redraw: descartar + comprar.
+
+        Regra (2.2.2):
+        - Primeiro turno: mao inicial ja foi comprada.
+        - Turnos seguintes: descarte opcional + compra ate encher.
+        - O bot descarta cartas que nao sao da sua cor (tipo).
+        """
+        if self.game.turn_number == 1 and self.player.is_first_turn:
+            # Primeiro turno: mao inicial ja foi dada
+            self._pass_turn()
+            return 'pass_redraw'
+
+        me = self.player
+
+        # Verifica se tem cartas de sept que podem ser descartadas
+        # (sem modelo_id = sem efeito definido = carta inutil)
+        sept_indices = []
+        for i, c in enumerate(me.hand):
+            eh_sept = c.card_type not in ('Combat Action', 'Combat Event', '')
+            sem_efeito = not c.modelo_id
+            if eh_sept and sem_efeito:
+                sept_indices.append(i)
+
+        # Se mao de sept esta cheia e tem cartas sem efeito, descarta
+        sept_count = len(me._cartas_sept())
+        if sept_indices and sept_count >= me.hand_size_sept:
+            descartadas = me.descartar_da_mao(sept_indices)
+            self.game.add_log(
+                f'[BOT] {me.name} descartou {len(descartadas)} carta(s) de sept')
+            # Depois do descarte, redraw completa
+            drawn = me.redraw_sept(descartar_primeiro=False)
+            if drawn:
+                self.game.add_log(
+                    f'[BOT] {me.name} comprou {len(drawn)} carta(s) de sept')
+            return f'redraw_descarte_{len(descartadas)}'
+
+        self._pass_turn()
+        return 'pass_redraw'
 
     def _agir_umbra(self) -> str:
         """Age na fase de Umbra: stepping sideways.
