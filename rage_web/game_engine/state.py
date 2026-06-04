@@ -72,6 +72,11 @@ class PlayerState:
     victory_points: int = 0
     renown_level: int = 20
     has_passed: bool = False
+    hand_size_sept: int = 5
+    hand_size_combat: int = 5
+
+    # Flag: primeiro turno (redraw inicial e especial)
+    is_first_turn: bool = True
 
     # Cartas em combate neste turno
     combatants: list[CardInstance] = field(default_factory=list)
@@ -104,6 +109,68 @@ class PlayerState:
                 drawn.append(card)
         return drawn
 
+    def redraw_sept(self) -> list[CardInstance]:
+        """Redraw de sept: compra cartas ate encher a mao de sept.
+
+        Regra (2.2.2):
+        - Primeiro turno: compra mao inicial de sept
+        - Turnos seguintes: descarte (externo) + compra ate encher
+
+        O descarte e opcional e feito pelo jogador/bot ANTES
+        de chamar este metodo.
+
+        Returns:
+            Lista de cartas compradas.
+        """
+        # Conta cartas que NAO sao de combate (sept cards)
+        sept_cards = [c for c in self.hand if c.card_type not in
+                      ('Combat Action', 'Combat Event', '')]
+        current = len(sept_cards)
+        if current < self.hand_size_sept:
+            qtd = self.hand_size_sept - current
+            return self.draw_sept(qtd)
+        return []
+
+    def redraw_combat(self) -> list[CardInstance]:
+        """Redraw de combate (inicio do Combat phase).
+
+        Regra (2.2.6):
+        - Pode descartar qualquer carta de combate da mao
+        - DEPOIS compra ate encher a mao de combate
+
+        O descarte e opcional e feito pelo jogador/bot ANTES
+        de chamar este metodo.
+
+        Returns:
+            Lista de cartas compradas.
+        """
+        # Conta cartas de combate na mao
+        combat_cards = [c for c in self.hand if c.card_type in
+                        ('Combat Action', 'Combat Event')]
+        current = len(combat_cards)
+        if current < self.hand_size_combat:
+            qtd = self.hand_size_combat - current
+            return self.draw_combat(qtd)
+        return []
+
+    def regeneration(self) -> list[str]:
+        """Fase de Regeneration: cura dano nao-agravado.
+
+        Regra (2.2.2):
+        - Personagens curam o menor dano nao-agravado
+        - So curam 1 carta de dano por turno
+
+        Returns:
+            Lista de logs.
+        """
+        logs = []
+        for c in self.pack_home:
+            if c.health_current < c.health:
+                # Cura 1 de dano (simplificado: sem dano agravado)
+                c.health_current = min(c.health_current + 1, c.health)
+                logs.append(f'{c.name} regenerou 1 de vida')
+        return logs
+
     def pass_turn(self):
         """Marca que o jogador passou a vez."""
         self.has_passed = True
@@ -111,6 +178,7 @@ class PlayerState:
     def reset_pass(self):
         """Reseta o passe para o novo turno."""
         self.has_passed = False
+        self.is_first_turn = False
 
 
 @dataclass
@@ -156,7 +224,7 @@ class GameState:
     id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
     players: list[PlayerState] = field(default_factory=list)
     current_player_index: int = 0
-    phase: str = 'gather'     # gather, action, combat, discard
+    phase: str = 'redraw'     # redraw, regeneration, resource, umbra, moot, combat
     turn_number: int = 1
     combat: CombatState = field(default_factory=CombatState)
     log: list[str] = field(default_factory=list)
@@ -184,18 +252,40 @@ class GameState:
         ) % len(self.players)
 
     def next_phase(self):
-        """Avança para a proxima fase do turno."""
+        """Avança para a proxima fase do turno.
+
+        Sequencia oficial:
+        1. redraw -> 2. regeneration -> 3. resource ->
+        4. umbra -> 5. moot -> 6. combat -> (proximo turno) redraw
+        """
         from rage_web.game_engine.rules import PHASES
         idx = PHASES.index(self.phase)
         if idx + 1 < len(PHASES):
             self.phase = PHASES[idx + 1]
+            # Executa acoes automaticas na transicao
+            if self.phase == 'regeneration':
+                for p in self.players:
+                    logs = p.regeneration()
+                    for log in logs:
+                        self.add_log(log)
+            elif self.phase == 'combat':
+                # Redraw de combate ao entrar no Combat phase
+                for p in self.players:
+                    drawn = p.redraw_combat()
+                    if drawn:
+                        self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de combate')
         else:
-            # Fim do turno
-            self.phase = 'gather'
+            # Fim do turno -> volta ao inicio
+            self.phase = 'redraw'
             self.turn_number += 1
             self.current_player_index = 0
             for p in self.players:
                 p.reset_pass()
+            # Redraw de sept no inicio do turno
+            for p in self.players:
+                drawn = p.redraw_sept()
+                if drawn:
+                    self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de sept')
 
     def add_log(self, message: str):
         """Adiciona entrada no log da partida."""

@@ -117,7 +117,6 @@ class ModeloCarta:
     id: str
     nome: str
     tipo: str
-    custo_acoes: int = 1
     modos: list[Modo] = field(default_factory=list)
 
     def modo_por_indice(self, idx: int) -> Optional[Modo]:
@@ -500,7 +499,7 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
         id=dados['id'],
         nome=dados['nome'],
         tipo=dados.get('tipo', 'event'),
-        custo_acoes=dados.get('custo_acoes', 1),
+        # Rage e o custo primario no Rage CCG, nao "custo_acoes"
         modos=modos,
     )
 

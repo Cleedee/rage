@@ -40,12 +40,9 @@ class PriorityBot:
         self.player_id = player_id
         self.difficulty = difficulty
         self.evaluator = BoardEvaluator(game, player_id)
-        self._actions_this_turn = 0
-        self._last_turn = 0
-        # Maximo de acoes por turno antes de passar forcadamente
-        # (evita loop infinito ate que o motor de regras lide com
-        #  recursos como acoes por turno)
-        self.max_actions_per_turn = 6
+        # Heuristica: maximo de cartas por "vez de agir" (nao e regra,
+        # e decisao do bot para nao queimar a mao inteira)
+        self._cards_played_this_turn = 0
 
     @property
     def player(self) -> PlayerState:
@@ -61,6 +58,13 @@ class PriorityBot:
     def decide(self) -> str:
         """Decide a proxima acao do bot.
 
+        Regras:
+        - Nao ha "contagem de acoes" ou "pool de acoes" no Rage.
+        - Cada Combat Action tem custo de Rage (carta deve ter Rage suficiente).
+        - Cada alfa tem uma acao alfa por combate.
+        - Recursos (Equipment/Ally) gastam uma "acao" de um personagem.
+        - O bot simplifica: faz o que faz sentido na fase atual.
+
         Returns:
             Descricao da acao escolhida.
         """
@@ -69,12 +73,7 @@ class PriorityBot:
 
         g = self.game
 
-        # Reseta contagem de acoes a cada novo turno
-        if g.turn_number > self._last_turn:
-            self._actions_this_turn = 0
-            self._last_turn = g.turn_number
-
-        # Se esta em combate, age no combate (nao conta como acao)
+        # Se esta em combate, age no combate
         if g.combat.is_active:
             return self._decide_combat()
 
@@ -82,52 +81,101 @@ class PriorityBot:
         if g.current_player.id != self.player_id:
             return 'wait'
 
-        # Limite de acoes por turno
-        if self._actions_this_turn >= self.max_actions_per_turn:
+        # Reseta heuristica de cartas por turno
+        if g.turn_number > getattr(self, '_last_turn_heuristic', 0):
+            self._cards_played_this_turn = 0
+            self._last_turn_heuristic = g.turn_number
+
+        # --- Acoes por fase ---
+
+        if g.phase == 'redraw':
             self._pass_turn()
-            return 'pass_max_actions'
+            return 'pass_redraw'
+
+        if g.phase == 'regeneration':
+            self._pass_turn()
+            return 'pass_regen'
+
+        if g.phase == 'resource':
+            return self._agir_recurso()
+
+        if g.phase == 'umbra':
+            self._pass_turn()
+            return 'pass_umbra'
+
+        if g.phase == 'moot':
+            self._pass_turn()
+            return 'pass_moot'
+
+        # Combat phase
+        return self._agir_combate()
+
+    def _agir_recurso(self) -> str:
+        """Age na fase de Resource."""
+        me = self.player
+
+        # Heuristica: max 3 cartas por turno (nao queimar mao)
+        if self._cards_played_this_turn >= 3:
+            self._pass_turn()
+            return 'pass_resource_limit'
+
+        for i, card in enumerate(me.hand):
+            if card.modelo_id and card.card_type not in (
+                    'Combat Action', 'Combat Event'):
+                modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                self._cards_played_this_turn += 1
+                return self._usar_carta_efeito(i, modo_idx, card)
+
+        self._pass_turn()
+        return 'pass_resource'
+
+    def _agir_combate(self) -> str:
+        """Age na fase de Combat: eliminar ameacas + atacar."""
+        me = self.player
+
+        # Heuristica: max 3 cartas por turno
+        if self._cards_played_this_turn >= 3:
+            action = self._try_eliminate_threat()
+            if action:
+                return action
+            action = self._try_attack()
+            if action:
+                return action
+            self._pass_turn()
+            return 'pass_combat_limit'
 
         # 1. SOBREVIVER
         action = self._try_survive()
         if action:
-            self._actions_this_turn += 1
             return action
 
-        # Decide entre desenvolver mesa vs eliminar ameaca
-        # Se tem cartas de efeito na mao, prioriza desenvolver
-        me = self.player
-        tem_efeitos = any(c.modelo_id for c in me.hand)
-        
-        if tem_efeitos:
-            # Tenta desenvolver primeiro (usar efeitos)
-            action = self._try_develop_board()
-            if action:
-                self._actions_this_turn += 1
-                return action
-        
-        # 2. ELIMINAR AMEACA
+        # 2. Usar cartas de efeito de COMBATE
+        for i, card in enumerate(me.hand):
+            if card.modelo_id and card.card_type in (
+                    'Combat Action', 'Combat Event', 'Action'):
+                modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                self._cards_played_this_turn += 1
+                return self._usar_carta_efeito(i, modo_idx, card)
+
+        # 3. Outros efeitos
+        action = self._try_develop_board()
+        if action:
+            self._cards_played_this_turn += 1
+            return action
+
+        # 4. ELIMINAR AMEACA
         action = self._try_eliminate_threat()
         if action:
-            self._actions_this_turn += 1
             return action
 
-        # Se nao tinha efeitos, tenta desenvolver agora
-        if not tem_efeitos:
-            action = self._try_develop_board()
-            if action:
-                self._actions_this_turn += 1
-                return action
-
-        # 4. ATACAR
+        # 5. ATACAR
         action = self._try_attack()
         if action:
-            self._actions_this_turn += 1
             return action
 
-        # 5. Fallback: passa
+        # 6. Passa
         self._pass_turn()
-        self._actions_this_turn += 1
-        return 'pass'
+        return 'pass_combat'
 
     def _decide_easy(self) -> str:
         """Modo facil: acoes aleatorias."""
@@ -137,15 +185,6 @@ class PriorityBot:
 
         if g.current_player.id != self.player_id:
             return 'wait'
-
-        # Reseta contagem
-        if g.turn_number > self._last_turn:
-            self._actions_this_turn = 0
-            self._last_turn = g.turn_number
-
-        if self._actions_this_turn >= self.max_actions_per_turn:
-            self._pass_turn()
-            return 'pass_max_actions'
 
         actions = []
         if self.player.hand:
@@ -160,21 +199,17 @@ class PriorityBot:
         if choice == 'play':
             idx = random.randrange(len(self.player.hand))
             self._play_card(idx)
-            self._actions_this_turn += 1
             return f'play_{idx}'
         elif choice == 'attack':
             if self.player.pack_home:
                 atk = random.choice(self.player.pack_home)
                 self._attack(str(atk.card_id), 'hg')
-                self._actions_this_turn += 1
                 return f'attack_{atk.card_id}'
         elif choice == 'draw':
             self._draw()
-            self._actions_this_turn += 1
             return 'draw'
 
         self._pass_turn()
-        self._actions_this_turn += 1
         return 'pass'
 
     def _decide_combat(self) -> str:

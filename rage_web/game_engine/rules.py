@@ -22,11 +22,17 @@ VP_TO_WIN = 20
 
 # Fases do turno
 PHASES = [
-    'gather',       # Comprar cartas
-    'action',       # Acoes principais
-    'combat',       # Combate
-    'discard',      # Descarte
+    'redraw',       # 1. Redraw: comprar/descartar sept hand
+    'regeneration', # 2. Regeneration: curar dano nao-agravado
+    'resource',     # 3. Resource: jogar Aliados/Equipamentos/Territorios
+    'umbra',        # 4. Umbra: passo lateral
+    'moot',         # 5. Moot: reuniões/votações
+    'combat',       # 6. Combat: redraw combat, alfas, combate
 ]
+
+# Tamanhos de mao padrao
+HAND_SIZE_SEPT = 5
+HAND_SIZE_COMBAT = 5
 
 # Etapas do combate
 COMBAT_STEPS = [

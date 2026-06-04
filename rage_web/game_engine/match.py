@@ -42,7 +42,16 @@ def print_board(game: GameState):
         if 'declarations' in summary:
             for cid, action in summary['declarations'].items():
                 print(f'     {cid}: {action}')
-    print(f'  Fase: {game.phase.upper()} | Turno {game.turn_number}')
+    fase_icone = {
+        'redraw': '🔄 REDRAW',
+        'regeneration': '💚 REGENERATION',
+        'resource': '🛠️ RESOURCE',
+        'umbra': '🌙 UMBRA',
+        'moot': '🗳️ MOOT',
+        'combat': '⚔️ COMBAT',
+    }
+    nome_fase = fase_icone.get(game.phase, game.phase.upper())
+    print(f'  Fase: {nome_fase} | Turno {game.turn_number}')
 
 
 def run_match(seed: int = 42, max_turns: int = 30,
@@ -141,7 +150,9 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'  {color}{cp.name}: 📥 COMPRAR{reset}')
             elif action.startswith('pass'):
                 if delay:
-                    print(f'  {color}{cp.name}: ⏭️  PASSAR{reset}')
+                    fase_alvo = action.replace('pass_', '').upper() if action != 'pass' else ''
+                    label = f'⏭️  PASSAR {fase_alvo}' if fase_alvo else '⏭️  PASSAR'
+                    print(f'  {color}{cp.name}: {label}{reset}')
 
         # A cada 4 acoes (fora de combate), mostra o tabuleiro
         if action_count % 4 == 0 and not game.combat.is_active and delay:

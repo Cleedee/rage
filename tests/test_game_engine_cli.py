@@ -145,9 +145,9 @@ class TestRageCLI:
 
     def test_next_phase(self, cli):
         """NEXT avanca a fase."""
-        assert cli.game.phase == 'gather'
+        assert cli.game.phase == 'redraw'
         cli.onecmd('NEXT')
-        assert cli.game.phase == 'action'
+        assert cli.game.phase == 'regeneration'
 
     def test_cards(self, cli):
         """CARDS lista cartas."""

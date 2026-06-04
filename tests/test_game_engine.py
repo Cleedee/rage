@@ -86,7 +86,7 @@ class TestGameState:
     def test_create_game(self, player1, player2):
         g = GameState(players=[player1, player2])
         assert len(g.players) == 2
-        assert g.phase == 'gather'
+        assert g.phase == 'redraw'
         assert g.turn_number == 1
         assert g.current_player.id == 'p1'
 
@@ -98,22 +98,26 @@ class TestGameState:
         assert game.current_player.id == 'p1'
 
     def test_next_phase(self, game):
-        assert game.phase == 'gather'
+        assert game.phase == 'redraw'
         game.next_phase()
-        assert game.phase == 'action'
+        assert game.phase == 'regeneration'
+        game.next_phase()
+        assert game.phase == 'resource'
+        game.next_phase()
+        assert game.phase == 'umbra'
+        game.next_phase()
+        assert game.phase == 'moot'
         game.next_phase()
         assert game.phase == 'combat'
         game.next_phase()
-        assert game.phase == 'discard'
-        game.next_phase()
-        # Volta para gather, incrementa turno
-        assert game.phase == 'gather'
+        # Volta para redraw, incrementa turno
+        assert game.phase == 'redraw'
         assert game.turn_number == 2
 
     def test_add_log(self, game):
         game.add_log('Teste')
         assert len(game.log) == 1
-        assert '[T1 GATHER] Teste' in game.log[0]
+        assert '[T1 REDRAW] Teste' in game.log[0]
 
 
 # ---------------------------------------------------------------------------

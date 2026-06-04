@@ -31,7 +31,7 @@ class TestGameAPI:
         assert 'state' in data
         state = data['state']
         assert state['turn_number'] == 1
-        assert state['phase'] == 'gather'
+        assert state['phase'] == 'redraw'
         assert len(state['players']) == 2
 
     def test_new_game_default_seed(self, client):
@@ -193,12 +193,12 @@ class TestGameAPI:
     def test_next_phase(self, client, game_id):
         """POST /api/game/<id>/next avanca fase."""
         state_before = client.get(f'/api/game/{game_id}').get_json()['state']
-        assert state_before['phase'] == 'gather'
+        assert state_before['phase'] == 'redraw'
 
         resp = client.post(f'/api/game/{game_id}/next')
         assert resp.status_code == 200
         state_after = resp.get_json()['state']
-        assert state_after['phase'] == 'action'
+        assert state_after['phase'] == 'regeneration'
 
     def test_use_card(self, client, game_id):
         """POST /api/game/<id>/use-card usa carta de efeito."""

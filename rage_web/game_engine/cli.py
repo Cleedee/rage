@@ -123,10 +123,10 @@ def create_sample_game(seed: int = 42) -> GameState:
         # Insere no topo do deck para ser comprada primeiro
         player.deck_combat.insert(0, card)
 
-    # Compra mao inicial
+    # Redraw inicial: mao cheia de sept + combat
     for p in g.players:
-        p.draw_combat(3)
-        p.draw_sept(2)
+        p.draw_combat(p.hand_size_combat)
+        p.draw_sept(p.hand_size_sept)
 
     return g
 
@@ -167,7 +167,17 @@ class RageCLI(cmd.Cmd):
         cp = g.current_player
 
         print()
-        print(f'Turno {g.turn_number} | Fase: {g.phase.upper()} | '
+        # Mapa de fases com icones
+        fase_icone = {
+            'redraw': '🔄 REDRAW',
+            'regeneration': '💚 REGENERATION',
+            'resource': '🛠️ RESOURCE',
+            'umbra': '🌙 UMBRA',
+            'moot': '🗳️ MOOT',
+            'combat': '⚔️ COMBAT',
+        }
+        nome_fase = fase_icone.get(g.phase, g.phase.upper())
+        print(f'Turno {g.turn_number} | Fase: {nome_fase} | '
               f'Vez de: {cp.name}')
 
         if g.combat.is_active:
@@ -814,28 +824,13 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                 c.zone = Zone.DECK_COMBAT
                 player.deck_combat.append(c)
 
-    # Adiciona cartas de efeito (CARTAS_EXEMPLO) no deck de combate
-    from rage_web.game_engine.effects import CARTAS_EXEMPLO
-    efeito_ids = list(CARTAS_EXEMPLO.keys())
-    for i, mid in enumerate(efeito_ids):
-        modelo = CARTAS_EXEMPLO[mid]
-        owner = 'p1' if i % 2 == 0 else 'p2'
-        player = p1 if i % 2 == 0 else p2
-        card = CardInstance(
-            card_id=9000 + i, name=modelo.nome, card_type=modelo.tipo,
-            zone=Zone.DECK_COMBAT, owner_id=owner, controller_id=owner,
-            modelo_id=mid,
-            rage=0, gnosis=0, health=0, health_current=0,
-        )
-        player.deck_combat.insert(0, card)
-
     g = GameState(players=[p1, p2])
 
-    # Mao inicial
+    # Mao inicial (redraw)
     for p in g.players:
-        p.draw_combat(5)
+        p.draw_combat(p.hand_size_combat)
         if p.deck_sept:
-            p.draw_sept(2)
+            p.draw_sept(p.hand_size_sept)
 
     return g
 
