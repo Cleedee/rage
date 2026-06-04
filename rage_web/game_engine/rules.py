@@ -113,3 +113,25 @@ def encontrar_pagador_rage(jogador: 'PlayerState', custo: int
         if not c.is_tapped and c.rage >= custo:
             return c
     return None
+
+
+def encontrar_pagador_gnosis(jogador: 'PlayerState', custo: int
+                             ) -> Optional['CardInstance']:
+    """Encontra um personagem no Pack Home que pode pagar o custo de Gnosis.
+
+    Regra (2.2.5):
+    - Para usar um Gift, Rito, Equipamento ou Aliado com custo Gnosis N,
+      um personagem com Gnosis >= N deve ser designado como pagador.
+    - O personagem e TAPPED (nao pode agir novamente neste combate).
+
+    Args:
+        jogador: Estado do jogador.
+        custo: Custo de Gnosis necessario.
+
+    Returns:
+        CardInstance do personagem pagador, ou None se nao houver.
+    """
+    for c in jogador.pack_home:
+        if not c.is_tapped and c.gnosis >= custo:
+            return c
+    return None

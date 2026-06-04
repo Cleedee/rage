@@ -172,20 +172,29 @@ class PlayerState:
         return logs
 
     def pagar_custo_rage(self, custo: int) -> Optional[str]:
-        """Paga um custo de Rage tappando um personagem.
+        """Paga um custo de Rage tappando um personagem."""
+        from rage_web.game_engine.rules import encontrar_pagador_rage
+        pagador = encontrar_pagador_rage(self, custo)
+        if pagador:
+            pagador.is_tapped = True
+            return pagador.name
+        return None
 
-        Regra (2.2.4):
-        - O personagem com Rage >= custo e selecionado.
-        - Tapped = nao pode agir novamente neste combate.
+    def pagar_custo_gnosis(self, custo: int) -> Optional[str]:
+        """Paga um custo de Gnosis tappando um personagem.
+
+        Regra (2.2.5):
+        - Personagem com Gnosis >= custo e selecionado.
+        - Tapped enquanto durar o efeito.
 
         Args:
-            custo: Custo de Rage a pagar.
+            custo: Custo de Gnosis a pagar.
 
         Returns:
             Nome do personagem que pagou, ou None se nao pode pagar.
         """
-        from rage_web.game_engine.rules import encontrar_pagador_rage
-        pagador = encontrar_pagador_rage(self, custo)
+        from rage_web.game_engine.rules import encontrar_pagador_gnosis
+        pagador = encontrar_pagador_gnosis(self, custo)
         if pagador:
             pagador.is_tapped = True
             return pagador.name

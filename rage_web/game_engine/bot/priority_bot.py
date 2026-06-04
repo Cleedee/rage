@@ -122,7 +122,7 @@ class PriorityBot:
         for i, card in enumerate(me.hand):
             if card.modelo_id and card.card_type not in (
                     'Combat Action', 'Combat Event'):
-                if self._pode_pagar_rage(card):
+                if self._pode_pagar_custos(card):
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
@@ -155,8 +155,8 @@ class PriorityBot:
             if card.modelo_id and card.card_type in (
                     'Combat Action', 'Combat Event', 'Action'):
                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                # Checa custo de Rage antes
-                if self._pode_pagar_rage(card):
+                # Checa custos antes
+                if self._pode_pagar_custos(card):
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
 
@@ -291,20 +291,28 @@ class PriorityBot:
     # Sub-arvores de decisao
     # ------------------------------------------------------------------
 
-    def _pode_pagar_rage(self, card: CardInstance) -> bool:
-        """Verifica se o bot pode pagar o custo de Rage de uma carta.
+    def _pode_pagar_custos(self, card: CardInstance) -> bool:
+        """Verifica se o bot pode pagar os custos de Rage e Gnosis.
 
-        Regra (2.2.4):
-        - Carta precisa de um personagem destapped com Rage >= custo.
+        Regras (2.2.4/2.2.5):
+        - Rage: personagem destapped com Rage >= custo.
+        - Gnosis: personagem destapped com Gnosis >= custo.
         """
         from rage_web.game_engine.rules import parse_custo_rage
-        custo = parse_custo_rage(card.damage)
-        if custo is None or custo == 0:
-            return True  # Sem custo
-        for c in self.player.pack_home:
-            if not c.is_tapped and c.rage >= custo:
-                return True
-        return False
+        # Rage
+        custo_rage = parse_custo_rage(card.damage)
+        if custo_rage is not None and custo_rage > 0:
+            tem_rage = any(not c.is_tapped and c.rage >= custo_rage
+                          for c in self.player.pack_home)
+            if not tem_rage:
+                return False
+        # Gnosis
+        if card.gnosis and card.gnosis > 0:
+            tem_gnosis = any(not c.is_tapped and c.gnosis >= card.gnosis
+                            for c in self.player.pack_home)
+            if not tem_gnosis:
+                return False
+        return True
 
     def _try_survive(self) -> Optional[str]:
         """Prioridade 1: Sobreviver.
@@ -365,7 +373,7 @@ class PriorityBot:
 
         # 1. Usa cartas com efeitos (modelo_id) prioritariamente
         for i, card in enumerate(me.hand):
-            if card.modelo_id and self._pode_pagar_rage(card):
+            if card.modelo_id and self._pode_pagar_custos(card):
                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
                 return self._usar_carta_efeito(i, modo_idx, card)
 
@@ -447,13 +455,19 @@ class PriorityBot:
             self._play_card(hand_index)
             return f'play_{card.card_id}'
 
-        # Pagar custo de Rage (ja validado por _pode_pagar_rage)
-        custo = parse_custo_rage(card.damage)
-        if custo is not None and custo > 0:
-            pagador = self.player.pagar_custo_rage(custo)
+        # Pagar custos (ja validado por _pode_pagar_custos)
+        custo_rage = parse_custo_rage(card.damage)
+        if custo_rage is not None and custo_rage > 0:
+            pagador = self.player.pagar_custo_rage(custo_rage)
             if pagador:
                 self.game.add_log(
-                    f'[BOT] {self.player.name} pagou Rage {custo} '
+                    f'[BOT] {self.player.name} pagou Rage {custo_rage} '
+                    f'com {pagador} para {card.name}')
+        if card.gnosis and card.gnosis > 0:
+            pagador = self.player.pagar_custo_gnosis(card.gnosis)
+            if pagador:
+                self.game.add_log(
+                    f'[BOT] {self.player.name} pagou Gnosis {card.gnosis} '
                     f'com {pagador} para {card.name}')
 
         # Remove da mao e aplica

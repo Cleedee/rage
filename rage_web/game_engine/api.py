@@ -277,17 +277,26 @@ def api_use_card(game_id: str):
     if modo_idx < 0 or modo_idx >= len(modelo.modos):
         return jsonify({'error': f'Modo invalido. Modos: {len(modelo.modos)}'}), 400
 
-    # Valida custo de Rage
+    # Valida custo de Rage e Gnosis
     from rage_web.game_engine.rules import parse_custo_rage
-    custo = parse_custo_rage(card.damage)
-    if custo is not None and custo > 0:
-        pagador = cp.pagar_custo_rage(custo)
+    custo_rage = parse_custo_rage(card.damage)
+    if custo_rage is not None and custo_rage > 0:
+        pagador = cp.pagar_custo_rage(custo_rage)
         if pagador is None:
             return jsonify({
-                'error': f'Custo de Rage {custo} nao pode ser pago. '
-                         f'Nenhum personagem destapped com Rage >= {custo}.'
+                'error': f'Custo de Rage {custo_rage} nao pode ser pago. '
+                         f'Nenhum personagem destapped com Rage >= {custo_rage}.'
             }), 400
-        game.add_log(f'{cp.name} pagou {custo} de Rage com {pagador}')
+        game.add_log(f'{cp.name} pagou Rage {custo_rage} com {pagador}')
+    custo_gnosis = card.gnosis
+    if custo_gnosis and custo_gnosis > 0:
+        pagador = cp.pagar_custo_gnosis(custo_gnosis)
+        if pagador is None:
+            return jsonify({
+                'error': f'Custo de Gnosis {custo_gnosis} nao pode ser pago. '
+                         f'Nenhum personagem destapped com Gnosis >= {custo_gnosis}.'
+            }), 400
+        game.add_log(f'{cp.name} pagou Gnosis {custo_gnosis} com {pagador}')
 
     # Remove da mao
     cp.hand.pop(idx)
