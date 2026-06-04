@@ -26,6 +26,77 @@ COMBAT_ACTIONS = {
 }
 
 
+def selecionar_alfa(game: GameState, jogador_id: str, card_id: str) -> bool:
+    """Seleciona o alpha de um jogador para o combate.
+
+    Regra (2.2.6):
+    - Cada jogador seleciona um Character ou Ally como alpha.
+    - Alpha com maior Renome age primeiro.
+    - Se alpha morrer, nao pode selecionar outro ate o proximo Combat phase.
+
+    Args:
+        game: Estado da partida.
+        jogador_id: ID do jogador.
+        card_id: ID da criatura a ser alpha.
+
+    Returns:
+        True se o alpha foi selecionado.
+    """
+    jogador = None
+    for p in game.players:
+        if p.id == jogador_id:
+            jogador = p
+            break
+    if not jogador:
+        return False
+
+    # Verifica se a criatura existe no pack do jogador
+    criatura = None
+    for c in jogador.pack_home:
+        if str(c.card_id) == card_id:
+            criatura = c
+            break
+    if not criatura:
+        return False
+
+    # So pode ser Character ou Ally
+    if 'Character' not in (criatura.card_type or '') and 'Ally' not in (criatura.card_type or ''):
+        return False
+
+    game.combat.selecionar_alfa(jogador_id, card_id)
+    game.add_log(f'{jogador.name} selecionou {criatura.name} como alpha')
+    return True
+
+
+def calcular_ordem_alfa(game: GameState) -> list[str]:
+    """Calcula a ordem dos alphas por Renome decrescente.
+
+    Regra (2.2.6):
+    - Alpha com maior Renome age primeiro.
+    - Empates sao resolvidos aleatoriamente.
+
+    Returns:
+        Lista de card_ids na ordem de acao.
+    """
+    import random
+
+    def _get_renown(card_id: str) -> int:
+        for p in game.players:
+            for c in p.pack_home + p.umbra:
+                if str(c.card_id) == card_id:
+                    return c.renown
+        return 0
+
+    alphas = list(game.combat.alphas.values())
+    # Ordena por Renome decrescente, desempatando aleatoriamente
+    random.shuffle(alphas)  # Embaralha para desempate aleatorio
+    alphas.sort(key=lambda cid: _get_renown(cid), reverse=True)
+    game.combat.alpha_order = alphas
+    game.combat.current_alpha_index = 0
+    game.combat.alpha_actions_taken = 0
+    return alphas
+
+
 def _mesmo_lado_gauntlet(game: GameState, card_id_a: str,
                           card_id_b: str) -> bool:
     """Verifica se duas criaturas estao no mesmo lado do Gauntlet.

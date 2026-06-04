@@ -100,7 +100,26 @@ def run_match(seed: int = 42, max_turns: int = 30,
     max_steps = max_turns * 50  # limite de seguranca
 
     while step < max_steps:
-        cp = game.current_player
+        # ── Alpha actions (seguem ordem de Renome, nao current_player) ──
+        if game.phase == 'combat' and game.combat.alpha_order:
+            if game.combat.current_alpha_index < len(game.combat.alpha_order):
+                cid_atual = game.combat.current_alpha
+                # Encontra o jogador dono deste alpha
+                dono_id = None
+                for pid, cid in game.combat.alphas.items():
+                    if cid == cid_atual:
+                        dono_id = pid
+                        break
+                if dono_id:
+                    cp = next(p for p in game.players if p.id == dono_id)
+                    game.current_player_index = game.players.index(cp)
+                else:
+                    cp = game.current_player
+            else:
+                cp = game.current_player
+        else:
+            cp = game.current_player
+
         bot = bots[cp.id]
         color = col1 if cp.id == 'p1' else col2
 
@@ -144,6 +163,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'  {color}{cp.name}: 🎭 {action}{reset}')
             elif action.startswith('umbra_'):
                 print(f'  {color}{cp.name}: 🌙 {action}{reset}')
+            elif action.startswith('alpha_'):
+                print(f'  {color}{cp.name}: 👑 {action}{reset}')
             elif action == 'reveal':
                 print(f'  {color}{cp.name}: 👁️  REVELAR{reset}')
             elif action in ('end_combat', 'combat_end'):

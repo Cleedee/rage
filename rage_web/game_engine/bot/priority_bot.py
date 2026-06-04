@@ -40,9 +40,9 @@ class PriorityBot:
         self.player_id = player_id
         self.difficulty = difficulty
         self.evaluator = BoardEvaluator(game, player_id)
-        # Heuristica: maximo de cartas por "vez de agir" (nao e regra,
-        # e decisao do bot para nao queimar a mao inteira)
+        # Heuristicas do bot
         self._cards_played_this_turn = 0
+        self._umbra_agiu = False  # So uma acao de Umbra por fase
 
     @property
     def player(self) -> PlayerState:
@@ -81,10 +81,11 @@ class PriorityBot:
         if g.current_player.id != self.player_id:
             return 'wait'
 
-        # Reseta heuristica de cartas por turno
+        # Reseta heuristicas por turno
         if g.turn_number > getattr(self, '_last_turn_heuristic', 0):
             self._cards_played_this_turn = 0
             self._last_turn_heuristic = g.turn_number
+            self._umbra_agiu = False
 
         # --- Acoes por fase ---
 
@@ -133,17 +134,32 @@ class PriorityBot:
         """Age na fase de Umbra: stepping sideways.
 
         Regra (2.2.4):
-        - Personagens com Gnosis >= Gauntlet podem step.
-        - So pode IR ou VOLTAR, nunca ambos no mesmo turno.
-        - Bot: step quem tiver Rage mais alta.
+        - So pode tomar UMA acao de stepping por Umbra phase.
+        - Step para Umbra se tiver personagens com Gnosis alta.
+        - Step de volta se tiver personagem na Umbra com Rage >= 3.
         """
         podem_ir, podem_voltar = self.player.personagens_que_podem_step()
 
-        if not self.player.umbra and podem_ir:
-            # Ainda nao esta na Umbra: pode entrar
-            # Step o personagem mais forte (menos Rage = acumulou muita raiva)
-            # Na verdade: quem tem Rage alta e util no combate fisico
-            # fica; quem tem Gnosis alta vai para Umbra usar gifts
+        # So uma acao de Umbra por fase
+        if getattr(self, '_umbra_agiu', False):
+            self._pass_turn()
+            return 'pass_umbra'
+        self._umbra_agiu = True
+
+        # Prioridade: voltar da Umbra se tiver guerreiro util
+        if self.player.umbra:
+            for c in self.player.umbra[:]:
+                if c.rage >= 3:
+                    self.player.step_back(c)
+                    self.game.add_log(
+                        f'[BOT] {self.player.name}: {c.name} '
+                        f'voltou da Umbra')
+                    return f'umbra_back_{c.card_id}'
+            self._pass_turn()
+            return 'pass_umbra'
+
+        # Entrar na Umbra
+        if podem_ir:
             personagem = max(podem_ir, key=lambda c: c.gnosis)
             self.player.step_sideways(personagem)
             self.game.add_log(
@@ -151,25 +167,28 @@ class PriorityBot:
                 f'entrou na Umbra')
             return f'umbra_step_{personagem.card_id}'
 
-        if self.player.umbra and podem_voltar:
-            # Esta na Umbra: pode voltar
-            # So volta se o personagem na Umbra for util no combate fisico
-            # (Rage alta para atacar)
-            for c in self.player.umbra[:]:
-                if c.rage >= 3:  # So volta se Rage >= 3
-                    self.player.step_back(c)
-                    self.game.add_log(
-                        f'[BOT] {self.player.name}: {c.name} '
-                        f'voltou da Umbra')
-                    return f'umbra_back_{c.card_id}'
-
         self._pass_turn()
         return 'pass_umbra'
 
     def _agir_combate(self) -> str:
-        """Age na fase de Combat: eliminar ameacas + atacar."""
+        """Age na fase de Combat: acao alfa + cartas + atacar."""
         me = self.player
+        g = self.game
 
+        # ── ACAO ALFA ──
+        # Verifica se e a vez deste jogador como alpha
+        alfa_atual = g.combat.current_alpha
+        meu_alpha = g.combat.alphas.get(self.player_id)
+
+        if alfa_atual and meu_alpha and alfa_atual == meu_alpha:
+            # Este jogador esta na vez de agir como alpha
+            action = self._agir_alpha()
+            if action:
+                # Avanca para o proximo alpha
+                g.combat.current_alpha_index += 1
+                return action
+
+        # ── RESTO DO COMBATE (cartas, eliminar, atacar) ──
         # Heuristica: max 3 cartas por turno
         if self._cards_played_this_turn >= 3:
             action = self._try_eliminate_threat()
@@ -191,7 +210,6 @@ class PriorityBot:
             if card.modelo_id and card.card_type in (
                     'Combat Action', 'Combat Event', 'Action'):
                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                # Checa custos antes
                 if self._pode_pagar_custos(card):
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
@@ -215,6 +233,46 @@ class PriorityBot:
         # 6. Passa
         self._pass_turn()
         return 'pass_combat'
+
+    def _agir_alpha(self) -> Optional[str]:
+        """Acao alfa: o alpha do jogador age.
+
+        Regra (2.2.6):
+        Como acao alfa, pode:
+        - Atacar outro alpha
+        - Atacar Hunting Grounds
+        - Desafiar um nao-alfa
+        - Engajar Battlefield
+        - Atacar Territory
+        - Usar carta/habilidade que diz "alpha action"
+        - Passar
+
+        Returns:
+            String da acao ou None para passar.
+        """
+        me = self.player
+        meu_alpha_id = self.game.combat.alphas.get(self.player_id)
+        if not meu_alpha_id:
+            return None
+
+        # Tenta atacar Hunting Grounds (acao alfa padrao)
+        # Procura a criatura alpha no pack
+        alpha_card = None
+        for c in me.pack_home:
+            if str(c.card_id) == meu_alpha_id:
+                alpha_card = c
+                break
+
+        if alpha_card and not alpha_card.is_tapped:
+            # Ataca HG
+            from rage_web.game_engine.combat_queue import start_combat
+            start_combat(self.game, [meu_alpha_id], ['hg'])
+            alpha_card.is_tapped = True
+            self.game.add_log(
+                f'[BOT] Alpha {alpha_card.name} atacou Hunting Grounds')
+            return f'alpha_attack_hg_{meu_alpha_id}'
+
+        return None  # Passa
 
     def _decide_easy(self) -> str:
         """Modo facil: acoes aleatorias."""

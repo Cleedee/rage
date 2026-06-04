@@ -258,37 +258,69 @@ class PlayerState:
 class CombatState:
     """Estado atual do combate."""
     is_active: bool = False
-    step: str = ''            # declare, reveal, resolve, end
-    attackers: list[str] = field(default_factory=list)        # IDs dos atacantes
-    defenders: list[str] = field(default_factory=list)        # IDs dos defensores
+    step: str = ''            # select_alpha, declare, reveal, resolve, end
+    attackers: list[str] = field(default_factory=list)
+    defenders: list[str] = field(default_factory=list)
     declarations: dict[str, Optional[str]] = field(default_factory=dict)
-    """card_id -> nome da acao declarada (None = nao declarou ainda)"""
     declaration_order: list[str] = field(default_factory=list)
-    """Ordem de declaracao (ultimo = vantagem)"""
+
+    # Alpha selection
+    alphas: dict[str, str] = field(default_factory=dict)
+    """player_id -> card_id do alpha selecionado"""
+    alpha_order: list[str] = field(default_factory=list)
+    """Ordem dos alphas por Renome (decrescente)"""
+    current_alpha_index: int = 0
+    """Indice do alpha atual em alpha_order"""
+    alpha_actions_taken: int = 0
+    """Contador de acoes alfa tomadas"""
 
     @property
     def last_to_declare(self) -> Optional[str]:
-        """Retorna o ID da criatura que declarou por ultimo, se houver."""
         if self.declaration_order:
             return self.declaration_order[-1]
         return None
 
-    def declare(self, card_id: str, action: str) -> bool:
-        """Declara uma acao de combate para uma criatura.
+    @property
+    def current_alpha(self) -> Optional[str]:
+        """Retorna o ID do alpha que esta agindo agora."""
+        if self.alpha_order and self.current_alpha_index < len(self.alpha_order):
+            return self.alpha_order[self.current_alpha_index]
+        return None
 
-        Retorna True se a declaracao foi aceita.
-        """
+    def declare(self, card_id: str, action: str) -> bool:
         if not self.is_active:
             return False
         if card_id in self.declarations:
-            return False  # Ja declarou
+            return False
         self.declarations[card_id] = action
         self.declaration_order.append(card_id)
         return True
 
     def all_declared(self, combatants: list[str]) -> bool:
-        """True quando todas as criaturas envolvidas declararam."""
         return all(c in self.declarations for c in combatants)
+
+    def selecionar_alfa(self, jogador_id: str, card_id: str):
+        """Seleciona o alpha de um jogador.
+
+        Args:
+            jogador_id: ID do jogador.
+            card_id: ID da criatura escolhida como alpha.
+        """
+        self.alphas[jogador_id] = card_id
+        # Recalcula ordem decrescente de Renome
+        self._recalcular_ordem_alfa()
+
+    def _recalcular_ordem_alfa(self):
+        """Ordena alphas por Renome decrescente.
+
+        Regra (2.2.6):
+        - Alpha com maior Renome age primeiro.
+        - Empates sao resolvidos aleatoriamente.
+        """
+        import random
+        # Precisa do game state para acessar as criaturas
+        # A ordem e recalculada externamente
+        pass
 
 
 @dataclass
@@ -358,7 +390,17 @@ class GameState:
                     for c in p.pack_home:
                         if c.is_tapped:
                             c.is_tapped = False
-                            self.add_log(f'{c.name} destapped')
+                # Selecao de alfas (automática para bots/jogador unico)
+                from rage_web.game_engine.combat_queue import selecionar_alfa, calcular_ordem_alfa
+                for p in self.players:
+                    # Escolhe o personagem com maior Renome como alpha
+                    candidatos = [c for c in p.pack_home
+                                  if 'Character' in (c.card_type or '')
+                                  or 'Ally' in (c.card_type or '')]
+                    if candidatos:
+                        melhor = max(candidatos, key=lambda c: c.renown)
+                        selecionar_alfa(self, p.id, str(melhor.card_id))
+                calcular_ordem_alfa(self)
         else:
             # Fim do turno -> volta ao inicio
             self.phase = 'redraw'

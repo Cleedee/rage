@@ -52,6 +52,7 @@ HAND_SIZE_COMBAT = 5
 
 # Etapas do combate
 COMBAT_STEPS = [
+    'select_alpha', # Escolher alfa (maior Renome age primeiro)
     'declare',      # Escolher acao face-down
     'reveal',       # Revelar + "Ultimo a Declarar" pode Feint
     'resolve',      # Aplicar danos e efeitos

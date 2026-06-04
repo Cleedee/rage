@@ -209,6 +209,28 @@ class RageCLI(cmd.Cmd):
         print(f'║ Vez de: {cp.name:40s}║')
         print(f'╚═══════════════════════════════════════════════════╝')
 
+        if g.combat.alphas:
+            print('┌─ 👑 Alphas ───────────────────────────────────┐')
+            for pid, cid in g.combat.alphas.items():
+                nome_p = next((p.name for p in g.players if p.id == pid), pid)
+                # Encontra o nome da criatura
+                nome_c = cid
+                for p in g.players:
+                    for c in p.pack_home + p.umbra:
+                        if str(c.card_id) == cid:
+                            nome_c = c.name
+                            break
+                is_atual = ' ⚡' if cid == g.combat.current_alpha else ''
+                pos = ''
+                if g.combat.alpha_order:
+                    try:
+                        idx = g.combat.alpha_order.index(cid)
+                        pos = f' (#{idx+1}/{len(g.combat.alpha_order)})'
+                    except ValueError:
+                        pass
+                print(f'│   {nome_p}: {nome_c}{pos}{is_atual}')
+            print()
+
         if g.combat.is_active:
             self._show_combat_status()
 
