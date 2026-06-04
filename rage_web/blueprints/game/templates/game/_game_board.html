@@ -129,9 +129,28 @@
       </div>
     </div>
     {% endif %}
+
+    <!-- Hunting Grounds (Prey, Enemies, Victims) -->
+    {% if game.hunting_grounds_cards or p.hunting_grounds %}
+    <div class="px-2 pt-1" style="border-top:1px dashed #ccc; margin-top:4px">
+      <small class="has-text-grey">🎯 Hunting Grounds</small>
+      <div class="field is-grouped is-grouped-multiline">
+        {% for c in p.hunting_grounds %}
+        <span class="tag is-danger is-light">{{ c.name }}</span>
+        {% endfor %}
+        {% for c in game.hunting_grounds_cards %}
+        <span class="tag is-dark is-light">{{ c.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
   </div>
   {% endfor %}
 </div>
+
+{% if game.hunting_grounds_cards %}
+<!-- Global Hunting Grounds (cards without owner) -->
+{% endif %}
 
 <!-- Combat Area -->
 {% if game.combat.is_active %}

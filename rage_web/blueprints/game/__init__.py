@@ -89,6 +89,7 @@ def _game_for_template(g: GameState) -> dict:
         'combat': combat,
         'log': g.log[-15:],
         'winner': g.winner,  # player_id string
+        'hunting_grounds_cards': [_card_for_template(c) for c in g.hunting_grounds_cards],
     }
 
     # Se tem vencedor, enriquece com nome
