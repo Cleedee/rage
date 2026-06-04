@@ -277,6 +277,18 @@ def api_use_card(game_id: str):
     if modo_idx < 0 or modo_idx >= len(modelo.modos):
         return jsonify({'error': f'Modo invalido. Modos: {len(modelo.modos)}'}), 400
 
+    # Valida custo de Rage
+    from rage_web.game_engine.rules import parse_custo_rage
+    custo = parse_custo_rage(card.damage)
+    if custo is not None and custo > 0:
+        pagador = cp.pagar_custo_rage(custo)
+        if pagador is None:
+            return jsonify({
+                'error': f'Custo de Rage {custo} nao pode ser pago. '
+                         f'Nenhum personagem destapped com Rage >= {custo}.'
+            }), 400
+        game.add_log(f'{cp.name} pagou {custo} de Rage com {pagador}')
+
     # Remove da mao
     cp.hand.pop(idx)
 

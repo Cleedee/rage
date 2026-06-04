@@ -122,9 +122,10 @@ class PriorityBot:
         for i, card in enumerate(me.hand):
             if card.modelo_id and card.card_type not in (
                     'Combat Action', 'Combat Event'):
-                modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                self._cards_played_this_turn += 1
-                return self._usar_carta_efeito(i, modo_idx, card)
+                if self._pode_pagar_rage(card):
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    self._cards_played_this_turn += 1
+                    return self._usar_carta_efeito(i, modo_idx, card)
 
         self._pass_turn()
         return 'pass_resource'
@@ -154,8 +155,10 @@ class PriorityBot:
             if card.modelo_id and card.card_type in (
                     'Combat Action', 'Combat Event', 'Action'):
                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                self._cards_played_this_turn += 1
-                return self._usar_carta_efeito(i, modo_idx, card)
+                # Checa custo de Rage antes
+                if self._pode_pagar_rage(card):
+                    self._cards_played_this_turn += 1
+                    return self._usar_carta_efeito(i, modo_idx, card)
 
         # 3. Outros efeitos
         action = self._try_develop_board()
@@ -288,6 +291,21 @@ class PriorityBot:
     # Sub-arvores de decisao
     # ------------------------------------------------------------------
 
+    def _pode_pagar_rage(self, card: CardInstance) -> bool:
+        """Verifica se o bot pode pagar o custo de Rage de uma carta.
+
+        Regra (2.2.4):
+        - Carta precisa de um personagem destapped com Rage >= custo.
+        """
+        from rage_web.game_engine.rules import parse_custo_rage
+        custo = parse_custo_rage(card.damage)
+        if custo is None or custo == 0:
+            return True  # Sem custo
+        for c in self.player.pack_home:
+            if not c.is_tapped and c.rage >= custo:
+                return True
+        return False
+
     def _try_survive(self) -> Optional[str]:
         """Prioridade 1: Sobreviver.
 
@@ -347,7 +365,7 @@ class PriorityBot:
 
         # 1. Usa cartas com efeitos (modelo_id) prioritariamente
         for i, card in enumerate(me.hand):
-            if card.modelo_id:
+            if card.modelo_id and self._pode_pagar_rage(card):
                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
                 return self._usar_carta_efeito(i, modo_idx, card)
 
@@ -417,12 +435,26 @@ class PriorityBot:
 
     def _usar_carta_efeito(self, hand_index: int, modo_idx: int,
                             card) -> str:
-        """Usa uma carta de efeito da mao."""
+        """Usa uma carta de efeito da mao.
+
+        Valida custo de Rage antes de usar.
+        """
         from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+        from rage_web.game_engine.rules import parse_custo_rage
+
         modelo = CARTAS_EXEMPLO.get(card.modelo_id)
         if not modelo:
             self._play_card(hand_index)
             return f'play_{card.card_id}'
+
+        # Pagar custo de Rage (ja validado por _pode_pagar_rage)
+        custo = parse_custo_rage(card.damage)
+        if custo is not None and custo > 0:
+            pagador = self.player.pagar_custo_rage(custo)
+            if pagador:
+                self.game.add_log(
+                    f'[BOT] {self.player.name} pagou Rage {custo} '
+                    f'com {pagador} para {card.name}')
 
         # Remove da mao e aplica
         self.player.hand.pop(hand_index)

@@ -171,6 +171,26 @@ class PlayerState:
                 logs.append(f'{c.name} regenerou 1 de vida')
         return logs
 
+    def pagar_custo_rage(self, custo: int) -> Optional[str]:
+        """Paga um custo de Rage tappando um personagem.
+
+        Regra (2.2.4):
+        - O personagem com Rage >= custo e selecionado.
+        - Tapped = nao pode agir novamente neste combate.
+
+        Args:
+            custo: Custo de Rage a pagar.
+
+        Returns:
+            Nome do personagem que pagou, ou None se nao pode pagar.
+        """
+        from rage_web.game_engine.rules import encontrar_pagador_rage
+        pagador = encontrar_pagador_rage(self, custo)
+        if pagador:
+            pagador.is_tapped = True
+            return pagador.name
+        return None
+
     def pass_turn(self):
         """Marca que o jogador passou a vez."""
         self.has_passed = True
@@ -274,6 +294,12 @@ class GameState:
                     drawn = p.redraw_combat()
                     if drawn:
                         self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de combate')
+                # Untap todas as criaturas
+                for p in self.players:
+                    for c in p.pack_home:
+                        if c.is_tapped:
+                            c.is_tapped = False
+                            self.add_log(f'{c.name} destapped')
         else:
             # Fim do turno -> volta ao inicio
             self.phase = 'redraw'

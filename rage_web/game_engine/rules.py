@@ -1,5 +1,9 @@
 """Constantes e regras básicas do Rage CCG."""
 
+from __future__ import annotations
+
+from typing import Optional
+
 # Atributos base
 RAGE_MIN = 0
 RAGE_MAX = 10
@@ -65,3 +69,47 @@ ZONES = [
     'out_of_play',      # Fora de jogo temporariamente
     'removed',          # Removido permanentemente
 ]
+
+
+def parse_custo_rage(custo_str: str) -> int | None:
+    """Converte o campo damage (custo Rage) para inteiro.
+
+    Regra (2.2.4):
+    - Damage e o custo de Rage para jogar uma Combat Action.
+    - Se o valor for 'X', o custo e variavel (escolha do jogador).
+    - Se vazio ou invalido, retorna None (sem custo).
+
+    Returns:
+        int: custo numerico, ou 0 se 'X', ou None se invalido.
+    """
+    if not custo_str or custo_str.strip() == '':
+        return None
+    custo = custo_str.strip()
+    if custo.upper() == 'X':
+        return 0  # Variavel, tratado como 0 para simplificar
+    try:
+        return int(custo)
+    except ValueError:
+        return None
+
+
+def encontrar_pagador_rage(jogador: 'PlayerState', custo: int
+                           ) -> Optional['CardInstance']:
+    """Encontra um personagem no Pack Home que pode pagar o custo de Rage.
+
+    Regra (2.2.4):
+    - Para usar uma Combat Action com custo Rage N, um personagem
+      com Rage >= N deve ser designado como pagador.
+    - O personagem e TAPPED (nao pode agir novamente neste combate).
+
+    Args:
+        jogador: Estado do jogador.
+        custo: Custo de Rage necessario.
+
+    Returns:
+        CardInstance do personagem pagador, ou None se nao houver.
+    """
+    for c in jogador.pack_home:
+        if not c.is_tapped and c.rage >= custo:
+            return c
+    return None
