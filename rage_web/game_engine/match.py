@@ -20,6 +20,21 @@ from rage_web.game_engine.combat_queue import get_declaration_summary, get_comba
 from rage_web.game_engine.state import GameState
 
 
+FASE_NOMES = {
+    'redraw': 'REDRAW (Compra)',
+    'regeneration': 'REGENERACAO',
+    'resource': 'RECURSO (Jogar cartas)',
+    'umbra': 'UMBRA (Step Sideways)',
+    'moot': 'MOOT (Junta)',
+    'combat': 'COMBATE',
+}
+
+def _log_fase(game, turno, fase):
+    """Loga mudanca de fase com destaque."""
+    nome = FASE_NOMES.get(fase, fase.upper())
+    print(f'\n  ── [{turno}] {nome} ──\n')
+
+
 def print_separator(char='━', width=60):
     print(char * width)
 
@@ -98,6 +113,7 @@ def run_match(seed: int = 42, max_turns: int = 30,
     last_turn = game.turn_number
     last_phase = game.phase
     max_steps = max_turns * 50  # limite de seguranca
+    _log_fase(game, last_turn, last_phase)
 
     while step < max_steps:
         # ── Alpha actions (seguem ordem de Renome, nao current_player) ──
@@ -129,8 +145,6 @@ def run_match(seed: int = 42, max_turns: int = 30,
         # Detecta progresso: turno ou fase mudou
         if game.turn_number != last_turn or game.phase != last_phase:
             stale_steps = 0
-            last_turn = game.turn_number
-            last_phase = game.phase
         else:
             stale_steps += 1
 
@@ -141,20 +155,29 @@ def run_match(seed: int = 42, max_turns: int = 30,
             print_board(game)
             return 'stuck'
 
-        # Mostra a acao
+        # Mostra a acao com nome da carta quando possivel
         if action and not action.startswith('wait'):
+            # Tenta extrair nome da carta do ultimo log do jogo
+            nome_carta = ''
+            ultimo_log = game.log[-1] if game.log else ''
+            if ultimo_log and 'jogou' in ultimo_log:
+                # "[BOT] Jogador jogou NomeDaCarta" ou "[T1 ...] Jogador jogou NomeDaCarta"
+                partes = ultimo_log.split('jogou ')
+                if len(partes) > 1:
+                    nome_carta = partes[1].strip()
+            elif ultimo_log and 'usou' in ultimo_log:
+                partes = ultimo_log.split('usou ')
+                if len(partes) > 1:
+                    nome_carta = partes[1].replace(' (', ' (').strip()
+
             if action.startswith('combat'):
-                print(f'  {color}{cp.name}: {action}{reset}')
+                print(f'  {color}{cp.name}: ⚔️  {action}{reset}')
             elif action.startswith('play_'):
-                print(f'  {color}{cp.name}: 🃏 {action.replace("play_", "")}{reset}')
+                label = nome_carta or action.replace('play_', '')
+                print(f'  {color}{cp.name}: 🃏 Jogou {label}{reset}')
             elif action.startswith('use_'):
-                # use_card_xxx_modoY -> mostra nome do efeito
-                partes = action.split('_')
-                if len(partes) >= 3:
-                    nome_curto = '_'.join(partes[1:-1]) if len(partes) > 3 else partes[1]
-                else:
-                    nome_curto = action
-                print(f'  {color}{cp.name}: 🎴 {action}{reset}')
+                label = nome_carta or action
+                print(f'  {color}{cp.name}: 🎴 Usou {label}{reset}')
             elif action.startswith('attack_') or action.startswith('eliminate_'):
                 print(f'  {color}{cp.name}: ⚔️  {action}{reset}')
             elif action.startswith('declare_'):
@@ -202,11 +225,16 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP)')
                 return p.id
 
-        # Mostra tabuleiro na mudanca de fase
+        # Mostra tabuleiro na mudanca de fase/turno
         if game.phase != last_phase or game.turn_number != last_turn:
-            print_separator()
+            if game.turn_number != last_turn:
+                print(f'\n  ════ TURNO {game.turn_number} ════\n')
+            _log_fase(game, game.turn_number, game.phase)
+            print_separator('-', 40)
             print_board(game)
             time.sleep(delay)
+            last_turn = game.turn_number
+            last_phase = game.phase
 
         step += 1
 
