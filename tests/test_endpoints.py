@@ -34,7 +34,7 @@ def test_cards_new_menu(client):
 
 def test_cards_new_character_form(client):
     """O formulário de nova carta Character deve carregar."""
-    response = client.get('/cards/new-character')
+    response = client.get('/cards/new/character')
     assert response.status_code == 200
     assert b"Register Character Card" in response.data
     assert b"Name" in response.data
@@ -46,7 +46,7 @@ def test_cards_new_character_form(client):
 
 def test_cards_new_equipment_form(client):
     """O formulário de nova carta Equipment deve carregar."""
-    response = client.get('/cards/new-equipment')
+    response = client.get('/cards/new/equipment')
     assert response.status_code == 200
     assert b"Register Equipment Card" in response.data
     assert b"Name" in response.data
@@ -57,7 +57,7 @@ def test_cards_new_equipment_form(client):
 
 def test_cards_new_card_form(client):
     """O formulário de nova carta genérica deve carregar."""
-    response = client.get('/cards/new-card')
+    response = client.get('/cards/new/generic')
     assert response.status_code == 200
     assert b"Register Card" in response.data
     assert b"Name" in response.data
@@ -67,7 +67,7 @@ def test_cards_new_card_form(client):
 
 def test_cards_create_character(client):
     """Criar uma carta Character via POST deve funcionar."""
-    response = client.post('/cards/new-character', data={
+    response = client.post('/cards/character', data={
         'name': 'New Character',
         'tipo': 'Character',
         'rage': 5,
@@ -81,7 +81,7 @@ def test_cards_create_character(client):
 
 def test_cards_create_equipment(client):
     """Criar uma carta Equipment via POST deve funcionar."""
-    response = client.post('/cards/new-equipment', data={
+    response = client.post('/cards/equipment', data={
         'name': 'Sword of Power',
         'tipo': 'Equipment',
         'gnosis': 4,
@@ -111,20 +111,20 @@ def test_cards_view_card_not_found(client):
 
 def test_cards_read_card(client, sample_card):
     """Visualizar uma carta existente deve mostrar seus dados."""
-    response = client.get(f'/cards/card/{sample_card}')
+    response = client.get(f'/cards/{sample_card}')
     assert response.status_code == 200
     assert b"Test Card" in response.data
 
 
 def test_cards_read_card_not_found(client):
     """Visualizar uma carta inexistente deve retornar 404."""
-    response = client.get('/cards/card/9999')
+    response = client.get('/cards/9999')
     assert response.status_code == 404
 
 
 def test_cards_delete_card(client, sample_card):
     """Excluir uma carta deve funcionar e redirecionar."""
-    response = client.get(f'/cards/delete-card/{sample_card}', follow_redirects=True)
+    response = client.post(f'/cards/{sample_card}/delete', follow_redirects=True)
     assert response.status_code == 200
     assert b"Card exclu" in response.data
 
@@ -153,7 +153,7 @@ def test_decks_new_form(client):
 
 def test_decks_create(client):
     """Criar um deck via POST deve funcionar."""
-    response = client.post('/decks/deck', data={
+    response = client.post('/decks', data={
         'name': 'My New Deck',
         'description': 'A brand new deck',
     }, follow_redirects=True)
@@ -163,13 +163,13 @@ def test_decks_create(client):
 
 def test_decks_read_deck(client, sample_deck):
     """Visualizar um deck existente deve mostrar seus dados."""
-    response = client.get(f'/decks/deck/{sample_deck}')
+    response = client.get(f'/decks/{sample_deck}')
     assert response.status_code == 200
     assert b"Test Deck" in response.data
 
 
 def test_decks_delete_deck(client, sample_deck):
     """Excluir um deck deve funcionar e redirecionar."""
-    response = client.get(f'/decks/delete_deck/{sample_deck}', follow_redirects=True)
+    response = client.post(f'/decks/{sample_deck}/delete', follow_redirects=True)
     assert response.status_code == 200
     assert b"Deck removido" in response.data

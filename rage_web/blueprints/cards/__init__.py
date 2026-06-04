@@ -72,61 +72,20 @@ def remove_fan(id):
     return redirect(url_for('cards.view_card', id=card.id))
 
 
-@bp.get('/new-character')
+@bp.get('/new/character')
 def new_character():
     form = CharacterCardForm()
     return render_template('cards/character.html', form=form)
 
-@bp.get('/new-equipment')
+@bp.get('/new/equipment')
 def new_equipment():
     form = EquipmentCardForm()
     return render_template('cards/equipment.html', form=form)
 
-@bp.get('/new-card')
+@bp.get('/new/generic')
 def new_card():
     form = CardForm()
     return render_template('cards/card.html', form=form)
-
-@bp.post('/new-character')
-def save_new_character():
-    form = CharacterCardForm()
-    if form.validate_on_submit():
-        card = Card()
-        card.name = form.name.data
-        card.tipo = form.tipo.data
-        card.rage = form.rage.data
-        card.gnosis = form.gnosis.data
-        card.health = form.health.data
-        card.text = form.text.data
-        rep.save_card(card)
-        flash('Personagem salvo.')
-    logging.error(form.errors)
-    return redirect(url_for('home.index'))
-
-@bp.post('/new-equipment')
-def save_equipment():
-    form = EquipmentCardForm()
-    if form.validate_on_submit():
-        card = Card()
-        card.name = form.name.data
-        card.tipo = form.tipo.data
-        card.gnosis = form.gnosis.data
-        card.requires = form.requires.data
-        card.text = form.text.data
-        rep.save_card(card)
-        flash('Equipamento salvo.')
-    logging.error(form.errors)
-    return redirect(url_for('home.index'))
-
-@bp.get('/card/<id>')
-def read_card(id):
-    """Pagina de edicao da carta (usa formulario universal)."""
-    card = rep.find_card_by_id(id)
-    if card is None:
-        abort(404)
-    form = CardEditForm(obj=card)
-    form.id.data = card.id
-    return render_template('cards/edit.html', form=form, card=card)
 
 @bp.post('/character')
 def save_character():
@@ -155,7 +114,22 @@ def save_character():
     logging.error(form.errors)
     return redirect(url_for('home.index'))
 
-@bp.post('/card')
+@bp.post('/equipment')
+def save_equipment():
+    form = EquipmentCardForm()
+    if form.validate_on_submit():
+        card = Card()
+        card.name = form.name.data
+        card.tipo = form.tipo.data
+        card.gnosis = form.gnosis.data
+        card.requires = form.requires.data
+        card.text = form.text.data
+        rep.save_card(card)
+        flash('Equipamento salvo.')
+    logging.error(form.errors)
+    return redirect(url_for('home.index'))
+
+@bp.post('/generic')
 def save_card():
     form = CardForm()
     if form.validate_on_submit():
@@ -176,7 +150,17 @@ def save_card():
     current_app.logger.error(form.errors)
     return redirect(url_for('cards.search'))
 
-@bp.get('/delete-card/<id>')
+@bp.get('/<id>')
+def read_card(id):
+    """Pagina de edicao da carta (usa formulario universal)."""
+    card = rep.find_card_by_id(id)
+    if card is None:
+        abort(404)
+    form = CardEditForm(obj=card)
+    form.id.data = card.id
+    return render_template('cards/edit.html', form=form, card=card)
+
+@bp.post('/<id>/delete')
 def delete_card(id):
     card = rep.find_card_by_id(id)
     if card is None:
@@ -201,7 +185,7 @@ def view_card(id):
     return render_template('cards/detail.html', card=card, decks=decks)
 
 
-@bp.post('/save-edit/<id>')
+@bp.post('/<id>')
 def save_card_edit(id):
     """Salva edicao completa de uma carta."""
     card = rep.find_card_by_id(id)

@@ -153,22 +153,29 @@
 | Rota | Método | Funcionalidade |
 |---|---|---|
 | `/` | GET | Home |
-| `/cards/new` | GET | Menu de criação (Character, Equipment, Card) |
-| `/cards/new-character` | GET | Formulário de nova carta Character |
-| `/cards/new-equipment` | GET | Formulário de nova carta Equipment |
-| `/cards/new-card` | GET | Formulário de nova carta genérica |
-| `/cards/new-character` | POST | Salvar nova carta Character |
-| `/cards/new-equipment` | POST | Salvar nova carta Equipment |
-| `/cards/card` | POST | Salvar carta genérica (+ imagem) |
+| `/cards` | GET | Listar cartas |
+| `/cards/new` | GET | Menu de criação |
+| `/cards/new/character` | GET | Formulário de nova carta Character |
+| `/cards/new/equipment` | GET | Formulário de nova carta Equipment |
+| `/cards/new/generic` | GET | Formulário de nova carta genérica |
 | `/cards/character` | POST | Salvar/atualizar Character |
-| `/cards/card/<id>` | GET | Visualizar/editar carta |
-| `/cards/delete-card/<id>` | GET | Excluir carta |
-| `/cards/search` | GET | Listar todas as cartas |
+| `/cards/equipment` | POST | Salvar Equipment |
+| `/cards/generic` | POST | Salvar carta genérica |
+| `/cards/{id}` | GET | Visualizar/editar carta |
+| `/cards/{id}` | POST | Salvar edição da carta |
+| `/cards/{id}/view` | GET | Página de detalhes |
+| `/cards/{id}/delete` | POST | Excluir carta |
+| `/cards/{id}/upload-fan` | POST | Upload de imagem |
+| `/cards/{id}/remove-fan` | POST | Remover imagem |
+| `/decks` | GET | Listar decks |
 | `/decks/new` | GET | Formulário de novo deck |
-| `/decks/search` | GET | Listar todos os decks |
-| `/decks/deck` | POST | Salvar/atualizar deck |
-| `/decks/deck/<id>` | GET | Visualizar/editar deck |
-| `/decks/delete_deck/<id>` | GET | Excluir deck |
+| `/decks` | POST | Salvar/atualizar deck |
+| `/decks/{id}` | GET | Visualizar/editar deck |
+| `/decks/{id}/delete` | POST | Excluir deck |
+| `/decks/{id}/add-card` | POST | Adicionar carta |
+| `/decks/{id}/remove-card` | POST | Remover carta |
+| `/decks/{id}/update-quantity` | POST | Atualizar quantidade |
+| `/decks/import` | GET/POST | Importar deck |
 
 ---
 
@@ -289,10 +296,11 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 ### Testes do Motor de Jogo
 
-**122 testes passando** em 6 arquivos:
+**142 testes passando** em 6 arquivos:
 
 | Arquivo | Cobertura |
-|---|---|
+|---|---|---|
+| `test_endpoints.py` | Endpoints web (Cards, Decks) |
 | `test_game_engine.py` | state, combat_queue, rules |
 | `test_game_engine_anunciador.py` | Anunciador, EfeitoAnunciado |
 | `test_game_engine_api.py` | Endpoints da API REST |
@@ -302,10 +310,10 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 ### Pontos de Atenção do Motor de Jogo
 
-1. **🔌 API REST não registrada** — O `api.py` define o blueprint `api_bp` mas ele não é registrado no `create_app()`. A API existe mas não é acessível via Flask.
+1. ~~🔌 **API REST não registrada**~~ — ✅ Já registrado em `create_app()` via `app.register_blueprint(api_bp)`.
 2. **🎲 Bot usa `random.choice` para alvos** — O `ResolvedorEfeitos._escolher_criatura()` usa `random.choice` sem seed determinística, dificultando reprodutibilidade.
 3. **📢 Anunciador em `__post_init__`** — O `Anunciador` é criado no `__post_init__` do `GameState`, dificultando serialização e mocking em testes.
-4. **📂 `data/cards/` pode não existir** — O `effects.py` tenta carregar JSONs de `data/cards/` (caminho relativo frágil), gerando erro silencioso se ausente.
+4. ~~📂 **`data/cards/` pode não existir**~~ — ✅ Diretório existe com 67 modelos JSON carregados.
 5. **🔄 Verificação de Gauntlet incompleta** — O `_mesmo_lado_gauntlet` em `combat_queue.py` não considera personagens no mundo físico (pack_home) vs Umbra para o atacante.
 6. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
 
@@ -317,12 +325,9 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 2. **🐍 Inconsistência no formulário de Character** — O blueprint `cards` usa `CharacterCardForm` mas o formulário não tem campo `tipo`. Em `save_new_character()` o código tenta acessar `form.tipo.data` que não existe no formulário. Isso vai gerar erro ou salvar sem tipo.
 
-3. **🔀 Rotas duplicadas / inconsistentes**:
-   - `/new-character` tem GET e POST, mas também existe `/character` (POST) que faz a mesma coisa.
-   - `/new-card` (GET) e `/card` (POST) vs `/new-equipment` (GET/POST).
-   - Mistura de estilos: algumas rotas são RESTful, outras não.
+3. ~~**🔀 Rotas duplicadas / inconsistentes**~~ — ✅ Padronizadas em rotas RESTful (GET/POST/DELETE consistentes, URLs hierárquicas, sem duplicatas).
 
-4. **🧪 Testes quebrados** — O único teste (`test_endpoints.py`) espera `b"Hello, World!"` na resposta da home, mas a home renderiza um template vazio que estende `base.html`, sem essa string.
+4. ~~**🧪 Testes quebrados**~~ — ✅ **142 testes passando** (20 endpoint + 122 game engine).
 
 5. **📦 Redis configurado mas não implementado** — O `docker-compose.yml` sobe Redis, o `NOTAS.txt` menciona `redis-om-python`, mas Redis não é usado em lugar nenhum.
 
@@ -352,7 +357,7 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 - **Template base com Bulma + HTMX** — UI moderna sem muito JS customizado.
 - **Extensões separadas** (`ext/`) — Código modular.
 - **CLI command** `init-database` para setup inicial.
-- **Motor de jogo completo** — 4 fases implementadas com 122 testes passando.
+- **Motor de jogo completo** — 4 fases implementadas com 142 testes passando.
 - **Bot com IA** — Árvore de decisão com 3 níveis de dificuldade e avaliador de tabuleiro.
 - **Sistema de efeitos estruturado** — Cartas com modos, condições de alvo e efeitos encadeados.
 - **API REST do game engine** — Endpoints para criar partidas, executar ações e consultar estado.
@@ -394,15 +399,15 @@ Character (Gaia/Wyrm/Rogue), Gift, Equipment, Combat Action, Event, Ally, Enemy,
 
 1. ~~Remover `database.db` do versionamento~~ ✅ (`.gitignore`)
 2. ~~Corrigir formulário de Character~~ ✅ (campo `tipo` adicionado)
-3. Padronizar as rotas — seguir um padrão RESTful consistente
-4. ~~Corrigir testes~~ ✅ (18 testes passando)
+3. ~~Padronizar as rotas~~ ✅
+4. ~~Corrigir testes~~ ✅ (142 testes passando)
 5. Implementar upload de imagens completo com rotas e templates
 6. ~~Adicionar relacionamento Deck ↔ Card~~ ✅ (tabela `deck_cards`)
 7. Implementar Redis se for realmente necessário, ou remover do docker-compose
 8. Adicionar autenticação (sign up / log in estão no template mas não implementados)
 9. Usar variáveis de ambiente para SECRET_KEY em produção
 10. Adicionar validação e tratamento de erros mais robustos (páginas 404, flash messages consistentes)
-11. Registrar `api_bp` no `create_app()` para expor a API REST do game engine
-12. Criar diretório `data/cards/` com exemplos de cartas em JSON
+11. ~~Registrar `api_bp` no `create_app()`~~ ✅ Já registrado
+12. ~~Criar diretório `data/cards/`~~ ✅ Já existe com 67 exemplos
 13. Adicionar seed determinística ao `ResolvedorEfeitos` para reprodutibilidade
 14. Integrar o game engine ao frontend (HTMX) para partidas web

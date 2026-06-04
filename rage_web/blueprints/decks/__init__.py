@@ -29,7 +29,7 @@ def search():
                            deck_card_counts=deck_card_counts, form=form)
 
 
-@bp.get('/deck/<id>')
+@bp.get('/<id>')
 def read_deck(id):
     deck = rep.find_deck_by_id(id)
     if deck is None:
@@ -57,7 +57,7 @@ def new():
     return render_template('decks/deck.html', form=form)
 
 
-@bp.post('/deck')
+@bp.post('')
 def save():
     form = DeckForm()
     if form.validate_on_submit():
@@ -80,7 +80,7 @@ def save():
     return render_template('decks/deck.html', form=form)
 
 
-@bp.get('/delete_deck/<id>')
+@bp.post('/<id>/delete')
 def delete_deck(id):
     deck = rep.find_deck_by_id(id)
     if deck is None:
@@ -92,7 +92,7 @@ def delete_deck(id):
 
 # --- Rotas para gerenciar cartas no deck ---
 
-@bp.post('/deck/<id>/add-card')
+@bp.post('/<id>/add-card')
 def add_card(id):
     deck = rep.find_deck_by_id(id)
     if deck is None:
@@ -121,7 +121,7 @@ def add_card(id):
     return redirect(url_for('decks.read_deck', id=deck.id))
 
 
-@bp.post('/deck/<id>/remove-card')
+@bp.post('/<id>/remove-card')
 def remove_card(id):
     deck = rep.find_deck_by_id(id)
     if deck is None:
@@ -147,7 +147,7 @@ def remove_card(id):
     return redirect(url_for('decks.read_deck', id=deck.id))
 
 
-@bp.post('/deck/<id>/update-quantity')
+@bp.post('/<id>/update-quantity')
 def update_quantity(id):
     deck = rep.find_deck_by_id(id)
     if deck is None:
@@ -206,7 +206,7 @@ def import_deck():
     return render_template('decks/import.html')
 
 
-@bp.get('/deck/<id>/search-cards')
+@bp.get('/<id>/search-cards')
 def search_cards(id):
     """Busca cartas via HTMX para adicionar ao deck."""
     deck = rep.find_deck_by_id(id)
