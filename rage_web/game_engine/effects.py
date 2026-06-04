@@ -231,6 +231,12 @@ class ResolvedorEfeitos:
             'mao_inimiga': lambda: oponente.hand,
             'mao_aliada': lambda: jogador.hand,
             'hunting_grounds': lambda: 'hg',
+            'umbra_aliada': lambda: self._escolher_criatura(
+                jogador.umbra
+            ),
+            'umbra_inimiga': lambda: self._escolher_criatura(
+                oponente.umbra
+            ),
         }
 
         resolvedor = resolvedores_alvo.get(condicao)
@@ -401,24 +407,44 @@ class ResolvedorEfeitos:
 
     def _resolver_mover_para(self, efeito: Efeito, origem: CardInstance,
                             jogador: PlayerState, alvo) -> bool:
-        """Move uma criatura entre zonas."""
+        """Move uma criatura entre zonas (listas do PlayerState + zone tag)."""
         if not isinstance(alvo, CardInstance):
             return False
-        zona_destino = efeito.condicao or 'hunting_grounds'
+        zona_destino = efeito.alvo or efeito.condicao or 'hunting_grounds'
         zonas = {
             'hunting_grounds': Zone.HUNTING_GROUNDS,
             'umbra': Zone.UMBRA,
             'pack_home': Zone.PACK_HOME,
             'descarte': Zone.DISCARD_COMBAT,
         }
-        zona = zonas.get(zona_destino)
-        if zona:
-            alvo.zone = zona
-            self.game.add_log(
-                f'{alvo.name} movido para {zona_destino}'
-            )
-            return True
-        return False
+        nova_zona = zonas.get(zona_destino)
+        if not nova_zona:
+            return False
+
+        # Remove da lista de origem (nos dois jogadores)
+        oponente = self._get_oponente(jogador)
+        for lista in (jogador.pack_home, jogador.hunting_grounds,
+                      jogador.umbra, jogador.hand,
+                      oponente.pack_home, oponente.hunting_grounds,
+                      oponente.umbra, oponente.hand):
+            if alvo in lista:
+                lista.remove(alvo)
+                break
+
+        # Adiciona na lista de destino
+        map_destino = {
+            Zone.PACK_HOME: jogador.pack_home,
+            Zone.UMBRA: jogador.umbra,
+            Zone.HUNTING_GROUNDS: jogador.hunting_grounds,
+            Zone.DISCARD_COMBAT: jogador.discard_combat,
+        }
+        lista_destino = map_destino.get(nova_zona)
+        if lista_destino is not None:
+            lista_destino.append(alvo)
+
+        alvo.zone = nova_zona
+        self.game.add_log(f'{alvo.name} movido para {zona_destino}')
+        return True
 
     def _resolver_ganhar_vp(self, efeito: Efeito, origem: CardInstance,
                            jogador: PlayerState, alvo) -> bool:
