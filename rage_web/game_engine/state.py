@@ -47,6 +47,7 @@ class CardInstance:
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
     modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
+    damage_aggravated: int = 0  # Quanto do dano e agravado (nao regenera)
 
 
 @dataclass
@@ -184,22 +185,70 @@ class PlayerState:
             return self.draw_combat(qtd)
         return []
 
+    @staticmethod
+    def _pode_regenerar(c: CardInstance) -> bool:
+        """Verifica se criatura pode regenerar.
+
+        Regra (2.2.2):
+        - Todo Character regenera.
+        - Ally/Prey regeneram se creature class permite.
+        - Class: Garou, Bastet, Fera, Fomori, Vampire, Monster
+        - Nao regeneram: Banes, Animal, Faerie, Human, Spirit
+        - Nao regeneram criaturas mortas (health_current <= 0).
+
+        Returns:
+            True se pode regenerar.
+        """
+        if c.health_current <= 0:
+            return False
+        if c.card_type == 'Character':
+            return True
+        # Allies/Prey: checar keywords
+        kw = (c.keywords or '').lower()
+        nao_regeneram = {'bane', 'animal', 'faerie', 'human', 'spirit',
+                         'wraith', 'chulorviah', 'cult',
+                         'cultist'}
+        if any(nr in kw for nr in nao_regeneram):
+            return False
+        # Se tem classe que regenera
+        regeneram = {'garou', 'bastet', 'fera', 'fomori',
+                     'vampire', 'monster', 'werewolf',
+                     'ajaba', 'ananasi', 'corax', 'gurahl',
+                     'kitsune', 'mokole', 'nagah', 'nuwisha',
+                     'ratkin', 'rokea', 'shifter', 'shapeshifter'}
+        return any(r in kw for r in regeneram)
+
     def regeneration(self) -> list[str]:
         """Fase de Regeneration: cura dano nao-agravado.
 
         Regra (2.2.2):
-        - Personagens curam o menor dano nao-agravado
-        - So curam 1 carta de dano por turno
+        - Todo Character regenera.
+        - Ally/Prey regeneram se creature class permite.
+        - Cada criatura cura 1 de dano nao-agravado por turno.
+        - Cura o menor dano primeiro (simplificado: 1 HP).
+        - Dano agravado NAO regenera.
 
         Returns:
             Lista de logs.
         """
         logs = []
         for c in self.pack_home:
-            if c.health_current < c.health:
-                # Cura 1 de dano (simplificado: sem dano agravado)
-                c.health_current = min(c.health_current + 1, c.health)
-                logs.append(f'{c.name} regenerou 1 de vida')
+            if not self._pode_regenerar(c):
+                continue
+            dano_atual = c.health - c.health_current
+            if dano_atual <= 0:
+                continue
+            # Separar dano agravado do normal
+            dano_normal = dano_atual - c.damage_aggravated
+            if dano_normal <= 0:
+                # So tem dano agravado, nao regenera
+                logs.append(f'{c.name} tem apenas dano agravado '
+                            f'({c.damage_aggravated})')
+                continue
+            # Cura 1 de dano normal
+            c.health_current = min(c.health_current + 1, c.health)
+            logs.append(f'{c.name} regenerou 1 de dano '
+                        f'({c.health_current}/{c.health})')
         return logs
 
     def pagar_custo_rage(self, custo: int) -> Optional[str]:
