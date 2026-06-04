@@ -312,7 +312,7 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 1. ~~**🎲 Bot usa `random.choice` para alvos**~~ — ✅ `GameState` tem `rng: random.Random` próprio; `ResolvedorEfeitos` usa `self.rng.choice()`. Partidas com mesma seed são totalmente determinísticas.
 2. ~~**📢 Anunciador em `__post_init__`**~~ — ✅ Criado via `default_factory` no campo `anunciador`; `__post_init__` removido.
-3. **🔄 Verificação de Gauntlet incompleta** — O `_mesmo_lado_gauntlet` em `combat_queue.py` não considera personagens no mundo físico (pack_home) vs Umbra para o atacante.
+3. ~~**🔄 Verificação de Gauntlet incompleta**~~ — ✅ `_mesmo_lado_gauntlet` agora considera `hunting_grounds`, Caern/Territory/Spirit (ambos os lados) e a zona neutra de Hunting Grounds.
 4. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
 
 ---

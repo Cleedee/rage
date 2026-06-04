@@ -102,23 +102,41 @@ def _mesmo_lado_gauntlet(game: GameState, card_id_a: str,
     """Verifica se duas criaturas estao no mesmo lado do Gauntlet.
 
     Regra (5):
-    - Criaturas na Umbra so podem atacar com outras na Umbra.
+    - Criaturas na Umbra so podem atacar outras na Umbra.
     - Criaturas no mundo fisico so com outras no mundo fisico.
-    - Hunting Grounds ('hg') existe em ambos os lados.
+    - Criaturas em Hunting Grounds existem em ambos os lados.
+    - Caern, Territory e Spirits existem em ambos os lados.
     """
     if card_id_a == 'hg' or card_id_b == 'hg':
         return True
 
-    def _esta_na_umbra(cid: str) -> bool:
+    def _lado(cid: str) -> int:
+        """Returns: -1 = umbra, 0 = ambos os lados, 1 = mundo fisico."""
         for p in game.players:
             for c in p.umbra:
                 if str(c.card_id) == cid:
-                    return True
-        return False
+                    return -1
+            for c in p.hunting_grounds:
+                if str(c.card_id) == cid:
+                    return 0
+            for c in p.pack_home:
+                if str(c.card_id) == cid:
+                    if c.card_type in ('Caern', 'Territory') or 'Spirit' in (c.keywords or ''):
+                        return 0
+                    return 1
+        # Zona neutra de Hunting Grounds
+        for c in game.hunting_grounds_cards:
+            if str(c.card_id) == cid:
+                return 0
+        return 1  # padrao: mundo fisico
 
-    a_umbra = _esta_na_umbra(card_id_a)
-    b_umbra = _esta_na_umbra(card_id_b)
-    return a_umbra == b_umbra
+    lado_a = _lado(card_id_a)
+    lado_b = _lado(card_id_b)
+
+    if lado_a == 0 or lado_b == 0:
+        return True
+
+    return lado_a == lado_b
 
 
 def start_combat(game: GameState, attackers: list[str],
