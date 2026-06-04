@@ -1,0 +1,368 @@
+
+{% if game.winner %}
+<div id="winner-banner" class="notification is-success has-text-centered" style="font-size:1.5rem">
+  🏆 <strong>{{ game.winner_name }}</strong> venceu a partida!
+  <br><small>VP: {{ game.winner_vp }}</small>
+  <hr>
+  <a href="{{ url_for('game.new_game') }}" class="button is-primary">Nova Partida</a>
+</div>
+{% endif %}
+
+<div class="columns is-gapless" style="min-height:100vh">
+  {% for p in game.players %}
+  {% set is_current = loop.index0 == game.current_player_index %}
+  <div class="column is-half" style="display:flex; flex-direction:column">
+    <!-- Player header -->
+    <div class="p-2" style="background:{% if is_current %}#f0f8ff{% else %}#f5f5f5{% endif %};
+                border-bottom:2px solid {% if is_current %}#3273dc{% else %}#dbdbdb{% endif %}">
+      <div class="level is-mobile mb-0">
+        <div class="level-left">
+          <span class="tag is-medium {% if is_current %}is-info{% else %}is-light{% endif %}">
+            {{ p.name }}
+            {% if is_current %}<span class="ml-1">🎯</span>{% endif %}
+          </span>
+          <span class="tag is-warning ml-1">🏆 {{ p.victory_points }} VP</span>
+        </div>
+        <div class="level-right">
+          <span class="tag is-light">📚C{{ p.deck_combat_count }} S{{ p.deck_sept_count }}</span>
+          <span class="tag is-light">🗑️C{{ p.discard_combat_count }} S{{ p.discard_sept_count }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pack Home -->
+    <div class="px-2 pt-1">
+      <small class="has-text-grey">🏠 Pack Home</small>
+      <div class="field is-grouped is-grouped-multiline">
+        {% for c in p.pack_home %}
+        <div class="control">
+          <div class="tags has-addons">
+            <span class="tag {% if c.is_tapped %}is-dark{% else %}is-success{% endif %}"
+                  title="{{ c.name }} (R{{ c.rage }} G{{ c.gnosis }} R{{ c.renown }})">
+              <img src="{{ c.image_url }}" style="width:20px;height:28px;object-fit:cover;margin-right:4px"
+                   onerror="this.style.display='none'">
+              {{ c.name }}
+              {% if c.is_tapped %}<span class="ml-1">💤</span>{% endif %}
+            </span>
+            <span class="tag is-light">
+              ❤️{{ c.health_current }}/{{ c.health }}
+            </span>
+            {% if game.phase == 'umbra' and not c.is_tapped %}
+            <a class="tag is-link is-small"
+               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+               hx-vals='{"action":"step_umbra","card_id":"{{ c.card_id }}"}'
+               hx-target="#game-board"
+               hx-swap="outerHTML"
+               title="Step Sideways">🌙</a>
+            {% endif %}
+            {% if game.combat.is_active and not c.is_tapped %}
+            <a class="tag is-danger is-small"
+               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+               hx-vals='{"action":"attack","attacker_id":"{{ c.card_id }}"}'
+               hx-target="#game-board"
+               hx-swap="outerHTML"
+               title="Atacar Hunting Grounds">⚔️</a>
+            {% endif %}
+          </div>
+        </div>
+        {% else %}
+        <span class="tag is-light">Vazio</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Umbra -->
+    {% if p.umbra %}
+    <div class="px-2 pt-1">
+      <small class="has-text-grey">🌙 Umbra</small>
+      <div class="field is-grouped is-grouped-multiline">
+        {% for c in p.umbra %}
+        <div class="control">
+          <div class="tags has-addons">
+            <span class="tag is-purple">{{ c.name }}</span>
+            <span class="tag is-light">❤️{{ c.health_current }}/{{ c.health }}</span>
+            <a class="tag is-warning is-small"
+               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+               hx-vals='{"action":"step_back","card_id":"{{ c.card_id }}"}'
+               hx-target="#game-board"
+               hx-swap="outerHTML"
+               title="Voltar do Umbra">🔙</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Mão -->
+    <div class="px-2 pt-1" style="flex:1; min-height:100px">
+      <small class="has-text-grey">🃏 Mão ({{ p.hand|length }})</small>
+      <div class="field is-grouped is-grouped-multiline" style="max-height:140px; overflow-y:auto">
+        {% for c in p.hand %}
+        <div class="control">
+          <div class="tags has-addons">
+            <span class="tag is-info is-light" title="{{ c.name }}">
+              <img src="{{ c.image_url }}" style="width:16px;height:22px;object-fit:cover;margin-right:2px"
+                   onerror="this.style.display='none'">
+              {{ c.name[:20] }}
+              {% if c.modelo_id %}<span class="ml-1">✨</span>{% endif %}
+            </span>
+            {% if is_current and game.combat.is_active and loop.index0 < 10 %}
+            <span class="tag is-small">{{ loop.index0 }}</span>
+            {% endif %}
+          </div>
+        </div>
+        {% else %}
+        <span class="tag is-light">Vazia</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Victory Pile -->
+    {% if p.victory_pile %}
+    <div class="px-2 pt-1">
+      <small class="has-text-grey">🏆 Victory Pile ({{ p.victory_pile|length }})</small>
+      <div class="field is-grouped is-grouped-multiline">
+        {% for c in p.victory_pile %}
+        <span class="tag is-warning is-light">{{ c.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Combat Area -->
+{% if game.combat.is_active %}
+<div class="box" style="margin:0.5rem">
+  <div class="level">
+    <div class="level-left">
+      <span class="tag is-danger is-medium">⚔️ COMBATE</span>
+      <span class="tag is-info ml-1">{{ game.combat.step }}</span>
+      {% if game.combat.last_to_declare %}
+      <span class="tag is-warning ml-1">Último: {{ game.combat.last_to_declare }}</span>
+      {% endif %}
+    </div>
+    <div class="level-right">
+      <span class="tag is-light">
+        Atacantes: {{ game.combat.attackers|join(', ') }}
+      </span>
+      <span class="tag is-light">
+        Defensores: {{ game.combat.defenders|join(', ') }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Declarações -->
+  {% if game.combat.declarations %}
+  <table class="table is-bordered is-fullwidth is-narrow">
+    <thead>
+      <tr><th>Criatura</th><th>Ação</th></tr>
+    </thead>
+    <tbody>
+      {% for cid, action in game.combat.declarations.items() %}
+      <tr>
+        <td>{{ cid }}</td>
+        <td>
+          {% if action in ('strike','claw','bite') %}
+          <span class="tag is-danger">{{ action }}</span>
+          {% elif action in ('block','dodge') %}
+          <span class="tag is-success">{{ action }}</span>
+          {% else %}
+          <span class="tag is-light">{{ action }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <!-- Ações de combate -->
+  <div class="field is-grouped">
+    {% set combatants = game.combat.attackers + game.combat.defenders %}
+
+    {% if game.combat.step == 'declare' %}
+    {% for cid in combatants %}
+    {% if cid != 'hg' and cid not in game.combat.declarations %}
+    <div class="control">
+      <div class="dropdown is-hoverable">
+        <div class="dropdown-trigger">
+          <button class="button is-small is-danger is-outlined">{{ cid }}</button>
+        </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content">
+            {% for act in ['strike','block','dodge','claw','bite'] %}
+            <a class="dropdown-item"
+               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+               hx-vals='{"action":"declare","card_id":"{{ cid }}","combat_action":"{{ act }}"}'
+               hx-target="#game-board"
+               hx-swap="outerHTML">
+              {{ act }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="control">
+      <button class="button is-small is-warning"
+              hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+              hx-vals='{"action":"reveal"}'
+              hx-target="#game-board"
+              hx-swap="outerHTML">
+        👁️ Revelar Todos
+      </button>
+    </div>
+
+    {% elif game.combat.step == 'reveal' %}
+    {% for cid in combatants %}
+    {% if cid != 'hg' and cid == game.combat.last_to_declare %}
+    <div class="control">
+      <div class="dropdown is-hoverable">
+        <div class="dropdown-trigger">
+          <button class="button is-small is-warning is-outlined">🎭 Feint {{ cid }}</button>
+        </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content">
+            {% for act in ['strike','block','dodge','claw','bite'] %}
+            <a class="dropdown-item"
+               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+               hx-vals='{"action":"feint","card_id":"{{ cid }}","new_action":"{{ act }}"}'
+               hx-target="#game-board"
+               hx-swap="outerHTML">
+              {{ act }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="control">
+      <button class="button is-small is-primary"
+              hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+              hx-vals='{"action":"resolve"}'
+              hx-target="#game-board"
+              hx-swap="outerHTML">
+        ⚡ Resolver
+      </button>
+    </div>
+
+    {% elif game.combat.step in ('resolve','end') %}
+    <div class="control">
+      <button class="button is-small is-danger"
+              hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+              hx-vals='{"action":"end_combat"}'
+              hx-target="#game-board"
+              hx-swap="outerHTML">
+        🏁 Encerrar Combate
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Turn actions -->
+<div class="box" style="margin:0.5rem">
+  <div class="level">
+    <div class="level-left">
+      <span class="tag is-primary is-medium">
+        Turno {{ game.turn_number }} — {{ game.phase|upper }}
+      </span>
+      <span class="tag is-info ml-1">
+        Vez de: {{ game.current_player_name }}
+      </span>
+    </div>
+    <div class="level-right">
+      <div class="field is-grouped">
+        {% if not game.combat.is_active %}
+        <button class="button is-small is-success"
+                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+                hx-vals='{"action":"pass"}'
+                hx-target="#game-board"
+                hx-swap="outerHTML">
+          ✅ Passar
+        </button>
+        <button class="button is-small is-warning"
+                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+                hx-vals='{"action":"next"}'
+                hx-target="#game-board"
+                hx-swap="outerHTML">
+          ⏭️ Avançar Fase
+        </button>
+        <button class="button is-small is-light"
+                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+                hx-vals='{"action":"draw_combat"}'
+                hx-target="#game-board"
+                hx-swap="outerHTML">
+          📥 Comprar Combate
+        </button>
+        <button class="button is-small is-light"
+                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+                hx-vals='{"action":"draw_sept"}'
+                hx-target="#game-board"
+                hx-swap="outerHTML">
+          📥 Comprar Sept
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Jogar cartas da mao (do jogador atual) -->
+  {% set cp = game.players[game.current_player_index] %}
+  {% if cp.hand and not game.combat.is_active %}
+  <div class="field is-grouped is-grouped-multiline">
+    {% for c in cp.hand %}
+    <div class="control">
+      <div class="tags has-addons">
+        <span class="tag is-info is-light">{{ loop.index0 }}: {{ c.name[:15] }}</span>
+        {% if c.modelo_id %}
+        <a class="tag is-link is-small"
+           hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+           hx-vals='{"action":"use_card","hand_index":"{{ loop.index0 }}","modo_idx":"0"}'
+           hx-target="#game-board"
+           hx-swap="outerHTML"
+           title="Usar efeito">✨</a>
+        {% elif c.card_type == 'Character' %}
+        <a class="tag is-success is-small"
+           hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+           hx-vals='{"action":"play","hand_index":"{{ loop.index0 }}"}'
+           hx-target="#game-board"
+           hx-swap="outerHTML"
+           title="Jogar personagem">▶️</a>
+        {% else %}
+        <a class="tag is-primary is-small"
+           hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
+           hx-vals='{"action":"play","hand_index":"{{ loop.index0 }}"}'
+           hx-target="#game-board"
+           hx-swap="outerHTML"
+           title="Jogar carta">▶️</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- Game Log -->
+<div class="box" style="margin:0.5rem; background:#1a1a2e; color:#e0e0e0; font-family:monospace; font-size:0.8rem">
+  <strong style="color:#aaa">📋 Log</strong>
+  <div id="game-log" style="max-height:200px; overflow-y:auto; margin-top:4px"
+       hx-get="{{ url_for('game.game_log_partial', game_id=game.id) }}"
+       hx-trigger="every 3s"
+       hx-swap="innerHTML">
+    {% for entry in game.log %}
+    <div>{{ entry }}</div>
+    {% else %}
+    <div class="has-text-grey">Nenhum evento ainda.</div>
+    {% endfor %}
+  </div>
+</div>

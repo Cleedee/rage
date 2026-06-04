@@ -274,3 +274,12 @@ def get_card_image_url(card: Card) -> str | None:
     if os.path.exists(local_path):
         return f'/instance/images/{first_img}.jpg'
     return None
+
+
+def get_card_image_url_by_id(card_id: int) -> str | None:
+    """Retorna URL da imagem para um card_id (consulta DB)."""
+    from rage_web.models.card import Card
+    card = Card.query.get(card_id)
+    if not card:
+        return None
+    return get_card_image_url(card)

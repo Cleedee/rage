@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Nova Partida - Rage CCG{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">🎮 Nova Partida</h1>
+
+    <form method="POST" action="{{ url_for('game.create_game') }}">
+      <div class="columns">
+        <div class="column">
+          <div class="box">
+            <h2 class="subtitle">Jogador 1</h2>
+            <div class="field">
+              <label class="label">Nome</label>
+              <input class="input" name="p1_name" value="Jogador 1" required>
+            </div>
+            <div class="field">
+              <label class="label">Deck</label>
+              <div class="select is-fullwidth">
+                <select name="deck1">
+                  <option value="">-- Sample Game --</option>
+                  {% for d in decks %}
+                  <option value="{{ d.id }}">{{ d.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="box">
+            <h2 class="subtitle">Jogador 2</h2>
+            <div class="field">
+              <label class="label">Nome</label>
+              <input class="input" name="p2_name" value="Jogador 2" required>
+            </div>
+            <div class="field">
+              <label class="label">Deck</label>
+              <div class="select is-fullwidth">
+                <select name="deck2">
+                  <option value="">-- Sample Game --</option>
+                  {% for d in decks %}
+                  <option value="{{ d.id }}">{{ d.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Seed (opcional)</label>
+        <input class="input" name="seed" type="number" value="42" style="max-width:120px">
+      </div>
+
+      <div class="field is-grouped">
+        <button class="button is-primary">🚀 Iniciar Partida</button>
+        <a href="{{ url_for('home.index') }}" class="button is-light">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
