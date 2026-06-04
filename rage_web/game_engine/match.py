@@ -92,8 +92,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
         else:
             stale_steps += 1
 
-        # Se 50 steps sem mudanca de turno/fase, algo travou
-        if stale_steps > 50:
+        # Se 200 steps sem mudanca de turno/fase, algo travou
+        if stale_steps > 200:
             print(f'  ⚠️  TRAVOU ({stale_steps} steps sem progresso)')
             print_separator()
             print_board(game)
@@ -113,8 +113,10 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'  {color}{cp.name}: 🎭 {action}{reset}')
             elif action == 'reveal':
                 print(f'  {color}{cp.name}: 👁️  REVELAR{reset}')
-            elif action == 'end_combat':
+            elif action in ('end_combat', 'combat_end'):
                 print(f'  {color}{cp.name}: 🏁 FIM COMBATE{reset}')
+            elif action == 'combat_wait':
+                print(f'  {color}{cp.name}: ⏳ AGUARDANDO{reset}')
             elif action == 'draw':
                 print(f'  {color}{cp.name}: 📥 COMPRAR{reset}')
             elif action.startswith('pass'):
