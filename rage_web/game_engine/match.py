@@ -25,15 +25,27 @@ def print_separator(char='━', width=60):
 
 
 def print_board(game: GameState):
-    """Exibe o estado de forma compacta."""
+    """Exibe o estado de forma compacta e colorida."""
+    fase_icone = {
+        'redraw': '🔄', 'regeneration': '💚', 'resource': '🛠️',
+        'umbra': '🌙', 'moot': '🗳️', 'combat': '⚔️',
+    }
+    icone = fase_icone.get(game.phase, '?')
+    print(f'  ═══ Turno {game.turn_number} {icone} {game.phase.upper()} ═══')
     for p in game.players:
-        pack = ', '.join(f'{c.name}({c.health_current}/{c.health})'
-                        for c in p.pack_home) or '—'
+        pack = ', '.join(
+            f'{c.name}({c.health_current}/{c.health}{"🔒" if c.is_tapped else ""})'
+            for c in p.pack_home
+        ) or '—'
         hand = len(p.hand)
-        hg = ', '.join(c.name for c in p.hunting_grounds) or '—'
-        vp = f'VP {p.victory_points}/{p.renown_level}'
-        print(f'  {p.name:16s} │ Mao:{hand:2d} │ Pack: {pack}')
-        print(f'  {" " * 16} │ VP:{p.victory_points:2d} │ HG:  {hg}')
+        deck_c = len(p.deck_combat)
+        deck_s = len(p.deck_sept)
+        hg_local = ', '.join(c.name[:15] for c in p.hunting_grounds) or '—'
+        print(f'  {p.name:20s} 🃏{hand:2d} 📚C{deck_c:2d} S{deck_s:2d} '
+              f'🏆{p.victory_points}')
+        print(f'  {" "*20} 🏠 {pack}')
+        if p.hunting_grounds:
+            print(f'  {" "*20} 🎯 {hg_local}')
     if game.combat.is_active:
         atk = ', '.join(game.combat.attackers)
         dfd = ', '.join(game.combat.defenders)
@@ -42,16 +54,6 @@ def print_board(game: GameState):
         if 'declarations' in summary:
             for cid, action in summary['declarations'].items():
                 print(f'     {cid}: {action}')
-    fase_icone = {
-        'redraw': '🔄 REDRAW',
-        'regeneration': '💚 REGENERATION',
-        'resource': '🛠️ RESOURCE',
-        'umbra': '🌙 UMBRA',
-        'moot': '🗳️ MOOT',
-        'combat': '⚔️ COMBAT',
-    }
-    nome_fase = fase_icone.get(game.phase, game.phase.upper())
-    print(f'  Fase: {nome_fase} | Turno {game.turn_number}')
 
 
 def run_match(seed: int = 42, max_turns: int = 30,

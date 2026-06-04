@@ -131,6 +131,38 @@ def create_sample_game(seed: int = 42) -> GameState:
     return g
 
 
+def _barra(valor: int, maximo: int, largura: int = 20) -> str:
+    """Barra de progresso tipo [████░░░░] VP."""
+    if maximo == 0:
+        return f'│   VP: 0/{maximo}'
+    preenchido = int((valor / maximo) * largura)
+    bar = '█' * min(preenchido, largura) + '░' * (largura - min(preenchido, largura))
+    return f'│ 🏆 VP [{bar}] {valor}/{maximo}'
+
+
+def _sigla_tipo(tipo: str) -> str:
+    """Sigla curta para tipo de carta."""
+    mapa = {
+        'Combat Action': '⚔️A',
+        'Combat Event': '⚡E',
+        'Action': '📋A',
+        'Event': '📋E',
+        'Gift': '🎁',
+        'Equipment': '🛡️',
+        'Ally': '🤝',
+        'Enemy': '👹',
+        'Victim': '🎯',
+        'Territory': '🏞️',
+        'Quest': '📜',
+        'Battlefield': '🏴',
+        'Rite': '🔮',
+        'Moot': '🗣️',
+    }
+    if 'Character' in tipo:
+        return '🧑'
+    return mapa.get(tipo, '📄')
+
+
 def _card_ref(c: CardInstance) -> str:
     """Retorna referencia curta de uma carta."""
     return f'#{c.card_id} {c.name}'
@@ -162,57 +194,123 @@ class RageCLI(cmd.Cmd):
     # ------------------------------------------------------------------
 
     def do_STATUS(self, arg):
-        """STATUS - Mostra o estado atual da partida."""
+        """STATUS - Mostra o estado completo da partida."""
         g = self.game
         cp = g.current_player
 
-        print()
-        # Mapa de fases com icones
+        # ── Cabecalho ──
         fase_icone = {
-            'redraw': '🔄 REDRAW',
-            'regeneration': '💚 REGENERATION',
-            'resource': '🛠️ RESOURCE',
-            'umbra': '🌙 UMBRA',
-            'moot': '🗳️ MOOT',
-            'combat': '⚔️ COMBAT',
+            'redraw': '🔄', 'regeneration': '💚', 'resource': '🛠️',
+            'umbra': '🌙', 'moot': '🗳️', 'combat': '⚔️',
         }
-        nome_fase = fase_icone.get(g.phase, g.phase.upper())
-        print(f'Turno {g.turn_number} | Fase: {nome_fase} | '
-              f'Vez de: {cp.name}')
+        icone = fase_icone.get(g.phase, '?')
+        print()
+        print(f'╔══ RAGE CCG — Turno {g.turn_number} {icone} {g.phase.upper()} ══╗')
+        print(f'║ Vez de: {cp.name:40s}║')
+        print(f'╚═══════════════════════════════════════════════════╝')
 
         if g.combat.is_active:
             self._show_combat_status()
 
         for p in g.players:
+            eh_cp = ' 👈' if p.id == cp.id else ''
             print()
-            print(f'── {p.name} ──')
-            print(f'   VP: {p.victory_points}/{p.renown_level}  '
-                  f'Rage Pool: {p.rage_pool}  Gnosis Pool: {p.gnosis_pool}')
+            print(f'┌─ {p.name}{eh_cp} ─────────────────────────────────┐')
 
-            # Pack Home
+            # Stats: VP, decks, discards
+            print(f'│ {_barra(p.victory_points, p.renown_level, 20)}')
+            print(f'│   VP {p.victory_points}/{p.renown_level}  '
+                  f'Rage Pool: {p.rage_pool}  Gnosis Pool: {p.gnosis_pool}')
+            print(f'│   📚 Combat: {len(p.deck_combat)} rest.  '
+                  f'Sept: {len(p.deck_sept)} rest.')
+            print(f'│   🗑️ D/C:{len(p.discard_combat)}  D/S:{len(p.discard_sept)}')
+
+            # Pack Home (criaturas em jogo)
             if p.pack_home:
-                print(f'   Pack Home ({len(p.pack_home)}):')
+                print(f'│ 🏠 Pack Home ({len(p.pack_home)}):')
                 for c in p.pack_home:
-                    tap = ' (tapped)' if c.is_tapped else ''
-                    print(f'     [{c.card_id}] {c.name}{tap}  '
-                          f'R:{c.rage} G:{c.gnosis} H:{c.health_current}/{c.health}')
+                    tap = '🔒' if c.is_tapped else '  '
+                    hp = f'{c.health_current}/{c.health}'
+                    mods = ''
+                    if c.modelo_id:
+                        mods += ' ✨'
+                    if c.rage or c.gnosis:
+                        mods += f' R:{c.rage} G:{c.gnosis}'
+                    print(f'│   {tap} [{c.card_id:4d}] {c.name:28s} '
+                          f'❤️{hp:5s}{mods}')
+            else:
+                print(f'│ 🏠 Pack Home: (vazio)')
+
+            # Umbra
+            if p.umbra:
+                print(f'│ 🌙 Umbra ({len(p.umbra)}):')
+                for c in p.umbra:
+                    print(f'│     [{c.card_id}] {c.name}')
 
             # Hunting Grounds
-            if p.hunting_grounds:
-                print(f'   Hunting Grounds ({len(p.hunting_grounds)}):')
-                for c in p.hunting_grounds:
-                    print(f'     [{c.card_id}] {c.name}')
+            hg_local = p.hunting_grounds
+            if hg_local:
+                print(f'│ 🎯 HG ({len(hg_local)}):')
+                for c in hg_local:
+                    s = f'│     [{c.card_id}] {c.name}'
+                    if hasattr(c, 'health') and c.health:
+                        s += f' ❤️{c.health_current}/{c.health}'
+                    print(s)
+
+            # Victory Pile
+            if p.victory_pile:
+                print(f'│ 🏆 VPs: {" | ".join(c.name for c in p.victory_pile)}')
 
             # Mao
             if p.hand:
-                print(f'   Mao ({len(p.hand)}):')
+                print(f'│ 🃏 Mao ({len(p.hand)}):')
                 for i, c in enumerate(p.hand):
-                    print(f'     [{i}] {c.name}  ({c.card_type})')
+                    tipo_sigla = _sigla_tipo(c.card_type)
+                    efeito = ' 🎴' if c.modelo_id else ''
+                    rage_info = f' D:{c.damage}' if c.damage else ''
+                    print(f'│   [{i:2d}] {c.name:30s} {tipo_sigla}{efeito}{rage_info}')
 
+            # Discards recentes
+            for disc_name, disc_list in [('⚔️ Combat disc.', p.discard_combat),
+                                          ('🛡️ Sept disc.', p.discard_sept)]:
+                if disc_list:
+                    ultimos = disc_list[-3:]
+                    print(f'│   {disc_name} ({len(disc_list)}): '
+                          + ', '.join(c.name for c in ultimos))
+
+        # ── Hunting Grounds global ──
         print()
+        print('┌─ Hunting Grounds (Global) ─────────────────────┐')
+        if g.hunting_grounds_cards:
+            for c in g.hunting_grounds_cards:
+                hp = f' ❤️{c.health_current}/{c.health}' if hasattr(c, 'health') and c.health else ''
+                print(f'│   [{c.card_id}] {c.name}{hp}')
+        else:
+            print(f'│   (vazio)')
+
+        # ── Anunciador ──
+        an = g.anunciador
+        if an.tem_anuncio_ativo:
+            print()
+            print('┌─ 📢 Anuncio ──────────────────────────────────┐')
+            e = an.anuncio_atual
+            status_an = 'ANULADO' if e.anulado else an.estado.value.upper()
+            print(f'│   {e.descricao} [{status_an}]')
+            if an.estado.value == 'aguardando_modo':
+                print(f'│   ⏳ Aguardando escolha de modo')
+                if an.prompt_atual and 'modos' in an.prompt_atual:
+                    for m in an.prompt_atual['modos']:
+                        efs = ', '.join(m['efeitos'])
+                        print(f'│     [{m["indice"]}] {m["descricao"]}  ({efs})')
+
+        # ── Log ──
+        print()
+        print('┌─ Log (ultimas 8) ──────────────────────────────┐')
         if g.log:
-            for entry in g.log[-5:]:
-                print(f'  {entry}')
+            for entry in g.log[-8:]:
+                print(f'│ {entry}')
+        else:
+            print(f'│ (vazio)')
         print()
 
     def _show_combat_status(self):
