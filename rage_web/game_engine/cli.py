@@ -300,6 +300,14 @@ class RageCLI(cmd.Cmd):
                     print(f'│   {disc_name} ({len(disc_list)}): '
                           + ', '.join(c.name for c in ultimos))
 
+        # ── Moot ──
+        if g.moot_atual and not g.moot_atual.resolvido:
+            print()
+            print('┌─ 🗳️ Moot ───────────────────────────────────┐')
+            print(f'│   {g.moot_atual.nome} '
+                  f'({"Board" if g.moot_atual.is_board_meeting else "Moot"})')
+            print(f'│   SIM: {g.moot_atual.votos_sim}  NAO: {g.moot_atual.votos_nao}')
+
         # ── Hunting Grounds global ──
         print()
         print('┌─ Hunting Grounds (Global) ─────────────────────┐')

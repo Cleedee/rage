@@ -103,8 +103,7 @@ class PriorityBot:
             return self._agir_umbra()
 
         if g.phase == 'moot':
-            self._pass_turn()
-            return 'pass_moot'
+            return self._agir_moot()
 
         # Combat phase
         return self._agir_combate()
@@ -208,6 +207,33 @@ class PriorityBot:
 
         self._pass_turn()
         return 'pass_umbra'
+
+    def _agir_moot(self) -> str:
+        """Age na fase de Moot: votar em Juntas.
+
+        Regra (2.2.5):
+        - Personagens tem votos = Renome.
+        - Votacao em ordem de Renome.
+        - Se aprovado, resolve imediatamente.
+        """
+        g = self.game
+
+        # Se tem uma Junta ativa, vota
+        if g.moot_atual and not g.moot_atual.resolvido:
+            # Vota SIM (bot sempre aprova sua propria junta)
+            g.votar_moot(self.player_id, a_favor=True)
+            g.resolver_moot()
+            return f'moot_voto_{g.moot_atual.nome}'
+
+        # Tenta chamar uma Junta (so se tiver carta de Moot na mao)
+        for i, card in enumerate(self.player.hand):
+            if card.card_type == 'Moot':
+                g.chamar_moot(self.player_id, nome=card.name)
+                self.player.hand.pop(i)
+                return f'moot_chamar_{card.name}'
+
+        self._pass_turn()
+        return 'pass_moot'
 
     def _agir_combate(self) -> str:
         """Age na fase de Combat: acao alfa + cartas + atacar."""

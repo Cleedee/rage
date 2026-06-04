@@ -355,6 +355,36 @@ class CombatState:
 
 
 @dataclass
+class MootState:
+    """Estado de uma Junta (Moot ou Board Meeting) sendo votada."""
+    nome: str = ''
+    dono_id: str = ''  # Jogador que chamou a Junta
+    renown_min: int = 0  # Renome minimo para chamar
+    votos_sim: int = 0
+    votos_nao: int = 0
+    aprovado: bool = False
+    resolvido: bool = False
+    is_board_meeting: bool = False  # True = Board Meeting (Wyrm), False = Moot (Gaia)
+
+    @property
+    def resultado(self) -> str:
+        if self.resolvido:
+            return 'APROVADO' if self.aprovado else 'REJEITADO'
+        return 'VOTACAO'
+
+    def votar(self, renown: int, a_favor: bool):
+        if a_favor:
+            self.votos_sim += renown
+        else:
+            self.votos_nao += renown
+
+    def resolver(self):
+        """Resolve a votacao: sim > nao = aprovado."""
+        self.aprovado = self.votos_sim > self.votos_nao
+        self.resolvido = True
+
+
+@dataclass
 class GameState:
     """Estado completo de uma partida."""
     id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
@@ -370,6 +400,9 @@ class GameState:
 
     # Sistema de anuncio de efeitos (Rage: anuncio -> resposta -> resolucao)
     anunciador: 'Anunciador' = None
+
+    # Estado de Moot (Juntas)
+    moot_atual: Optional['MootState'] = None
 
     def __post_init__(self):
         from rage_web.game_engine.stack import Anunciador
@@ -447,6 +480,62 @@ class GameState:
                 drawn = p.redraw_sept(descartar_primeiro=False)
                 if drawn:
                     self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de sept')
+
+    def chamar_moot(self, jogador_id: str, nome: str = 'Moot',
+                     is_board_meeting: bool = False) -> bool:
+        """Chama uma Junta (Moot ou Board Meeting).
+
+        Regra (2.2.5):
+        - So pode chamar 1 Junta por turno.
+        - Personagem precisa Renown >= requisito.
+        - Gaia chama Moots, Wyrm chama Board Meetings.
+
+        Args:
+            jogador_id: ID do jogador que chamou.
+            nome: Nome da Junta.
+            is_board_meeting: True = Board Meeting, False = Moot.
+
+        Returns:
+            True se foi chamada.
+        """
+        if self.moot_atual and not self.moot_atual.resolvido:
+            return False  # Ja tem uma Junta em andamento
+
+        self.moot_atual = MootState(
+            nome=nome,
+            dono_id=jogador_id,
+            is_board_meeting=is_board_meeting,
+        )
+        self.add_log(f'{jogador_id} chamou {nome}')
+        return True
+
+    def votar_moot(self, jogador_id: str, a_favor: bool) -> bool:
+        """Vota na Junta atual com todo o Renome do jogador.
+
+        Returns:
+            True se o voto foi computado.
+        """
+        if not self.moot_atual or self.moot_atual.resolvido:
+            return False
+        jogador = next((p for p in self.players if p.id == jogador_id), None)
+        if not jogador:
+            return False
+        # Soma Renome de todos os personagens do jogador
+        renown_total = sum(c.renown for c in jogador.pack_home)
+        self.moot_atual.votar(renown_total, a_favor)
+        self.add_log(f'{jogador.name} votou {"SIM" if a_favor else "NAO"} '
+                     f'com {renown_total} votos')
+        return True
+
+    def resolver_moot(self) -> bool:
+        """Resolve a Junta atual."""
+        if not self.moot_atual or self.moot_atual.resolvido:
+            return False
+        self.moot_atual.resolver()
+        self.add_log(f'Junta {self.moot_atual.nome}: '
+                     f'{self.moot_atual.resultado} '
+                     f'({self.moot_atual.votos_sim} x {self.moot_atual.votos_nao})')
+        return True
 
     def add_log(self, message: str):
         """Adiciona entrada no log da partida."""
