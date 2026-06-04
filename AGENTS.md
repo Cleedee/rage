@@ -321,7 +321,7 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 1. ~~**🏗️ `database.db` versionado**~~ — ✅ Incluído no `.gitignore`. Não está mais versionado.
 
-2. **🐍 Inconsistência no formulário de Character** — O blueprint `cards` usa `CharacterCardForm` mas o formulário não tem campo `tipo`. Em `save_new_character()` o código tenta acessar `form.tipo.data` que não existe no formulário. Isso vai gerar erro ou salvar sem tipo.
+2. ~~**🐍 Inconsistência no formulário de Character**~~ — ✅ `CharacterCardForm` já tem campo `tipo`; `save_new_character()` removida (era duplicada).
 
 3. ~~**🔀 Rotas duplicadas / inconsistentes**~~ — ✅ Padronizadas em rotas RESTful (GET/POST/DELETE consistentes, URLs hierárquicas, sem duplicatas).
 
