@@ -4,18 +4,24 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 3 de dano",
+      "descricao": "Causar 3 de dano e impedir fuga ate fim do combate",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
           "quantidade": 3
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "alvo": "nao_fugir",
+          "duracao": "end_of_combat"
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1359,
     "texto_original": "Requires: not in Homid form. If the user is not frenzied, a creature wounded by this card cannot escape, step sideways or be removed from combat until after the next round of combat.",
     "keywords": "",
@@ -23,6 +29,6 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }
