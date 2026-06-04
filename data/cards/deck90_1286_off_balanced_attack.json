@@ -2,7 +2,6 @@
   "id": "card_1286",
   "nome": "Off-balanced Attack",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Causar 2 de dano",

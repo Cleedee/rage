@@ -2,7 +2,6 @@
   "id": "card_114",
   "nome": "Gang Beating",
   "tipo": "Combat Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Comprar 3 carta(s) de combate",

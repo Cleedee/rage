@@ -2,7 +2,6 @@
   "id": "card_1329",
   "nome": "Pistol Whip",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Causar 1 de dano (ataque_rapido)",

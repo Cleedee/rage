@@ -2,7 +2,6 @@
   "id": "card_122",
   "nome": "Hunting Party",
   "tipo": "Combat Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Bonus ao declarar ataque",

@@ -2,7 +2,6 @@
   "id": "card_1624",
   "nome": "Recycle",
   "tipo": "Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Comprar carta de sept",

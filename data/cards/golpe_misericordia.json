@@ -2,7 +2,6 @@
   "id": "golpe_misericordia",
   "nome": "Golpe de Misericórdia",
   "tipo": "combate",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Matar uma criatura ferida",

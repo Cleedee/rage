@@ -2,7 +2,6 @@
   "id": "card_213",
   "nome": "Visit from White Father",
   "tipo": "Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Comprar carta de sept",

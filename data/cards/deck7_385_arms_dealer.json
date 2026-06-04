@@ -2,7 +2,6 @@
   "id": "card_385",
   "nome": "Arms Dealer",
   "tipo": "Ally",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Buscar Firearm no deck de sept",

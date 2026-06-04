@@ -2,7 +2,6 @@
   "id": "card_282",
   "nome": "Attacking the Wyrm",
   "tipo": "Combat Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Todos do pack atacam junto",

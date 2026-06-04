@@ -2,7 +2,6 @@
   "id": "card_698",
   "nome": "Sniper Rifle",
   "tipo": "Equipment",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Usar arma (permite acoes de combate)",

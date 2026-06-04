@@ -2,7 +2,6 @@
   "id": "card_1414",
   "nome": "Cornered Rat",
   "tipo": "Combat Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Entrar em frenesi limitado",

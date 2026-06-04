@@ -2,7 +2,6 @@
   "id": "card_402",
   "nome": "Flame Spirit",
   "tipo": "Ally",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Queimar-se em ataque de 3 de dano",

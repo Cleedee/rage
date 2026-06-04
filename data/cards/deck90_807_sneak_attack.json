@@ -2,7 +2,6 @@
   "id": "card_807",
   "nome": "Sneak Attack",
   "tipo": "Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Atacar qualquer personagem",

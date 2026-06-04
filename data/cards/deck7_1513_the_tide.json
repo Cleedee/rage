@@ -2,7 +2,6 @@
   "id": "card_1513",
   "nome": "The Tide",
   "tipo": "Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Buscar Humano no deck de sept",

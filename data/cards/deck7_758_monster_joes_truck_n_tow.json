@@ -2,7 +2,6 @@
   "id": "card_758",
   "nome": "Monster Joe's Truck-n-Tow",
   "tipo": "Territory",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Buscar equipamento no deck",

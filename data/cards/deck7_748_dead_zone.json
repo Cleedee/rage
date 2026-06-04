@@ -2,7 +2,6 @@
   "id": "card_748",
   "nome": "Dead Zone",
   "tipo": "Territory",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Proteger de Gifts",

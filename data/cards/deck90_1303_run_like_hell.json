@@ -2,7 +2,6 @@
   "id": "card_1303",
   "nome": "Run Like Hell",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Fugir do combate",

@@ -2,7 +2,6 @@
   "id": "card_823",
   "nome": "Checking the Classifieds",
   "tipo": "Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Buscar Territorio do deck",

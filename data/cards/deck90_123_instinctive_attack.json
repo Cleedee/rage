@@ -2,7 +2,6 @@
   "id": "card_123",
   "nome": "Instinctive Attack",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Causar 2 de dano (instintivo)",

@@ -2,7 +2,6 @@
   "id": "card_313",
   "nome": "Dry Gulch",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Causar 4 de dano",

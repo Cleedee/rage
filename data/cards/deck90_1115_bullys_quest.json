@@ -2,7 +2,6 @@
   "id": "card_1115",
   "nome": "Bully's Quest",
   "tipo": "Quest",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Matar vitima de Renome 3 ou menos",

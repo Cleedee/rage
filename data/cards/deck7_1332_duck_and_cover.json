@@ -2,7 +2,6 @@
   "id": "card_1332",
   "nome": "Duck and Cover",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Esquivar de 1 ataque(s)",

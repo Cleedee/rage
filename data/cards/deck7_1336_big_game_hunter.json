@@ -2,7 +2,6 @@
   "id": "card_1336",
   "nome": "Big Game Hunter",
   "tipo": "Enemy",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Atacar com arma de fogo",

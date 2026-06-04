@@ -2,7 +2,6 @@
   "id": "card_285",
   "nome": "Bitch Slap",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Causar 2 de dano",

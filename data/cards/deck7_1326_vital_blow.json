@@ -2,7 +2,6 @@
   "id": "card_1326",
   "nome": "Vital Blow",
   "tipo": "Combat Action",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Causar 4 de dano",

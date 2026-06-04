@@ -2,7 +2,6 @@
   "id": "card_1322",
   "nome": "Taking the Death Blow",
   "tipo": "Combat Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Redirecionar ferimento mortal",

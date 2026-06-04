@@ -2,7 +2,6 @@
   "id": "card_272",
   "nome": "Flak Jacket",
   "tipo": "Equipment",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Bloquear ataque (armadura)",

@@ -2,7 +2,6 @@
   "id": "salto_umbral",
   "nome": "Salto Umbral",
   "tipo": "event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Move criatura aliada para Umbra",

@@ -2,7 +2,6 @@
   "id": "card_1389",
   "nome": "Firyal the Whip",
   "tipo": "Character - Gaia",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Ganhar arma se ataque de Rage <=2",

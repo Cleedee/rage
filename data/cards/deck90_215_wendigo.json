@@ -2,7 +2,6 @@
   "id": "card_215",
   "nome": "Wendigo",
   "tipo": "Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Totem do pack",

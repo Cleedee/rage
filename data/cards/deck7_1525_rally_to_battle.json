@@ -2,7 +2,6 @@
   "id": "card_1525",
   "nome": "Rally to Battle",
   "tipo": "Combat Event",
-  "custo_acoes": 1,
   "modos": [
     {
       "descricao": "Comprar 3 carta(s) de combate",
