@@ -290,26 +290,102 @@ class PriorityBot:
     def _try_develop_board(self) -> Optional[str]:
         """Prioridade 3: Desenvolver mesa.
 
-        Joga personagens da mao no Pack Home.
-        Prefere cartas do tipo Character.
+        Usa cartas de efeito, depois joga personagens.
         """
         me = self.player
 
         if not me.hand:
             return None
 
-        # Procura por personagens na mao
+        # 1. Usa cartas com efeitos (modelo_id) prioritariamente
+        for i, card in enumerate(me.hand):
+            if card.modelo_id:
+                modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                return self._usar_carta_efeito(i, modo_idx, card)
+
+        # 2. Procura por personagens na mao
         for i, card in enumerate(me.hand):
             if card.card_type == 'Character':
                 self._play_card(i)
                 return f'play_character_{card.card_id}'
 
-        # Joga a primeira carta da mao
+        # 3. Joga a primeira carta da mao
         if me.hand:
             card = me.hand[0]
             self._play_card(0)
             return f'play_{card.card_id}'
         return None
+
+    def _escolher_melhor_modo(self, modelo_id: str) -> int:
+        """Escolhe o melhor modo para uma carta de efeito.
+
+        Analisa o estado do tabuleiro e seleciona o modo
+        mais vantajoso.
+        """
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO
+        modelo = CARTAS_EXEMPLO.get(modelo_id)
+        if not modelo or not modelo.modos:
+            return 0
+
+        opp = self._get_opponent()
+        me = self.player
+
+        # Preferencias por id de carta
+        preferencias = {
+            'golpe_misericordia': self._modo_golpe_misericordia(me, opp),
+            'toque_curativo': self._modo_toque_curativo(me),
+        }
+
+        return preferencias.get(modelo_id, 0)
+
+    def _modo_golpe_misericordia(self, me, opp) -> int:
+        """Escolhe modo do Golpe de Misericordia.
+
+        Modo 0: destruir ferido (se oponente tem criatura ferida)
+        Modo 1: descarte (se oponente tem mao grande)
+        Modo 2: dano (padrao)
+        """
+        # Modo 0: destruir criatura inimiga ferida
+        for c in opp.pack_home:
+            if c.health > 0 and c.health_current < c.health:
+                return 0
+
+        # Modo 1: descarte se oponente tem mao grande
+        if len(opp.hand) >= 5:
+            return 1
+
+        # Modo 2: dano
+        return 2
+
+    def _modo_toque_curativo(self, me) -> int:
+        """Escolhe modo do Toque Curativo.
+
+        Modo 0: curar 3 (se tem criatura ferida)
+        """
+        for c in me.pack_home:
+            if c.health > 0 and c.health_current < c.health:
+                return 0
+        return 0
+
+    def _usar_carta_efeito(self, hand_index: int, modo_idx: int,
+                            card) -> str:
+        """Usa uma carta de efeito da mao."""
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+        modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+        if not modelo:
+            self._play_card(hand_index)
+            return f'play_{card.card_id}'
+
+        # Remove da mao e aplica
+        self.player.hand.pop(hand_index)
+        logs = aplicar_carta(self.game, modelo, self.player_id,
+                              modo_idx=modo_idx)
+
+        modo = modelo.modos[modo_idx]
+        desc = f'use_{card.modelo_id}_modo{modo_idx}'
+        self.game.add_log(
+            f'[BOT] {self.player.name} usou {card.name} ({modo.descricao})')
+        return desc
 
     def _try_attack(self) -> Optional[str]:
         """Prioridade 4: Atacar.

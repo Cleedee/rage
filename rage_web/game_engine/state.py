@@ -46,6 +46,7 @@ class CardInstance:
     is_tapped: bool = False
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
+    modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
 
 
 @dataclass

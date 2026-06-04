@@ -106,6 +106,22 @@ def create_sample_game(seed: int = 42) -> GameState:
 
     g = GameState(players=[p1, p2])
 
+    # Adiciona cartas com efeitos (modelo_id) no deck de combate
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+    efeito_ids = list(CARTAS_EXEMPLO.keys())
+    for i, mid in enumerate(efeito_ids):
+        modelo = CARTAS_EXEMPLO[mid]
+        # P1 recebe metade, P2 recebe a outra
+        owner = 'p1' if i % 2 == 0 else 'p2'
+        player = p1 if i % 2 == 0 else p2
+        card = CardInstance(
+            card_id=600 + i, name=modelo.nome, card_type=modelo.tipo,
+            zone=Zone.DECK_COMBAT, owner_id=owner, controller_id=owner,
+            modelo_id=mid,
+            rage=0, gnosis=0, health=0, health_current=0,
+        )
+        player.deck_combat.append(card)
+
     # Compra mao inicial
     for p in g.players:
         p.draw_combat(3)
@@ -275,6 +291,62 @@ class RageCLI(cmd.Cmd):
         g.add_log(f'{cp.name} jogou {card.name}')
 
         print(f'  Jogou: {card.name} ({card.card_type}) no Pack Home')
+
+    def do_USE(self, arg):
+        """USE <indice> [modo] - Usa uma carta de efeito da mao.
+
+        Se a carta tiver modelo de efeitos (effects.py), aplica os
+        efeitos do modo escolhido (padrao: modo 0).
+
+        Exemplos:
+          USE 0            - usa carta no indice 0 (modo 0)
+          USE 1 2          - usa carta no indice 1 (modo 2)
+        """
+        g = self.game
+        cp = g.current_player
+
+        args = arg.split()
+        if not args:
+            print('Uso: USE <indice> [modo]')
+            return
+
+        try:
+            idx = int(args[0])
+            modo_idx = int(args[1]) if len(args) > 1 else 0
+        except ValueError:
+            print('Uso: USE <indice> [modo]')
+            return
+
+        if idx < 0 or idx >= len(cp.hand):
+            print(f'Indice invalido. Mao tem {len(cp.hand)} cartas.')
+            return
+
+        card = cp.hand[idx]
+        if not card.modelo_id:
+            print(f'Carta {card.name} nao tem modelo de efeitos.')
+            print('Use PLAY para joga-la no Pack Home.')
+            return
+
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+        modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+        if not modelo:
+            print(f'Modelo {card.modelo_id} nao encontrado.')
+            return
+
+        if modo_idx < 0 or modo_idx >= len(modelo.modos):
+            print(f'Modo invalido. Modos: {len(modelo.modos)}')
+            return
+
+        # Remove da mao
+        cp.hand.pop(idx)
+
+        # Aplica os efeitos
+        logs = aplicar_carta(g, modelo, cp.id, modo_idx=modo_idx)
+        for log in logs:
+            print(f'  {log}')
+
+        modo = modelo.modos[modo_idx]
+        print(f'  Usou: {card.name} ({modo.descricao})')
 
     def do_ATTACK(self, arg):
         """ATTACK <id_atacante> [id_defensor] - Inicia combate entre criaturas.

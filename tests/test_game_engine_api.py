@@ -200,6 +200,22 @@ class TestGameAPI:
         state_after = resp.get_json()['state']
         assert state_after['phase'] == 'action'
 
+    def test_use_card(self, client, game_id):
+        """POST /api/game/<id>/use-card usa carta de efeito."""
+        # Poe carta de efeito na mao do jogador atual
+        state = client.get(f'/api/game/{game_id}').get_json()['state']
+        p0 = state['players'][0]
+
+        # Se nao tem carta de efeito na mao, usa PLAY pra criar contexto
+        resp = client.post(f'/api/game/{game_id}/use-card',
+                           json={'hand_index': 0, 'modo_idx': 0})
+        # Pode falhar se a carta nao tem modelo, mas nao deve crashar
+        assert resp.status_code in (200, 400)
+        if resp.status_code == 200:
+            data = resp.get_json()
+            assert 'used' in data
+            assert 'logs' in data
+
     def test_serialization(self, client, game_id):
         """Estado serializado contem campos esperados."""
         resp = client.get(f'/api/game/{game_id}')

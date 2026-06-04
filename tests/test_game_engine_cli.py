@@ -187,3 +187,36 @@ class TestRageCLI:
         """DECLARE sem combate."""
         cli.onecmd('DECLARE 500 strike')
         assert not cli.game.combat.is_active
+
+    def test_use_effect_card(self, cli):
+        """USE usa carta de efeito da mao."""
+        cp = cli.game.current_player
+        # Garante que tem carta com modelo_id na mao
+        has_effect = any(c.modelo_id for c in cp.hand)
+        if not has_effect:
+            # Poe uma carta de efeito na mao
+            from rage_web.game_engine.state import CardInstance, Zone
+            card = CardInstance(
+                card_id=999, name='Golpe de Misericórdia',
+                card_type='combate', zone=Zone.HAND,
+                owner_id=cp.id, controller_id=cp.id,
+                modelo_id='golpe_misericordia',
+            )
+            cp.hand.append(card)
+        idx = next(i for i, c in enumerate(cp.hand) if c.modelo_id)
+        cli.onecmd(f'USE {idx}')
+        # A carta foi removida da mao
+        assert all(c.modelo_id != 'golpe_misericordia' or c not in cp.hand
+                   for c in cp.hand)
+
+    def test_use_non_effect_card(self, cli):
+        """USE em carta sem modelo exibe mensagem."""
+        cp = cli.game.current_player
+        # Encontra carta sem modelo_id
+        idx = None
+        for i, c in enumerate(cp.hand):
+            if not c.modelo_id:
+                idx = i
+                break
+        if idx is not None:
+            cli.onecmd(f'USE {idx}')  # Nao deve quebrar

@@ -245,6 +245,51 @@ def api_play(game_id: str):
     })
 
 
+@api_bp.route('/<game_id>/use-card', methods=['POST'])
+def api_use_card(game_id: str):
+    """Usa uma carta de efeito da mao.
+
+    Body:
+        hand_index: int
+        modo_idx: int (opcional, default 0)
+    """
+    game = _games.get(game_id)
+    if not game:
+        return jsonify({'error': 'Partida nao encontrada'}), 404
+
+    data = request.get_json(silent=True) or {}
+    idx = data.get('hand_index', -1)
+    modo_idx = data.get('modo_idx', 0)
+    cp = game.current_player
+
+    if idx < 0 or idx >= len(cp.hand):
+        return jsonify({'error': f'Indice invalido. Mao tem {len(cp.hand)} cartas.'}), 400
+
+    card = cp.hand[idx]
+    if not card.modelo_id:
+        return jsonify({'error': f'Carta {card.name} nao tem modelo de efeitos.'}), 400
+
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+    if not modelo:
+        return jsonify({'error': f'Modelo {card.modelo_id} nao encontrado.'}), 500
+
+    if modo_idx < 0 or modo_idx >= len(modelo.modos):
+        return jsonify({'error': f'Modo invalido. Modos: {len(modelo.modos)}'}), 400
+
+    # Remove da mao
+    cp.hand.pop(idx)
+
+    # Aplica os efeitos
+    logs = aplicar_carta(game, modelo, cp.id, modo_idx=modo_idx)
+
+    return jsonify({
+        'used': {'name': card.name, 'modo': modelo.modos[modo_idx].descricao},
+        'logs': logs,
+        'state': _serialize_game(game),
+    })
+
+
 @api_bp.route('/<game_id>/attack', methods=['POST'])
 def api_attack(game_id: str):
     """Inicia combate.
