@@ -204,10 +204,13 @@ class TestRageCLI:
             )
             cp.hand.append(card)
         idx = next(i for i, c in enumerate(cp.hand) if c.modelo_id)
+        modelo_id_usado = cp.hand[idx].modelo_id
         cli.onecmd(f'USE {idx}')
-        # A carta foi removida da mao
-        assert all(c.modelo_id != 'golpe_misericordia' or c not in cp.hand
-                   for c in cp.hand)
+        # A carta foi removida da mao (nao esta mais na mao)
+        for c in cp.hand:
+            if c.modelo_id == modelo_id_usado:
+                assert False, 'Carta deveria ter sido removida'
+        assert True
 
     def test_use_non_effect_card(self, cli):
         """USE em carta sem modelo exibe mensagem."""

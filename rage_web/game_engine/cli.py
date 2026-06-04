@@ -120,7 +120,8 @@ def create_sample_game(seed: int = 42) -> GameState:
             modelo_id=mid,
             rage=0, gnosis=0, health=0, health_current=0,
         )
-        player.deck_combat.append(card)
+        # Insere no topo do deck para ser comprada primeiro
+        player.deck_combat.insert(0, card)
 
     # Compra mao inicial
     for p in g.players:

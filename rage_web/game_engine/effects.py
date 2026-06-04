@@ -167,8 +167,9 @@ class ResolvedorEfeitos:
 
         resultado = resolvedor(efeito, origem, jogador, alvo)
         if resultado:
+            nome_alvo = getattr(alvo, 'name', str(alvo or jogador.name))
             self.log.append(
-                f'{origem.name}: {efeito.tipo.value} em {alvo or jogador.name}'
+                f'{origem.name}: {efeito.tipo.value} em {nome_alvo}'
             )
         return resultado
 
