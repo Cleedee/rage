@@ -93,17 +93,30 @@ class PriorityBot:
             self._actions_this_turn += 1
             return action
 
+        # Decide entre desenvolver mesa vs eliminar ameaca
+        # Se tem cartas de efeito na mao, prioriza desenvolver
+        me = self.player
+        tem_efeitos = any(c.modelo_id for c in me.hand)
+        
+        if tem_efeitos:
+            # Tenta desenvolver primeiro (usar efeitos)
+            action = self._try_develop_board()
+            if action:
+                self._actions_this_turn += 1
+                return action
+        
         # 2. ELIMINAR AMEACA
         action = self._try_eliminate_threat()
         if action:
             self._actions_this_turn += 1
             return action
 
-        # 3. DESENVOLVER MESA
-        action = self._try_develop_board()
-        if action:
-            self._actions_this_turn += 1
-            return action
+        # Se nao tinha efeitos, tenta desenvolver agora
+        if not tem_efeitos:
+            action = self._try_develop_board()
+            if action:
+                self._actions_this_turn += 1
+                return action
 
         # 4. ATACAR
         action = self._try_attack()

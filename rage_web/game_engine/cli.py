@@ -742,6 +742,8 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
 
     def _load_deck(deck_id: int) -> list[CardInstance]:
         """Carrega as cartas de um deck do banco."""
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO
+
         cards = []
         with flask_app.app_context():
             d = db.session.get(Deck, deck_id)
@@ -758,6 +760,10 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                     continue
                 qtd = row.quantity
                 for _ in range(qtd):
+                    # Verifica se existe JSON de efeitos para esta carta
+                    modelo_key = f'card_{card_model.id}'
+                    modelo_id = modelo_key if modelo_key in CARTAS_EXEMPLO else None
+
                     ci = CardInstance(
                         card_id=card_model.id,
                         name=card_model.name,
@@ -773,6 +779,7 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                         damage=card_model.damage or '',
                         text=card_model.text or '',
                         keywords=card_model.keyword or '',
+                        modelo_id=modelo_id,
                     )
                     cards.append(ci)
                     uid += 1

@@ -117,6 +117,14 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'  {color}{cp.name}: {action}{reset}')
             elif action.startswith('play_'):
                 print(f'  {color}{cp.name}: 🃏 {action.replace("play_", "")}{reset}')
+            elif action.startswith('use_'):
+                # use_card_xxx_modoY -> mostra nome do efeito
+                partes = action.split('_')
+                if len(partes) >= 3:
+                    nome_curto = '_'.join(partes[1:-1]) if len(partes) > 3 else partes[1]
+                else:
+                    nome_curto = action
+                print(f'  {color}{cp.name}: 🎴 {action}{reset}')
             elif action.startswith('attack_') or action.startswith('eliminate_'):
                 print(f'  {color}{cp.name}: ⚔️  {action}{reset}')
             elif action.startswith('declare_'):
