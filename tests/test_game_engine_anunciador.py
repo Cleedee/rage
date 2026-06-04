@@ -2,7 +2,7 @@
 
 import pytest
 
-from rage_web.game_engine.stack import (
+from rage_web.game_engine.anunciador import (
     Anunciador, EfeitoAnunciado, EstadoAnuncio,
     anunciar_e_resolver,
 )

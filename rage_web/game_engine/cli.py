@@ -477,7 +477,7 @@ class RageCLI(cmd.Cmd):
             print(f'Carta {card.name} nao tem modelo de efeitos.')
             return
 
-        from rage_web.game_engine.stack import anunciar_e_resolver
+        from rage_web.game_engine.anunciador import anunciar_e_resolver
 
         # Remove da mao e anuncia
         cp.hand.pop(idx)

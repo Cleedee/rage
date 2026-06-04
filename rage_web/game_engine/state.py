@@ -456,7 +456,7 @@ class GameState:
     moot_atual: Optional['MootState'] = None
 
     def __post_init__(self):
-        from rage_web.game_engine.stack import Anunciador
+        from rage_web.game_engine.anunciador import Anunciador
         if self.anunciador is None:
             self.anunciador = Anunciador()
 
