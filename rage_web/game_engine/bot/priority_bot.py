@@ -16,10 +16,11 @@ from typing import Optional
 from rage_web.game_engine.bot.evaluator import BoardEvaluator
 from rage_web.game_engine.cli import create_sample_game
 from rage_web.game_engine.combat_queue import (
-    COMBAT_ACTIONS, declare_action, get_combatants, reveal_all,
+    COMBAT_ACTIONS, can_feint, declare_action, end_combat,
+    feint_action, get_combatants, reveal_all, resolve_combat,
     start_combat,
 )
-from rage_web.game_engine.state import GameState, PlayerState, CardInstance
+from rage_web.game_engine.state import CardInstance, GameState, PlayerState, Zone
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,12 @@ class PriorityBot:
         self.player_id = player_id
         self.difficulty = difficulty
         self.evaluator = BoardEvaluator(game, player_id)
+        self._actions_this_turn = 0
+        self._last_turn = 0
+        # Maximo de acoes por turno antes de passar forcadamente
+        # (evita loop infinito ate que o motor de regras lide com
+        #  recursos como acoes por turno)
+        self.max_actions_per_turn = 6
 
     @property
     def player(self) -> PlayerState:
@@ -62,7 +69,12 @@ class PriorityBot:
 
         g = self.game
 
-        # Se esta em combate, age no combate
+        # Reseta contagem de acoes a cada novo turno
+        if g.turn_number > self._last_turn:
+            self._actions_this_turn = 0
+            self._last_turn = g.turn_number
+
+        # Se esta em combate, age no combate (nao conta como acao)
         if g.combat.is_active:
             return self._decide_combat()
 
@@ -70,28 +82,38 @@ class PriorityBot:
         if g.current_player.id != self.player_id:
             return 'wait'
 
+        # Limite de acoes por turno
+        if self._actions_this_turn >= self.max_actions_per_turn:
+            self._pass_turn()
+            return 'pass_max_actions'
+
         # 1. SOBREVIVER
         action = self._try_survive()
         if action:
+            self._actions_this_turn += 1
             return action
 
         # 2. ELIMINAR AMEACA
         action = self._try_eliminate_threat()
         if action:
+            self._actions_this_turn += 1
             return action
 
         # 3. DESENVOLVER MESA
         action = self._try_develop_board()
         if action:
+            self._actions_this_turn += 1
             return action
 
         # 4. ATACAR
         action = self._try_attack()
         if action:
+            self._actions_this_turn += 1
             return action
 
         # 5. Fallback: passa
         self._pass_turn()
+        self._actions_this_turn += 1
         return 'pass'
 
     def _decide_easy(self) -> str:
@@ -102,6 +124,15 @@ class PriorityBot:
 
         if g.current_player.id != self.player_id:
             return 'wait'
+
+        # Reseta contagem
+        if g.turn_number > self._last_turn:
+            self._actions_this_turn = 0
+            self._last_turn = g.turn_number
+
+        if self._actions_this_turn >= self.max_actions_per_turn:
+            self._pass_turn()
+            return 'pass_max_actions'
 
         actions = []
         if self.player.hand:
@@ -116,82 +147,91 @@ class PriorityBot:
         if choice == 'play':
             idx = random.randrange(len(self.player.hand))
             self._play_card(idx)
+            self._actions_this_turn += 1
             return f'play_{idx}'
         elif choice == 'attack':
             if self.player.pack_home:
                 atk = random.choice(self.player.pack_home)
                 self._attack(str(atk.card_id), 'hg')
+                self._actions_this_turn += 1
                 return f'attack_{atk.card_id}'
         elif choice == 'draw':
             self._draw()
+            self._actions_this_turn += 1
             return 'draw'
 
         self._pass_turn()
+        self._actions_this_turn += 1
         return 'pass'
 
     def _decide_combat(self) -> str:
-        """Age durante o combate."""
+        """Age durante o combate.
+
+        Declara acoes para TODOS os combatentes (incluindo oponentes)
+        para simplificar o ciclo sem necessidade de alternancia.
+        """
         g = self.game
-        my_combatants = []
-        for cid in get_combatants(g):
-            for p in g.players:
-                for c in p.pack_home:
-                    if str(c.card_id) == cid:
-                        my_combatants.append(c)
 
         if g.combat.step == 'declare':
-            # Declara acao para cada combatente
-            for c in my_combatants:
-                cid = str(c.card_id)
-                if cid not in g.combat.declarations:
-                    action = self._choose_combat_action(c)
-                    declare_action(g, cid, action)
-                    return f'declare_{cid}_{action}'
+            all_cids = get_combatants(g)
+            for cid in all_cids:
+                if cid in g.combat.declarations:
+                    continue
+                # Encontra a criatura em qualquer jogador
+                for p in g.players:
+                    for c in p.pack_home:
+                        if str(c.card_id) == cid:
+                            action = self._choose_combat_action(c, c.owner_id)
+                            declare_action(g, cid, action)
+                            return f'declare_{cid}_{action}'
+            # Todos ja declararam
+            if g.combat.all_declared(get_combatants(g)):
+                reveal_all(g)
+                return 'reveal'
+            return 'combat_wait'
 
         elif g.combat.step == 'reveal':
-            # Se for o ultimo a declarar, pode Feint
-            for c in my_combatants:
-                cid = str(c.card_id)
-                if cid == g.combat.last_to_declare:
-                    # Verifica se deve trocar
-                    current = g.combat.declarations.get(cid)
-                    if current and current != 'strike':
-                        from rage_web.game_engine.combat_queue import feint_action
-                        feint_action(g, cid, 'strike')
-                        return f'feint_{cid}_strike'
-            # Revela se todos declararam
-            reveal_all(g)
-            return 'reveal'
+            return self._handle_reveal_step()
 
-        elif g.combat.step == 'declare' or g.combat.step == 'resolve':
-            from rage_web.game_engine.combat_queue import resolve_combat
+        elif g.combat.step in ('resolve', 'end'):
             resolve_combat(g)
-            from rage_web.game_engine.combat_queue import end_combat
             end_combat(g)
             return 'end_combat'
 
         return 'combat_unknown'
 
+    def _handle_reveal_step(self) -> str:
+        """Lida com o Reveal Step: usa Feint se vantajoso e resolve."""
+        g = self.game
+        if g.combat.last_to_declare:
+            cid = g.combat.last_to_declare
+            # So usa Feint se for criatura propria
+            for p in g.players:
+                for c in p.pack_home:
+                    if str(c.card_id) == cid and c.owner_id == self.player_id:
+                        current = g.combat.declarations.get(cid)
+                        if current and current != 'strike':
+                            if feint_action(g, cid, 'strike'):
+                                return f'feint_{cid}_strike'
+
+        resolve_combat(g)
+        end_combat(g)
+        return 'end_combat'
+
     def _decide_combat_random(self) -> str:
         """Acoes aleatorias em combate (modo facil)."""
         g = self.game
-        my_combatants = []
-        for cid in get_combatants(g):
-            for p in g.players:
-                for c in p.pack_home:
-                    if str(c.card_id) == cid:
-                        my_combatants.append(c)
+        combatants = get_combatants(g)
 
         if g.combat.step == 'declare':
-            for c in my_combatants:
-                cid = str(c.card_id)
+            for cid in combatants:
                 if cid not in g.combat.declarations:
                     action = random.choice(list(COMBAT_ACTIONS))
                     declare_action(g, cid, action)
                     return f'declare_{cid}_{action}'
+            if g.combat.all_declared(combatants):
+                reveal_all(g)
 
-        reveal_all(g)
-        from rage_web.game_engine.combat_queue import resolve_combat, end_combat
         resolve_combat(g)
         end_combat(g)
         return 'combat_end'
@@ -222,6 +262,7 @@ class PriorityBot:
         """Prioridade 2: Eliminar ameaca.
 
         Ataca a criatura do oponente com maior Rage.
+        So ataca se a criatura nao estiver tapada.
         """
         me = self.player
         opp = self._get_opponent()
@@ -229,11 +270,16 @@ class PriorityBot:
         if not me.pack_home or not opp.pack_home:
             return None
 
+        # Criaturas proprias que ainda podem atacar
+        available = [c for c in me.pack_home if not c.is_tapped]
+        if not available:
+            return None
+
         # Encontra a criatura mais ameacadora do oponente
         top_threat = max(opp.pack_home, key=lambda c: c.rage)
 
-        # Encontra minha criatura mais forte
-        my_best = max(me.pack_home, key=lambda c: c.rage)
+        # Encontra minha criatura mais forte ainda livre
+        my_best = max(available, key=lambda c: c.rage)
 
         if my_best.rage >= top_threat.rage * 0.7:
             self._attack(str(my_best.card_id), str(top_threat.card_id))
@@ -259,27 +305,27 @@ class PriorityBot:
                 return f'play_character_{card.card_id}'
 
         # Joga a primeira carta da mao
-        self._play_card(0)
-        return f'play_{me.hand[0].card_id}'
+        if me.hand:
+            card = me.hand[0]
+            self._play_card(0)
+            return f'play_{card.card_id}'
+        return None
 
     def _try_attack(self) -> Optional[str]:
         """Prioridade 4: Atacar.
 
-        Ataca o Hunting Grounds com a criatura mais forte.
+        Ataca o Hunting Grounds com a criatura mais forte ainda livre.
         """
         me = self.player
 
-        if not me.pack_home:
+        available = [c for c in me.pack_home if not c.is_tapped]
+        if not available:
             return None
 
-        # Escolhe a criatura com mais Rage
-        best = max(me.pack_home, key=lambda c: c.rage)
-
-        if not best.is_tapped:
-            self._attack(str(best.card_id), 'hg')
-            return f'attack_hg_{best.card_id}'
-
-        return None
+        # Escolhe a criatura com mais Rage ainda nao tapada
+        best = max(available, key=lambda c: c.rage)
+        self._attack(str(best.card_id), 'hg')
+        return f'attack_hg_{best.card_id}'
 
     # ------------------------------------------------------------------
     # Utilitarios
@@ -291,25 +337,34 @@ class PriorityBot:
                 return p
         raise ValueError('Nenhum oponente')
 
-    def _choose_combat_action(self, card: CardInstance) -> str:
-        """Escolhe a melhor acao de combate para uma criatura."""
-        opp = self._get_opponent()
+    def _choose_combat_action(self, card: CardInstance,
+                                owner_id: str) -> str:
+        """Escolhe a melhor acao de combate para uma criatura.
 
-        # Se oponente tem criaturas com rage alto, usa block
+        Se for criatura do oponente, escolhe acao defensiva ou
+        previsivel (block/dodge/strike). Se for do proprio bot,
+        escolhe acao ofensiva (strike/claw/bite).
+        """
+        if owner_id != self.player_id:
+            # Criatura do oponente: reage de forma defensiva
+            if card.health_current < card.health * 0.4:
+                return 'dodge'
+            if card.rage >= 3:
+                return 'strike'
+            return 'block'
+
+        # Criatura propria: age de forma ofensiva
+        opp = self._get_opponent()
         if opp.pack_home:
             max_opp_rage = max(c.rage for c in opp.pack_home)
-            if max_opp_rage > card.rage:
-                return 'block'
+            if max_opp_rage > card.rage * 1.5:
+                return 'dodge'
 
-        # Se tem saude baixa, usa dodge
-        if card.health_current < card.health * 0.4:
-            return 'dodge'
-
-        # Se tem rage alto, ataca
         if card.rage >= 3:
             return 'strike'
-
-        return random.choice(['strike', 'block', 'dodge'])
+        if card.health_current < card.health * 0.3:
+            return 'dodge'
+        return random.choice(['strike', 'claw', 'bite', 'strike'])
 
     def _draw(self):
         """Compra carta do deck de combate."""
@@ -320,15 +375,20 @@ class PriorityBot:
         """Joga carta da mao."""
         if 0 <= hand_index < len(self.player.hand):
             card = self.player.hand.pop(hand_index)
-            card.zone = 'pack_home'
+            card.zone = Zone.PACK_HOME
             card.health_current = card.health
             self.player.pack_home.append(card)
             self.game.add_log(
                 f'[BOT] {self.player.name} jogou {card.name}')
 
     def _attack(self, attacker_id: str, defender_id: str):
-        """Inicia combate."""
+        """Inicia combate e tapa a criatura atacante."""
         start_combat(self.game, [attacker_id], [defender_id])
+        # Tapa a criatura (nao pode atacar de novo neste turno)
+        for c in self.player.pack_home:
+            if str(c.card_id) == attacker_id:
+                c.is_tapped = True
+                break
         self.game.add_log(
             f'[BOT] {self.player.name} atacou {defender_id} com {attacker_id}')
 
