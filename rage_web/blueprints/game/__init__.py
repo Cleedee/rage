@@ -170,8 +170,14 @@ def game_action(game_id: str):
     if not g:
         return 'Partida nao encontrada', 404
 
-    action = request.form.get('action', '')
-    result = _executar_acao(g, action, request.form)
+    # Suporta form-urlencoded e JSON (hx-vals)
+    if request.is_json:
+        body = request.get_json(silent=True) or {}
+    else:
+        body = {k: v for k, v in request.form.items()}
+
+    action = body.get('action', '')
+    result = _executar_acao(g, action, body)
     if result.startswith('ERRO:'):
         return f'<div class="notification is-danger is-light">{result[5:]}</div>', 400
 
@@ -189,9 +195,21 @@ def game_log_partial(game_id: str):
     return render_template('game/_log.html', logs=logs)
 
 
-def _executar_acao(g: GameState, action: str, params) -> str:
-    """Executa uma acao na partida."""
+def _executar_acao(g: GameState, action: str, params: dict) -> str:
+    """Executa uma acao na partida.
+
+    Args:
+        g: Estado da partida.
+        action: Nome da acao.
+        params: Dict de parametros (pode ser de form ou JSON).
+    """
     cp = g.current_player
+
+    def _int(val, default=0):
+        try:
+            return int(val)
+        except (ValueError, TypeError):
+            return default
 
     if action == 'pass':
         cp.pass_turn()
@@ -213,21 +231,21 @@ def _executar_acao(g: GameState, action: str, params) -> str:
         return 'OK'
 
     elif action == 'draw_combat':
-        count = params.get('count', 1, type=int)
+        count = _int(params.get('count', 1))
         drawn = cp.draw_combat(count)
         if drawn:
             g.add_log(f'{cp.name} comprou {len(drawn)} carta(s) de combate')
         return 'OK'
 
     elif action == 'draw_sept':
-        count = params.get('count', 1, type=int)
+        count = _int(params.get('count', 1))
         drawn = cp.draw_sept(count)
         if drawn:
             g.add_log(f'{cp.name} comprou {len(drawn)} carta(s) de sept')
         return 'OK'
 
     elif action == 'play':
-        idx = params.get('hand_index', -1, type=int)
+        idx = _int(params.get('hand_index', -1))
         if idx < 0 or idx >= len(cp.hand):
             return 'ERRO:Indice de mao invalido'
         card = cp.hand.pop(idx)
@@ -238,8 +256,8 @@ def _executar_acao(g: GameState, action: str, params) -> str:
         return 'OK'
 
     elif action == 'use_card':
-        idx = params.get('hand_index', -1, type=int)
-        modo_idx = params.get('modo_idx', 0, type=int)
+        idx = _int(params.get('hand_index', -1))
+        modo_idx = _int(params.get('modo_idx', 0))
         if idx < 0 or idx >= len(cp.hand):
             return 'ERRO:Indice de mao invalido'
         card = cp.hand[idx]

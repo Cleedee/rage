@@ -5,7 +5,7 @@
 <div id="game-board"
      hx-get="{{ url_for('game.game_board_partial', game_id=game.id) }}"
      hx-trigger="every 3s"
-     hx-swap="outerHTML">
+     hx-swap="innerHTML">
 
   {% include "game/_game_board.html" %}
 </div>

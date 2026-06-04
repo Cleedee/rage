@@ -52,7 +52,7 @@
                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                hx-vals='{"action":"step_umbra","card_id":"{{ c.card_id }}"}'
                hx-target="#game-board"
-               hx-swap="outerHTML"
+               hx-swap="innerHTML"
                title="Step Sideways">🌙</a>
             {% endif %}
             {% if game.combat.is_active and not c.is_tapped %}
@@ -60,7 +60,7 @@
                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                hx-vals='{"action":"attack","attacker_id":"{{ c.card_id }}"}'
                hx-target="#game-board"
-               hx-swap="outerHTML"
+               hx-swap="innerHTML"
                title="Atacar Hunting Grounds">⚔️</a>
             {% endif %}
           </div>
@@ -85,7 +85,7 @@
                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                hx-vals='{"action":"step_back","card_id":"{{ c.card_id }}"}'
                hx-target="#game-board"
-               hx-swap="outerHTML"
+               hx-swap="innerHTML"
                title="Voltar do Umbra">🔙</a>
           </div>
         </div>
@@ -198,7 +198,7 @@
                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                hx-vals='{"action":"declare","card_id":"{{ cid }}","combat_action":"{{ act }}"}'
                hx-target="#game-board"
-               hx-swap="outerHTML">
+               hx-swap="innerHTML">
               {{ act }}
             </a>
             {% endfor %}
@@ -213,7 +213,7 @@
               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
               hx-vals='{"action":"reveal"}'
               hx-target="#game-board"
-              hx-swap="outerHTML">
+              hx-swap="innerHTML">
         👁️ Revelar Todos
       </button>
     </div>
@@ -233,7 +233,7 @@
                hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                hx-vals='{"action":"feint","card_id":"{{ cid }}","new_action":"{{ act }}"}'
                hx-target="#game-board"
-               hx-swap="outerHTML">
+               hx-swap="innerHTML">
               {{ act }}
             </a>
             {% endfor %}
@@ -248,7 +248,7 @@
               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
               hx-vals='{"action":"resolve"}'
               hx-target="#game-board"
-              hx-swap="outerHTML">
+              hx-swap="innerHTML">
         ⚡ Resolver
       </button>
     </div>
@@ -259,7 +259,7 @@
               hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
               hx-vals='{"action":"end_combat"}'
               hx-target="#game-board"
-              hx-swap="outerHTML">
+              hx-swap="innerHTML">
         🏁 Encerrar Combate
       </button>
     </div>
@@ -286,28 +286,28 @@
                 hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                 hx-vals='{"action":"pass"}'
                 hx-target="#game-board"
-                hx-swap="outerHTML">
+                hx-swap="innerHTML">
           ✅ Passar
         </button>
         <button class="button is-small is-warning"
                 hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                 hx-vals='{"action":"next"}'
                 hx-target="#game-board"
-                hx-swap="outerHTML">
+                hx-swap="innerHTML">
           ⏭️ Avançar Fase
         </button>
         <button class="button is-small is-light"
                 hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                 hx-vals='{"action":"draw_combat"}'
                 hx-target="#game-board"
-                hx-swap="outerHTML">
+                hx-swap="innerHTML">
           📥 Comprar Combate
         </button>
         <button class="button is-small is-light"
                 hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
                 hx-vals='{"action":"draw_sept"}'
                 hx-target="#game-board"
-                hx-swap="outerHTML">
+                hx-swap="innerHTML">
           📥 Comprar Sept
         </button>
         {% endif %}
@@ -328,21 +328,21 @@
            hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
            hx-vals='{"action":"use_card","hand_index":"{{ loop.index0 }}","modo_idx":"0"}'
            hx-target="#game-board"
-           hx-swap="outerHTML"
+           hx-swap="innerHTML"
            title="Usar efeito">✨</a>
         {% elif c.card_type == 'Character' %}
         <a class="tag is-success is-small"
            hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
            hx-vals='{"action":"play","hand_index":"{{ loop.index0 }}"}'
            hx-target="#game-board"
-           hx-swap="outerHTML"
+           hx-swap="innerHTML"
            title="Jogar personagem">▶️</a>
         {% else %}
         <a class="tag is-primary is-small"
            hx-post="{{ url_for('game.game_action', game_id=game.id) }}"
            hx-vals='{"action":"play","hand_index":"{{ loop.index0 }}"}'
            hx-target="#game-board"
-           hx-swap="outerHTML"
+           hx-swap="innerHTML"
            title="Jogar carta">▶️</a>
         {% endif %}
       </div>
@@ -355,10 +355,7 @@
 <!-- Game Log -->
 <div class="box" style="margin:0.5rem; background:#1a1a2e; color:#e0e0e0; font-family:monospace; font-size:0.8rem">
   <strong style="color:#aaa">📋 Log</strong>
-  <div id="game-log" style="max-height:200px; overflow-y:auto; margin-top:4px"
-       hx-get="{{ url_for('game.game_log_partial', game_id=game.id) }}"
-       hx-trigger="every 3s"
-       hx-swap="innerHTML">
+  <div id="game-log" style="max-height:200px; overflow-y:auto; margin-top:4px">
     {% for entry in game.log %}
     <div>{{ entry }}</div>
     {% else %}
