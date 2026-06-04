@@ -1,195 +1,199 @@
-"""Testes da pilha de resolucao e sistema de prioridade."""
+"""Testes do sistema de anuncio e resolucao (Rage CCG)."""
 
 import pytest
 
 from rage_web.game_engine.stack import (
-    Pilha, ItemPilha, TipoItemPilha,
-    PrioridadeStatus, anunciar_carta, obter_acoes_validas,
+    Anunciador, EfeitoAnunciado, EstadoAnuncio,
+    anunciar_e_resolver,
 )
-from rage_web.game_engine.state import GameState, PlayerState
 from rage_web.game_engine.cli import create_sample_game
+from rage_web.game_engine.state import GameState
 
 
 @pytest.fixture
-def pilha():
-    return Pilha()
+def anunciador():
+    return Anunciador()
 
 
 @pytest.fixture
 def game():
-    g = create_sample_game(seed=42)
-    return g
+    return create_sample_game(seed=42)
 
 
-class TestItemPilha:
-    def test_criacao_basica(self):
-        """Cria item de pilha simples."""
-        item = ItemPilha(
-            tipo='carta',
-            descricao='Golpe de Misericórdia',
+class TestEfeitoAnunciado:
+    def test_criacao(self):
+        """Cria efeito anunciado basico."""
+        efeito = EfeitoAnunciado(
+            id='carta_1', descricao='Golpe de Misericórdia',
             jogador_id='p1',
         )
-        assert item.tipo == TipoItemPilha.CARTA
-        assert item.descricao == 'Golpe de Misericórdia'
+        assert efeito.id == 'carta_1'
+        assert not efeito.anulado
 
-    def test_esta_esperando_modo_true(self):
+    def test_aguardando_modo_true(self):
         """Carta modal sem modo escolhido aguarda."""
-        item = ItemPilha(
-            tipo='carta', descricao='Teste', jogador_id='p1',
-            modelo_id='golpe_misericordia', modo_idx=None,
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
+            modelo_id='golpe_misericordia',
         )
-        assert item.esta_esperando_modo()
+        assert efeito.aguardando_modo
 
-    def test_esta_esperando_modo_false(self):
-        """Carta com modo ja escolhido nao aguarda."""
-        item = ItemPilha(
-            tipo='carta', descricao='Teste', jogador_id='p1',
-            modelo_id='golpe_misericordia', modo_idx=0,
-            modo_escolhido=True,
+    def test_aguardando_modo_false(self):
+        """Carta com modo escolhido nao aguarda."""
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
+            modelo_id='golpe_misericordia',
+            modo_idx=2, modo_escolhido=True,
         )
-        assert not item.esta_esperando_modo()
+        assert not efeito.aguardando_modo
 
 
-class TestPilha:
-    def test_pilha_vazia(self, pilha):
-        """Pilha comeca vazia."""
-        assert pilha.vazia
-        assert pilha.tamanho == 0
-        assert pilha.topo is None
+class TestAnunciador:
+    def test_estado_inicial(self, anunciador):
+        """Anunciador comeca livre."""
+        assert anunciador.estado == EstadoAnuncio.LIVRE
+        assert not anunciador.tem_anuncio_ativo
 
-    def test_empilhar(self, pilha):
-        """Empilhar adiciona item no topo."""
-        item = ItemPilha(tipo='carta', descricao='Teste',
-                         jogador_id='p1')
-        pilha.empilhar(item)
-        assert not pilha.vazia
-        assert pilha.tamanho == 1
-        assert pilha.topo is item
+    def test_anunciar(self, anunciador):
+        """Anunciar muda estado."""
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
+        )
+        assert anunciador.anunciar(efeito)
+        assert anunciador.tem_anuncio_ativo
+        assert anunciador.estado == EstadoAnuncio.ANUNCIADO
 
-    def test_empilhar_muda_prioridade(self, pilha):
-        """Apos empilhar, prioridade vira esperando_resposta."""
-        item = ItemPilha(tipo='carta', descricao='Teste',
-                         jogador_id='p1')
-        pilha.empilhar(item)
-        assert pilha.prioridade == PrioridadeStatus.ESPERANDO_RESPOSTA
+    def test_anunciar_duas_vezes(self, anunciador):
+        """Nao pode anunciar se ja tem um pendente."""
+        e1 = EfeitoAnunciado(id='c1', descricao='Teste', jogador_id='p1')
+        e2 = EfeitoAnunciado(id='c2', descricao='Teste2', jogador_id='p2')
+        assert anunciador.anunciar(e1)
+        assert not anunciador.anunciar(e2)
 
-    def test_passar_para_resolver(self, pilha):
-        """Dois passes consecutivos resolvem o topo."""
-        item = ItemPilha(tipo='carta', descricao='Teste',
-                         jogador_id='p1',
-                         resolver=lambda g: ['ok'])
-        pilha.empilhar(item)
-        assert pilha.prioridade == PrioridadeStatus.ESPERANDO_RESPOSTA
+    def test_anular(self, anunciador):
+        """Anular marca efeito como cancelado e limpa."""
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
+        )
+        anunciador.anunciar(efeito)
+        assert anunciador.anular(None, 'p2')
+        assert efeito.anulado
+        assert not anunciador.tem_anuncio_ativo
 
-        r1 = pilha.passar(None)  # Oponente passa
-        assert r1 == 'espera'
+    def test_anular_sem_anuncio(self, anunciador):
+        """Anular sem anuncio retorna False."""
+        assert not anunciador.anular(None, 'p2')
 
-        r2 = pilha.passar(None)  # Jogador ativo passa
-        assert r2 == 'resolve'
+    def test_resolver_sem_anuncio(self, anunciador):
+        """Resolver sem anuncio retorna erro."""
+        logs = anunciador.resolver(None)
+        assert 'Nenhum' in logs[0]
 
-    def test_passar_pilha_vazia_fim(self, pilha):
-        """Passar com pilha vazia finaliza."""
-        r1 = pilha.passar(None)
-        assert r1 == 'espera'
-        r2 = pilha.passar(None)
-        assert r2 == 'fim'
-        assert pilha.prioridade == PrioridadeStatus.FINALIZADO
-
-    def test_resolver_topo(self, pilha):
-        """Resolver topo executa callback e remove da pilha."""
-        logs = []
+    def test_resolver_com_callback(self, anunciador):
+        """Resolver executa callback."""
+        logs_resultado = []
 
         def resolver(game):
-            logs.append('resolvido')
-            return ['Resolvido com sucesso']
+            logs_resultado.append('resolveu')
+            return ['Resolvido']
 
-        item = ItemPilha(tipo='carta', descricao='Teste',
-                         jogador_id='p1', resolver=resolver)
-        pilha.empilhar(item)
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
+            resolver=resolver,
+        )
+        anunciador.anunciar(efeito)
+        logs = anunciador.resolver(None)
+        assert logs_resultado == ['resolveu']
+        assert 'Resolvido' in logs[0]
+        assert not anunciador.tem_anuncio_ativo
 
-        resultado = pilha.resolver_topo(None)
-        assert 'sucesso' in resultado[0]
-        assert logs == ['resolvido']
-        assert pilha.vazia
+    def test_resolver_anulado(self, anunciador):
+        """Resolver efeito anulado nao executa callback."""
+        def resolver(game):
+            return ['Nao deveria executar']
 
-    def test_resolver_modal_sem_modo(self, pilha):
-        """Resolver carta modal sem modo retorna prompt."""
-        item = ItemPilha(
-            tipo='carta', descricao='Golpe de Misericórdia',
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
+            resolver=resolver,
+        )
+        anunciador.anunciar(efeito)
+        anunciador.anular(None, 'p2')
+        # Anular ja limpa, entao resolver nao faz nada
+        logs = anunciador.resolver(None)
+        assert 'Nenhum' in logs[0]
+
+    def test_escolher_modo_antes_do_prompt(self, anunciador):
+        """Escolher modo sem prompt da erro."""
+        erro = anunciador.escolher_modo(0)
+        assert erro is not None
+
+    def test_ciclo_modal(self, anunciador):
+        """Ciclo completo: anuncio -> prompt modo -> escolha -> resolve."""
+        logs_resolver = []
+
+        def resolver(game):
+            logs_resolver.append('resolveu')
+            return ['Resolvido']
+
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Golpe de Misericórdia',
             jogador_id='p1',
             modelo_id='golpe_misericordia',
-            modo_idx=None,
-            modo_escolhido=False,
+            resolver=resolver,
         )
-        pilha.empilhar(item)
-        resultado = pilha.resolver_topo(None)
-        assert 'AGUARDANDO' in resultado[0]
-        assert pilha.prioridade == PrioridadeStatus.ESPERANDO_MODO
-        assert pilha.prompt_atual is not None
+        anunciador.anunciar(efeito)
 
-    def test_escolher_modo(self, pilha):
-        """Escolher modo apos prompt funciona."""
-        item = ItemPilha(
-            tipo='carta', descricao='Golpe de Misericórdia',
-            jogador_id='p1',
-            modelo_id='golpe_misericordia',
-            modo_idx=None,
-            modo_escolhido=False,
-        )
-        pilha.empilhar(item)
-        pilha.resolver_topo(None)
-        assert pilha.prioridade == PrioridadeStatus.ESPERANDO_MODO
+        # Tenta resolver -> AGUARDANDO_MODO
+        logs = anunciador.resolver(None)
+        assert 'AGUARDANDO' in logs[0]
+        assert anunciador.estado == EstadoAnuncio.AGUARDANDO_MODO
+        assert anunciador.prompt_atual is not None
 
-        erro = pilha.escolher_modo(2)  # Modo dano
+        # Escolhe modo
+        erro = anunciador.escolher_modo(2)
         assert erro is None
-        assert pilha.topo.modo_idx == 2
-        assert pilha.topo.modo_escolhido
-        assert pilha.prioridade == PrioridadeStatus.ESPERANDO_ACAO
+        assert anunciador.estado == EstadoAnuncio.ANUNCIADO
 
-    def test_anular_topo(self, pilha):
-        """Anular remove da pilha sem resolver."""
-        item = ItemPilha(tipo='carta', descricao='Teste',
-                         jogador_id='p1')
-        pilha.empilhar(item)
-        assert pilha.tamanho == 1
+        # Agora resolve de verdade
+        logs = anunciador.resolver(None)
+        assert logs_resolver == ['resolveu']
+        assert not anunciador.tem_anuncio_ativo
 
-        logs = pilha.anular_topo(None)
-        assert 'anulado' in logs[0]
-        assert pilha.vazia
-
-    def test_reiniciar(self, pilha):
-        """Reiniciar limpa tudo."""
-        item = ItemPilha(tipo='carta', descricao='Teste',
-                         jogador_id='p1')
-        pilha.empilhar(item)
-        pilha.reiniciar()
-        assert pilha.vazia
-        assert pilha.prioridade == PrioridadeStatus.ESPERANDO_ACAO
-
-
-class TestAnunciarCarta:
-    def test_anunciar_cria_item(self, game):
-        """Anunciar carta coloca item na pilha."""
-        item = anunciar_carta(
-            game, 'p1', 'carta_1', 'golpe_misericordia',
-            modo_idx=None,
+    def test_responder(self, anunciador):
+        """Responder ao anuncio registra a resposta."""
+        efeito = EfeitoAnunciado(
+            id='c1', descricao='Teste', jogador_id='p1',
         )
-        assert item is not None
-        assert item.tipo == TipoItemPilha.CARTA
-        assert game.pilha.tamanho == 1
-
-    def test_anunciar_com_modo_escolhido(self, game):
-        """Anunciar com modo ja escolhido."""
-        item = anunciar_carta(
-            game, 'p1', 'carta_1', 'golpe_misericordia',
-            modo_idx=2,
+        anunciador.anunciar(efeito)
+        resposta = EfeitoAnunciado(
+            id='c2', descricao='Resposta', jogador_id='p2',
         )
-        assert item.modo_idx == 2
-        assert item.modo_escolhido
+        erro = anunciador.responder(None, resposta)
+        assert erro is None
+        assert 'respondeu' in anunciador.ultimos_logs[-1]
 
-    def test_obter_acoes_validas(self, game):
-        """Acoes validas refletem estado da pilha."""
-        acoes = obter_acoes_validas(game, 'p1')
-        assert 'acoes_disponiveis' in acoes
-        assert 'jogar_carta' in acoes['acoes_disponiveis']
-        assert 'passar' in acoes['acoes_disponiveis']
+
+class TestAnunciarEResolver:
+    def test_anunciar_e_resolver_direto(self, game):
+        """Anunciar e resolver carta com modo funciona."""
+        logs = anunciar_e_resolver(
+            game, 'p1', 'carta_1', 'furia_primitiva',
+            modo_idx=0,
+        )
+        assert len(logs) > 0
+        assert game.anunciador.estado == EstadoAnuncio.LIVRE
+
+    def test_anunciar_modal_sem_modo(self, game):
+        """Carta modal sem modo retorna prompt."""
+        logs = anunciar_e_resolver(
+            game, 'p1', 'carta_1', 'golpe_misericordia',
+        )
+        assert 'AGUARDANDO' in logs[0]
+        assert game.anunciador.estado == EstadoAnuncio.AGUARDANDO_MODO
+
+    def test_anunciar_modelo_inexistente(self, game):
+        """Modelo inexistente retorna erro."""
+        logs = anunciar_e_resolver(
+            game, 'p1', 'carta_1', 'modelo_inexistente',
+        )
+        assert 'nao encontrado' in logs[0]

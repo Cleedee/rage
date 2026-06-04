@@ -164,13 +164,13 @@ class GameState:
     # Hunting Grounds (cartas neutras)
     hunting_grounds_cards: list[CardInstance] = field(default_factory=list)
 
-    # Pilha de resolucao
-    pilha: 'Pilha' = None
+    # Sistema de anuncio de efeitos (Rage: anuncio -> resposta -> resolucao)
+    anunciador: 'Anunciador' = None
 
     def __post_init__(self):
-        from rage_web.game_engine.stack import Pilha
-        if self.pilha is None:
-            self.pilha = Pilha()
+        from rage_web.game_engine.stack import Anunciador
+        if self.anunciador is None:
+            self.anunciador = Anunciador()
 
     @property
     def current_player(self) -> PlayerState:
