@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Shotgun",
+      "descricao": "Usar arma (permite acoes de combate)",
       "efeitos": [
         {
-          "tipo": "modificar_rage",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 695,
     "texto_original": "Weapon. Firearm. Allows the character to use up to Rage 7 Combat Actions.",
     "keywords": "Non-Fetish - Weapon - Firearm",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

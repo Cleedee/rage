@@ -5,17 +5,19 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Vital Blow",
+      "descricao": "Causar 4 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
         }
-      ]
+      ],
+      "condicao_uso": ""
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1326,
     "texto_original": "You strike your opponent in the, er, um.. sensitive area. For the next round of combat, your opponent is considered to have a Rage of 1 for the purposes of playing Combat Actions.",
     "keywords": "",
@@ -23,6 +25,6 @@
     "rage": 6,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

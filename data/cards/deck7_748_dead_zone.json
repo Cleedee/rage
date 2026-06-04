@@ -5,17 +5,17 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Dead Zone",
+      "descricao": "Proteger de Gifts",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "anular",
+          "condicao_alvo": "criatura_aliada"
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 748,
     "texto_original": "A Dead Zone is an area devoid of the normally ubiquitous spirits. A pack controlling the Dead Zone is not affected by any Gifts, and they may not use Gifts or Fetish Equipment. Only 1 Dead Zone may be in play at any time.",
     "keywords": "",
@@ -23,6 +23,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

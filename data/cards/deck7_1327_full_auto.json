@@ -5,17 +5,29 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Full Auto",
+      "descricao": "Causar 2 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ],
+      "condicao_uso": ""
+    },
+    {
+      "descricao": "Esquivar de 1 ataque(s)",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1327,
     "texto_original": "Creatures attempting to dodge just throw themselves in the way of this blistering attack.  If played with a Firearm, this attack cannot be dodged and does 2 damage if the target played a dodge this round.",
     "keywords": "",
@@ -23,6 +35,6 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

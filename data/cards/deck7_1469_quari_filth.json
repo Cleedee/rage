@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Quari Filth",
+      "descricao": "Roubar carta de combate do descarte",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "comprar",
+          "condicao_alvo": "discartes",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1469,
     "texto_original": "Quari searches though other people's trash for information.  During the Resource Phase, he may target a combat card in a discard pile and remove it from the game.  He can't use this two turns in a row.",
     "keywords": "Garou - Bone Gnawer - Ragabash - Homid - Gaia - Wyrm - Male",
@@ -23,6 +24,6 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

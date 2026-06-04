@@ -5,17 +5,17 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Blur of the Milky Eye",
+      "descricao": "Ataque nao pode ser redirecionado",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "redirecionar",
+          "condicao_alvo": "criatura_aliada"
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 937,
     "texto_original": "When this creature declares an attack it may not be redirected and no one may step in to replace the target. This Gift is permanent until canceled.",
     "keywords": "",
@@ -23,6 +23,6 @@
     "rage": 0,
     "gnosis": 2,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

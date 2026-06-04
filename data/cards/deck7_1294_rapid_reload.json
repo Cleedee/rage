@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Rapid Reload",
+      "descricao": "Usar carta de Combat Action",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1294,
     "texto_original": "Requires: Firearm AND not frenzied",
     "keywords": "",
@@ -23,6 +24,6 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

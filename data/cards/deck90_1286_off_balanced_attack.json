@@ -5,17 +5,29 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Off-balanced Attack",
+      "descricao": "Causar 2 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ],
+      "condicao_uso": ""
+    },
+    {
+      "descricao": "Reduzir custo de Rage em 1",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": -1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1286,
     "texto_original": "The character playing this card plays Combat Actions at -1 Rage for the next round of combat.",
     "keywords": "",
@@ -23,6 +35,6 @@
     "rage": 1,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

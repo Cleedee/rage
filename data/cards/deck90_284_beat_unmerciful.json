@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Beat Unmerciful",
+      "descricao": "Causar 3 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ],
+      "condicao_uso": ""
+    },
+    {
+      "descricao": "Anular acao de Rage 1 do oponente",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga"
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 284,
     "texto_original": "If your opponent's Combat Action is Rage 1, it does not take effect.",
     "keywords": "",
@@ -23,6 +34,6 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

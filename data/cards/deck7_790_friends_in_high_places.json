@@ -5,17 +5,17 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Friends in High Places",
+      "descricao": "Encerrar combate",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "fugir",
+          "condicao_alvo": "todas_criaturas"
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 790,
     "texto_original": "You call in a favor from some powerful friends. You may end any one combat that does not involve a frenzy. A pack may not play more than one Friends in High Places per turn. A character can only play one Friends in High Places per game.",
     "keywords": "",
@@ -23,6 +23,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

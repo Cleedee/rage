@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Dharma Bum",
+      "descricao": "Oponentes sofrem -2 Gnosis",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 24,
     "texto_original": "Dharma's rapping and howling cause all opponent's to suffer -2 Gnosis while in combat with him.",
     "keywords": "Garou - Bone Gnawer - Galliard - Homid - Gaia - Male",
@@ -23,6 +24,6 @@
     "rage": 1,
     "gnosis": 2,
     "health": 1,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

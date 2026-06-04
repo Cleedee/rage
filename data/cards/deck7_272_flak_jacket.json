@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Flak Jacket",
+      "descricao": "Bloquear ataque (armadura)",
       "efeitos": [
         {
-          "tipo": "modificar_rage",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 4
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 272,
     "texto_original": "Armor. The Flak Jacket stops any one attack of up to 4 damage.  The owner chooses when the Flak Jacket is used.  Discard the Flak Jacket if it is used or if the owner changes to Crinos form.  A character cannot have more than 1 Flak Jacket at a time.",
     "keywords": "Non-Fetish - Armor",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

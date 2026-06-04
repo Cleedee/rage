@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Flame Spirit",
+      "descricao": "Queimar-se em ataque de 3 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 402,
     "texto_original": "The Flame Spirit can burn itself out in one damage 3 attack (aggravated).  The spirit may only be affected by Umbral attacks and Gifts.",
     "keywords": "Spirit",
@@ -23,6 +24,6 @@
     "rage": 1,
     "gnosis": 5,
     "health": 3,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

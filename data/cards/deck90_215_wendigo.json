@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Wendigo",
+      "descricao": "Totem do pack",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2
+        }
+      ]
+    },
+    {
+      "descricao": "Aumentar mao de combate",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "deck_combate",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 215,
     "texto_original": "Increase your combat hand by 1. A pack may not have more than 1 Pack Totem at any time.",
     "keywords": "Pack Totem",
@@ -23,6 +34,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

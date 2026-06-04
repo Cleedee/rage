@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Blood-on-the-Wind",
+      "descricao": "Bonus de Rage para aliados",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 46,
     "texto_original": "All Wendigo in the same pack as Blood-on-the-Wind gain +1 Rage.",
     "keywords": "Garou - Wendigo - Galliard - Lupus - Gaia - Male",
@@ -23,6 +24,6 @@
     "rage": 3,
     "gnosis": 9,
     "health": 4,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

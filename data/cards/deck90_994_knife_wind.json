@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Knife Wind",
+      "descricao": "Causar 1 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 994,
     "texto_original": "The user directs a harsh gust of arctic wind at any target, causing 1 damage. Place this card on the target for the purpose of recording damage.",
     "keywords": "",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

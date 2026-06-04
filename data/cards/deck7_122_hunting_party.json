@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Hunting Party",
+      "descricao": "Bonus ao declarar ataque",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 122,
     "texto_original": "Play when your character is declaring an attack. For attacks against nonalpha characters, Hunting Party must be played before the challenge is accepted or declined. Select members of your pack to join the attack. You can have a total of 15 Renown of chara",
     "keywords": "Pack Action",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

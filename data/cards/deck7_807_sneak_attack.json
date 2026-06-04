@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Sneak Attack",
+      "descricao": "Atacar qualquer personagem",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 807,
     "texto_original": "The character can circumvent the normal combat protocol and engage any character, ally or enemy in play.  If played during the Combat Phase of a turn, Sneak Attack can interrupt the normal alpha attack cycle, but cannot interrupt a combat that has already",
     "keywords": "",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

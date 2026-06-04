@@ -5,17 +5,29 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Dismember",
+      "descricao": "Causar 3 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ],
+      "condicao_uso": ""
+    },
+    {
+      "descricao": "Esquivar de 1 ataque(s)",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1520,
     "texto_original": "If two Dismembers are played in the same round by the same player, Dismember cannot be dodged and each can block 1 damage from any one attack.",
     "keywords": "(Block)",
@@ -23,6 +35,6 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

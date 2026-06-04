@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Firyal the Whip",
+      "descricao": "Ganhar arma se ataque de Rage <=2",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    },
+    {
+      "descricao": "Comprar carta",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "deck_sept",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1389,
     "texto_original": "Between combat rounds, if Firyal does not have a weapon and she played an attack of Rage 2 or less in the previous round, draw a combat card.",
     "keywords": "Bastet - Bagheera - Homid - Female - Gaia",
@@ -23,6 +34,6 @@
     "rage": 2,
     "gnosis": 3,
     "health": 2,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

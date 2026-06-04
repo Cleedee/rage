@@ -5,17 +5,17 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Roger Daly",
+      "descricao": "Destruir equipamento do oponente",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "destruir",
+          "condicao_alvo": "criatura_inimiga"
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 81,
     "texto_original": "Roger can destroy the guns and techno-Equipment of any opponent facing him.  Opponents must discard such Equipment cards before combat begins.",
     "keywords": "Garou - Glass Walkers - Theurge - Homid - Gaia - Male",
@@ -23,6 +23,6 @@
     "rage": 1,
     "gnosis": 9,
     "health": 2,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

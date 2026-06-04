@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Catfeet",
+      "descricao": "Esquivar de todos os ataques",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 944,
     "texto_original": "The user of this Gift becomes extremely nimble. For the duration of the current combat, he is agile enough to dodge all Combat Actions except those which specifically ignore dodges. The character may only play Combat Actions of Rage 1 while Catfeet is in",
     "keywords": "",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

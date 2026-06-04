@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Fancy Footwork",
+      "descricao": "Esquivar de 1 ataque",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    },
+    {
+      "descricao": "Esquivar de 2 ataques",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 319,
     "texto_original": "The character can either dodge any 1 attack (even those that cannot normally be dodged), or she can dodge 2 attacks during the same round. You may choose how and what your character dodges after you have seen the opposing Combat Actions.",
     "keywords": "Dodge",
@@ -23,6 +34,6 @@
     "rage": 2,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Syntax",
+      "descricao": "Reduzir Rage de Pentex inimigos",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 328,
     "texto_original": "Syntax is an expert Monkeywrencher.  All Pentex enemies she or her pack faces in combat are considered -2 Rage.",
     "keywords": "Garou - Glass Walkers - Ragabash - Homid - Gaia - Female",
@@ -23,6 +24,6 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

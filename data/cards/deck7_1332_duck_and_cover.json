@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Duck and Cover",
+      "descricao": "Esquivar de 1 ataque(s)",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1332,
     "texto_original": "Instinctive. Dodge one attack.  If a creature is prevented from playing a combat action, she may play Duck and Cover in the Reveal Step. Treat Duck and Cover as if it were played normally.",
     "keywords": "Instinctive",
@@ -23,6 +24,6 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

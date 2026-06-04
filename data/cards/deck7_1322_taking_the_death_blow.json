@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Taking the Death Blow",
+      "descricao": "Redirecionar ferimento mortal",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada_ferida",
+          "quantidade": 999
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1322,
     "texto_original": "Play this card when 1 of your characters receives a mortal wound. Select another member of your pack to take the wound instead. Combat may continue with the new pack member in place of the old. The new pack member is considered to be alpha for the remaind",
     "keywords": "",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

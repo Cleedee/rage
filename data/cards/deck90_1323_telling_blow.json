@@ -5,17 +5,19 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Telling Blow",
+      "descricao": "Causar 1 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
         }
-      ]
+      ],
+      "condicao_uso": ""
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1323,
     "texto_original": "If the damage from this card immediately kills your opponent, place Telling Blow in your victory pile for an additional 3 victory points.",
     "keywords": "",
@@ -23,6 +25,6 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

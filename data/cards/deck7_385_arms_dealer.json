@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Arms Dealer",
+      "descricao": "Buscar Firearm no deck de sept",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "comprar",
+          "condicao_alvo": "deck_sept",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 385,
     "texto_original": "Human. Once per turn, you may search your sept deck for a Firearm: place it in your hand then shuffle your deck. Arms Dealer is armed with a .38 Pistol. If disarmed, his Rage becomes 2.",
     "keywords": "Human - Pentex - Firearm",
@@ -23,6 +24,6 @@
     "rage": 3,
     "gnosis": 0,
     "health": 2,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

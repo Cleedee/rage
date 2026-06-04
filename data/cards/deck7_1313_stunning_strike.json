@@ -5,17 +5,19 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Stunning Strike",
+      "descricao": "Causar 1 de dano (ataque_rapido, nao_frenetico)",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
         }
-      ]
+      ],
+      "condicao_uso": "ataque_rapido; nao_frenetico"
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1313,
     "texto_original": "Requires: not frenzied. Fast Striking. If this attack damages a Frenzied creature, its frenzy ends at the end of the current combat round, and the character may not frenzy again during this combat.",
     "keywords": "Fast Striking",
@@ -23,6 +25,6 @@
     "rage": 5,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

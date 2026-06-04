@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Sniper Rifle",
+      "descricao": "Usar arma (permite acoes de combate)",
       "efeitos": [
         {
-          "tipo": "modificar_rage",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    },
+    {
+      "descricao": "Ataque a distancia (fora de combate)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 698,
     "texto_original": "Firearm. Only usable by creatures in Homid form. Cannot be used in combat. Once per turn, the owner may play a Rage 2 or less Combat Action on any creature in the Hunting Grounds. Do not refill your combat hand after using Sniper Rifle;  do so only when y",
     "keywords": "Non-Fetish - Firearm",
@@ -23,6 +34,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

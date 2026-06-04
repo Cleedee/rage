@@ -5,17 +5,18 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar War lodge",
+      "descricao": "Descartar espirito para bonus de combate",
       "efeitos": [
         {
           "tipo": "modificar_rage",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 717,
     "texto_original": "The owner of the War Lodge entreaties the spirits to help him in battle. He may then discard 1 spirit Ally or Fetish per turn; if he does so, he may immediately enter combat with the opponent of his choice.",
     "keywords": "Gaia Fetish",
@@ -23,6 +24,6 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

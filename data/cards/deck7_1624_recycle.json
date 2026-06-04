@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Recycle",
+      "descricao": "Comprar carta de sept",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "comprar",
+          "condicao_alvo": "deck_sept",
+          "quantidade": 1
+        }
+      ]
+    },
+    {
+      "descricao": "Organizar deck (colocar cartas no topo)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "discartes",
+          "quantidade": 2
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1624,
     "texto_original": "If this is the first or second turn of game, draw a sept card. Put up to two cards from your sept discards on top of your sept deck.",
     "keywords": "",
@@ -23,6 +34,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

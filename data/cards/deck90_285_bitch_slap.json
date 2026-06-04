@@ -5,17 +5,29 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Bitch Slap",
+      "descricao": "Causar 2 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ],
+      "condicao_uso": ""
+    },
+    {
+      "descricao": "Alvo ganha +1 de Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 285,
     "texto_original": "A character wounded by Bitch Slap gains 1 Rage until the end of combat.",
     "keywords": "",
@@ -23,6 +35,6 @@
     "rage": 1,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

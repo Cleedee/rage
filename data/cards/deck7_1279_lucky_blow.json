@@ -5,17 +5,19 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Lucky Blow",
+      "descricao": "Causar 3 de dano",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
         }
-      ]
+      ],
+      "condicao_uso": ""
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 1279,
     "texto_original": "Your opponent takes a turn for the worse.",
     "keywords": "",
@@ -23,6 +25,6 @@
     "rage": 2,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }

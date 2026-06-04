@@ -5,17 +5,28 @@
   "custo_acoes": 1,
   "modos": [
     {
-      "descricao": "Usar Gang Beating",
+      "descricao": "Comprar 3 carta(s) de combate",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "qualquer_alvo"
+          "tipo": "comprar",
+          "condicao_alvo": "deck_combate",
+          "quantidade": 3
+        }
+      ]
+    },
+    {
+      "descricao": "Comprar carta extra quando em desvantagem",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "deck_combate",
+          "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerado automaticamente",
+    "fonte": "analise_v2+revisado",
     "card_id": 114,
     "texto_original": "Play when a single character of yours is fighting 2 or more opponents. The single character draws 1 additional combat card per opponent he's facing and can play up to 3 Combat Actions per round of combat. Gang Beating cannot be played for a character who",
     "keywords": "",
@@ -23,6 +34,6 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false
   }
 }
