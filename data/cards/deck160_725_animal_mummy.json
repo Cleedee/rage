@@ -1,0 +1,22 @@
+{
+  "id": "card_725",
+  "nome": "Animal Mummy",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipamento equipado",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 725,
+    "texto_original": "Unique.  This animal was once mummified as a sacrifice to the gods, and the Fera now use it to pray for spiritual intervention.  Once per turn you may try to destroy any one sept card in play.  Decide randomly if the card is discarded or not.  If it is di",
+    "keywords": "Gaia Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 8,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

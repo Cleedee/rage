@@ -1,0 +1,22 @@
+{
+  "id": "card_1355",
+  "nome": "Fog",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1355,
+    "texto_original": "Opponents cannot use Combat Events while attacking your non-alpha pack members. Discard Fog to cancel a Combat Event played by a creature attacking either a Victim or a member of your pack.",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "card_374",
+  "nome": "Sand's Last King",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 374,
+    "texto_original": "Sand's Last King is using his position in the Ahadi to gain access to other Fera's allies.  He may recruit Allies which require Ajaba, Bastet or Silent Striders.",
+    "keywords": "Mokole - Suchid - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 10,
+    "health": 4,
+    "precisa_revisao": true
+  }
+}

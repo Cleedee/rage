@@ -1,0 +1,22 @@
+{
+  "id": "card_945",
+  "nome": "Chant of Morpheus",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 945,
+    "texto_original": "The target of this Gift is removed from play until the end of the next phase and may not frenzy for the rest of the turn.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

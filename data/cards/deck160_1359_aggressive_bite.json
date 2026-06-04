@@ -1,0 +1,28 @@
+{
+  "id": "card_1359",
+  "nome": "Aggressive Bite",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1359,
+    "texto_original": "Requires: not in Homid form. If the user is not frenzied, a creature wounded by this card cannot escape, step sideways or be removed from combat until after the next round of combat.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

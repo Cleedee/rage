@@ -123,8 +123,13 @@ def encontrar_pagador_rage(jogador: 'PlayerState', custo: int
         CardInstance do personagem pagador, ou None se nao houver.
     """
     for c in jogador.pack_home:
-        if not c.is_tapped and c.rage >= custo:
-            return c
+        if c.is_tapped or c.rage < custo:
+            continue
+        # Respeita restricoes: criatura com 'nao_jogar_rage_3+'
+        # nao pode pagar por cartas com custo >= 3
+        if custo >= 3 and 'nao_jogar_rage_3+' in c.restricoes:
+            continue
+        return c
     return None
 
 

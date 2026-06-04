@@ -1,0 +1,22 @@
+{
+  "id": "card_174",
+  "nome": "Lone Wolf Circles",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 174,
+    "texto_original": "After cards are revealed in the first round of combat, Lone may choose to cancel his combat action and dodge any one combat action played against him. He may not participate in Pack Actions.",
+    "keywords": "Garou - Red Talons - Philodox - Metis - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 5,
+    "health": 5,
+    "precisa_revisao": true
+  }
+}

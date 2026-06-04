@@ -1,0 +1,33 @@
+{
+  "id": "card_1099",
+  "nome": "Primal Anger",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Ganha +3 Rage mas sofre 1 de dano (permanente ate cancelar)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        },
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis+revisado",
+    "card_id": 1099,
+    "texto_original": "The user gains strength from his pain.  The Gift user gains +3 Rage, but takes 1 damage. This damage can only be healed by cancelling this Gift.  This Gift is permanent until cancelled.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 0,
+    "gnosis": 1,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

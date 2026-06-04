@@ -1,0 +1,28 @@
+{
+  "id": "card_1314",
+  "nome": "Submission Hold",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 1 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1314,
+    "texto_original": "Requires: not frenzied. If Submission Hold damages a non-frenzied creature, that creature is removed from combat at the end of this round. If Submission Hold damages a frenzied creature, that creature cannot dodge next round.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

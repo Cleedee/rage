@@ -1,0 +1,28 @@
+{
+  "id": "card_280",
+  "nome": "Anatomy Lesson",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 4 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 280,
+    "texto_original": "Requires: not frenzied. A creature wounded by Anatomy Lesson must withdraw from combat if able. The damage from Anatomy Lesson cannot be blocked.",
+    "keywords": "Unblockable",
+    "damage": "4",
+    "rage": 6,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

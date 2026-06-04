@@ -1,0 +1,28 @@
+{
+  "id": "card_1328",
+  "nome": "Head Butt",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 4 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1328,
+    "texto_original": "If any damage from this card is blocked, this card becomes a damage card on the creature that played it, unless it is a Mokole.",
+    "keywords": "",
+    "damage": "4",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

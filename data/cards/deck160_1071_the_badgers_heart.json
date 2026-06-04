@@ -1,0 +1,22 @@
+{
+  "id": "card_1071",
+  "nome": "The Badger's Heart",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1071,
+    "texto_original": "The victim of this Gift has trouble using its Rage effectively. Target a character. It now has its Breed form Rage in all forms. This Gift lasts until it is cancelled or when the target next enters a full frenzy.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

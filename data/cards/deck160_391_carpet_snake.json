@@ -1,0 +1,22 @@
+{
+  "id": "card_391",
+  "nome": "Carpet Snake",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 391,
+    "texto_original": "The Carpet Snake is a spirit that can take any one of your pack members into or out of the Umbra each turn (ignore the Gauntlet). This ability may be used any time before alphas are chosen.",
+    "keywords": "Animal - Spirit",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 1,
+    "precisa_revisao": true
+  }
+}

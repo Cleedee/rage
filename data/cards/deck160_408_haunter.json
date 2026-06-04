@@ -1,0 +1,22 @@
+{
+  "id": "card_408",
+  "nome": "Haunter",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 408,
+    "texto_original": "The Haunter is a wraith  adept at inducing terror. It may use Fomori, Metis and Shadow Lords Gifts. Any Gifts of 4 Gnosis or lower it uses may cross the Gauntlet. The Haunter exists only in the Umbra.",
+    "keywords": "Spirit - Wraith",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 7,
+    "health": 4,
+    "precisa_revisao": true
+  }
+}

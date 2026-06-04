@@ -1,0 +1,22 @@
+{
+  "id": "card_609",
+  "nome": "Lake Nasser Wallow",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "Caern em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 609,
+    "texto_original": "The Caern lies beneath a deep artificial lake and is tied to a small Egyptian realm.  Rites and Gifts played by your pack may cross the Gauntlet.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

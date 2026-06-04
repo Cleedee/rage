@@ -1,0 +1,28 @@
+{
+  "id": "card_324",
+  "nome": "Flicker",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Esquivar de todos os ataques (Umbra)",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 99
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis+revisado",
+    "card_id": 324,
+    "texto_original": "Only usable in the Umbra. Dodge all attacks played against you this round.",
+    "keywords": "Dodge",
+    "damage": "2",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

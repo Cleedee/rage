@@ -1,0 +1,22 @@
+{
+  "id": "card_726",
+  "nome": "Assegai",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipamento equipado",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 726,
+    "texto_original": "Weapon. Armor. This short spear can only be used in Homid or Crinos form.  The user blocks 1 damage from all Combat Actions targeting it.",
+    "keywords": "Non-Fetish - Weapon - Armor",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

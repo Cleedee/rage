@@ -1,0 +1,34 @@
+{
+  "id": "card_1179",
+  "nome": "Rite of the Opened Caern",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Todos personagens e aliados espiritos +2 Gnosis ate fim do turno + comprar 1 carta sept",
+      "efeitos": [
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "duracao": "end_of_turn"
+        },
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "deck_sept",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis+revisado",
+    "card_id": 1179,
+    "texto_original": "Your pack must have a Caern in order to use this Rite. You call upon the Caern's totem to bless your pack. All your Characters and Spirit Allies are +2 Gnosis until the end of the turn. Draw a Sept card during the next Umbra phase.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

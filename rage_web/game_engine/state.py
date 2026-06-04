@@ -14,6 +14,22 @@ def _default_anunciador():
     return Anunciador()
 
 
+@dataclass
+class PendenciaEfeito:
+    """Efeito temporario que expira em determinado momento.
+
+    Quando a duracao expira, o delta e revertido no atributo da carta
+    ou a restricao e removida.
+    """
+    card_uid: int  # id() da CardInstance afetada
+    atributo: str  # 'rage', 'gnosis', 'health', 'restricao'
+    delta: int     # valor a reverter (para stats)
+    duracao: str   # 'end_of_turn', 'end_of_combat'
+    valor_str: str = ''  # nome da restricao (para atributo='restricao')
+    turno_aplicado: int = 0
+    fase_aplicada: str = ''
+
+
 class Zone(Enum):
     """Zonas do jogo onde uma carta pode estar."""
     DECK_COMBAT = 'deck_combat'
@@ -54,6 +70,8 @@ class CardInstance:
     modifiers: dict = field(default_factory=dict)
     modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
     damage_aggravated: int = 0  # Quanto do dano e agravado (nao regenera)
+    restricoes: list[str] = field(default_factory=list)
+    # Restricoes ativas: 'nao_jogar_rage_3+', 'nao_fugir', etc.
 
 
 @dataclass
@@ -459,6 +477,9 @@ class GameState:
     # Estado de Moot (Juntas)
     moot_atual: Optional['MootState'] = None
 
+    # Efeitos temporarios pendentes de expiracao
+    pendencias: list[PendenciaEfeito] = field(default_factory=list)
+
     # Gerador de numeros aleatorios com seed (reprodutibilidade)
     rng: random.Random = field(default_factory=random.Random)
 
@@ -483,7 +504,12 @@ class GameState:
         from rage_web.game_engine.rules import PHASES
         idx = PHASES.index(self.phase)
         if idx + 1 < len(PHASES):
-            self.phase = PHASES[idx + 1]
+            nova_fase = PHASES[idx + 1]
+            # Expirar efeitos temporarios antes de entrar na nova fase
+            logs_exp = self.expirar_pendencias(nova_fase)
+            for l in logs_exp:
+                self.add_log(l)
+            self.phase = nova_fase
             # Executa acoes automaticas na transicao
             if self.phase == 'regeneration':
                 for p in self.players:
@@ -531,7 +557,10 @@ class GameState:
                 # Nao avanca fase, partida terminou
                 return
 
-            # Fim do turno -> volta ao inicio
+            # Fim do turno -> expirar efeitos + volta ao inicio
+            logs_exp = self.expirar_pendencias('redraw')
+            for l in logs_exp:
+                self.add_log(l)
             self.phase = 'redraw'
             self.turn_number += 1
             self.current_player_index = 0
@@ -607,6 +636,60 @@ class GameState:
                      f'{self.moot_atual.resultado} '
                      f'({self.moot_atual.votos_sim} x {self.moot_atual.votos_nao})')
         return True
+
+    def _find_card_by_uid(self, uid: int) -> Optional[CardInstance]:
+        """Busca uma CardInstance pelo seu Python id() em todas as zonas."""
+        for p in self.players:
+            for zone_cards in (p.pack_home, p.hunting_grounds,
+                               p.umbra, p.hand):
+                for c in zone_cards:
+                    if id(c) == uid:
+                        return c
+        return None
+
+    def expirar_pendencias(self, fase_entrando: str) -> list[str]:
+        """Reverte efeitos temporarios cuja duracao expirou.
+
+        Args:
+            fase_entrando: Proxima fase do turno (usada para decidir
+                           o que expira).
+
+        Returns:
+            Lista de mensagens de log.
+        """
+        log = []
+        removidas = []
+        for pend in self.pendencias:
+            expirou = False
+
+            if pend.duracao == 'end_of_turn' and fase_entrando == 'redraw':
+                expirou = True
+            elif pend.duracao == 'end_of_combat' and fase_entrando != 'combat':
+                expirou = True
+            elif pend.duracao == 'end_of_phase' and pend.fase_aplicada != fase_entrando:
+                expirou = True
+
+            if expirou:
+                c = self._find_card_by_uid(pend.card_uid)
+                if c:
+                    if pend.atributo == 'rage':
+                        c.rage = max(0, c.rage - pend.delta)
+                        log.append(f'{c.name}: bonus de rage expirou')
+                    elif pend.atributo == 'gnosis':
+                        c.gnosis = max(0, c.gnosis - pend.delta)
+                        log.append(f'{c.name}: bonus de gnosis expirou')
+                    elif pend.atributo == 'health':
+                        c.health = max(1, c.health - pend.delta)
+                        log.append(f'{c.name}: bonus de vida expirou')
+                    elif pend.atributo == 'restricao' and pend.valor_str:
+                        if pend.valor_str in c.restricoes:
+                            c.restricoes.remove(pend.valor_str)
+                            log.append(f'{c.name}: restricao "{pend.valor_str}" expirou')
+                removidas.append(pend)
+
+        for r in removidas:
+            self.pendencias.remove(r)
+        return log
 
     def add_log(self, message: str):
         """Adiciona entrada no log da partida."""

@@ -1,0 +1,22 @@
+{
+  "id": "card_269",
+  "nome": "Sweet Luna's Smile",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 269,
+    "texto_original": "Sweet Luna's Smile may regenerate aggravated damage. She gains +1 Rage, Gnosis and Health while a Lunar Phase is in play.",
+    "keywords": "Garou - Children of Gaia - Ragabash - Metis - Gaia - Female",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 7,
+    "health": 7,
+    "precisa_revisao": true
+  }
+}

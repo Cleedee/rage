@@ -1,0 +1,22 @@
+{
+  "id": "card_1147",
+  "nome": "Mnesis Dreams",
+  "tipo": "Quest",
+  "modos": [
+    {
+      "descricao": "Iniciar Quest",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1147,
+    "texto_original": "Play on a Mokole Character during the Umbra Phase.  If it takes no damage for 2 full turns, shuffle a card from your sept discard into your sept deck and place this Quest in your Victory Pile where it is worth 2 Victory Points.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

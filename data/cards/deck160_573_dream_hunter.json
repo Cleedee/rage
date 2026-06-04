@@ -1,0 +1,22 @@
+{
+  "id": "card_573",
+  "nome": "Dream Hunter",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 573,
+    "texto_original": "Spirit.  This spirit memory disguises itself as a harmless animal.  It exists only in the Umbra and can use Mokole and Get of Fenris Gifts.  If a Mokole kills this creature, he may search his deck for a Quest, Rite or Junta and put it in his hand; shuffle",
+    "keywords": "Spirit - Umbra",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 6,
+    "health": 4,
+    "precisa_revisao": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "card_1341",
+  "nome": "Elethoi",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo em jogo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck160_analysis",
+    "card_id": 1341,
+    "texto_original": "Spirit. Elethoi are spirits that live in the eye of storms and can only be affected by Gifts and Umbral attacks. This bane can use Umbra-only Combat Actions against opponents not in the Umbra. It cannot be bound or controlled.",
+    "keywords": "Spirit - Bane - Umbra",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 7,
+    "health": 7,
+    "precisa_revisao": true
+  }
+}

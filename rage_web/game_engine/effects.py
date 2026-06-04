@@ -32,7 +32,7 @@ from enum import Enum
 from typing import Any, Callable, Optional
 
 from rage_web.game_engine.state import (
-    CardInstance, GameState, PlayerState, Zone,
+    CardInstance, GameState, PendenciaEfeito, PlayerState, Zone,
 )
 
 
@@ -61,6 +61,7 @@ class EfeitoTipo(str, Enum):
     ANULAR = 'anular'                 # Anular acao/ataque
     FUGIR = 'fugir'
     INICIAR_COMBATE = 'iniciar_combate'
+    RESTRICAO = 'restringir'  # Adicionar restricao temporaria a criatura
 
 
 # -----------------------------------------------------------------------
@@ -97,6 +98,7 @@ class Efeito:
     quantidade: int = 0
     condicao: Optional[str] = None  # Nome da funcao de condicao
     modo_idx: int = 0  # Indice do modo (para cartas modais)
+    duracao: str = ''  # 'end_of_turn', 'end_of_combat', 'end_of_phase', ''
 
     def __post_init__(self):
         if isinstance(self.tipo, str):
@@ -193,6 +195,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.GANHAR_VP: self._resolver_ganhar_vp,
             EfeitoTipo.PERDER_VP: self._resolver_perder_vp,
             EfeitoTipo.ANULAR: self._resolver_anular,
+            EfeitoTipo.RESTRICAO: self._resolver_restringir,
         }
         return resolvedores.get(tipo)
 
@@ -352,6 +355,13 @@ class ResolvedorEfeitos:
         """Modifica o Rage de uma criatura."""
         if isinstance(alvo, CardInstance):
             alvo.rage = max(0, alvo.rage + efeito.quantidade)
+            if efeito.duracao:
+                self.game.pendencias.append(PendenciaEfeito(
+                    card_uid=id(alvo), atributo='rage',
+                    delta=efeito.quantidade, duracao=efeito.duracao,
+                    turno_aplicado=self.game.turn_number,
+                    fase_aplicada=self.game.phase,
+                ))
             sinal = '+' if efeito.quantidade >= 0 else ''
             self.game.add_log(
                 f'{alvo.name} rage {sinal}{efeito.quantidade}'
@@ -364,6 +374,13 @@ class ResolvedorEfeitos:
         """Modifica o Gnosis de uma criatura."""
         if isinstance(alvo, CardInstance):
             alvo.gnosis = max(0, alvo.gnosis + efeito.quantidade)
+            if efeito.duracao:
+                self.game.pendencias.append(PendenciaEfeito(
+                    card_uid=id(alvo), atributo='gnosis',
+                    delta=efeito.quantidade, duracao=efeito.duracao,
+                    turno_aplicado=self.game.turn_number,
+                    fase_aplicada=self.game.phase,
+                ))
             return True
         return False
 
@@ -372,6 +389,13 @@ class ResolvedorEfeitos:
         """Modifica a vida maxima de uma criatura."""
         if isinstance(alvo, CardInstance):
             alvo.health = max(1, alvo.health + efeito.quantidade)
+            if efeito.duracao:
+                self.game.pendencias.append(PendenciaEfeito(
+                    card_uid=id(alvo), atributo='health',
+                    delta=efeito.quantidade, duracao=efeito.duracao,
+                    turno_aplicado=self.game.turn_number,
+                    fase_aplicada=self.game.phase,
+                ))
             return True
         return False
 
@@ -415,6 +439,28 @@ class ResolvedorEfeitos:
             f'{jogador.name} perdeu {qtd} VP ({jogador.victory_points})'
         )
         return True
+
+    def _resolver_restringir(self, efeito: Efeito, origem: CardInstance,
+                            jogador: PlayerState, alvo) -> bool:
+        """Adiciona uma restricao temporaria a uma criatura."""
+        if not isinstance(alvo, CardInstance) or not efeito.alvo:
+            return False
+        if efeito.alvo not in alvo.restricoes:
+            alvo.restricoes.append(efeito.alvo)
+            if efeito.duracao:
+                self.game.pendencias.append(PendenciaEfeito(
+                    card_uid=id(alvo), atributo='restricao',
+                    delta=0, valor_str=efeito.alvo,
+                    duracao=efeito.duracao,
+                    turno_aplicado=self.game.turn_number,
+                    fase_aplicada=self.game.phase,
+                ))
+            self.game.add_log(
+                f'{alvo.name} recebeu restricao "{efeito.alvo}"'
+                f'{" ate " + efeito.duracao if efeito.duracao else ""}'
+            )
+            return True
+        return False
 
     def _resolver_anular(self, efeito: Efeito, origem: CardInstance,
                         jogador: PlayerState, alvo) -> bool:
@@ -491,6 +537,7 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
                 condicao=e.get('condicao_alvo'),
                 alvo=e.get('alvo'),
                 quantidade=e.get('quantidade', 0),
+                duracao=e.get('duracao', ''),
             ))
         modos.append(Modo(
             descricao=m['descricao'],
