@@ -24,6 +24,8 @@ Exemplo de carta neste formato:
 
 from __future__ import annotations
 
+import json
+import os
 import random
 from dataclasses import dataclass, field
 from enum import Enum
@@ -303,7 +305,7 @@ class ResolvedorEfeitos:
         qtd = efeito.quantidade or 1
         alvo_jogador = alvo if isinstance(alvo, PlayerState) else jogador
 
-        if qtd == 'mao_oponente_menos_4':
+        if qtd in ('mao_menos_4', 'mao_oponente_menos_4'):
             qtd = max(0, len(alvo_jogador.hand) - 4)
             if qtd == 0:
                 return False
@@ -469,83 +471,58 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
 # Cartas de exemplo (built-in)
 # -----------------------------------------------------------------------
 
-CARTAS_EXEMPLO: dict[str, ModeloCarta] = {
-    'golpe_misericordia': ModeloCarta(
-        id='golpe_misericordia',
-        nome='Golpe de Misericórdia',
-        tipo='combate',
-        custo_acoes=1,
-        modos=[
-            Modo(
-                descricao='Matar uma criatura ferida',
-                efeitos=[
-                    Efeito(tipo=EfeitoTipo.DESTRUIR,
-                           condicao='criatura_inimiga_ferida'),
-                ],
-            ),
-            Modo(
-                descricao='Oponente descarta cartas',
-                efeitos=[
-                    Efeito(tipo=EfeitoTipo.DESCARTE,
-                           quantidade='mao_oponente_menos_4'),
-                ],
-            ),
-            Modo(
-                descricao='Causar 2 de dano',
-                efeitos=[
-                    Efeito(tipo=EfeitoTipo.DANO,
-                           condicao='qualquer_criatura',
-                           quantidade=2),
-                ],
-            ),
-        ],
-    ),
-    'toque_curativo': ModeloCarta(
-        id='toque_curativo',
-        nome='Toque Curativo',
-        tipo='gift',
-        custo_acoes=1,
-        modos=[
-            Modo(
-                descricao='Cura 3 de vida',
-                efeitos=[
-                    Efeito(tipo=EfeitoTipo.CURAR,
-                           condicao='criatura_aliada_ferida',
-                           quantidade=3),
-                ],
-            ),
-        ],
-    ),
-    'furia_primitiva': ModeloCarta(
-        id='furia_primitiva',
-        nome='Fúria Primitiva',
-        tipo='combate',
-        custo_acoes=1,
-        modos=[
-            Modo(
-                descricao='+2 Rage para uma criatura aliada',
-                efeitos=[
-                    Efeito(tipo=EfeitoTipo.MODIFICAR_RAGE,
-                           condicao='criatura_aliada',
-                           quantidade=2),
-                ],
-            ),
-        ],
-    ),
-    'salto_umbral': ModeloCarta(
-        id='salto_umbral',
-        nome='Salto Umbral',
-        tipo='event',
-        custo_acoes=1,
-        modos=[
-            Modo(
-                descricao='Move criatura para Umbra',
-                efeitos=[
-                    Efeito(tipo=EfeitoTipo.MOVER_PARA,
-                           condicao='criatura_aliada',
-                           alvo='umbra'),
-                ],
-            ),
-        ],
-    ),
-}
+# -----------------------------------------------------------------------
+# Carregamento de JSONs
+# -----------------------------------------------------------------------
+
+_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '..',
+                          'data', 'cards')
+CARTAS_EXEMPLO: dict[str, ModeloCarta] = {}
+
+
+def _json_para_modelo(dados: dict) -> ModeloCarta:
+    """Converte dict de JSON para ModeloCarta."""
+    modos = []
+    for m in dados.get('modos', []):
+        efeitos = []
+        for e in m.get('efeitos', []):
+            efeitos.append(Efeito(
+                tipo=e['tipo'],
+                condicao=e.get('condicao_alvo'),
+                alvo=e.get('alvo'),
+                quantidade=e.get('quantidade', 0),
+            ))
+        modos.append(Modo(
+            descricao=m['descricao'],
+            efeitos=efeitos,
+        ))
+    return ModeloCarta(
+        id=dados['id'],
+        nome=dados['nome'],
+        tipo=dados.get('tipo', 'event'),
+        custo_acoes=dados.get('custo_acoes', 1),
+        modos=modos,
+    )
+
+
+def _carregar_todos_json() -> dict[str, ModeloCarta]:
+    """Carrega todas as cartas do diretorio data/cards/."""
+    cartas = {}
+    if not os.path.isdir(_DATA_DIR):
+        return cartas
+    for fname in sorted(os.listdir(_DATA_DIR)):
+        if not fname.endswith('.json'):
+            continue
+        path = os.path.join(_DATA_DIR, fname)
+        try:
+            with open(path, encoding='utf-8') as f:
+                dados = json.load(f)
+            modelo = _json_para_modelo(dados)
+            cartas[modelo.id] = modelo
+        except Exception as exc:
+            print(f'[effects] Erro ao carregar {fname}: {exc}')
+    return cartas
+
+
+# Carrega automaticamente na inicializacao do modulo
+CARTAS_EXEMPLO.update(_carregar_todos_json())

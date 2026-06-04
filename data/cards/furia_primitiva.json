@@ -1,0 +1,18 @@
+{
+  "id": "furia_primitiva",
+  "nome": "Fúria Primitiva",
+  "tipo": "combate",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "+2 Rage para uma criatura aliada",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2
+        }
+      ]
+    }
+  ]
+}

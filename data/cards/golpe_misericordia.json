@@ -1,0 +1,37 @@
+{
+  "id": "golpe_misericordia",
+  "nome": "Golpe de Misericórdia",
+  "tipo": "combate",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Matar uma criatura ferida",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "condicao_alvo": "criatura_inimiga_ferida"
+        }
+      ]
+    },
+    {
+      "descricao": "Oponente descarta cartas",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": "mao_menos_4"
+        }
+      ]
+    },
+    {
+      "descricao": "Causar 2 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_criatura",
+          "quantidade": 2
+        }
+      ]
+    }
+  ]
+}

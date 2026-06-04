@@ -1,0 +1,18 @@
+{
+  "id": "toque_curativo",
+  "nome": "Toque Curativo",
+  "tipo": "gift",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Cura 3 de vida",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada_ferida",
+          "quantidade": 3
+        }
+      ]
+    }
+  ]
+}
