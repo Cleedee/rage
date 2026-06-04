@@ -2,7 +2,7 @@
 
 ## 📋 Visão Geral
 
-**rage-web** é uma aplicação web Flask para gerenciar cartas de um **Collectible Card Game (CCG)** chamado **Rage CCG**. A aplicação permite criar, listar, editar e excluir cartas (personagens, equipamentos e genéricas), além de gerenciar decks.
+**rage-web** é uma aplicação web Flask para gerenciar cartas de um **Collectible Card Game (CCG)** chamado **Rage CCG**. A aplicação permite criar, listar, editar e excluir cartas (personagens, equipamentos e genéricas), além de gerenciar decks. O projeto inclui um **motor de jogo completo** (`game_engine/`) com simulação de partidas, bot com IA e API REST.
 
 ---
 
@@ -23,7 +23,22 @@
 ├── rage_web/                       # 📦 Pacote principal da aplicação
 │   ├── __init__.py                 # Factory: create_app()
 │   ├── config.py                   # Configurações (SQLite, SECRET_KEY)
-│   ├── database.db                 # 🗄️ Banco SQLite (versionado!)
+│   ├── database.db                 # 🗄️ Banco SQLite
+│   │
+│   ├── game_engine/                # 🎮 Motor de jogo (4 fases implementadas)
+│   │   ├── __init__.py
+│   │   ├── state.py               # GameState, CardInstance, PlayerState, CombatState, MootState
+│   │   ├── combat_queue.py        # Ciclo de combate: declarar → revelar → resolver
+│   │   ├── rules.py               # Constantes, validações, pagadores de custo Rage/Gnosis
+│   │   ├── effects.py             # Sistema de efeitos estruturados (ModeloCarta, ResolvedorEfeitos)
+│   │   ├── anunciador.py          # Sistema de anúncio → resposta → resolução
+│   │   ├── match.py               # Simulador de partida entre dois bots
+│   │   ├── cli.py                 # REPL de debug (STATUS, DRAW, PLAY, ATTACK, etc.)
+│   │   ├── api.py                 # API REST (Blueprint Flask)
+│   │   └── bot/                    # IA do bot
+│   │       ├── __init__.py
+│   │       ├── evaluator.py       # BoardEvaluator (threat, advantage, pressure, victory)
+│   │       └── priority_bot.py    # PriorityBot (árvore de decisão por prioridades)
 │   │
 │   ├── ext/                        # Extensões
 │   │   ├── base.py                 # Base declarativa do SQLAlchemy
@@ -57,9 +72,18 @@
 │   └── versions/
 │       └── 6bda8104262a_tabelas_iniciais.py
 │
+├── data/
+│   └── cards/                     # JSONs de cartas com efeitos estruturados
+│
 └── tests/
     ├── conftest.py                 # Fixtures pytest
-    └── test_endpoints.py           # Testes (atualmente um só, quebrado)
+    ├── test_endpoints.py           # Testes dos endpoints web
+    ├── test_game_engine.py         # Testes do motor de jogo (state, combat_queue, rules)
+    ├── test_game_engine_anunciador.py  # Testes do sistema de anúncio
+    ├── test_game_engine_api.py     # Testes da API REST
+    ├── test_game_engine_bot.py     # Testes do bot (evaluator + priority)
+    ├── test_game_engine_cli.py     # Testes do CLI/REPL
+    └── test_game_engine_effects.py # Testes do sistema de efeitos
 ```
 
 ---
@@ -148,6 +172,145 @@
 
 ---
 
+## 🎮 Motor de Jogo (`game_engine/`)
+
+### Arquitetura — 4 Fases Implementadas
+
+| Fase | Módulo | Status |
+|---|---|---|
+| Fase 1 — State + Combat Queue | `state.py`, `combat_queue.py` | ✅ Completo |
+| Fase 2 — CLI de Debug | `cli.py` | ✅ Completo |
+| Fase 3 — REST API | `api.py` | ✅ Completo |
+| Fase 4 — Bot | `bot/evaluator.py`, `bot/priority_bot.py` | ✅ Completo |
+
+### Módulos
+
+#### `state.py` — Estado do Jogo
+- **`Zone`**: Enum com 11 zonas (DECK_COMBAT, DECK_SEPT, HAND, PACK_HOME, HUNTING_GROUNDS, UMBRA, DISCARD_COMBAT, DISCARD_SEPT, VICTORY_PILE, OUT_OF_PLAY, REMOVED)
+- **`CardInstance`**: Instância de carta em jogo (ID único, atributos, estado tapped/face-down, dano agravado)
+- **`PlayerState`**: Estado do jogador (zonas, pools, redraw, regeneração, pagamento de custos Rage/Gnosis, step sideways)
+- **`CombatState`**: Estado do combate (declarações, ordem de alpha, último a declarar)
+- **`MootState`**: Estado de Juntas/Board Meetings (votação por Renome)
+- **`GameState`**: Estado completo (turno, fase, jogadores, log, anúncios, vitória)
+
+#### `combat_queue.py` — Ciclo de Combate
+- Sistema de combate com **declaração simultânea** e **"Último a Declarar"**
+- Funções: `start_combat`, `selecionar_alfa`, `calcular_ordem_alfa`, `declare_action`, `reveal_all`, `feint_action`, `resolve_combat`, `end_combat`, `verificar_vitoria`
+- Verificação de Gauntlet (mesmo lado para combate)
+- Resolução: ataques por índice + contra-ataques, destruição → Victory Pile
+
+#### `rules.py` — Constantes e Regras
+- Constantes: limites de atributos, tamanhos de mão, fases do turno, tipos de carta, zonas
+- `parse_custo_rage()`: Converte campo damage para custo numérico
+- `encontrar_pagador_rage/gnosis()`: Encontra personagem destapped com atributo suficiente
+- `zona_da_carta()`: Determina zona por tipo (Pack Home vs Hunting Grounds)
+- `encontrar_caern()`: Encontra Caern no pack
+- `pode_step_sideways()`: Verifica Gnosis >= Gauntlet e Creature Class
+
+#### `effects.py` — Sistema de Efeitos
+- **`EfeitoTipo`**: Enum com 16 tipos (DANO, CURAR, DESTRUIR, DESCARTE, COMPRAR, TAPAR, etc.)
+- **`AlvoTipo`**: Enum com condições de alvo (criatura inimiga/aliada, jogador, mão, etc.)
+- **`ModeloCarta`**: Modelo de carta com modos e efeitos estruturados
+- **`ResolvedorEfeitos`**: Aplica efeitos no estado do jogo (12 resolvedores)
+- Carregamento automático de JSONs de `data/cards/`
+
+#### `anunciador.py` — Sistema de Anúncio
+- Fluxo: **anunciar → responder → resolver** (diferente de pilha LIFO estilo Magic)
+- Suporte a **cartas modais** (escolha de modo)
+- **Cancelamento**: anular efeito (pode cancelar cancelamento)
+- `anunciar_e_resolver()`: Atalho de alto nível
+
+#### `match.py` — Simulador de Partidas
+- `run_match()`: Partida entre dois bots com dificuldades configuráveis
+- Suporte a decks do banco de dados (`--deck1`, `--deck2`)
+- Detecção de travamento (stale steps)
+- Saída colorida no terminal com ícones Unicode
+
+#### `cli.py` — REPL de Debug
+- Comandos: `STATUS`, `DRAW`, `PLAY`, `ANUNCIAR`, `ESCOLHER`, `ANULAR`, `ATTACK`, `DECLARE`, `REVEAL`, `FEINT`, `RESOLVE`, `ENDCOMBAT`, `PASS`, `NEXT`, `CARDS`, `SAVE`, `LOAD`, `HELP`, `QUIT`
+- `create_sample_game()`: Cria partida de exemplo com personagens e decks
+- `build_game_from_decks()`: Cria partida a partir de decks do banco SQLite
+
+#### `api.py` — API REST
+- Blueprint Flask (`/api/game`) com endpoints:
+  - `POST /new` — Nova partida
+  - `GET /<id>` — Estado da partida
+  - `GET /<id>/legal-actions` — Ações válidas no momento
+  - `POST /<id>/draw`, `/play`, `/use-card`, `/attack`, `/declare`, `/reveal`, `/feint`, `/resolve`, `/end-combat`, `/pass`, `/next`
+- Armazenamento em memória (dicionário `_games`)
+
+#### `bot/evaluator.py` — Avaliador de Tabuleiro
+- **`BoardEvaluator`**: Notas 0-10 para threat, advantage, pressure, victory
+- **Pesos**: threat=0.35, advantage=0.25, pressure=0.25, victory=0.15
+- `composite_score()`: Nota composta para decisão
+
+#### `bot/priority_bot.py` — Bot com Árvore de Decisão
+- **`PriorityBot`**: 3 dificuldades (easy/medium/hard)
+- **Árvore**: Sobreviver → Eliminar Ameaça → Desenvolver Mesa → Atacar
+- Ações por fase: redraw, resource, umbra, moot, combate
+- **Alpha actions**: Atacar Hunting Grounds como ação alpha
+- Pagamento automático de custos Rage/Gnosis
+- Escolha de modo para cartas modais (heurísticas por ID de carta)
+
+### Ciclo de Combate
+
+```
+1. SELECT_ALPHA → Cada jogador escolhe alpha (maior Renome age primeiro)
+2. DECLARAR     → Cada criatura declara ação face-down
+3. REVELAR      → Todas reveladas; Último a Declarar pode Feint
+4. RESOLVER     → Aplica dano (Rage do atacante), destrói mortos → VP
+5. FIM          → Remove mortos, verifica vitória
+```
+
+### Fases do Turno
+
+```
+redraw → regeneration → resource → umbra → moot → combat → (próximo turno)
+```
+
+### Comandos CLI do Game Engine
+
+| Comando | Exemplo | Descrição |
+|---|---|---|
+| `STATUS` | `STATUS` | Mostra tabuleiro completo |
+| `DRAW` | `DRAW combat 2` | Compra cartas |
+| `PLAY <n>` | `PLAY 3` | Joga carta da mão |
+| `ANUNCIAR <n>` | `ANUNCIAR 0` | Anuncia carta de efeito |
+| `ESCOLHER <n>` | `ESCOLHER 1` | Escolhe modo de carta modal |
+| `ANULAR` | `ANULAR` | Anula efeito anunciado |
+| `ATTACK <a> [d]` | `ATTACK 500 501` | Inicia combate |
+| `DECLARE <id> <acao>` | `DECLARE 500 strike` | Declara ação de combate |
+| `REVEAL` | `REVEAL` | Revela ações |
+| `FEINT <id> <acao>` | `FEINT 502 strike` | Troca ação (Último a Declarar) |
+| `RESOLVE` | `RESOLVE` | Resolve combate |
+| `ENDCOMBAT` | `ENDCOMBAT` | Encerra combate |
+| `PASS` | `PASS` | Passa a vez |
+| `NEXT` | `NEXT` | Avança fase |
+
+### Testes do Motor de Jogo
+
+**122 testes passando** em 6 arquivos:
+
+| Arquivo | Cobertura |
+|---|---|
+| `test_game_engine.py` | state, combat_queue, rules |
+| `test_game_engine_anunciador.py` | Anunciador, EfeitoAnunciado |
+| `test_game_engine_api.py` | Endpoints da API REST |
+| `test_game_engine_bot.py` | BoardEvaluator, PriorityBot |
+| `test_game_engine_cli.py` | CLI, comandos, save/load |
+| `test_game_engine_effects.py` | ModeloCarta, ResolvedorEfeitos |
+
+### Pontos de Atenção do Motor de Jogo
+
+1. **🔌 API REST não registrada** — O `api.py` define o blueprint `api_bp` mas ele não é registrado no `create_app()`. A API existe mas não é acessível via Flask.
+2. **🎲 Bot usa `random.choice` para alvos** — O `ResolvedorEfeitos._escolher_criatura()` usa `random.choice` sem seed determinística, dificultando reprodutibilidade.
+3. **📢 Anunciador em `__post_init__`** — O `Anunciador` é criado no `__post_init__` do `GameState`, dificultando serialização e mocking em testes.
+4. **📂 `data/cards/` pode não existir** — O `effects.py` tenta carregar JSONs de `data/cards/` (caminho relativo frágil), gerando erro silencioso se ausente.
+5. **🔄 Verificação de Gauntlet incompleta** — O `_mesmo_lado_gauntlet` em `combat_queue.py` não considera personagens no mundo físico (pack_home) vs Umbra para o atacante.
+6. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
+
+---
+
 ## 🔍 Pontos de Atenção / Problemas Identificados
 
 1. **🏗️ `database.db` versionado** — O arquivo SQLite está dentro do pacote `rage_web/` e está sendo versionado no Git. Não é boa prática; o banco deve ficar em `instance/` ou ser ignorado.
@@ -189,6 +352,11 @@
 - **Template base com Bulma + HTMX** — UI moderna sem muito JS customizado.
 - **Extensões separadas** (`ext/`) — Código modular.
 - **CLI command** `init-database` para setup inicial.
+- **Motor de jogo completo** — 4 fases implementadas com 122 testes passando.
+- **Bot com IA** — Árvore de decisão com 3 níveis de dificuldade e avaliador de tabuleiro.
+- **Sistema de efeitos estruturado** — Cartas com modos, condições de alvo e efeitos encadeados.
+- **API REST do game engine** — Endpoints para criar partidas, executar ações e consultar estado.
+- **Simulador de partidas** — `match.py` permite rodar partidas bot vs bot com decks reais.
 
 ---
 
@@ -234,3 +402,7 @@ Character (Gaia/Wyrm/Rogue), Gift, Equipment, Combat Action, Event, Ally, Enemy,
 8. Adicionar autenticação (sign up / log in estão no template mas não implementados)
 9. Usar variáveis de ambiente para SECRET_KEY em produção
 10. Adicionar validação e tratamento de erros mais robustos (páginas 404, flash messages consistentes)
+11. Registrar `api_bp` no `create_app()` para expor a API REST do game engine
+12. Criar diretório `data/cards/` com exemplos de cartas em JSON
+13. Adicionar seed determinística ao `ResolvedorEfeitos` para reprodutibilidade
+14. Integrar o game engine ao frontend (HTMX) para partidas web
