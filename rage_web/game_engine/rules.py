@@ -150,6 +150,35 @@ def encontrar_pagador_gnosis(jogador: 'PlayerState', custo: int
     return None
 
 
+TIPOS_HUNTING_GROUNDS = {'enemy', 'victim', 'battlefield',
+                          'ally - enemy', 'ally - victim',
+                          'enemy - victim'}
+
+
+def zona_da_carta(tipo: str) -> str:
+    """Retorna a zona apropriada para uma carta baseado no tipo.
+
+    Regra (1.2):
+    - Pack Home Ground: Character, Ally, Caern, Equipment, Gift, Rite,
+      Territory, Realm, Event, Moot, Board Meeting, Quest, Past Life
+    - Hunting Grounds: Enemy, Victim, Battlefield
+    - Ambos os lados: Caern, Territory, Event
+
+    Returns:
+        'pack_home' | 'hunting_grounds'
+    """
+    if not tipo:
+        return 'pack_home'
+    t = tipo.lower().strip()
+    if any(hg in t for hg in TIPOS_HUNTING_GROUNDS):
+        return 'hunting_grounds'
+    if t.startswith('character'):
+        return 'pack_home'
+    if t.startswith('ally'):
+        return 'pack_home'
+    return 'pack_home'
+
+
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
 

@@ -232,12 +232,18 @@ def api_play(game_id: str):
     if idx < 0 or idx >= len(cp.hand):
         return jsonify({'error': f'Indice invalido. Mao tem {len(cp.hand)} cartas.'}), 400
 
+    from rage_web.game_engine.rules import zona_da_carta
     card = cp.hand.pop(idx)
-    card.zone = Zone.PACK_HOME
-    card.health_current = card.health
-    cp.pack_home.append(card)
-
-    game.add_log(f'{cp.name} jogou {card.name}')
+    zona = zona_da_carta(card.card_type or '')
+    if zona == 'hunting_grounds':
+        card.zone = Zone.HUNTING_GROUNDS
+        cp.hunting_grounds.append(card)
+        game.add_log(f'{cp.name} jogou {card.name} no Hunting Grounds')
+    else:
+        card.zone = Zone.PACK_HOME
+        card.health_current = card.health
+        cp.pack_home.append(card)
+        game.add_log(f'{cp.name} jogou {card.name}')
 
     return jsonify({
         'played': _serialize_card(card),

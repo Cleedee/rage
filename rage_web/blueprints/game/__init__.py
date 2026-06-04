@@ -249,11 +249,18 @@ def _executar_acao(g: GameState, action: str, params: dict) -> str:
         idx = _int(params.get('hand_index', -1))
         if idx < 0 or idx >= len(cp.hand):
             return 'ERRO:Indice de mao invalido'
+        from rage_web.game_engine.rules import zona_da_carta
         card = cp.hand.pop(idx)
-        card.zone = Zone.PACK_HOME
-        card.health_current = card.health
-        cp.pack_home.append(card)
-        g.add_log(f'{cp.name} jogou {card.name}')
+        zona = zona_da_carta(card.card_type or '')
+        if zona == 'hunting_grounds':
+            card.zone = Zone.HUNTING_GROUNDS
+            cp.hunting_grounds.append(card)
+            g.add_log(f'{cp.name} jogou {card.name} no Hunting Grounds')
+        else:
+            card.zone = Zone.PACK_HOME
+            card.health_current = card.health
+            cp.pack_home.append(card)
+            g.add_log(f'{cp.name} jogou {card.name}')
         return 'OK'
 
     elif action == 'use_card':

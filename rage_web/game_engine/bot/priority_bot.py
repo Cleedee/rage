@@ -701,14 +701,27 @@ class PriorityBot:
         self.game.add_log(f'[BOT] {self.player.name} comprou uma carta')
 
     def _play_card(self, hand_index: int):
-        """Joga carta da mao."""
+        """Joga carta da mao.
+
+        Regra (1.2): Enemy, Victim e Battlefield vao
+        para o Hunting Grounds, nao para o Pack Home.
+        """
         if 0 <= hand_index < len(self.player.hand):
+            from rage_web.game_engine.rules import zona_da_carta
             card = self.player.hand.pop(hand_index)
-            card.zone = Zone.PACK_HOME
-            card.health_current = card.health
-            self.player.pack_home.append(card)
-            self.game.add_log(
-                f'[BOT] {self.player.name} jogou {card.name}')
+            zona = zona_da_carta(card.card_type or '')
+            if zona == 'hunting_grounds':
+                card.zone = Zone.HUNTING_GROUNDS
+                self.player.hunting_grounds.append(card)
+                self.game.add_log(
+                    f'[BOT] {self.player.name} jogou {card.name} '
+                    f'no Hunting Grounds')
+            else:
+                card.zone = Zone.PACK_HOME
+                card.health_current = card.health
+                self.player.pack_home.append(card)
+                self.game.add_log(
+                    f'[BOT] {self.player.name} jogou {card.name}')
 
     def _attack(self, attacker_id: str, defender_id: str):
         """Inicia combate e tapa a criatura atacante."""
