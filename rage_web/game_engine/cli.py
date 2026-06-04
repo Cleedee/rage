@@ -29,7 +29,7 @@ from rage_web.game_engine.rules import PHASES
 
 
 def _make_sample_card(card_id: int, name: str, card_type: str,
-                       owner_id: str) -> CardInstance:
+                      owner_id: str, rng: random.Random) -> CardInstance:
     """Cria uma carta de exemplo para testes."""
     return CardInstance(
         card_id=card_id,
@@ -38,16 +38,20 @@ def _make_sample_card(card_id: int, name: str, card_type: str,
         zone=Zone.DECK_COMBAT,
         owner_id=owner_id,
         controller_id=owner_id,
-        rage=random.randint(1, 5),
-        gnosis=random.randint(1, 4),
-        health=random.randint(3, 7),
+        rage=rng.randint(1, 5),
+        gnosis=rng.randint(1, 4),
+        health=rng.randint(3, 7),
         health_current=0,
     )
 
 
 def create_sample_game(seed: int = 42) -> GameState:
-    """Cria uma partida de exemplo com dois jogadores e decks preenchidos."""
-    random.seed(seed)
+    """Cria uma partida de exemplo com personagens e decks predefinidos.
+
+    Args:
+        seed: Semente aleatoria para geracao dos atributos.
+    """
+    g_rng = random.Random(seed)
 
     # Nomes de cartas de combate
     combat_names = [
@@ -70,22 +74,22 @@ def create_sample_game(seed: int = 42) -> GameState:
 
     # Deck de combate do P1
     for i, name in enumerate(combat_names):
-        card = _make_sample_card(100 + i, name, 'Combat Action', 'p1')
+        card = _make_sample_card(100 + i, name, 'Combat Action', 'p1', g_rng)
         card.zone = Zone.DECK_COMBAT
         p1.deck_combat.append(card)
 
     # Deck de combate do P2
     for i, name in enumerate(combat_names):
-        card = _make_sample_card(200 + i, name, 'Combat Action', 'p2')
+        card = _make_sample_card(200 + i, name, 'Combat Action', 'p2', g_rng)
         card.zone = Zone.DECK_COMBAT
         p2.deck_combat.append(card)
 
     # Deck de sept
     for i, name in enumerate(sept_names):
-        card = _make_sample_card(300 + i, name, 'Event', 'p1')
+        card = _make_sample_card(300 + i, name, 'Event', 'p1', g_rng)
         card.zone = Zone.DECK_SEPT
         p1.deck_sept.append(card)
-        card = _make_sample_card(400 + i, name, 'Event', 'p2')
+        card = _make_sample_card(400 + i, name, 'Event', 'p2', g_rng)
         card.zone = Zone.DECK_SEPT
         p2.deck_sept.append(card)
 
@@ -96,15 +100,15 @@ def create_sample_game(seed: int = 42) -> GameState:
         char = CardInstance(
             card_id=500 + i, name=name, card_type='Character',
             zone=Zone.PACK_HOME, owner_id=owner, controller_id=owner,
-            rage=random.randint(2, 5),
-            gnosis=random.randint(1, 4),
-            health=random.randint(4, 8),
+            rage=g_rng.randint(2, 5),
+            gnosis=g_rng.randint(1, 4),
+            health=g_rng.randint(4, 8),
             health_current=0,
         )
         char.health_current = char.health
         player.pack_home.append(char)
 
-    g = GameState(players=[p1, p2])
+    g = GameState(players=[p1, p2], rng=g_rng)
 
     # Adiciona cartas com efeitos (modelo_id) no deck de combate
     from rage_web.game_engine.effects import CARTAS_EXEMPLO
@@ -859,17 +863,14 @@ def main():
 
 def build_game_from_decks(deck1_id: int, deck2_id: int,
                           seed: int = 42) -> GameState:
-    """Cria uma partida com cartas reais do banco de dados.
+    """Converte decks do banco SQLite em uma partida.
 
     Args:
         deck1_id: ID do deck do jogador 1.
         deck2_id: ID do deck do jogador 2.
         seed: Semente aleatoria.
-
-    Returns:
-        GameState pronto para jogar.
     """
-    random.seed(seed)
+    g_rng = random.Random(seed)
 
     from rage_web import create_app
     from rage_web.ext.database import db
@@ -936,7 +937,7 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                   'Battlefield', 'Rite', 'Moot', 'Board Meeting'}
 
     for cards, player in [(all_cards_p1, p1), (all_cards_p2, p2)]:
-        random.shuffle(cards)
+        g_rng.shuffle(cards)
         for c in cards:
             c.owner_id = player.id
             c.controller_id = player.id
@@ -952,7 +953,7 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                 c.zone = Zone.DECK_COMBAT
                 player.deck_combat.append(c)
 
-    g = GameState(players=[p1, p2])
+    g = GameState(players=[p1, p2], rng=g_rng)
 
     # Mao inicial (redraw)
     for p in g.players:

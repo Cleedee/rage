@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
@@ -397,9 +398,7 @@ class CombatState:
         - Alpha com maior Renome age primeiro.
         - Empates sao resolvidos aleatoriamente.
         """
-        import random
-        # Precisa do game state para acessar as criaturas
-        # A ordem e recalculada externamente
+        # A ordem e recalculada externamente em combat_queue.py
         pass
 
 
@@ -454,6 +453,9 @@ class GameState:
 
     # Estado de Moot (Juntas)
     moot_atual: Optional['MootState'] = None
+
+    # Gerador de numeros aleatorios com seed (reprodutibilidade)
+    rng: random.Random = field(default_factory=random.Random)
 
     def __post_init__(self):
         from rage_web.game_engine.anunciador import Anunciador

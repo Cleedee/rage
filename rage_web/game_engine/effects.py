@@ -137,8 +137,9 @@ class ResolvedorEfeitos:
         resolvedor.aplicar_efeito(efeito, origem, jogador_alvo)
     """
 
-    def __init__(self, game: GameState):
+    def __init__(self, game: GameState, rng: Optional[random.Random] = None):
         self.game = game
+        self.rng = rng or game.rng
         self.log: list[str] = []
 
     def aplicar_efeito(self, efeito: Efeito, origem: CardInstance,
@@ -236,10 +237,10 @@ class ResolvedorEfeitos:
 
     def _escolher_criatura(self, criaturas: list[CardInstance
                            ]) -> Optional[CardInstance]:
-        """Escolhe uma criatura da lista (aleatoria por enquanto)."""
+        """Escolhe uma criatura da lista."""
         if not criaturas:
             return None
-        return random.choice(criaturas)
+        return self.rng.choice(criaturas)
 
     def _get_oponente(self, jogador: PlayerState) -> PlayerState:
         for p in self.game.players:
