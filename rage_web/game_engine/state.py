@@ -9,6 +9,11 @@ from enum import Enum
 from typing import Optional
 
 
+def _default_anunciador():
+    from rage_web.game_engine.anunciador import Anunciador
+    return Anunciador()
+
+
 class Zone(Enum):
     """Zonas do jogo onde uma carta pode estar."""
     DECK_COMBAT = 'deck_combat'
@@ -449,18 +454,13 @@ class GameState:
     hunting_grounds_cards: list[CardInstance] = field(default_factory=list)
 
     # Sistema de anuncio de efeitos (Rage: anuncio -> resposta -> resolucao)
-    anunciador: 'Anunciador' = None
+    anunciador: 'Anunciador' = field(default_factory=_default_anunciador)
 
     # Estado de Moot (Juntas)
     moot_atual: Optional['MootState'] = None
 
     # Gerador de numeros aleatorios com seed (reprodutibilidade)
     rng: random.Random = field(default_factory=random.Random)
-
-    def __post_init__(self):
-        from rage_web.game_engine.anunciador import Anunciador
-        if self.anunciador is None:
-            self.anunciador = Anunciador()
 
     @property
     def current_player(self) -> PlayerState:

@@ -311,7 +311,7 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 ### Pontos de Atenção do Motor de Jogo
 
 1. ~~**🎲 Bot usa `random.choice` para alvos**~~ — ✅ `GameState` tem `rng: random.Random` próprio; `ResolvedorEfeitos` usa `self.rng.choice()`. Partidas com mesma seed são totalmente determinísticas.
-2. **📢 Anunciador em `__post_init__`** — O `Anunciador` é criado no `__post_init__` do `GameState`, dificultando serialização e mocking em testes.
+2. ~~**📢 Anunciador em `__post_init__`**~~ — ✅ Criado via `default_factory` no campo `anunciador`; `__post_init__` removido.
 3. **🔄 Verificação de Gauntlet incompleta** — O `_mesmo_lado_gauntlet` em `combat_queue.py` não considera personagens no mundo físico (pack_home) vs Umbra para o atacante.
 4. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
 
