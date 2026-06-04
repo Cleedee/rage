@@ -1,0 +1,28 @@
+{
+  "id": "card_698",
+  "nome": "Sniper Rifle",
+  "tipo": "Equipment",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Sniper Rifle",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 698,
+    "texto_original": "Firearm. Only usable by creatures in Homid form. Cannot be used in combat. Once per turn, the owner may play a Rage 2 or less Combat Action on any creature in the Hunting Grounds. Do not refill your combat hand after using Sniper Rifle;  do so only when y",
+    "keywords": "Non-Fetish - Firearm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

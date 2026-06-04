@@ -1,0 +1,28 @@
+{
+  "id": "card_547",
+  "nome": "Suburban High School Kid",
+  "tipo": "Victim",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Suburban High School Kid",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 547,
+    "texto_original": "Suburban High School Kids will automatically pack defend with each other and with any High School Athletes when attacked.",
+    "keywords": "Human",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 2,
+    "precisa_revisao": true
+  }
+}

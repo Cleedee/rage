@@ -1,0 +1,28 @@
+{
+  "id": "card_937",
+  "nome": "Blur of the Milky Eye",
+  "tipo": "Gift",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Blur of the Milky Eye",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 937,
+    "texto_original": "When this creature declares an attack it may not be redirected and no one may step in to replace the target. This Gift is permanent until canceled.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

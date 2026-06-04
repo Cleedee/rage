@@ -1,0 +1,28 @@
+{
+  "id": "card_1520",
+  "nome": "Dismember",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Dismember",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1520,
+    "texto_original": "If two Dismembers are played in the same round by the same player, Dismember cannot be dodged and each can block 1 damage from any one attack.",
+    "keywords": "(Block)",
+    "damage": "3",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

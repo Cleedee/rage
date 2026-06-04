@@ -1,0 +1,28 @@
+{
+  "id": "card_1349",
+  "nome": "Child Soldier",
+  "tipo": "Victim",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Child Soldier",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1349,
+    "texto_original": "Human. Child Soldier is armed with a 9mm. If disarmed, it acts at Rage 0. Child Soldier automatically pack defends with any Human Victim in the Hunting Grounds.",
+    "keywords": "Human - Firearm",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 1,
+    "precisa_revisao": true
+  }
+}

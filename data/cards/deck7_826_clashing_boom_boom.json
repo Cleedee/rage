@@ -1,0 +1,28 @@
+{
+  "id": "card_826",
+  "nome": "Clashing Boom Boom",
+  "tipo": "Event",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Clashing Boom Boom",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 826,
+    "texto_original": "This totem of war manifests as a stealth bomber.�",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

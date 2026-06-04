@@ -1,0 +1,28 @@
+{
+  "id": "card_823",
+  "nome": "Checking the Classifieds",
+  "tipo": "Event",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Checking the Classifieds",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 823,
+    "texto_original": "You may search through your sept deck and immediately bring any Territory into your hand.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

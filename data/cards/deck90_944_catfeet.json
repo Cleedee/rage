@@ -1,0 +1,28 @@
+{
+  "id": "card_944",
+  "nome": "Catfeet",
+  "tipo": "Gift",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Catfeet",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 944,
+    "texto_original": "The user of this Gift becomes extremely nimble. For the duration of the current combat, he is agile enough to dodge all Combat Actions except those which specifically ignore dodges. The character may only play Combat Actions of Rage 1 while Catfeet is in",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

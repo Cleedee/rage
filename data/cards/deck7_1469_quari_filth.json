@@ -1,0 +1,28 @@
+{
+  "id": "card_1469",
+  "nome": "Quari Filth",
+  "tipo": "Character - Rogue",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Quari Filth",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1469,
+    "texto_original": "Quari searches though other people's trash for information.  During the Resource Phase, he may target a combat card in a discard pile and remove it from the game.  He can't use this two turns in a row.",
+    "keywords": "Garou - Bone Gnawer - Ragabash - Homid - Gaia - Wyrm - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 3,
+    "health": 1,
+    "precisa_revisao": true
+  }
+}

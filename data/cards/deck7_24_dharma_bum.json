@@ -1,0 +1,28 @@
+{
+  "id": "card_24",
+  "nome": "Dharma Bum",
+  "tipo": "Character - Gaia",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Dharma Bum",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 24,
+    "texto_original": "Dharma's rapping and howling cause all opponent's to suffer -2 Gnosis while in combat with him.",
+    "keywords": "Garou - Bone Gnawer - Galliard - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 2,
+    "health": 1,
+    "precisa_revisao": true
+  }
+}

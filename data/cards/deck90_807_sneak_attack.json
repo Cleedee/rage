@@ -1,0 +1,28 @@
+{
+  "id": "card_807",
+  "nome": "Sneak Attack",
+  "tipo": "Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Sneak Attack",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 807,
+    "texto_original": "The character can circumvent the normal combat protocol and engage any character, ally or enemy in play.  If played during the Combat Phase of a turn, Sneak Attack can interrupt the normal alpha attack cycle, but cannot interrupt a combat that has already",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

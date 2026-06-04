@@ -1,0 +1,28 @@
+{
+  "id": "card_1286",
+  "nome": "Off-balanced Attack",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Off-balanced Attack",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1286,
+    "texto_original": "The character playing this card plays Combat Actions at -1 Rage for the next round of combat.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

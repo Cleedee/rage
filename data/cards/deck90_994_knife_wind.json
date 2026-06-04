@@ -1,0 +1,28 @@
+{
+  "id": "card_994",
+  "nome": "Knife Wind",
+  "tipo": "Gift",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Knife Wind",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 994,
+    "texto_original": "The user directs a harsh gust of arctic wind at any target, causing 1 damage. Place this card on the target for the purpose of recording damage.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

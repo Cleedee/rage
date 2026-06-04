@@ -1,0 +1,28 @@
+{
+  "id": "card_758",
+  "nome": "Monster Joe's Truck-n-Tow",
+  "tipo": "Territory",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Monster Joe's Truck-n-Tow",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 758,
+    "texto_original": "Monster Joe's is a veritable fount of black-market goods. The pack that controls Monster Joe's may, during the Equip/Ally Phase, search through their deck for any single piece of non-Fetish Equipment. The sept deck must be reshuffled after this is done. O",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

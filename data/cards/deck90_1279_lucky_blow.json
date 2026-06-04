@@ -1,0 +1,28 @@
+{
+  "id": "card_1279",
+  "nome": "Lucky Blow",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Lucky Blow",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1279,
+    "texto_original": "Your opponent takes a turn for the worse.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

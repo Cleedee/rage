@@ -1,0 +1,28 @@
+{
+  "id": "card_282",
+  "nome": "Attacking the Wyrm",
+  "tipo": "Combat Event",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Attacking the Wyrm",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 282,
+    "texto_original": "Play when your alpha declares an attack on any enemy in the Hunting Grounds. Choose any or all of the members of your pack to join the attack. Draw one additional combat card for each pack member who joins your alpha in the attack.",
+    "keywords": "Pack Action",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

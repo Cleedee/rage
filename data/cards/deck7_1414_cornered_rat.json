@@ -1,0 +1,28 @@
+{
+  "id": "card_1414",
+  "nome": "Cornered Rat",
+  "tipo": "Combat Event",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Cornered Rat",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1414,
+    "texto_original": "Limited Frenzy.  Cannot be prevented.  This packmember enters a limited frenzy (even if creatures of its type cannot frenzy).  Draw 3 combat cards.  While frenzied, whenever this creature deals 3 or more damage to the same opponent in any round it escapes",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

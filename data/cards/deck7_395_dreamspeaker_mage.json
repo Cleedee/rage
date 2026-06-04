@@ -1,0 +1,28 @@
+{
+  "id": "card_395",
+  "nome": "Dreamspeaker Mage",
+  "tipo": "Ally",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Dreamspeaker Mage",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 395,
+    "texto_original": "Restricted. Once per turn the Dreamspeaker can step sideways and/or can cancel any single Gift. If in combat, she may not step sideways until one round of combat has passed. The Mage can use Auspice Gifts.",
+    "keywords": "Human - Mage",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 8,
+    "health": 3,
+    "precisa_revisao": true
+  }
+}

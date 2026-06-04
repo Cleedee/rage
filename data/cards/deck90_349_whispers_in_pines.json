@@ -1,0 +1,28 @@
+{
+  "id": "card_349",
+  "nome": "Whispers-in-Pines",
+  "tipo": "Character - Gaia",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Whispers-in-Pines",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 349,
+    "texto_original": "Whispers serves many totem spirits. She may have more than one personal totem at a time. Draw a sept card when she plays a personal totem.",
+    "keywords": "Garou - Wendigo - Galliard - Lupus - Gaia - Female",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 4,
+    "health": 2,
+    "precisa_revisao": true
+  }
+}

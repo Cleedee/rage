@@ -1,0 +1,28 @@
+{
+  "id": "card_213",
+  "nome": "Visit from White Father",
+  "tipo": "Event",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Visit from White Father",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 213,
+    "texto_original": "Few are privileged to get a visit from White Father. The legendary Amazonian war leader comes to rally the troops. The pack with the fewest Victory Points draws two sept cards. If there is a tie for fewest Victory Points, all packs involved in the tie dra",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

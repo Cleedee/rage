@@ -1,0 +1,28 @@
+{
+  "id": "card_1096",
+  "nome": "Sense Prey",
+  "tipo": "Gift",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Sense Prey",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1096,
+    "texto_original": "Reveal the top 5 cards of target sept deck.  If any of the revealed cards are Victims, place them in the Hunting Grounds.  The Gift user gains Victory Points from killing Victims this turn.  Shuffle the sept deck after using this Gift.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

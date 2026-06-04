@@ -1,0 +1,28 @@
+{
+  "id": "card_328",
+  "nome": "Syntax",
+  "tipo": "Character - Gaia",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Syntax",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 328,
+    "texto_original": "Syntax is an expert Monkeywrencher.  All Pentex enemies she or her pack faces in combat are considered -2 Rage.",
+    "keywords": "Garou - Glass Walkers - Ragabash - Homid - Gaia - Female",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 3,
+    "health": 1,
+    "precisa_revisao": true
+  }
+}

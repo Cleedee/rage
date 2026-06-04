@@ -1,0 +1,28 @@
+{
+  "id": "card_1303",
+  "nome": "Run Like Hell",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Run Like Hell",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1303,
+    "texto_original": "When this card is played on a character, she immediately flees, exiting combat. A character cannot participate in Junta voting until she has engaged in combat with the foe or foes she ran from. This effect takes place after your opponent's Combat Action i",
+    "keywords": "",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

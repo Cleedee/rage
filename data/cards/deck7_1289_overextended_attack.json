@@ -1,0 +1,28 @@
+{
+  "id": "card_1289",
+  "nome": "Overextended Attack",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Overextended Attack",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1289,
+    "texto_original": "Your character may not play a Combat Action next round. If your character is the attacker, she may not withdraw before the next round.",
+    "keywords": "",
+    "damage": "4",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

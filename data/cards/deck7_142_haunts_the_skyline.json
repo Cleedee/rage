@@ -1,0 +1,28 @@
+{
+  "id": "card_142",
+  "nome": "Haunts-the-Skyline",
+  "tipo": "Character - Gaia",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Haunts-the-Skyline",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 142,
+    "texto_original": "Haunts imbues all of his Equipment with spiritual energy. All Equipment he possesses is considered Fetish Equipment. He has +1 Gnosis for each piece of Equipment he possesses (limit +3.).",
+    "keywords": "Garou - Glass Walkers - Theurge - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 4,
+    "health": 1,
+    "precisa_revisao": true
+  }
+}

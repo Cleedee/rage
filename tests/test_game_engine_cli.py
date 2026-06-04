@@ -188,13 +188,12 @@ class TestRageCLI:
         cli.onecmd('DECLARE 500 strike')
         assert not cli.game.combat.is_active
 
-    def test_use_effect_card(self, cli):
-        """USE usa carta de efeito da mao."""
+    def test_anunciar_effect_card(self, cli):
+        """ANUNCIAR usa carta de efeito da mao."""
         cp = cli.game.current_player
-        # Garante que tem carta com modelo_id na mao
+        # Poe carta de efeito na mao se necessario
         has_effect = any(c.modelo_id for c in cp.hand)
         if not has_effect:
-            # Poe uma carta de efeito na mao
             from rage_web.game_engine.state import CardInstance, Zone
             card = CardInstance(
                 card_id=999, name='Golpe de Misericórdia',
@@ -205,21 +204,23 @@ class TestRageCLI:
             cp.hand.append(card)
         idx = next(i for i, c in enumerate(cp.hand) if c.modelo_id)
         modelo_id_usado = cp.hand[idx].modelo_id
-        cli.onecmd(f'USE {idx}')
-        # A carta foi removida da mao (nao esta mais na mao)
-        for c in cp.hand:
-            if c.modelo_id == modelo_id_usado:
-                assert False, 'Carta deveria ter sido removida'
-        assert True
+        cli.onecmd(f'ANUNCIAR {idx}')
+        # Carta pode ter sido removida ou estar aguardando modo
+        still_there = any(c.modelo_id == modelo_id_usado for c in cp.hand)
+        # Se ainda esta na mao, e porque o anuncio falhou ou aguarda modo
+        if still_there:
+            # Deve estar aguardando modo
+            assert cli.game.anunciador.estado.value == 'aguardando_modo'
+        else:
+            assert True
 
-    def test_use_non_effect_card(self, cli):
-        """USE em carta sem modelo exibe mensagem."""
+    def test_anunciar_non_effect_card(self, cli):
+        """ANUNCIAR em carta sem modelo exibe mensagem."""
         cp = cli.game.current_player
-        # Encontra carta sem modelo_id
         idx = None
         for i, c in enumerate(cp.hand):
             if not c.modelo_id:
                 idx = i
                 break
         if idx is not None:
-            cli.onecmd(f'USE {idx}')  # Nao deve quebrar
+            cli.onecmd(f'ANUNCIAR {idx}')  # Nao deve quebrar

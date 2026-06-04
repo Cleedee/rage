@@ -1,0 +1,28 @@
+{
+  "id": "card_1389",
+  "nome": "Firyal the Whip",
+  "tipo": "Character - Gaia",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Firyal the Whip",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1389,
+    "texto_original": "Between combat rounds, if Firyal does not have a weapon and she played an attack of Rage 2 or less in the previous round, draw a combat card.",
+    "keywords": "Bastet - Bagheera - Homid - Female - Gaia",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 3,
+    "health": 2,
+    "precisa_revisao": true
+  }
+}

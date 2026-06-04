@@ -1,0 +1,28 @@
+{
+  "id": "card_215",
+  "nome": "Wendigo",
+  "tipo": "Event",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Wendigo",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 215,
+    "texto_original": "Increase your combat hand by 1. A pack may not have more than 1 Pack Totem at any time.",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

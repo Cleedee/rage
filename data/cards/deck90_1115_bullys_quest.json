@@ -1,0 +1,28 @@
+{
+  "id": "card_1115",
+  "nome": "Bully's Quest",
+  "tipo": "Quest",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Bully's Quest",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1115,
+    "texto_original": "Play during the Regeneration Phase. If the character can kill 1 victim of Renown 3 or less without that opponent wounding the character, that kill is worth +2 victory points.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

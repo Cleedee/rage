@@ -1,0 +1,28 @@
+{
+  "id": "card_207",
+  "nome": "Old Storm-Chaser",
+  "tipo": "Character - Gaia",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Old Storm-Chaser",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 207,
+    "texto_original": "When in play, Old Storm-Chaser increases your sept hand size by 1.",
+    "keywords": "Garou - Red Talons - Theurge - Lupus - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 9,
+    "health": 2,
+    "precisa_revisao": true
+  }
+}

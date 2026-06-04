@@ -1,0 +1,28 @@
+{
+  "id": "card_418",
+  "nome": "Kinfolk Small Town Cop",
+  "tipo": "Ally",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Kinfolk Small Town Cop",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 418,
+    "texto_original": "Once per turn, just before alphas are selected, the Cop can select any 1 character in Homid form to put in jail on false charges.  That character is removed from play until the beginning of the next Regeneration Phase. The Cop is considered to be armed wi",
+    "keywords": "Human - Kinfolk - Firearm",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 2,
+    "precisa_revisao": true
+  }
+}

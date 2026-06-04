@@ -1,0 +1,28 @@
+{
+  "id": "card_717",
+  "nome": "War lodge",
+  "tipo": "Equipment",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar War lodge",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 717,
+    "texto_original": "The owner of the War Lodge entreaties the spirits to help him in battle. He may then discard 1 spirit Ally or Fetish per turn; if he does so, he may immediately enter combat with the opponent of his choice.",
+    "keywords": "Gaia Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

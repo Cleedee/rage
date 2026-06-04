@@ -1,0 +1,28 @@
+{
+  "id": "card_1336",
+  "nome": "Big Game Hunter",
+  "tipo": "Enemy",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Big Game Hunter",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1336,
+    "texto_original": "Human. The Big Game Hunter can only play one Combat Action of Rage 6 or more per combat. He is considered armed with a firearm and acts at Rage 3 if disarmed.",
+    "keywords": "Human - Firearm",
+    "damage": "",
+    "rage": 8,
+    "gnosis": 0,
+    "health": 5,
+    "precisa_revisao": true
+  }
+}

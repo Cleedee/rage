@@ -1,0 +1,28 @@
+{
+  "id": "card_1329",
+  "nome": "Pistol Whip",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Pistol Whip",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 1329,
+    "texto_original": "Requires: Firearm. Fast Striking. You surprise your opponent with a smack upside the head.  If this card damages its target, Fast Striking Combat Actions played by the target this round do no damage.",
+    "keywords": "Fast Striking",
+    "damage": "1",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

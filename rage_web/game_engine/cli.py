@@ -221,6 +221,16 @@ class RageCLI(cmd.Cmd):
             print(f'   Declaracoes: {summary["declared_count"]}')
         print()
 
+        # Sistema de anuncio
+        an = g.anunciador
+        if an.tem_anuncio_ativo:
+            e = an.anuncio_atual
+            status_an = 'ANULADO' if e.anulado else an.estado.value.upper()
+            print(f'  📢 Anuncio: {e.descricao} [{status_an}]')
+            if an.estado.value == 'aguardando_modo':
+                print(f'     ⏳ Aguardando escolha de modo')
+        print()
+
     def do_DRAW(self, arg):
         """DRAW [combat|sept] [n] - Compra n cartas do deck.
 
@@ -293,29 +303,31 @@ class RageCLI(cmd.Cmd):
 
         print(f'  Jogou: {card.name} ({card.card_type}) no Pack Home')
 
-    def do_USE(self, arg):
-        """USE <indice> [modo] - Usa uma carta de efeito da mao.
+    def do_ANUNCIAR(self, arg):
+        """ANUNCIAR <indice> - Anuncia uma carta de efeito da mao.
 
-        Se a carta tiver modelo de efeitos (effects.py), aplica os
-        efeitos do modo escolhido (padrao: modo 0).
+        A carta vai para o sistema de anuncio. Se tiver modos > 1,
+        o motor pausa ate ESCOLHER o modo. O oponente pode
+        RESPONDER ou ANULAR.
 
         Exemplos:
-          USE 0            - usa carta no indice 0 (modo 0)
-          USE 1 2          - usa carta no indice 1 (modo 2)
+          ANUNCIAR 0       - anuncia carta no indice 0
         """
         g = self.game
         cp = g.current_player
 
-        args = arg.split()
-        if not args:
-            print('Uso: USE <indice> [modo]')
+        if g.anunciador.tem_anuncio_ativo:
+            print('Ja ha um efeito anunciado. Resolva ou anule primeiro.')
+            return
+
+        if not arg.strip():
+            print('Uso: ANUNCIAR <indice>')
             return
 
         try:
-            idx = int(args[0])
-            modo_idx = int(args[1]) if len(args) > 1 else 0
+            idx = int(arg.strip())
         except ValueError:
-            print('Uso: USE <indice> [modo]')
+            print('Uso: ANUNCIAR <indice>')
             return
 
         if idx < 0 or idx >= len(cp.hand):
@@ -325,29 +337,77 @@ class RageCLI(cmd.Cmd):
         card = cp.hand[idx]
         if not card.modelo_id:
             print(f'Carta {card.name} nao tem modelo de efeitos.')
-            print('Use PLAY para joga-la no Pack Home.')
             return
 
-        from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
-        modelo = CARTAS_EXEMPLO.get(card.modelo_id)
-        if not modelo:
-            print(f'Modelo {card.modelo_id} nao encontrado.')
-            return
+        from rage_web.game_engine.stack import anunciar_e_resolver
 
-        if modo_idx < 0 or modo_idx >= len(modelo.modos):
-            print(f'Modo invalido. Modos: {len(modelo.modos)}')
-            return
-
-        # Remove da mao
+        # Remove da mao e anuncia
         cp.hand.pop(idx)
+        logs = anunciar_e_resolver(
+            g, cp.id, str(card.card_id), card.modelo_id,
+            modo_idx=None,  # Modo nao escolhido ainda
+        )
 
-        # Aplica os efeitos
-        logs = aplicar_carta(g, modelo, cp.id, modo_idx=modo_idx)
         for log in logs:
             print(f'  {log}')
 
-        modo = modelo.modos[modo_idx]
-        print(f'  Usou: {card.name} ({modo.descricao})')
+        # Se modo > 1 e nao foi escolhido, mostra prompt
+        if g.anunciador.estado.value == 'aguardando_modo':
+            prompt = g.anunciador.prompt_atual
+            if prompt and 'modos' in prompt:
+                print(f'\n  Escolha um modo para {card.name}:')
+                for m in prompt['modos']:
+                    efs = ', '.join(m['efeitos'])
+                    print(f'    [{m["indice"]}] {m["descricao"]}  ({efs})')
+                print(f'  Use: ESCOLHER <indice>')
+
+    def do_ESCOLHER(self, arg):
+        """ESCOLHER <indice> - Escolhe o modo de uma carta modal.
+
+        Usado apos ANUNCIAR uma carta com modos > 1.
+        """
+        g = self.game
+
+        if g.anunciador.estado.value != 'aguardando_modo':
+            print('Nenhuma carta aguardando escolha de modo.')
+            return
+
+        if not arg.strip():
+            print('Uso: ESCOLHER <indice>')
+            return
+
+        try:
+            modo_idx = int(arg.strip())
+        except ValueError:
+            print('Uso: ESCOLHER <indice>')
+            return
+
+        erro = g.anunciador.escolher_modo(modo_idx)
+        if erro:
+            print(f'  Erro: {erro}')
+            return
+
+        # Resolve apos escolher o modo
+        logs = g.anunciador.resolver(g)
+        for log in logs:
+            print(f'  {log}')
+
+    def do_ANULAR(self, arg):
+        """ANULAR - Anula o efeito anunciado atual.
+
+        So funciona se houver um efeito pendente.
+        """
+        g = self.game
+        cp = g.current_player
+
+        if not g.anunciador.tem_anuncio_ativo:
+            print('Nenhum efeito para anular.')
+            return
+
+        if g.anunciador.anular(g, cp.id):
+            print(f'  Efeito anulado por {cp.name}.')
+        else:
+            print('  Nao foi possivel anular.')
 
     def do_ATTACK(self, arg):
         """ATTACK <id_atacante> [id_defensor] - Inicia combate entre criaturas.
@@ -587,16 +647,19 @@ class RageCLI(cmd.Cmd):
         else:
             print()
             print('Comandos disponiveis:')
-            print('  STATUS     - Mostra o estado da partida')
-            print('  DRAW       - Compra cartas (combat|sept)')
-            print('  PLAY <n>   - Joga carta da mao')
-            print('  ATTACK     - Inicia combate')
-            print('  DECLARE    - Declara acao de combate')
-            print('  REVEAL     - Revela acoes declaradas')
-            print('  FEINT      - Troca acao (Ultimo a Declarar)')
-            print('  RESOLVE    - Resolve combate')
-            print('  ENDCOMBAT  - Encerra combate')
-            print('  PASS       - Passa a vez')
+            print('  STATUS      - Mostra o estado da partida')
+            print('  DRAW        - Compra cartas (combat|sept)')
+            print('  PLAY <n>    - Joga carta da mao no Pack Home')
+            print('  ANUNCIAR <n> - Anuncia carta de efeito')
+            print('  ESCOLHER <n> - Escolhe modo de carta modal')
+            print('  ANULAR      - Anula o efeito anunciado')
+            print('  ATTACK      - Inicia combate')
+            print('  DECLARE     - Declara acao de combate')
+            print('  REVEAL      - Revela acoes declaradas')
+            print('  FEINT       - Troca acao (Ultimo a Declarar)')
+            print('  RESOLVE     - Resolve combate')
+            print('  ENDCOMBAT   - Encerra combate')
+            print('  PASS        - Passa a vez')
             print('  NEXT       - Avanca fase')
             print('  CARDS      - Lista cartas em jogo')
             print('  SAVE       - Salva partida')

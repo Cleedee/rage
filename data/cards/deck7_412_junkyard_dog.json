@@ -1,0 +1,28 @@
+{
+  "id": "card_412",
+  "nome": "Junkyard 'Dog'",
+  "tipo": "Ally",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Junkyard 'Dog'",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 412,
+    "texto_original": "Unique. Animal. This Kinfolk can scrounge for Equipment. Once per turn before the Combat Phase, he may select a non-Unique piece of Equipment in your discard pile. Give this to a Bonegnawer who can equip the item.",
+    "keywords": "Animal - Kinfolk",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 1,
+    "health": 4,
+    "precisa_revisao": true
+  }
+}

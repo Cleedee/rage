@@ -1,0 +1,28 @@
+{
+  "id": "card_320",
+  "nome": "Fast Strike",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Fast Strike",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 320,
+    "texto_original": "This card deals damage before your opponent's combat card takes effect. The special effect of Fast Strike is ignored if the character cannot meet the Rage requirements of this card.",
+    "keywords": "Fast Striking",
+    "damage": "2",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "card_123",
+  "nome": "Instinctive Attack",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Instinctive Attack",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 123,
+    "texto_original": "Instinctive. This card cannot be used by Homid form creatures or with a firearm. If this creature is prevented from playing a Combat Action, it may play Instinctive Attack after a round's combat cards are revealed. Treat Instinctive Attack as if it were p",
+    "keywords": "Instinctive",
+    "damage": "2",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "card_284",
+  "nome": "Beat Unmerciful",
+  "tipo": "Combat Action",
+  "custo_acoes": 1,
+  "modos": [
+    {
+      "descricao": "Usar Beat Unmerciful",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado automaticamente",
+    "card_id": 284,
+    "texto_original": "If your opponent's Combat Action is Rage 1, it does not take effect.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true
+  }
+}
