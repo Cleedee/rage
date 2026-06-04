@@ -443,6 +443,8 @@ class GameState:
     turn_number: int = 1
     combat: CombatState = field(default_factory=CombatState)
     log: list[str] = field(default_factory=list)
+    renown_level: int = 20  # VP needed to win (Rule 2.3)
+    winner: Optional[str] = None  # Player ID who won
 
     # Hunting Grounds (cartas neutras)
     hunting_grounds_cards: list[CardInstance] = field(default_factory=list)
@@ -515,6 +517,18 @@ class GameState:
                         selecionar_alfa(self, p.id, str(melhor.card_id))
                 calcular_ordem_alfa(self)
         else:
+            # Fim do Combat phase -> verificar vitoria
+            from rage_web.game_engine.combat_queue import verificar_vitoria
+            winner_id = verificar_vitoria(self)
+            if winner_id:
+                self.winner = winner_id
+                winner_name = self._find_player(winner_id).name
+                winner_vp = self._find_player(winner_id).victory_points
+                self.add_log(f'🏆 {winner_name} venceu a partida! '
+                             f'(VP: {winner_vp})')
+                # Nao avanca fase, partida terminou
+                return
+
             # Fim do turno -> volta ao inicio
             self.phase = 'redraw'
             self.turn_number += 1
@@ -529,6 +543,12 @@ class GameState:
                 drawn = p.redraw_sept(descartar_primeiro=False)
                 if drawn:
                     self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de sept')
+
+    def _find_player(self, player_id: str) -> Optional[PlayerState]:
+        for p in self.players:
+            if p.id == player_id:
+                return p
+        return None
 
     def chamar_moot(self, jogador_id: str, nome: str = 'Moot',
                      is_board_meeting: bool = False) -> bool:
