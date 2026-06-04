@@ -310,12 +310,10 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 ### Pontos de Atenção do Motor de Jogo
 
-1. ~~🔌 **API REST não registrada**~~ — ✅ Já registrado em `create_app()` via `app.register_blueprint(api_bp)`.
-2. **🎲 Bot usa `random.choice` para alvos** — O `ResolvedorEfeitos._escolher_criatura()` usa `random.choice` sem seed determinística, dificultando reprodutibilidade.
-3. **📢 Anunciador em `__post_init__`** — O `Anunciador` é criado no `__post_init__` do `GameState`, dificultando serialização e mocking em testes.
-4. ~~📂 **`data/cards/` pode não existir**~~ — ✅ Diretório existe com 67 modelos JSON carregados.
-5. **🔄 Verificação de Gauntlet incompleta** — O `_mesmo_lado_gauntlet` em `combat_queue.py` não considera personagens no mundo físico (pack_home) vs Umbra para o atacante.
-6. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
+1. **🎲 Bot usa `random.choice` para alvos** — O `ResolvedorEfeitos._escolher_criatura()` usa `random.choice` sem seed determinística, dificultando reprodutibilidade.
+2. **📢 Anunciador em `__post_init__`** — O `Anunciador` é criado no `__post_init__` do `GameState`, dificultando serialização e mocking em testes.
+3. **🔄 Verificação de Gauntlet incompleta** — O `_mesmo_lado_gauntlet` em `combat_queue.py` não considera personagens no mundo físico (pack_home) vs Umbra para o atacante.
+4. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
 
 ---
 
