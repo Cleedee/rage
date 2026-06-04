@@ -319,7 +319,7 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 ## 🔍 Pontos de Atenção / Problemas Identificados
 
-1. **🏗️ `database.db` versionado** — O arquivo SQLite está dentro do pacote `rage_web/` e está sendo versionado no Git. Não é boa prática; o banco deve ficar em `instance/` ou ser ignorado.
+1. ~~**🏗️ `database.db` versionado**~~ — ✅ Incluído no `.gitignore`. Não está mais versionado.
 
 2. **🐍 Inconsistência no formulário de Character** — O blueprint `cards` usa `CharacterCardForm` mas o formulário não tem campo `tipo`. Em `save_new_character()` o código tenta acessar `form.tipo.data` que não existe no formulário. Isso vai gerar erro ou salvar sem tipo.
 
