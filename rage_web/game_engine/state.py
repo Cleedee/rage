@@ -164,6 +164,14 @@ class GameState:
     # Hunting Grounds (cartas neutras)
     hunting_grounds_cards: list[CardInstance] = field(default_factory=list)
 
+    # Pilha de resolucao
+    pilha: 'Pilha' = None
+
+    def __post_init__(self):
+        from rage_web.game_engine.stack import Pilha
+        if self.pilha is None:
+            self.pilha = Pilha()
+
     @property
     def current_player(self) -> PlayerState:
         """Jogador ativo no momento."""
