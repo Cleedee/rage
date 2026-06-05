@@ -1,0 +1,33 @@
+{
+    "id": "card_1247",
+    "nome": "Winter Wolf",
+    "tipo": "Moot",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Lobo do Inverno",
+            "efeitos": [
+                {
+                    "tipo": "mover_para",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "zona": "victory_pile",
+                    "condicao_alvo": "renown_gte_6"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 0,
+        "precisa_revisao": false,
+        "nota_revisao": "Remove Garou de Renome 6+ para o VP do dono."
+    }
+}

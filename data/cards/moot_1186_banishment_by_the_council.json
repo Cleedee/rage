@@ -1,0 +1,32 @@
+{
+    "id": "card_1186",
+    "nome": "Banishment by the Council",
+    "tipo": "Moot",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Banir inimigo do Hunting Grounds",
+            "efeitos": [
+                {
+                    "tipo": "remover_do_jogo",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "sem_vp": true
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 0,
+        "precisa_revisao": false,
+        "nota_revisao": "Remove enemy do HG, sem VP."
+    }
+}

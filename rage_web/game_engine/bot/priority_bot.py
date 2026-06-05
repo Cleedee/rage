@@ -282,8 +282,12 @@ class PriorityBot:
         # Tenta chamar uma Junta (so se tiver carta de Moot na mao)
         for i, card in enumerate(self.player.hand):
             if card.card_type == 'Moot':
-                g.chamar_moot(self.player_id, nome=card.name)
-                self.player.hand.pop(i)
+                modelo_id = card.modelo_id or ''
+                g.chamar_moot(self.player_id, nome=card.name,
+                              modelo_id=modelo_id, card_uid=id(card))
+                card.zone = Zone.DISCARD_SEPT
+                self.player.discard_sept.append(
+                    self.player.hand.pop(i))
                 return f'moot_chamar_{card.name}'
 
         self._pass_turn()

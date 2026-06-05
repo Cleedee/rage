@@ -1,0 +1,31 @@
+{
+    "id": "card_1185",
+    "nome": "Balance of Gaia",
+    "tipo": "Moot",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "Philodox",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Equilibrio de Gaia",
+            "efeitos": [
+                {
+                    "tipo": "perder_vp",
+                    "alvo": "jogador_inimigo",
+                    "quantidade": 1
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 0,
+        "precisa_revisao": false,
+        "nota_revisao": "Remove 1 kill do VP de um pack."
+    }
+}

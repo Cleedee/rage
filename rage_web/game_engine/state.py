@@ -600,6 +600,8 @@ class MootState:
     aprovado: bool = False
     resolvido: bool = False
     is_board_meeting: bool = False  # True = Board Meeting (Wyrm), False = Moot (Gaia)
+    modelo_id: str = ''  # ID do modelo de carta (ex: 'card_1185')
+    card_uid: int = 0    # Python id() da instancia real da carta
 
     @property
     def resultado(self) -> str:
@@ -1103,7 +1105,9 @@ class GameState:
         return False
 
     def chamar_moot(self, jogador_id: str, nome: str = 'Moot',
-                     is_board_meeting: bool = False) -> bool:
+                     is_board_meeting: bool = False,
+                     modelo_id: str = '',
+                     card_uid: int = 0) -> bool:
         """Chama uma Junta (Moot ou Board Meeting).
 
         Regra (2.2.5):
@@ -1115,6 +1119,8 @@ class GameState:
             jogador_id: ID do jogador que chamou.
             nome: Nome da Junta.
             is_board_meeting: True = Board Meeting, False = Moot.
+            modelo_id: ID do modelo de carta (ex: 'card_1185').
+            card_uid: Python id() da instancia real da carta.
 
         Returns:
             True se foi chamada.
@@ -1126,6 +1132,8 @@ class GameState:
             nome=nome,
             dono_id=jogador_id,
             is_board_meeting=is_board_meeting,
+            modelo_id=modelo_id,
+            card_uid=card_uid,
         )
         self.add_log(f'{jogador_id} chamou {nome}')
         return True
@@ -1149,13 +1157,28 @@ class GameState:
         return True
 
     def resolver_moot(self) -> bool:
-        """Resolve a Junta atual."""
+        """Resolve a votacao e aplica efeitos se aprovado."""
         if not self.moot_atual or self.moot_atual.resolvido:
             return False
         self.moot_atual.resolver()
         self.add_log(f'Junta {self.moot_atual.nome}: '
                      f'{self.moot_atual.resultado} '
                      f'({self.moot_atual.votos_sim} x {self.moot_atual.votos_nao})')
+
+        # Se aprovado e tem modelo de carta, aplica os efeitos
+        if self.moot_atual.aprovado and self.moot_atual.modelo_id:
+            from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+            modelo = CARTAS_EXEMPLO.get(self.moot_atual.modelo_id)
+            if modelo:
+                card_origem = None
+                for p in self.players:
+                    for c in p.discard_sept:
+                        if id(c) == self.moot_atual.card_uid:
+                            card_origem = c
+                            break
+                aplicar_carta(self, modelo, self.moot_atual.dono_id,
+                              modo_idx=0, card_origem=card_origem)
+
         return True
 
     def _find_card_by_uid(self, uid: int) -> Optional[CardInstance]:

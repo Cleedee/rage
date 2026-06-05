@@ -1,0 +1,33 @@
+{
+    "id": "card_1561",
+    "nome": "All Out Assault",
+    "tipo": "Moot",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Ataque Total",
+            "efeitos": [
+                {
+                    "tipo": "modificar_atributo",
+                    "alvo": "self",
+                    "quantidade": 1,
+                    "atributo": "alpha_actions",
+                    "duracao": "resto_do_jogo"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 0,
+        "precisa_revisao": false,
+        "nota_revisao": "Alpha ganha +1 acao alpha pelo resto do jogo."
+    }
+}

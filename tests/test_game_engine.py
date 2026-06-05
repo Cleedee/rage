@@ -2563,3 +2563,120 @@ class TestWhipOfTheWicked:
         # Sem whip, pode declarar strike diretamente
         assert declare_action(game, '998', 'strike')
         assert declare_action(game, '999', 'strike')
+
+
+class TestMootSystem:
+    """Testes do sistema de Moot (Juntas)."""
+
+    def test_chamar_moot(self, game):
+        """Chamar uma Junta."""
+        game = game
+        result = game.chamar_moot('p1', nome='Silver Record')
+        assert result is True
+        assert game.moot_atual is not None
+        assert game.moot_atual.nome == 'Silver Record'
+        assert game.moot_atual.dono_id == 'p1'
+        assert not game.moot_atual.resolvido
+
+    def test_nao_pode_chamar_duas(self, game):
+        """Nao pode chamar 2 Juntas no mesmo turno."""
+        game = game
+        game.chamar_moot('p1', nome='Moot 1')
+        result = game.chamar_moot('p2', nome='Moot 2')
+        assert result is False
+
+    def test_votar_e_aprovar(self, game):
+        """Votar e aprovar uma Junta."""
+        game = game
+        # Adiciona personagens com Renome para ter votos
+        for p in game.players:
+            p.pack_home.append(CardInstance(
+                card_id=999, name='Voter', card_type='Character',
+                zone=Zone.PACK_HOME, owner_id=p.id, controller_id=p.id,
+                renown=5, health=3, health_current=3,
+            ))
+        game.chamar_moot('p1', nome='Test Moot')
+        game.votar_moot('p1', a_favor=True)
+        game.votar_moot('p2', a_favor=True)
+        game.resolver_moot()
+        assert game.moot_atual.resolvido
+        assert game.moot_atual.aprovado
+
+    def test_votar_e_rejeitar(self, game):
+        """Votar e rejeitar uma Junta."""
+        game = game
+        for p in game.players:
+            p.pack_home.append(CardInstance(
+                card_id=999, name='Voter', card_type='Character',
+                zone=Zone.PACK_HOME, owner_id=p.id, controller_id=p.id,
+                renown=5, health=3, health_current=3,
+            ))
+        game.chamar_moot('p1', nome='Test Moot')
+        game.votar_moot('p1', a_favor=True)
+        game.votar_moot('p2', a_favor=False)
+        game.resolver_moot()
+        assert game.moot_atual.resolvido
+        assert not game.moot_atual.aprovado  # Empate = rejeitado
+
+    def test_moot_com_efeito_ganhar_vp(self, game):
+        """Moot com efeito de ganhar VP quando aprovado."""
+        game = game
+        p1 = game.players[0]
+        for p in game.players:
+            p.pack_home.append(CardInstance(
+                card_id=999, name='Voter', card_type='Character',
+                zone=Zone.PACK_HOME, owner_id=p.id, controller_id=p.id,
+                renown=5, health=3, health_current=3,
+            ))
+
+        game.chamar_moot('p1', nome='Caern Building',
+                         modelo_id='card_1198')
+        game.votar_moot('p1', a_favor=True)
+        game.votar_moot('p2', a_favor=True)
+        game.resolver_moot()
+
+        assert game.moot_atual.aprovado
+        assert p1.victory_points == 4  # +4 VP da Caern Building
+
+    def test_moot_rejeitado_sem_efeito(self, game):
+        """Moot rejeitado nao aplica efeitos."""
+        game = game
+        p1 = game.players[0]
+        for p in game.players:
+            p.pack_home.append(CardInstance(
+                card_id=999, name='Voter', card_type='Character',
+                zone=Zone.PACK_HOME, owner_id=p.id, controller_id=p.id,
+                renown=5, health=3, health_current=3,
+            ))
+
+        game.chamar_moot('p1', nome='Caern Building',
+                         modelo_id='card_1198')
+        game.votar_moot('p1', a_favor=True)
+        game.votar_moot('p2', a_favor=False)
+        game.resolver_moot()
+
+        assert not game.moot_atual.aprovado
+        assert p1.victory_points == 0  # Sem VP
+
+    def test_bot_chama_moot(self, game):
+        """Bot tenta chamar Moot se tiver carta na mao."""
+        from rage_web.game_engine.bot.priority_bot import PriorityBot
+        from rage_web.game_engine.state import CardInstance, Zone
+
+        game = game
+        # Poe uma carta de Moot na mao do jogador
+        moot_card = CardInstance(
+            card_id=1186, name='Banishment by the Council',
+            card_type='Moot', zone=Zone.HAND,
+            owner_id='p1', controller_id='p1',
+            modelo_id='card_1186',
+        )
+        game.players[0].hand.append(moot_card)
+
+        bot = PriorityBot(game, 'p1', difficulty='hard')
+        game.phase = 'moot'
+        action = bot.decide()
+
+        assert 'moot_chamar' in action
+        assert game.moot_atual is not None
+        assert game.moot_atual.nome == 'Banishment by the Council'
