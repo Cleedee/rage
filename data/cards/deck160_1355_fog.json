@@ -4,12 +4,18 @@
   "tipo": "Event",
   "modos": [
     {
-      "descricao": "Evento em jogo",
-      "efeitos": []
+      "descricao": "Cancelar um Combat Event (descarta Fog)",
+      "condicao_uso": "pack_totem_em_jogo",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "qualquer_alvo"
+        }
+      ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1355,
     "texto_original": "Opponents cannot use Combat Events while attacking your non-alpha pack members. Discard Fog to cancel a Combat Event played by a creature attacking either a Victim or a member of your pack.",
     "keywords": "Pack Totem",
@@ -17,6 +23,13 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Efeito passivo 'oponentes nao usam Combat Events contra nao-alfa' nao implementado",
+      "Para implementar passiva: verificar card_type=='Combat Event' no declare_action",
+      "Cancelamento via 'anular' existente, mas requer integracao com sistema de anuncio",
+      "Pack Totem em jogo: Fog fica no Hunting Grounds como permanente",
+      "Sistema de permanentes/passivas continuas a ser implementado"
+    ]
   }
 }
