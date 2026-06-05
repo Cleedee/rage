@@ -16,7 +16,7 @@
             "descricao": "Preso de lado",
             "efeitos": [
                 {
-                    "tipo": "tapar",
+                    "tipo": "impedir_retirada",
                     "alvo": "inimigo",
                     "quantidade": 0,
                     "duracao": "ate_redraw"

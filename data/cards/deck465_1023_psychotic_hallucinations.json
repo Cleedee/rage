@@ -16,7 +16,7 @@
             "descricao": "Alucinacoes psicoticas",
             "efeitos": [
                 {
-                    "tipo": "tapar",
+                    "tipo": "forcar_bluff",
                     "alvo": "inimigo",
                     "quantidade": 0
                 }

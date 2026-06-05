@@ -76,6 +76,8 @@ class EfeitoTipo(str, Enum):
     CANCELAR_ACAO = 'cancelar_acao'  # Cancelar Action card como interrupt
     ATAQUE_IMEDIATO = 'ataque_imediato'  # Atacar imediatamente apos combate
     REMOVER_DO_COMBATE = 'remover_do_combate'  # Remover criatura do combate em andamento
+    FORCAR_BLUFF = 'forcar_bluff'  # Proxima Combat Action do alvo e bluff
+    IMPEDIR_FRENZY = 'impedir_frenzy'  # Ninguem pode frenzir (global)
 
 
 # -----------------------------------------------------------------------
@@ -231,6 +233,8 @@ class ResolvedorEfeitos:
     EfeitoTipo.CANCELAR_ACAO: self._resolver_cancelar_acao,
     EfeitoTipo.ATAQUE_IMEDIATO: self._resolver_ataque_imediato,
     EfeitoTipo.REMOVER_DO_COMBATE: self._resolver_remover_do_combate,
+    EfeitoTipo.FORCAR_BLUFF: self._resolver_forcar_bluff,
+    EfeitoTipo.IMPEDIR_FRENZY: self._resolver_impedir_frenzy,
             EfeitoTipo.EQUIPAR: self._resolver_equipar,
             EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
             EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
@@ -1043,16 +1047,27 @@ class ResolvedorEfeitos:
                                  jogador: PlayerState, alvo) -> bool:
         """Impede o alvo de tomar acoes.
 
-        Usado por: Laughter of the Soul, Mangle, Amber Eyes.
+        Usado por: Laughter of the Soul, Mangle, Amber Eyes,
+        Whispering Campaign.
         Adiciona uma pendencia que impede acoes do alvo.
+        Se params.restricao especificar um tipo (ex: 'pack_action'),
+        so essa acao especifica e impedida.
         """
+        restricao = efeito.params.get('restricao', 'nao_pode_agir')
         if isinstance(alvo, CardInstance):
-            # Adiciona restricao de acoes no alvo
-            alvo.restricoes.append('nao_pode_agir')
+            alvo.restricoes.append(restricao)
             duracao = efeito.duracao or 'fim_do_turno'
             self.game.add_log(
                 f'{origem.name}: {alvo.name} impedido de agir '
-                f'({duracao})'
+                f'({restricao}, {duracao})'
+            )
+            return True
+        if isinstance(alvo, list):
+            for c in alvo:
+                c.restricoes.append(restricao)
+            self.game.add_log(
+                f'{origem.name}: {len(alvo)} criatura(s) impedida(s) '
+                f'({restricao})'
             )
             return True
         return False
@@ -1142,6 +1157,45 @@ class ResolvedorEfeitos:
             )
             return True
         return False
+
+    def _resolver_forcar_bluff(self, efeito: Efeito,
+                                origem: CardInstance,
+                                jogador: PlayerState, alvo) -> bool:
+        """Proxima Combat Action do alvo e bluff.
+
+        Usado por: Psychotic Hallucinations.
+        A proxima acao declarada pelo alvo neste combate
+        sera revelada como bluff (oposta ao declarado).
+        """
+        if isinstance(alvo, CardInstance):
+            alvo.restricoes.append('proxima_acao_bluff')
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} — proxima acao e bluff'
+            )
+            return True
+        return False
+
+    def _resolver_impedir_frenzy(self, efeito: Efeito,
+                                  origem: CardInstance,
+                                  jogador: PlayerState, alvo) -> bool:
+        """Impede que qualquer jogador frenzia.
+
+        Usado por: New Moon.
+        Adiciona modificador global 'impede_frenzy' no jogo.
+        """
+        self.game.game_modifiers.add('impede_frenzy')
+        if efeito.params.get('ragabash_gnosis_bonus'):
+            # +1 Gnosis para Ragabash
+            for p in self.game.players:
+                for c in p.pack_home:
+                    keywords = (c.keywords or '').lower()
+                    if 'ragabash' in keywords:
+                        c.gnosis += 1
+                        self.game.add_log(
+                            f'{c.name} +1 Gnosis (Ragabash - New Moon)'
+                        )
+        self.game.add_log(f'{origem.name}: ninguem pode frenzir (New Moon)')
+        return True
 
 
 # -----------------------------------------------------------------------

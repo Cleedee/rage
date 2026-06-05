@@ -16,9 +16,10 @@
             "descricao": "Lua nova",
             "efeitos": [
                 {
-                    "tipo": "tapar",
+                    "tipo": "impedir_frenzy",
                     "alvo": "todos",
-                    "quantidade": 0
+                    "quantidade": 0,
+                    "ragabash_gnosis_bonus": true
                 }
             ]
         }

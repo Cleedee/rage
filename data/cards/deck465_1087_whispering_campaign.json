@@ -16,9 +16,11 @@
             "descricao": "Campanha de rumores",
             "efeitos": [
                 {
-                    "tipo": "combar_acao",
+                    "tipo": "impedir_acoes",
                     "alvo": "inimigo",
-                    "quantidade": 0
+                    "quantidade": 0,
+                    "restricao": "nao_pode_pack_action",
+                    "duracao": "fim_do_turno"
                 }
             ]
         }

@@ -16,9 +16,10 @@
             "descricao": "Fogo de atirador",
             "efeitos": [
                 {
-                    "tipo": "combar_acao",
-                    "alvo": "self",
-                    "quantidade": 0
+                    "tipo": "remover_do_combate",
+                    "alvo": "aliado",
+                    "quantidade": 0,
+                    "acao": "entrar"
                 }
             ]
         }
