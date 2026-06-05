@@ -4,12 +4,19 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift",
-      "efeitos": []
+      "descricao": "Alvo usa Rage da Breed form em todas as formas",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "alvo": "rage_breed",
+          "duracao": "permanente"
+        }
+      ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1071,
     "texto_original": "The victim of this Gift has trouble using its Rage effectively. Target a character. It now has its Breed form Rage in all forms. This Gift lasts until it is cancelled or when the target next enters a full frenzy.",
     "keywords": "",
@@ -17,6 +24,12 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Restricao 'rage_breed' faz effective_rage retornar rage_morph",
+      "Propriedade effective_rage usada no combate em vez de rage direto",
+      "Efeito permanente: expira quando alvo entra em full frenzy ou e cancelado",
+      "rage_morph precisa ser copiado do banco ao criar CardInstance"
+    ]
   }
 }

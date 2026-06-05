@@ -261,11 +261,14 @@ def start_combat(game: GameState, attackers: list[str],
     if game.combat.is_active:
         return False
 
-    # Limpa restricoes de combates anteriores (ex: nao_pode_esquivar)
+    # Limpa restricoes temporarias de combates anteriores
+    # (preserva restricoes permanentes de efeitos como rage_breed)
+    RESTRICOES_COMBATE = {'nao_pode_esquivar'}
     for p in game.players:
         for zone_cards in (p.pack_home, p.hunting_grounds, p.umbra):
             for c in zone_cards:
-                c.restricoes.clear()
+                c.restricoes = [r for r in c.restricoes
+                                if r not in RESTRICOES_COMBATE]
 
     # Verifica Gauntlet
     for atk in attackers:
@@ -573,7 +576,7 @@ def resolve_combat(game: GameState) -> bool:
             )
 
         # Aplica dano e cria damage card (regra 6.4)
-        dano = max(0, origem_card.rage - alvo_card.reducao_dano)
+        dano = max(0, origem_card.effective_rage - alvo_card.reducao_dano)
         if alvo_card.reducao_dano > 0:
             game.add_log(f'  {alvo_card.name} reduziu {alvo_card.reducao_dano} '
                          f'de dano (equipamento)')

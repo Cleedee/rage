@@ -5,7 +5,87 @@ Atribui notas 0-10 para cada fator: ameaca, vantagem, pressao, vitoria.
 
 from __future__ import annotations
 
-from rage_web.game_engine.state import GameState, PlayerState, CardInstance
+from rage_web.game_engine.state import GameState, PlayerState, CardInstance, Zone
+from typing import Optional
+
+
+class TargetPrioritizer:
+    """Avalia e prioriza alvos para o bot.
+
+    Usa multiplos fatores para pontuar criaturas inimigas
+    e escolher o melhor atacante para cada alvo.
+    """
+
+    # Pesos para calculo de ameaca
+    PESOS_THREAT = {
+        'rage': 0.30,
+        'saude': 0.20,
+        'pode_agir': 0.15,
+        'renown': 0.10,
+        'vp_proximidade': 0.25,
+    }
+
+    def __init__(self, game: GameState, player_id: str):
+        self.game = game
+        self.player_id = player_id
+
+    def _find_owner(self, card: CardInstance) -> Optional[PlayerState]:
+        for p in self.game.players:
+            if p.id == card.owner_id:
+                return p
+        return None
+
+    def rate_threat(self, card: CardInstance) -> float:
+        """Nota 0-10: o quanto esta criatura e uma ameaca."""
+        dono = self._find_owner(card)
+        if not dono:
+            return 0.0
+
+        score = 0.0
+        rage_norm = min(card.rage / 10.0, 1.0) * 10.0 * self.PESOS_THREAT['rage']
+        score += rage_norm
+
+        saude = (card.health_current / max(card.health, 1))
+        score += saude * 10.0 * self.PESOS_THREAT['saude']
+
+        if not card.is_tapped:
+            score += 10.0 * self.PESOS_THREAT['pode_agir']
+
+        renown_norm = min(card.renown / 6.0, 1.0) * 10.0 * self.PESOS_THREAT['renown']
+        score += renown_norm
+
+        vp_progress = dono.victory_points / max(dono.renown_level, 1)
+        score += vp_progress * 10.0 * self.PESOS_THREAT['vp_proximidade']
+
+        return min(score, 10.0)
+
+    def best_threat(self, criaturas: list[CardInstance]) -> Optional[CardInstance]:
+        """Retorna a criatura mais ameacadora da lista."""
+        if not criaturas:
+            return None
+        return max(criaturas, key=self.rate_threat)
+
+    def best_attacker_for(self, alvo: CardInstance,
+                          disponiveis: list[CardInstance]) -> Optional[CardInstance]:
+        """Escolhe o melhor atacante para eliminar um alvo.
+
+        Prefere a criatura com Rage mais proxima do alvo
+        (evita overkill), mas capaz de vencer o confronto.
+        """
+        rage_necessario = alvo.rage
+        candidatos = [c for c in disponiveis
+                      if c.rage >= rage_necessario * 0.7]
+        if not candidatos:
+            return None
+        return min(candidatos, key=lambda c: abs(c.rage - rage_necessario))
+
+    def pode_eliminar(self, atacante: CardInstance,
+                      alvo: CardInstance) -> bool:
+        """Verifica se atacante tem chance real contra o alvo."""
+        if atacante.rage <= 0:
+            return False
+        # Atacante precisa ter pelo menos 70% do Rage do alvo
+        return atacante.rage >= alvo.rage * 0.7
 
 
 class BoardEvaluator:

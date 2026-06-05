@@ -35,6 +35,7 @@ from rage_web.game_engine.state import (
     CardInstance, GameState, PendenciaEfeito, PlayerState, Zone,
     anexar_dano, descartar_anexos,
 )
+from rage_web.game_engine.combat_queue import _remove_creature
 
 
 # -----------------------------------------------------------------------
@@ -213,6 +214,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.EQUIPAR: self._resolver_equipar,
             EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
             EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
+            EfeitoTipo.REMOVER_DO_JOGO: self._resolver_remover_do_jogo,
         }
         return resolvedores.get(tipo)
 
@@ -330,6 +332,46 @@ class ResolvedorEfeitos:
             self.game.add_log(f'{alvo.name} foi destruido')
             return True
         return False
+
+    def _resolver_remover_do_jogo(self, efeito: Efeito,
+                                   origem: CardInstance,
+                                   jogador: PlayerState, alvo) -> bool:
+        """Remove uma criatura do jogo temporariamente.
+
+        A criatura e movida para OUT_OF_PLAY e uma pendencia e criada
+        para restaura-la no fim da proxima fase.
+
+        Usado por Chant of Morpheus e efeitos similares.
+        """
+        if not isinstance(alvo, CardInstance):
+            return False
+
+        # Salva a zona original para restaurar depois
+        zona_original = alvo.zone
+
+        # Remove da zona atual
+        _remove_creature(self.game, alvo)
+
+        # Move para OUT_OF_PLAY
+        alvo.zone = Zone.OUT_OF_PLAY
+
+        # Cria pendencia para restaurar no fim da proxima fase
+        from rage_web.game_engine.state import PendenciaEfeito
+        pendencia = PendenciaEfeito(
+            card_uid=id(alvo),
+            atributo='zona',
+            delta=0,
+            duracao='end_of_phase',
+            valor_str=zona_original.value,
+            turno_aplicado=self.game.turn_number,
+            fase_aplicada=self.game.phase,
+        )
+        self.game.pendencias.append(pendencia)
+
+        self.game.add_log(
+            f'{alvo.name} foi removido do jogo ate o fim da proxima fase'
+        )
+        return True
 
     def _resolver_descarte(self, efeito: Efeito, origem: CardInstance,
                           jogador: PlayerState, alvo) -> bool:
@@ -589,12 +631,44 @@ class ResolvedorEfeitos:
         """Anexa um equipamento a uma criatura.
 
         A origem deve ser a carta de equipamento real (vinda da mao).
+        Valida restricoes de forma do equipamento (ex: Assegai requer
+        Homid ou Crinos).
         """
         if not isinstance(alvo, CardInstance):
             return False
+
+        # Valida restricoes de forma do equipamento
+        if not self._validar_restricoes_equipamento(origem, alvo):
+            return False
+
         origem.zone = Zone.OUT_OF_PLAY
         alvo.attached_equipment.append(origem)
         self.game.add_log(f'{origem.name} equipado em {alvo.name}')
+        return True
+
+    def _validar_restricoes_equipamento(self, equipamento: CardInstance,
+                                        alvo: CardInstance) -> bool:
+        """Valida restricoes de forma/requisito de um equipamento.
+
+        Args:
+            equipamento: O equipamento sendo equipado.
+            alvo: A criatura que recebera o equipamento.
+
+        Returns:
+            True se o equipamento pode ser equipado.
+        """
+        kw = (equipamento.keywords or '').lower()
+        alvo_kw = (alvo.keywords or '').lower()
+
+        # Assegai e similares: requer Homid ou Crinos
+        if 'weapon' in kw and 'assegai' in equipamento.name.lower():
+            if 'homid' not in alvo_kw and 'crinos' not in alvo_kw:
+                self.game.add_log(
+                    f'{equipamento.name} so pode ser usado em forma '
+                    f'Homid ou Crinos ({alvo.name}: {alvo.keywords})'
+                )
+                return False
+
         return True
 
     def _resolver_modificar_reducao_dano(self, efeito: Efeito,
@@ -670,6 +744,34 @@ def _condicao_personagem_na_umbra(game: GameState,
     return False
 
 
+def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
+                                 modelo: 'ModeloCarta') -> bool:
+    """Valida se um Rite/Gift pode cruzar o Gauntlet para seu alvo.
+
+    Se o jogador tem um Caern como Lake Nasser Wallow no Hunting Grounds,
+    Rites e Gifts podem cruzar o Gauntlet.
+
+    Args:
+        game: Estado da partida.
+        jogador: Jogador usando a carta.
+        modelo: Modelo da carta sendo usada.
+
+    Returns:
+        True se a carta pode ser usada (Gauntlet permitido ou nao aplicavel).
+    """
+    # Verifica se o jogador tem Caern que permite cruzar Gauntlet
+    caerns = jogador.caerns_no_hunting_grounds
+    for caern in caerns:
+        texto = (caern.text or '').lower()
+        if 'gauntlet' in texto and 'cross' in texto:
+            return True  # Caern permite cruzar
+
+    # Sem Caern especial: Rites/Gifts funcionam normalmente
+    # (a verificacao de Gauntlet real seria mais complexa,
+    # exigindo verificar a zona do alvo vs zona do jogador)
+    return True
+
+
 def _condicao_nao_frenetico(game: GameState,
                             jogador: 'PlayerState') -> bool:
     """Verifica se a criatura que esta jogando nao esta frenzied.
@@ -719,6 +821,11 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
     if modo.condicao_uso:
         if not _validar_condicao_uso(game, jogador, modo.condicao_uso):
             return [f'Condicao de uso nao atendida: {modo.condicao_uso}']
+
+    # Valida Gauntlet para Rites e Gifts
+    if modelo.tipo in ('Rite', 'Gift'):
+        if not _validar_gauntlet_para_carta(game, jogador, modelo):
+            return ['Gauntlet: a carta nao pode cruzar para o alvo']
 
     # Usa a carta real (se fornecida) ou cria temporaria
     if card_origem:

@@ -13,7 +13,7 @@ import logging
 import random
 from typing import Optional
 
-from rage_web.game_engine.bot.evaluator import BoardEvaluator
+from rage_web.game_engine.bot.evaluator import BoardEvaluator, TargetPrioritizer
 from rage_web.game_engine.cli import create_sample_game
 from rage_web.game_engine.combat_queue import (
     COMBAT_ACTIONS, can_feint, declare_action, end_combat,
@@ -40,9 +40,11 @@ class PriorityBot:
         self.player_id = player_id
         self.difficulty = difficulty
         self.evaluator = BoardEvaluator(game, player_id)
+        self.prioritizer = TargetPrioritizer(game, player_id)
         # Heuristicas do bot
         self._cards_played_this_turn = 0
         self._umbra_agiu = False  # So uma acao de Umbra por fase
+        self._feinted_ids = set()  # IDs que ja usaram Feint neste combate
 
     @property
     def player(self) -> PlayerState:
@@ -316,28 +318,66 @@ class PriorityBot:
             String da acao ou None para passar.
         """
         me = self.player
+        opp = self._get_opponent()
         meu_alpha_id = self.game.combat.alphas.get(self.player_id)
         if not meu_alpha_id:
             return None
 
-        # Tenta atacar Hunting Grounds (acao alfa padrao)
-        # Procura a criatura alpha no pack
         alpha_card = None
         for c in me.pack_home:
             if str(c.card_id) == meu_alpha_id:
                 alpha_card = c
                 break
 
-        if alpha_card and not alpha_card.is_tapped:
-            # Ataca HG
-            from rage_web.game_engine.combat_queue import start_combat
-            start_combat(self.game, [meu_alpha_id], ['hg'])
-            alpha_card.is_tapped = True
-            self.game.add_log(
-                f'[BOT] Alpha {alpha_card.name} atacou Hunting Grounds')
-            return f'alpha_attack_hg_{meu_alpha_id}'
+        if not alpha_card or alpha_card.is_tapped:
+            return None
 
-        return None  # Passa
+        from rage_web.game_engine.combat_queue import start_combat
+
+        # 1. Tenta atacar o alpha inimigo se for vantajoso
+        alpha_inimigo_id = None
+        for pid, cid in self.game.combat.alphas.items():
+            if pid != self.player_id:
+                alpha_inimigo_id = cid
+                break
+
+        if alpha_inimigo_id:
+            alpha_inimigo = None
+            for c in opp.pack_home:
+                if str(c.card_id) == alpha_inimigo_id:
+                    alpha_inimigo = c
+                    break
+            if (alpha_inimigo and alpha_inimigo.health_current > 0
+                    and self.prioritizer.pode_eliminar(alpha_card,
+                                                       alpha_inimigo)):
+                start_combat(self.game, [meu_alpha_id], [alpha_inimigo_id])
+                alpha_card.is_tapped = True
+                self.game.add_log(
+                    f'[BOT] Alpha {alpha_card.name} atacou alpha '
+                    f'{alpha_inimigo.name}')
+                return f'alpha_attack_alpha_{meu_alpha_id}'
+
+        # 2. Tenta eliminar criatura inimiga viavel
+        if opp.pack_home:
+            ameacas = sorted(opp.pack_home,
+                             key=self.prioritizer.rate_threat,
+                             reverse=True)
+            for alvo in ameacas:
+                if self.prioritizer.pode_eliminar(alpha_card, alvo):
+                    start_combat(self.game, [meu_alpha_id],
+                                 [str(alvo.card_id)])
+                    alpha_card.is_tapped = True
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} atacou '
+                        f'{alvo.name}')
+                    return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
+
+        # 3. Ataca Hunting Grounds (padrao)
+        start_combat(self.game, [meu_alpha_id], ['hg'])
+        alpha_card.is_tapped = True
+        self.game.add_log(
+            f'[BOT] Alpha {alpha_card.name} atacou Hunting Grounds')
+        return f'alpha_attack_hg_{meu_alpha_id}'
 
     def _decide_easy(self) -> str:
         """Modo facil: acoes aleatorias."""
@@ -383,6 +423,7 @@ class PriorityBot:
         g = self.game
 
         if g.combat.step == 'declare':
+            self._feinted_ids.clear()  # Novo round de combate
             all_cids = get_combatants(g)
             for cid in all_cids:
                 if cid in g.combat.declarations:
@@ -411,22 +452,102 @@ class PriorityBot:
         return 'combat_unknown'
 
     def _handle_reveal_step(self) -> str:
-        """Lida com o Reveal Step: usa Feint se vantajoso e resolve."""
+        """Lida com o Reveal Step: Feint unico por criatura, depois resolve.
+
+        Cada criatura pode usar Feint no maximo uma vez por round de
+        combate (controlado por _feinted_ids).
+        """
         g = self.game
-        if g.combat.last_to_declare:
-            cid = g.combat.last_to_declare
-            # So usa Feint se for criatura propria
+        opp = self._get_opponent()
+        combatants = get_combatants(g)
+
+        OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
+                     'ranged_strike'}
+        DEFENSIVAS = {'block', 'dodge', 'flee'}
+
+        for cid in combatants:
+            criatura = None
             for p in g.players:
                 for c in p.pack_home:
                     if str(c.card_id) == cid and c.owner_id == self.player_id:
-                        current = g.combat.declarations.get(cid)
-                        if current and current != 'strike':
-                            if feint_action(g, cid, 'strike'):
-                                return f'feint_{cid}_strike'
+                        criatura = c
+                        break
+            if not criatura:
+                continue
+            if cid in self._feinted_ids:
+                continue
+            if not can_feint(g, cid):
+                continue
+
+            current = g.combat.declarations.get(cid, '')
+            if not current:
+                continue
+
+            oponentes_acoes = {}
+            for cid2 in combatants:
+                if cid2 == cid:
+                    continue
+                acao = g.combat.declarations.get(cid2, '')
+                dono = None
+                for p in g.players:
+                    for c in p.pack_home:
+                        if str(c.card_id) == cid2:
+                            dono = c.owner_id
+                            break
+                if dono and dono != self.player_id:
+                    oponentes_acoes[cid2] = acao
+
+            melhor_acao = self._melhor_acao_feint(
+                criatura, current, oponentes_acoes, opp)
+
+            if melhor_acao and melhor_acao != current:
+                if feint_action(g, cid, melhor_acao):
+                    self._feinted_ids.add(cid)
+                    return f'feint_{cid}_{melhor_acao}'
 
         resolve_combat(g)
         end_combat(g)
+        self._feinted_ids.clear()
         return 'end_combat'
+
+    def _melhor_acao_feint(self, criatura: CardInstance,
+                           acao_atual: str,
+                           oponentes: dict[str, str],
+                           opp: PlayerState) -> Optional[str]:
+        """Decide qual acao seria melhor apos ver as revelacoes."""
+        OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
+                     'ranged_strike'}
+        DEFENSIVAS = {'block', 'dodge', 'flee'}
+
+        # Se todos oponentes agiram defensivamente, ataca
+        todos_defensivos = all(
+            a in DEFENSIVAS for a in oponentes.values())
+        if todos_defensivos and acao_atual in DEFENSIVAS:
+            return 'strike'
+
+        # Se ha ameaca maior que o esperado, defende
+        for cid_op, acao_op in oponentes.items():
+            if acao_op in OFENSIVAS:
+                # Encontra a criatura oponente
+                for c in opp.pack_home:
+                    if str(c.card_id) == cid_op:
+                        if c.rage > criatura.rage * 1.3:
+                            if acao_atual in OFENSIVAS:
+                                return 'dodge'
+                        break
+
+        # Se esta com saude critica, foge
+        if (criatura.health > 0
+                and criatura.health_current < criatura.health * 0.2):
+            if acao_atual not in DEFENSIVAS:
+                return 'dodge'
+
+        # Se o oponente fugiu, ataca
+        if any(a == 'flee' for a in oponentes.values()):
+            if acao_atual in DEFENSIVAS:
+                return 'strike'
+
+        return None  # Mantem acao atual
 
     def _decide_combat_random(self) -> str:
         """Acoes aleatorias em combate (modo facil)."""
@@ -494,8 +615,8 @@ class PriorityBot:
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
 
-        Ataca a criatura do oponente com maior Rage.
-        So ataca se a criatura nao estiver tapada.
+        Usa o TargetPrioritizer para avaliar ameacas
+        e escolher o atacante mais eficiente.
         """
         me = self.player
         opp = self._get_opponent()
@@ -503,20 +624,19 @@ class PriorityBot:
         if not me.pack_home or not opp.pack_home:
             return None
 
-        # Criaturas proprias que ainda podem atacar
         available = [c for c in me.pack_home if not c.is_tapped]
         if not available:
             return None
 
-        # Encontra a criatura mais ameacadora do oponente
-        top_threat = max(opp.pack_home, key=lambda c: c.rage)
+        # Avalia ameacas por score composto (nao apenas Rage)
+        ameacas = sorted(opp.pack_home, key=self.prioritizer.rate_threat,
+                         reverse=True)
 
-        # Encontra minha criatura mais forte ainda livre
-        my_best = max(available, key=lambda c: c.rage)
-
-        if my_best.rage >= top_threat.rage * 0.7:
-            self._attack(str(my_best.card_id), str(top_threat.card_id))
-            return f'eliminate_{my_best.card_id}_vs_{top_threat.card_id}'
+        for alvo in ameacas:
+            atacante = self.prioritizer.best_attacker_for(alvo, available)
+            if atacante and self.prioritizer.pode_eliminar(atacante, alvo):
+                self._attack(str(atacante.card_id), str(alvo.card_id))
+                return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
 
         return None
 
@@ -629,10 +749,10 @@ class PriorityBot:
                     f'[BOT] {self.player.name} pagou Gnosis {card.gnosis} '
                     f'com {pagador} para {card.name}')
 
-        # Remove da mao e aplica
-        self.player.hand.pop(hand_index)
+        # Remove da mao e aplica (passa card real para equipamentos)
+        card_real = self.player.hand.pop(hand_index)
         logs = aplicar_carta(self.game, modelo, self.player_id,
-                              modo_idx=modo_idx)
+                              modo_idx=modo_idx, card_origem=card_real)
 
         modo = modelo.modos[modo_idx]
         desc = f'use_{card.modelo_id}_modo{modo_idx}'
@@ -643,15 +763,32 @@ class PriorityBot:
     def _try_attack(self) -> Optional[str]:
         """Prioridade 4: Atacar.
 
-        Ataca o Hunting Grounds com a criatura mais forte ainda livre.
+        Se o oponente tem criaturas viaveis, tenta eliminar.
+        Senao ataca Hunting Grounds para VP.
         """
         me = self.player
+        opp = self._get_opponent()
 
         available = [c for c in me.pack_home if not c.is_tapped]
         if not available:
             return None
 
-        # Escolhe a criatura com mais Rage ainda nao tapada
+        # Tenta atacar criaturas do oponente primeiro
+        if opp.pack_home:
+            alvos_viaveis = [c for c in opp.pack_home
+                             if c.health_current > 0]
+            if alvos_viaveis:
+                ameacas = sorted(alvos_viaveis,
+                                 key=self.prioritizer.rate_threat,
+                                 reverse=True)
+                for alvo in ameacas:
+                    atacante = self.prioritizer.best_attacker_for(alvo, available)
+                    if atacante and self.prioritizer.pode_eliminar(atacante, alvo):
+                        self._attack(str(atacante.card_id), str(alvo.card_id))
+                        return (f'eliminate_{atacante.card_id}'
+                                f'_vs_{alvo.card_id}')
+
+        # Se nao ha alvos, ataca Hunting Grounds
         best = max(available, key=lambda c: c.rage)
         self._attack(str(best.card_id), 'hg')
         return f'attack_hg_{best.card_id}'

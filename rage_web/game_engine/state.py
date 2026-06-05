@@ -60,6 +60,10 @@ class CardInstance:
     gnosis: int = 0
     health: int = 0
     health_current: int = 0
+    # Atributos de forma alternativa (Breed/Metis/etc)
+    rage_morph: int = 0
+    gnosis_morph: int = 0
+    health_morph: int = 0
     renown: int = 0
     damage: str = ''
     requires: str = ''
@@ -72,6 +76,89 @@ class CardInstance:
     damage_aggravated: int = 0  # Quanto do dano e agravado (nao regenera)
     restricoes: list[str] = field(default_factory=list)
     # Restricoes ativas: 'nao_jogar_rage_3+', 'nao_fugir', etc.
+    is_frenzied: bool = False
+    attached_damage: list[CardInstance] = field(default_factory=list)
+    # Cartas de dano anexadas a esta criatura (regra 6.4)
+    attached_equipment: list[CardInstance] = field(default_factory=list)
+    # Equipamentos anexados a esta criatura
+    reducao_dano: int = 0
+    # Reducao de dano passiva (ex: armaduras)
+    is_aggravated: bool = False  # Se esta carta em si e dano agravado
+
+    @property
+    def effective_rage(self) -> int:
+        """Rage efetivo da criatura, considerando modificadores.
+
+        Se a criatura tem a restricao 'rage_breed', usa o rage_morph
+        como Rage efetivo em todas as formas.
+        """
+        if 'rage_breed' in self.restricoes:
+            return self.rage_morph if self.rage_morph > 0 else self.rage
+        return self.rage
+
+    @property
+    def effective_gnosis(self) -> int:
+        """Gnosis efetivo da criatura, considerando modificadores."""
+        if 'gnosis_breed' in self.restricoes:
+            return self.gnosis_morph if self.gnosis_morph > 0 else self.gnosis
+        return self.gnosis
+
+    @property
+    def effective_health(self) -> int:
+        """Vida maxima efetiva da criatura, considerando modificadores."""
+        if 'health_breed' in self.restricoes:
+            return self.health_morph if self.health_morph > 0 else self.health
+        return self.health
+
+
+def criar_carta_dano(origem: CardInstance, valor: int,
+                     dono_id: str, is_aggravated: bool = False
+                     ) -> CardInstance:
+    """Cria uma carta de dano a partir da origem.
+
+    Regra (6.4): quando um card causa dano a uma criatura,
+    ele se torna uma damage card anexada sob a criatura.
+    """
+    return CardInstance(
+        card_id=origem.card_id,
+        name=origem.name,
+        card_type=origem.card_type,
+        zone=Zone.OUT_OF_PLAY,
+        owner_id=dono_id,
+        controller_id=dono_id,
+        damage=str(valor),
+        is_aggravated=is_aggravated,
+    )
+
+
+def anexar_dano(alvo: CardInstance, origem: CardInstance,
+                valor: int, dono_id: str,
+                is_aggravated: bool = False) -> CardInstance:
+    """Aplica dano e anexa a damage card a uma criatura.
+
+    1. Cria a damage card a partir da origem.
+    2. Anexa a `alvo.attached_damage`.
+    3. Reduz `health_current` do alvo.
+
+    Returns:
+        A damage card criada.
+    """
+    damage_card = criar_carta_dano(origem, valor, dono_id, is_aggravated)
+    alvo.attached_damage.append(damage_card)
+    alvo.health_current = max(0, alvo.health_current - valor)
+    return damage_card
+
+
+def descartar_anexos(card: CardInstance, dono: PlayerState):
+    """Move todas as cartas anexadas ao descarte do dono.
+
+    Regra (6.4.2): quando uma criatura morre, descarte todas as
+    cartas (exceto Past Lives) anexadas a ela.
+    """
+    for anexo in card.attached_damage:
+        anexo.zone = Zone.DISCARD_COMBAT
+        dono.discard_combat.append(anexo)
+    card.attached_damage.clear()
 
 
 @dataclass
@@ -105,6 +192,11 @@ class PlayerState:
 
     # Cartas em combate neste turno
     combatants: list[CardInstance] = field(default_factory=list)
+
+    @property
+    def caerns_no_hunting_grounds(self) -> list[CardInstance]:
+        """Retorna lista de Caerns no Hunting Grounds do jogador."""
+        return [c for c in self.hunting_grounds if c.card_type == 'Caern']
 
     @property
     def total_cards_in_play(self) -> int:
@@ -243,13 +335,13 @@ class PlayerState:
         return any(r in kw for r in regeneram)
 
     def regeneration(self) -> list[str]:
-        """Fase de Regeneration: cura dano nao-agravado.
+        """Fase de Regeneration: remove a menor carta de dano nao-agravado.
 
         Regra (2.2.2):
         - Todo Character regenera.
         - Ally/Prey regeneram se creature class permite.
-        - Cada criatura cura 1 de dano nao-agravado por turno.
-        - Cura o menor dano primeiro (simplificado: 1 HP).
+        - Cada criatura regenera a damage card de menor valor
+          nao-agravada (se houver).
         - Dano agravado NAO regenera.
 
         Returns:
@@ -259,19 +351,19 @@ class PlayerState:
         for c in self.pack_home:
             if not self._pode_regenerar(c):
                 continue
-            dano_atual = c.health - c.health_current
-            if dano_atual <= 0:
+            if not c.attached_damage:
                 continue
-            # Separar dano agravado do normal
-            dano_normal = dano_atual - c.damage_aggravated
-            if dano_normal <= 0:
-                # So tem dano agravado, nao regenera
-                logs.append(f'{c.name} tem apenas dano agravado '
-                            f'({c.damage_aggravated})')
+            # Filtra apenas damage cards nao-agravadas
+            normais = [d for d in c.attached_damage if not d.is_aggravated]
+            if not normais:
+                logs.append(f'{c.name} tem apenas dano agravado')
                 continue
-            # Cura 1 de dano normal
-            c.health_current = min(c.health_current + 1, c.health)
-            logs.append(f'{c.name} regenerou 1 de dano '
+            # Remove a de menor valor
+            menor = min(normais, key=lambda d: int(d.damage or '0'))
+            valor = int(menor.damage or '0')
+            c.attached_damage.remove(menor)
+            c.health_current = min(c.health_current + valor, c.health)
+            logs.append(f'{c.name} regenerou {valor} de dano '
                         f'({c.health_current}/{c.health})')
         return logs
 
@@ -686,6 +778,15 @@ class GameState:
                             c.restricoes.remove(pend.valor_str)
                             log.append(f'{c.name}: restricao "{pend.valor_str}" expirou')
                 removidas.append(pend)
+
+        # Limpa restricoes de fim de turno (ex: nao_pode_frenzy)
+        if fase_entrando == 'redraw':
+            for p in self.players:
+                for zone_cards in (p.pack_home, p.hunting_grounds, p.umbra):
+                    for c in zone_cards:
+                        if 'nao_pode_frenzy' in c.restricoes:
+                            c.restricoes.remove('nao_pode_frenzy')
+                            log.append(f'{c.name}: restricao "nao_pode_frenzy" expirou')
 
         for r in removidas:
             self.pendencias.remove(r)

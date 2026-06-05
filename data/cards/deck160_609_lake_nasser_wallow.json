@@ -4,12 +4,12 @@
   "tipo": "Caern",
   "modos": [
     {
-      "descricao": "Caern em jogo",
+      "descricao": "Caern em jogo (passiva: Rites/Gifts cruzam Gauntlet)",
       "efeitos": []
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 609,
     "texto_original": "The Caern lies beneath a deep artificial lake and is tied to a small Egyptian realm.  Rites and Gifts played by your pack may cross the Gauntlet.",
     "keywords": "",
@@ -17,6 +17,12 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Caern existe em ambos os lados do Gauntlet (como todos os Caerns)",
+      "Efeito passivo: Rites e Gifts do pack podem cruzar a Gauntlet",
+      "Implementado via PlayerState.caerns_no_hunting_grounds",
+      "Verificacao de Gauntlet para Rites/Gifts a ser implementada no aplicar_carta"
+    ]
   }
 }

@@ -988,3 +988,354 @@ class TestSubmissionHold:
         # Inicia um novo combate — deve limpar restricoes
         start_combat(game, ['100'], ['200'])
         assert 'nao_pode_esquivar' not in frenzied_defender.restricoes
+
+
+# ---------------------------------------------------------------------------
+# Testes: Assegai (Equipment/Armor)
+# ---------------------------------------------------------------------------
+
+class TestAssegai:
+    """Testes para Assegai (Equipment/Armor)."""
+
+    @pytest.fixture
+    def assegai(self) -> CardInstance:
+        return CardInstance(
+            card_id=50, name='Assegai', card_type='Equipment',
+            zone=Zone.HAND, owner_id='p1', controller_id='p1',
+            keywords='Non-Fetish - Weapon - Armor',
+        )
+
+    @pytest.fixture
+    def homid_creature(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=10, name='Garou Homid', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=3, gnosis=5, health=5, health_current=5,
+            keywords='Garou - Homid - Gaia - Male',
+        )
+
+    @pytest.fixture
+    def crinos_creature(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=11, name='Garou Crinos', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, gnosis=3, health=8, health_current=8,
+            keywords='Garou - Crinos - Gaia - Male',
+        )
+
+    @pytest.fixture
+    def animal_creature(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=12, name='Garou Lupus', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=4, health=6, health_current=6,
+            keywords='Garou - Lupus - Gaia - Male',
+        )
+
+    def test_assegai_equipa_homid(self, game, assegai, homid_creature):
+        """Assegai pode ser equipado em criatura Homid."""
+        game.players[0].pack_home.append(homid_creature)
+        game.players[0].hand.append(assegai)
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+        modelo = CARTAS_EXEMPLO.get(assegai.modelo_id)
+        if modelo:
+            logs = aplicar_carta(game, modelo, 'p1', modo_idx=0)
+            assert assegai in homid_creature.attached_equipment
+            assert homid_creature.reducao_dano == 1
+
+    def test_assegai_equipa_crinos(self, game, assegai, crinos_creature):
+        """Assegai pode ser equipado em criatura Crinos."""
+        game.players[0].pack_home.append(crinos_creature)
+        game.players[0].hand.append(assegai)
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+        modelo = CARTAS_EXEMPLO.get(assegai.modelo_id)
+        if modelo:
+            logs = aplicar_carta(game, modelo, 'p1', modo_idx=0)
+            assert assegai in crinos_creature.attached_equipment
+            assert crinos_creature.reducao_dano == 1
+
+    def test_assegai_recusado_lupus(self, game, assegai, animal_creature):
+        """Assegai recusado para criatura em forma Lupus."""
+        game.players[0].pack_home.append(animal_creature)
+        game.players[0].hand.append(assegai)
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
+        modelo = CARTAS_EXEMPLO.get(assegai.modelo_id)
+        if modelo:
+            logs = aplicar_carta(game, modelo, 'p1', modo_idx=0)
+            assert assegai not in animal_creature.attached_equipment
+            assert animal_creature.reducao_dano == 0
+
+    def test_assegai_reduz_dano_combate(
+        self, game, assegai, homid_creature, player2
+    ):
+        """Assegai reduz 1 de dano de Combat Actions."""
+        from rage_web.game_engine.state import Zone
+        attacker = CardInstance(
+            card_id=200, name='Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=4, gnosis=2, health=5, health_current=5,
+        )
+        game.players[0].pack_home.append(homid_creature)
+        game.players[1].pack_home.append(attacker)
+        # Equipa Assegai
+        homid_creature.attached_equipment.append(assegai)
+        homid_creature.reducao_dano = 1
+        # Simula combate
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, resolve_combat,
+        )
+        start_combat(game, ['200'], ['10'])
+        declare_action(game, '200', 'strike')
+        declare_action(game, '10', 'strike')
+        resolve_combat(game)
+        # Dano deveria ser Rage(4) - reducao(1) = 3
+        assert homid_creature.health_current == 2  # 5 - 3 = 2
+
+
+# ---------------------------------------------------------------------------
+# Testes: Lake Nasser Wallow (Caern - Gauntlet cruzavel)
+# ---------------------------------------------------------------------------
+
+class TestLakeNasserWallow:
+    """Testes para Lake Nasser Wallow."""
+
+    @pytest.fixture
+    def lake_nasser(self) -> CardInstance:
+        return CardInstance(
+            card_id=609, name='Lake Nasser Wallow', card_type='Caern',
+            zone=Zone.HUNTING_GROUNDS, owner_id='p1', controller_id='p1',
+            rage=0, gnosis=5, health=0,
+            text='Rites and Gifts played by your pack may cross the Gauntlet.',
+        )
+
+    def test_caerns_no_hunting_grounds(
+        self, game, lake_nasser
+    ):
+        """PlayerState.caerns_no_hunting_grounds retorna Caerns."""
+        game.players[0].hunting_grounds.append(lake_nasser)
+        caerns = game.players[0].caerns_no_hunting_grounds
+        assert len(caerns) == 1
+        assert caerns[0].name == 'Lake Nasser Wallow'
+
+    def test_caerns_no_hunting_grounds_vazio(self, game, player1):
+        """Retorna lista vazia se nao ha Caerns."""
+        caerns = game.players[0].caerns_no_hunting_grounds
+        assert len(caerns) == 0
+
+    def test_gauntlet_para_carta_com_caern(
+        self, game, lake_nasser
+    ):
+        """Rites/Gifts podem cruzar Gauntlet com Lake Nasser Wallow."""
+        game.players[0].hunting_grounds.append(lake_nasser)
+        from rage_web.game_engine.effects import _validar_gauntlet_para_carta
+        from rage_web.game_engine.effects import ModeloCarta
+        modelo = ModeloCarta(id='test', nome='Test Gift', tipo='Gift')
+        result = _validar_gauntlet_para_carta(
+            game, game.players[0], modelo
+        )
+        assert result is True
+
+    def test_gauntlet_para_carta_sem_caern(
+        self, game, player1
+    ):
+        """Sem Caern, Rites/Gifts funcionam normalmente (True por padrao)."""
+        from rage_web.game_engine.effects import _validar_gauntlet_para_carta
+        from rage_web.game_engine.effects import ModeloCarta
+        modelo = ModeloCarta(id='test', nome='Test Gift', tipo='Gift')
+        result = _validar_gauntlet_para_carta(
+            game, game.players[0], modelo
+        )
+        assert result is True
+
+
+# ---------------------------------------------------------------------------
+# Testes: Chant of Morpheus (remover do jogo + anti-frenzy)
+# ---------------------------------------------------------------------------
+
+class TestChantOfMorpheus:
+    """Testes para Chant of Morpheus."""
+
+    @pytest.fixture
+    def target_creature(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=200, name='Target', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=4, gnosis=3, health=6, health_current=6,
+            keywords='Garou - Wyrm',
+        )
+
+    def test_remover_do_jogo_move_para_out_of_play(
+        self, game, target_creature
+    ):
+        """Criatura alvo e movida para OUT_OF_PLAY."""
+        game.players[1].pack_home.append(target_creature)
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo, Zone,
+        )
+        from rage_web.game_engine.state import CardInstance
+        resolvedor = ResolvedorEfeitos(game)
+        origem = CardInstance(
+            card_id=-1, name='Chant of Morpheus', card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+        )
+        efeito = Efeito(
+            tipo=EfeitoTipo.REMOVER_DO_JOGO,
+            condicao='criatura_inimiga',
+        )
+        resultado = resolvedor.aplicar_efeito(
+            efeito, origem, game.players[0]
+        )
+        assert resultado is True
+        assert target_creature.zone == Zone.OUT_OF_PLAY
+
+    def test_remover_do_jogo_cria_pendencia(
+        self, game, target_creature
+    ):
+        """Cria pendencia para restaurar no fim da fase."""
+        game.players[1].pack_home.append(target_creature)
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo,
+        )
+        from rage_web.game_engine.state import CardInstance
+        resolvedor = ResolvedorEfeitos(game)
+        origem = CardInstance(
+            card_id=-1, name='Chant of Morpheus', card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+        )
+        efeito = Efeito(
+            tipo=EfeitoTipo.REMOVER_DO_JOGO,
+            condicao='criatura_inimiga',
+        )
+        resolvedor.aplicar_efeito(efeito, origem, game.players[0])
+        # Deve ter criado uma pendencia
+        from rage_web.game_engine.state import PendenciaEfeito
+        penders = [p for p in game.pendencias
+                   if p.card_uid == id(target_creature)]
+        assert len(penders) == 1
+        assert penders[0].atributo == 'zona'
+        assert penders[0].duracao == 'end_of_phase'
+
+    def test_nao_pode_frenzy_restricao(
+        self, game, target_creature
+    ):
+        """Restricao nao_pode_frenzy e adicionada a criatura."""
+        game.players[1].pack_home.append(target_creature)
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo,
+        )
+        from rage_web.game_engine.state import CardInstance, Zone
+        resolvedor = ResolvedorEfeitos(game)
+        origem = CardInstance(
+            card_id=-1, name='Chant of Morpheus', card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+        )
+        efeito = Efeito(
+            tipo=EfeitoTipo.RESTRICAO,
+            condicao='criatura_inimiga',
+            alvo='nao_pode_frenzy',
+            duracao='end_of_turn',
+        )
+        resultado = resolvedor.aplicar_efeito(
+            efeito, origem, game.players[0]
+        )
+        assert resultado is True
+        assert 'nao_pode_frenzy' in target_creature.restricoes
+
+    def test_nao_pode_frenzy_expira_no_novo_turno(
+        self, game, target_creature
+    ):
+        """Restricao nao_pode_frenzy expira no redraw (novo turno)."""
+        target_creature.restricoes.append('nao_pode_frenzy')
+        game.players[1].pack_home.append(target_creature)
+        # Avanca para redraw (novo turno)
+        game.phase = 'combat'
+        game.next_phase()  # avancar para redraw
+        assert 'nao_pode_frenzy' not in target_creature.restricoes
+
+
+# ---------------------------------------------------------------------------
+# Testes: The Badger's Heart (Rage da Breed form)
+# ---------------------------------------------------------------------------
+
+class TestTheBadgersHeart:
+    """Testes para The Badger's Heart."""
+
+    @pytest.fixture
+    def target_creature(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=200, name='Target', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=5, gnosis=3, health=6, health_current=6,
+            rage_morph=2,  # Breed form Rage
+            keywords='Garou - Gaia',
+        )
+
+    def test_effective_rage_sem_restricao(self, target_creature):
+        """Sem restricao, effective_rage == rage."""
+        assert target_creature.effective_rage == 5
+
+    def test_effective_rage_com_rage_breed(self, target_creature):
+        """Com restricao rage_breed, effective_rage == rage_morph."""
+        target_creature.restricoes.append('rage_breed')
+        assert target_creature.effective_rage == 2  # rage_morph
+
+    def test_effective_rage_breed_sem_morph(self):
+        """Se rage_morph == 0, usa rage como fallback."""
+        creature = CardInstance(
+            card_id=201, name='No Morph', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=4, rage_morph=0,
+        )
+        creature.restricoes.append('rage_breed')
+        assert creature.effective_rage == 4  # fallback para rage
+
+    def test_rage_breed_restricao_aplicada(
+        self, game, target_creature
+    ):
+        """Restricao rage_breed e adicionada pela Gift."""
+        game.players[1].pack_home.append(target_creature)
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo,
+        )
+        from rage_web.game_engine.state import CardInstance, Zone
+        resolvedor = ResolvedorEfeitos(game)
+        origem = CardInstance(
+            card_id=-1, name="The Badger's Heart", card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+        )
+        efeito = Efeito(
+            tipo=EfeitoTipo.RESTRICAO,
+            condicao='criatura_inimiga',
+            alvo='rage_breed',
+            duracao='permanente',
+        )
+        resultado = resolvedor.aplicar_efeito(
+            efeito, origem, game.players[0]
+        )
+        assert resultado is True
+        assert 'rage_breed' in target_creature.restricoes
+
+    def test_rage_breed_afeta_dano_combate(
+        self, game, target_creature, player1
+    ):
+        """Criatura com rage_breed causa dano reduzido no combate."""
+        from rage_web.game_engine.state import Zone
+        attacker = CardInstance(
+            card_id=100, name='Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, rage_morph=2, gnosis=3, health=6, health_current=6,
+            keywords='Garou - Gaia',
+        )
+        # Atacante com rage_breed ataca
+        attacker.restricoes.append('rage_breed')
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(target_creature)
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, resolve_combat,
+        )
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'strike')
+        declare_action(game, '200', 'strike')
+        resolve_combat(game)
+        # Dano deveria ser effective_rage(2) em vez de rage(5)
+        assert target_creature.health_current == 4  # 6 - 2 = 4

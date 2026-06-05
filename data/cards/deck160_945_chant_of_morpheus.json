@@ -4,12 +4,23 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift",
-      "efeitos": []
+      "descricao": "Remover do jogo ate fim da proxima fase + anti-frenzy",
+      "efeitos": [
+        {
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "criatura_inimiga"
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "alvo": "nao_pode_frenzy",
+          "duracao": "end_of_turn"
+        }
+      ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 945,
     "texto_original": "The target of this Gift is removed from play until the end of the next phase and may not frenzy for the rest of the turn.",
     "keywords": "",
@@ -17,6 +28,12 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "remover_do_jogo: move para OUT_OF_PLAY com pendencia de restauracao",
+      "restringir: adiciona 'nao_pode_frenzy' na criatura alvo",
+      "Restauracao automatica via expirar_pendencias (end_of_phase)",
+      "Restricao nao_pode_frenzy limpa no inicio do novo turno (redraw)"
+    ]
   }
 }
