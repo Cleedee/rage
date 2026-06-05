@@ -68,6 +68,9 @@ class EfeitoTipo(str, Enum):
     EQUIPAR = 'equipar'  # Anexar equipamento a uma criatura
     MODIFICAR_REDUCAO_DANO = 'modificar_reducao_dano'  # Modificar reducao de dano passiva
     DESCARTAR_METADE_MAO = 'descartar_metade_mao'  # Oponente descarta metade da mao (arred. cima)
+    MODIFICAR_ATRIBUTO = 'modificar_atributo'  # Modificar multiplos atributos (ex: +1 Rage/Gnosis/Health)
+    USAR_GIFT = 'usar_gift'  # Usar um Gift atraves de outro card
+    QUEST_CHECK = 'quest_check'  # Verificar condicao de quest
 
 
 # -----------------------------------------------------------------------
@@ -211,6 +214,9 @@ class ResolvedorEfeitos:
             EfeitoTipo.RESTRICAO: self._resolver_restringir,
             EfeitoTipo.COMPRAR_ATE: self._resolver_comprar_ate,
             EfeitoTipo.FUGIR: self._resolver_fugir,
+    EfeitoTipo.MODIFICAR_ATRIBUTO: self._resolver_modificar_atributo,
+    EfeitoTipo.USAR_GIFT: self._resolver_usar_gift,
+    EfeitoTipo.QUEST_CHECK: self._resolver_quest_check,
             EfeitoTipo.EQUIPAR: self._resolver_equipar,
             EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
             EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
@@ -791,6 +797,48 @@ class ResolvedorEfeitos:
         alvo.reducao_dano = max(0, alvo.reducao_dano + qtd)
         self.game.add_log(
             f'{alvo.name} agora tem reducao de dano {alvo.reducao_dano}')
+        return True
+
+    def _resolver_modificar_atributo(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState,
+                                       alvo) -> bool:
+        """Modifica multiplos atributos (Rage, Gnosis, Health).
+
+        Usado por cartas como Sweet Luna's Smile (+1 todos os
+        atributos enquanto Lunar Phase em jogo).
+
+        Nota: efeito continuo condicional - implementacao futura.
+        """
+        self.game.add_log(
+            f'{origem.name} modificou atributos (pendente: buff condicional)'
+        )
+        return True
+
+    def _resolver_usar_gift(self, efeito: Efeito,
+                              origem: CardInstance,
+                              jogador: PlayerState, alvo) -> bool:
+        """Usa um Gift atraves de outro card (ex: Haunter).
+
+        Nota: implementacao futura require sistema de gifts.
+        """
+        self.game.add_log(
+            f'{origem.name} usou um Gift (pendente)'
+        )
+        return True
+
+    def _resolver_quest_check(self, efeito: Efeito,
+                                origem: CardInstance,
+                                jogador: PlayerState, alvo) -> bool:
+        """Verifica condicao de quest e aplica recompensa.
+
+        Usado por Mnesis Dreams: espera 2 turnos sem dano.
+
+        Nota: implementacao futura require sistema de triggers.
+        """
+        self.game.add_log(
+            f'{origem.name} quest check pendente'
+        )
         return True
 
 

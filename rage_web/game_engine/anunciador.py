@@ -256,8 +256,11 @@ def anunciar_e_resolver(game: GameState, jogador_id: str,
         return [f'Modelo {modelo_id} nao encontrado']
 
     def _resolver(game: GameState) -> list[str]:
-        nonlocal modo_idx
-        idx = modo_idx if efeito.modo_escolhido else (modo_idx or 0)
+        # Usa efeito.modo_idx se ja foi escolhido, senao usa parametro
+        if efeito.modo_escolhido and efeito.modo_idx is not None:
+            idx = efeito.modo_idx
+        else:
+            idx = modo_idx or 0
         from rage_web.game_engine.effects import aplicar_carta
         return aplicar_carta(game, modelo, jogador_id, modo_idx=idx)
 
