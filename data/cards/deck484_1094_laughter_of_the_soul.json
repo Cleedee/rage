@@ -16,7 +16,7 @@
             "descricao": "Riso da Alma",
             "efeitos": [
                 {
-                    "tipo": "tapar",
+                    "tipo": "impedir_acoes",
                     "alvo": "inimigo",
                     "quantidade": 0,
                     "duracao": "fim_do_turno_ou_ataque"

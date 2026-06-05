@@ -19,6 +19,12 @@
                     "tipo": "dano",
                     "alvo": "inimigo",
                     "quantidade": 6
+                },
+                {
+                    "tipo": "impedir_acoes",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "duracao": "fim_do_prox_round_combate"
                 }
             ]
         }

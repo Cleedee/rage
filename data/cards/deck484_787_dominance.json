@@ -13,13 +13,12 @@
     "damage": "",
     "modos": [
         {
-            "descricao": "Dominancia",
+            "descricao": "Cancelar Action",
             "efeitos": [
                 {
-                    "tipo": "anular",
+                    "tipo": "cancelar_acao",
                     "alvo": "acao",
-                    "quantidade": 0,
-                    "condicao_alvo": "renown_lte_user"
+                    "quantidade": 0
                 }
             ]
         }

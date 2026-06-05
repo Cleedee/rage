@@ -71,6 +71,11 @@ class EfeitoTipo(str, Enum):
     MODIFICAR_ATRIBUTO = 'modificar_atributo'  # Modificar multiplos atributos (ex: +1 Rage/Gnosis/Health)
     USAR_GIFT = 'usar_gift'  # Usar um Gift atraves de outro card
     QUEST_CHECK = 'quest_check'  # Verificar condicao de quest
+    IMPEDIR_ACOES = 'impedir_acoes'  # Alvo nao pode tomar acoes
+    IMPEDIR_RETIRADA = 'impedir_retirada'  # Alvo nao pode fugir/escapar do combate
+    CANCELAR_ACAO = 'cancelar_acao'  # Cancelar Action card como interrupt
+    ATAQUE_IMEDIATO = 'ataque_imediato'  # Atacar imediatamente apos combate
+    REMOVER_DO_COMBATE = 'remover_do_combate'  # Remover criatura do combate em andamento
 
 
 # -----------------------------------------------------------------------
@@ -220,6 +225,12 @@ class ResolvedorEfeitos:
     EfeitoTipo.MODIFICAR_ATRIBUTO: self._resolver_modificar_atributo,
     EfeitoTipo.USAR_GIFT: self._resolver_usar_gift,
     EfeitoTipo.QUEST_CHECK: self._resolver_quest_check,
+    EfeitoTipo.COMBAR_ACAO: self._resolver_combar_acao,
+    EfeitoTipo.IMPEDIR_ACOES: self._resolver_impedir_acoes,
+    EfeitoTipo.IMPEDIR_RETIRADA: self._resolver_impedir_retirada,
+    EfeitoTipo.CANCELAR_ACAO: self._resolver_cancelar_acao,
+    EfeitoTipo.ATAQUE_IMEDIATO: self._resolver_ataque_imediato,
+    EfeitoTipo.REMOVER_DO_COMBATE: self._resolver_remover_do_combate,
             EfeitoTipo.EQUIPAR: self._resolver_equipar,
             EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
             EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
@@ -279,6 +290,14 @@ class ResolvedorEfeitos:
                         resultado.append(c)
             return resultado
 
+        def _criatura_especifica(cid: str) -> Optional[CardInstance]:
+            """Encontra uma criatura pelo card_id em qualquer zona."""
+            for p in self.game.players:
+                for c in p.pack_home + p.umbra + p.hunting_grounds:
+                    if str(c.card_id) == cid:
+                        return c
+            return None
+
         resolvedores_alvo = {
             'criatura_inimiga': lambda: self._escolher_criatura(
                 _criaturas_inimigas()
@@ -314,7 +333,27 @@ class ResolvedorEfeitos:
             'vitima': lambda: self._escolher_criatura(
                 _vitimas_inimigas()
             ),
+            'ally_inimigo': lambda: self._escolher_criatura(
+                [c for op in oponentes for c in op.pack_home
+                 if c.card_type and 'Ally' in c.card_type]
+            ),
+            'acao': lambda: 'acao',  # Alvo generico para cancelar_acao
+            'packmates': lambda: [c for c in jogador.pack_home
+                                  if str(c.card_id) != str(origem.card_id)],
+            # Aliases/abreviacoes (compatibilidade com JSONs simplificados)
+            'inimigo': lambda: self._escolher_criatura(
+                _criaturas_inimigas()
+            ),
+            'self': lambda: origem,
+            'aliado': lambda: self._escolher_criatura(
+                jogador.pack_home
+            ),
         }
+
+        # Alvo especifico por card_id (vindo de efeito params)
+        alvo_id = efeito.params.get('alvo_id') if hasattr(efeito, 'params') else None
+        if alvo_id:
+            return _criatura_especifica(alvo_id)
 
         resolvedor = resolvedores_alvo.get(condicao)
         if resolvedor:
@@ -989,6 +1028,120 @@ class ResolvedorEfeitos:
             f'em {alvo.name} ({quantidade} turnos sem dano)'
         )
         return True
+
+    # ── Novos resolvedores deck484 ──────────────────────────────────
+
+    def _resolver_combar_acao(self, efeito: Efeito,
+                               origem: CardInstance,
+                               jogador: PlayerState, alvo) -> bool:
+        """Stub para encadear acao (Combar)."""
+        self.game.add_log(f'{origem.name}: combar_acao (stub)')
+        return True
+
+    def _resolver_impedir_acoes(self, efeito: Efeito,
+                                 origem: CardInstance,
+                                 jogador: PlayerState, alvo) -> bool:
+        """Impede o alvo de tomar acoes.
+
+        Usado por: Laughter of the Soul, Mangle, Amber Eyes.
+        Adiciona uma pendencia que impede acoes do alvo.
+        """
+        if isinstance(alvo, CardInstance):
+            # Adiciona restricao de acoes no alvo
+            alvo.restricoes.append('nao_pode_agir')
+            duracao = efeito.duracao or 'fim_do_turno'
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} impedido de agir '
+                f'({duracao})'
+            )
+            return True
+        return False
+
+    def _resolver_impedir_retirada(self, efeito: Efeito,
+                                    origem: CardInstance,
+                                    jogador: PlayerState, alvo) -> bool:
+        """Impede o alvo de fugir/escapar/withdraw do combate.
+
+        Usado por: Bar the Way, Ootani Oil Bane.
+        """
+        if isinstance(alvo, CardInstance):
+            alvo.restricoes.append('nao_pode_escapar')
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} impedido de escapar do combate'
+            )
+            return True
+        # Se alvo for multiplo (packmates, lista)
+        if isinstance(alvo, list):
+            for c in alvo:
+                c.restricoes.append('nao_pode_escapar')
+            self.game.add_log(
+                f'{origem.name}: {len(alvo)} criatura(s) impedida(s) de escapar'
+            )
+            return True
+        return False
+
+    def _resolver_cancelar_acao(self, efeito: Efeito,
+                                 origem: CardInstance,
+                                 jogador: PlayerState, alvo) -> bool:
+        """Cancela uma Action card como interrupt.
+
+        Usado por: Dominance.
+        A carta cancelada vai para o descarte. A origem vai pro VP.
+        """
+        self.game.add_log(
+            f'{origem.name}: cancelou action (efeito stub - '
+            f'Dominance vai pro VP)'
+        )
+        # Origem vai pro VP
+        origem.zone = Zone.VICTORY_PILE
+        jogador.victory_pile.append(origem)
+        return True
+
+    def _resolver_ataque_imediato(self, efeito: Efeito,
+                                   origem: CardInstance,
+                                   jogador: PlayerState, alvo) -> bool:
+        """Ataca imediatamente um participante apos combate.
+
+        Usado por: Sense of the Prey.
+        O usuario descarta este Gift e ataca outro participante.
+        """
+        self.game.add_log(
+            f'{origem.name}: ataque imediato apos combate (stub)'
+        )
+        return True
+
+    def _resolver_remover_do_combate(self, efeito: Efeito,
+                                      origem: CardInstance,
+                                      jogador: PlayerState, alvo) -> bool:
+        """Remove criaturas do combate em andamento.
+
+        Usado por: Whole Nine Yards (remove packmates).
+        Spring the Trap (inverte: adiciona packmate ao combate).
+        """
+        if efeito.params.get('acao') == 'entrar':
+            # Spring the Trap: packmate entra no combate
+            self.game.add_log(
+                f'{origem.name}: packmate entrando no combate (stub)'
+            )
+            return True
+
+        # Whole Nine Yards: packmates removidos ate fim do combate
+        if isinstance(alvo, list):
+            for c in alvo:
+                if hasattr(c, 'zone'):
+                    c.zone = Zone.OUT_OF_PLAY
+            self.game.add_log(
+                f'{origem.name}: {len(alvo)} packmate(s) removido(s) '
+                f'do combate'
+            )
+            return True
+        if isinstance(alvo, CardInstance):
+            alvo.zone = Zone.OUT_OF_PLAY
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} removido do combate'
+            )
+            return True
+        return False
 
 
 # -----------------------------------------------------------------------

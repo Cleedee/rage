@@ -16,7 +16,7 @@
             "descricao": "Sentir a Presa",
             "efeitos": [
                 {
-                    "tipo": "combar_acao",
+                    "tipo": "ataque_imediato",
                     "alvo": "self",
                     "quantidade": 0
                 }

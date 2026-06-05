@@ -14,7 +14,20 @@
     "modos": [
         {
             "descricao": "Olhos de Ambar",
-            "efeitos": []
+            "efeitos": [
+                {
+                    "tipo": "impedir_acoes",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "duracao": "prox_resource"
+                },
+                {
+                    "tipo": "impedir_acoes",
+                    "alvo": "self",
+                    "quantidade": 0,
+                    "duracao": "prox_resource"
+                }
+            ]
         }
     ],
     "_metadata": {

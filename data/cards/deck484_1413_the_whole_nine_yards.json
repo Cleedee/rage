@@ -13,8 +13,14 @@
     "damage": "",
     "modos": [
         {
-            "descricao": "Tudo ou Nada",
-            "efeitos": []
+            "descricao": "Frenzy total",
+            "efeitos": [
+                {
+                    "tipo": "remover_do_combate",
+                    "alvo": "packmates",
+                    "quantidade": 0
+                }
+            ]
         }
     ],
     "_metadata": {

@@ -19,6 +19,11 @@
                     "tipo": "dano",
                     "alvo": "inimigo",
                     "quantidade": 2
+                },
+                {
+                    "tipo": "impedir_retirada",
+                    "alvo": "inimigo",
+                    "quantidade": 0
                 }
             ]
         }
