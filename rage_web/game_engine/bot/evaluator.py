@@ -36,7 +36,12 @@ class TargetPrioritizer:
         return None
 
     def rate_threat(self, card: CardInstance) -> float:
-        """Nota 0-10: o quanto esta criatura e uma ameaca."""
+        """Nota 0-10: o quanto esta criatura e uma ameaca.
+
+        Em jogos com N jogadores, criaturas de oponentes
+        com mais VP recebem peso extra (alianca implicita
+        contra o lider).
+        """
         dono = self._find_owner(card)
         if not dono:
             return 0.0
@@ -56,6 +61,12 @@ class TargetPrioritizer:
 
         vp_progress = dono.victory_points / max(dono.renown_level, 1)
         score += vp_progress * 10.0 * self.PESOS_THREAT['vp_proximidade']
+
+        # Bonus N-player: se o dono esta perto de vencer,
+        # a criatura e ainda mais ameacadora
+        if vp_progress > 0.5:
+            bonus = (vp_progress - 0.5) * 5.0  # 0 a 2.5 extra
+            score += bonus
 
         return min(score, 10.0)
 
@@ -89,7 +100,11 @@ class TargetPrioritizer:
 
 
 class BoardEvaluator:
-    """Avalia o tabuleiro e retorna notas para cada fator."""
+    """Avalia o tabuleiro e retorna notas para cada fator.
+
+    Suporta N jogadores: 'ameaca' e 'vantagem' sao calculados
+    contra todos os oponentes, com peso extra no lider em VP.
+    """
 
     # Pesos para calculo da nota composta
     WEIGHTS = {
@@ -102,7 +117,6 @@ class BoardEvaluator:
     def __init__(self, game: GameState, player_id: str):
         self.game = game
         self.player = self._find_player(player_id)
-        self.opponent = self._find_opponent(player_id)
 
     def _find_player(self, player_id: str) -> PlayerState:
         for p in self.game.players:
@@ -110,66 +124,81 @@ class BoardEvaluator:
                 return p
         raise ValueError(f'Jogador {player_id} nao encontrado')
 
-    def _find_opponent(self, player_id: str) -> PlayerState:
-        for p in self.game.players:
-            if p.id != player_id:
-                return p
-        raise ValueError('Nenhum oponente encontrado')
+    def _get_opponents(self) -> list[PlayerState]:
+        """Retorna todos os oponentes."""
+        return [p for p in self.game.players if p.id != self.player.id]
+
+    def _vp_weight(self, opp: PlayerState) -> float:
+        """Peso extra de ameaca baseado na proximidade da vitoria.
+
+        Retorna 1.0 (neutro) a ~1.75 (quase vencendo).
+        Todos os bots tendem a focar no lider (alianca implicita).
+        """
+        if opp.renown_level <= 0:
+            return 1.0
+        progress = opp.victory_points / opp.renown_level
+        if progress <= 0.5:
+            return 1.0
+        extra = (progress - 0.5) * 1.5  # 0 a 0.75
+        return 1.0 + extra
 
     # ------------------------------------------------------------------
     # Fatores individuais (0-10)
     # ------------------------------------------------------------------
 
     def threat_score(self) -> float:
-        """Ameaca do oponente (0 = nenhuma, 10 = letal).
+        """Ameaca agregada de TODOS os oponentes (0-10).
 
-        Baseado no Rage total, quantidade de criaturas e
-        equipamentos do oponente.
+        Cada oponente contribui proporcionalmente ao seu poder
+        de mesa E proximidade da vitoria.
         """
-        opp = self.opponent
-        if not opp.pack_home:
+        opps = self._get_opponents()
+        if not opps:
             return 0.0
 
-        total_rage = sum(c.rage for c in opp.pack_home)
-        num_creatures = len(opp.pack_home)
-        total_health = sum(c.health_current for c in opp.pack_home)
+        total = 0.0
+        for opp in opps:
+            if not opp.pack_home:
+                continue
+            total_rage = sum(c.rage for c in opp.pack_home)
+            num_creatures = len(opp.pack_home)
+            total_health = sum(c.health_current for c in opp.pack_home)
 
-        # Quanto maior o rage, maior a ameaca
-        rage_score = min(total_rage / 3.0, 5.0)
+            rage_score = min(total_rage / 3.0, 5.0)
+            count_score = min(num_creatures * 2.0, 3.0)
+            health_score = min(total_health / 6.0, 2.0)
 
-        # Quantidade de criaturas
-        count_score = min(num_creatures * 2.0, 3.0)
+            raw = rage_score + count_score + health_score
+            raw *= self._vp_weight(opp)
+            total += raw
 
-        # Saude total (mais saude = mais ameaca)
-        health_score = min(total_health / 6.0, 2.0)
-
-        return min(rage_score + count_score + health_score, 10.0)
+        return min(total / len(opps), 10.0)
 
     def advantage_score(self) -> float:
-        """Vantagem de mesa (-10 a +10, normalizado para 0-10).
+        """Vantagem de mesa contra a MEDIA dos oponentes (0-10).
 
-        Positivo = meu lado esta melhor.
-        Negativo = oponente esta melhor.
+        5 = neutro, >5 = estou melhor, <5 = estou pior.
         """
         me = self.player
-        opp = self.opponent
+        opps = self._get_opponents()
+        if not opps:
+            return 5.0
 
         my_creatures = len(me.pack_home)
-        opp_creatures = len(opp.pack_home)
         my_health = sum(c.health_current for c in me.pack_home)
-        opp_health = sum(c.health_current for c in opp.pack_home)
         my_hand = len(me.hand)
-        opp_hand = len(opp.hand)
 
-        # Diferenca de criaturas
-        creature_diff = (my_creatures - opp_creatures) * 1.5
-        # Diferenca de vida
-        health_diff = (my_health - opp_health) * 0.3
-        # Diferenca de mao
-        hand_diff = (my_hand - opp_hand) * 0.5
+        avg_creatures = sum(len(o.pack_home) for o in opps) / len(opps)
+        avg_health = sum(
+            sum(c.health_current for c in o.pack_home) for o in opps
+        ) / len(opps)
+        avg_hand = sum(len(o.hand) for o in opps) / len(opps)
+
+        creature_diff = (my_creatures - avg_creatures) * 1.5
+        health_diff = (my_health - avg_health) * 0.3
+        hand_diff = (my_hand - avg_hand) * 0.5
 
         total = creature_diff + health_diff + hand_diff
-        # Normaliza para 0-10 (5 = neutro)
         normalized = max(0, min(10, total + 5))
         return normalized
 

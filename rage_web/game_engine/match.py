@@ -89,39 +89,82 @@ def print_board(game: GameState):
                 print(f'     {cid}: {action}')
 
 
+def build_game_from_decks_n(*deck_ids: int, seed: int = 42):
+    """Converte N decks do banco SQLite em uma partida.
+    Re-exporta de cli.py para acesso via rage_web.game_engine.match.
+    """
+    from rage_web.game_engine.cli import build_game_from_decks_n as _build_n
+    return _build_n(*deck_ids, seed=seed)
+
+
 def run_match(seed: int = 42, max_turns: int = 30,
               difficulty_p1: str = 'hard',
               difficulty_p2: str = 'hard',
               deck1_id: int | None = None,
               deck2_id: int | None = None,
-              delay: float = 0.3) -> str:
-    """Roda uma partida entre dois bots.
+              delay: float = 0.3,
+              # Novos parametros N-player
+              deck_ids: list[int] | None = None,
+              difficulties: list[str] | None = None) -> str:
+    """Roda uma partida entre bots (2 ou mais jogadores).
+
+    Args:
+        seed: Semente aleatoria.
+        max_turns: Limite de turnos.
+        difficulty_p1/difficulty_p2: Dificuldades (compatibilidade 2p).
+        deck1_id/deck2_id: IDs dos decks (compatibilidade 2p).
+        delay: Delay entre acoes.
+        deck_ids: Lista de IDs de decks (N players).
+        difficulties: Lista de dificuldades (N players).
 
     Returns:
-        'p1' | 'p2' | 'draw' | 'timeout'
+        ID do vencedor | 'draw' | 'timeout' | 'error'
     """
-    if deck1_id and deck2_id:
+    # Usa parametros N-player se fornecidos
+    if deck_ids and len(deck_ids) >= 2:
+        n_players = len(deck_ids)
+        diffs = difficulties or ['hard'] * n_players
+        if len(diffs) < n_players:
+            diffs = diffs + ['hard'] * (n_players - len(diffs))
+        try:
+            game = build_game_from_decks_n(*deck_ids, seed=seed)
+        except ValueError as e:
+            print(f'Erro ao carregar decks: {e}')
+            return 'error'
+    elif deck1_id and deck2_id:
+        n_players = 2
+        diffs = [difficulty_p1, difficulty_p2]
         try:
             game = build_game_from_decks(deck1_id, deck2_id, seed=seed)
         except ValueError as e:
             print(f'Erro ao carregar decks: {e}')
             return 'error'
     else:
+        n_players = 2
+        diffs = [difficulty_p1, difficulty_p2]
         game = create_sample_game(seed=seed)
-    bots = {
-        'p1': PriorityBot(game, 'p1', difficulty=difficulty_p1),
-        'p2': PriorityBot(game, 'p2', difficulty=difficulty_p2),
-    }
-    col1 = '\033[1;36m'  # Cyan
-    col2 = '\033[1;33m'  # Yellow
+
+    bots = {}
+    for p in game.players:
+        idx = game.players.index(p)
+        diff = diffs[idx] if idx < len(diffs) else 'hard'
+        bots[p.id] = PriorityBot(game, p.id, difficulty=diff)
+
+    # Cores por indice
+    colors = ['\033[1;36m', '\033[1;33m', '\033[1;35m',
+              '\033[1;32m', '\033[1;31m', '\033[1;34m']
     reset = '\033[0m'
 
     print_separator()
     print(f'  RAGE CCG — PARTIDA ENTRE BOTS')
-    deck_info = ''
-    if deck1_id and deck2_id:
+    if deck_ids:
+        deck_info = ' | Decks: ' + ', '.join(str(d) for d in deck_ids)
+    elif deck1_id and deck2_id:
         deck_info = f' | Decks: {deck1_id} vs {deck2_id}'
-    print(f'  P1: {difficulty_p1.upper()} | P2: {difficulty_p2.upper()}{deck_info} | Max: {max_turns}t')
+    else:
+        deck_info = ' | Deck: Sample'
+    diffs_str = ', '.join(d.upper() for d in diffs)
+    print(f'  {diffs_str}{deck_info} | {n_players} jogadores | Max: {max_turns}t')
     print_separator()
     print_board(game)
 
@@ -155,7 +198,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
             cp = game.current_player
 
         bot = bots[cp.id]
-        color = col1 if cp.id == 'p1' else col2
+        idx = game.players.index(cp)
+        color = colors[idx % len(colors)]
 
         action = bot.decide()
         action_count += 1
@@ -262,37 +306,63 @@ def run_match(seed: int = 42, max_turns: int = 30,
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Simulador de partida Rage CCG')
+    parser = argparse.ArgumentParser(
+        description='Simulador de partida Rage CCG',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Exemplos:
+  rage-match --deck 416 --deck 7                    # 2 jogadores
+  rage-match --deck 416 --deck 90 --deck 7           # 3 jogadores
+  rage-match --deck 416 --deck 90 --deck 7 --diff hard --diff medium --diff easy
+  rage-match --deck1 416 --deck2 7                   # compatibilidade
+''')
     parser.add_argument('--p1', default='hard',
-                        choices=['easy', 'medium', 'hard'])
+                        choices=['easy', 'medium', 'hard'],
+                        help='Compatibilidade: dificuldade J1')
     parser.add_argument('--p2', default='hard',
-                        choices=['easy', 'medium', 'hard'])
+                        choices=['easy', 'medium', 'hard'],
+                        help='Compatibilidade: dificuldade J2')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--max-turns', type=int, default=30)
     parser.add_argument('--deck1', type=int, default=None,
-                        help='ID do deck do Jogador 1 (usa sample se vazio)')
+                        help='Compatibilidade: ID do deck J1')
     parser.add_argument('--deck2', type=int, default=None,
-                        help='ID do deck do Jogador 2 (usa sample se vazio)')
+                        help='Compatibilidade: ID do deck J2')
     parser.add_argument('--delay', type=float, default=0.3,
                         help='Delay entre acoes (segundos)')
     parser.add_argument('--watch', action='store_true',
                         help='Assiste a partida com delay')
+    parser.add_argument('--deck', type=int, action='append',
+                        help='ID do deck (repetir para cada jogador)')
+    parser.add_argument('--diff', type=str, action='append',
+                        choices=['easy', 'medium', 'hard'],
+                        help='Dificuldade (repetir para cada jogador)')
     args = parser.parse_args()
 
     if args.watch:
         delay = args.delay
     else:
-        delay = 0  # sem delay = rapido
+        delay = 0
 
-    result = run_match(
-        seed=args.seed,
-        max_turns=args.max_turns,
-        difficulty_p1=args.p1,
-        difficulty_p2=args.p2,
-        deck1_id=args.deck1,
-        deck2_id=args.deck2,
-        delay=delay,
-    )
+    # Determina se usa modo N-player ou compatibilidade
+    if args.deck and len(args.deck) >= 2:
+        result = run_match(
+            seed=args.seed,
+            max_turns=args.max_turns,
+            delay=delay,
+            deck_ids=args.deck,
+            difficulties=args.diff,
+        )
+    else:
+        result = run_match(
+            seed=args.seed,
+            max_turns=args.max_turns,
+            difficulty_p1=args.p1,
+            difficulty_p2=args.p2,
+            deck1_id=args.deck1,
+            deck2_id=args.deck2,
+            delay=delay,
+        )
 
     print()
     print(f'Resultado: {result}')

@@ -301,24 +301,18 @@ class PriorityBot:
         self._pass_turn()
         return 'pass_combat'
 
+    def _get_opponents(self) -> list[PlayerState]:
+        """Retorna todos os oponentes (N players)."""
+        return [p for p in self.game.players if p.id != self.player_id]
+
     def _agir_alpha(self) -> Optional[str]:
         """Acao alfa: o alpha do jogador age.
 
-        Regra (2.2.6):
-        Como acao alfa, pode:
-        - Atacar outro alpha
-        - Atacar Hunting Grounds
-        - Desafiar um nao-alfa
-        - Engajar Battlefield
-        - Atacar Territory
-        - Usar carta/habilidade que diz "alpha action"
-        - Passar
-
-        Returns:
-            String da acao ou None para passar.
+        Com N jogadores, prioriza alphas de oponentes
+        com mais VP (alianca implicita contra o lider).
         """
         me = self.player
-        opp = self._get_opponent()
+        opponents = self._get_opponents()
         meu_alpha_id = self.game.combat.alphas.get(self.player_id)
         if not meu_alpha_id:
             return None
@@ -334,32 +328,44 @@ class PriorityBot:
 
         from rage_web.game_engine.combat_queue import start_combat
 
-        # 1. Tenta atacar o alpha inimigo se for vantajoso
-        alpha_inimigo_id = None
+        # 1. Tenta atacar alpha inimigo (prioriza lider em VP)
+        alphas_inimigos = []
         for pid, cid in self.game.combat.alphas.items():
             if pid != self.player_id:
-                alpha_inimigo_id = cid
-                break
+                for opp in opponents:
+                    if opp.id == pid:
+                        for c in opp.pack_home:
+                            if str(c.card_id) == cid:
+                                alphas_inimigos.append((opp, c))
+                                break
 
-        if alpha_inimigo_id:
-            alpha_inimigo = None
-            for c in opp.pack_home:
-                if str(c.card_id) == alpha_inimigo_id:
-                    alpha_inimigo = c
-                    break
-            if (alpha_inimigo and alpha_inimigo.health_current > 0
+        # Ordena por VP do dono (maior primeiro = lider)
+        alphas_inimigos.sort(
+            key=lambda x: x[0].victory_points / max(x[0].renown_level, 1),
+            reverse=True)
+
+        for opp, alpha_inimigo in alphas_inimigos:
+            if (alpha_inimigo.health_current > 0
                     and self.prioritizer.pode_eliminar(alpha_card,
                                                        alpha_inimigo)):
-                start_combat(self.game, [meu_alpha_id], [alpha_inimigo_id])
+                start_combat(self.game, [meu_alpha_id],
+                             [str(alpha_inimigo.card_id)])
                 alpha_card.is_tapped = True
                 self.game.add_log(
                     f'[BOT] Alpha {alpha_card.name} atacou alpha '
-                    f'{alpha_inimigo.name}')
+                    f'{alpha_inimigo.name} ({opp.name})')
                 return f'alpha_attack_alpha_{meu_alpha_id}'
 
-        # 2. Tenta eliminar criatura inimiga viavel
-        if opp.pack_home:
-            ameacas = sorted(opp.pack_home,
+        # 2. Agrega ameacas de TODOS os oponentes, ordenadas por
+        #    threat rating (que ja inclui VP weight)
+        todas_ameacas = []
+        for opp in opponents:
+            for c in opp.pack_home:
+                if c.health_current > 0:
+                    todas_ameacas.append(c)
+
+        if todas_ameacas:
+            ameacas = sorted(todas_ameacas,
                              key=self.prioritizer.rate_threat,
                              reverse=True)
             for alvo in ameacas:
@@ -615,21 +621,32 @@ class PriorityBot:
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
 
-        Usa o TargetPrioritizer para avaliar ameacas
-        e escolher o atacante mais eficiente.
+        Com N jogadores, avia ameacas de TODOS os oponentes,
+        priorizando criaturas do lider em VP.
         """
         me = self.player
-        opp = self._get_opponent()
+        opponents = self._get_opponents()
 
-        if not me.pack_home or not opp.pack_home:
+        if not me.pack_home:
             return None
 
         available = [c for c in me.pack_home if not c.is_tapped]
         if not available:
             return None
 
-        # Avalia ameacas por score composto (nao apenas Rage)
-        ameacas = sorted(opp.pack_home, key=self.prioritizer.rate_threat,
+        # Agrega ameacas de todos os oponentes
+        todas_ameacas = []
+        for opp in opponents:
+            for c in opp.pack_home:
+                if c.health_current > 0:
+                    todas_ameacas.append(c)
+
+        if not todas_ameacas:
+            return None
+
+        # rate_threat ja inclui VP weight -> lider sai primeiro
+        ameacas = sorted(todas_ameacas,
+                         key=self.prioritizer.rate_threat,
                          reverse=True)
 
         for alvo in ameacas:
@@ -763,30 +780,33 @@ class PriorityBot:
     def _try_attack(self) -> Optional[str]:
         """Prioridade 4: Atacar.
 
-        Se o oponente tem criaturas viaveis, tenta eliminar.
-        Senao ataca Hunting Grounds para VP.
+        Com N jogadores, ataca criaturas do lider em VP primeiro.
+        Se nao ha alvos, ataca Hunting Grounds.
         """
         me = self.player
-        opp = self._get_opponent()
+        opponents = self._get_opponents()
 
         available = [c for c in me.pack_home if not c.is_tapped]
         if not available:
             return None
 
-        # Tenta atacar criaturas do oponente primeiro
-        if opp.pack_home:
-            alvos_viaveis = [c for c in opp.pack_home
-                             if c.health_current > 0]
-            if alvos_viaveis:
-                ameacas = sorted(alvos_viaveis,
-                                 key=self.prioritizer.rate_threat,
-                                 reverse=True)
-                for alvo in ameacas:
-                    atacante = self.prioritizer.best_attacker_for(alvo, available)
-                    if atacante and self.prioritizer.pode_eliminar(atacante, alvo):
-                        self._attack(str(atacante.card_id), str(alvo.card_id))
-                        return (f'eliminate_{atacante.card_id}'
-                                f'_vs_{alvo.card_id}')
+        # Agrega alvos de todos os oponentes
+        todas_ameacas = []
+        for opp in opponents:
+            for c in opp.pack_home:
+                if c.health_current > 0:
+                    todas_ameacas.append(c)
+
+        if todas_ameacas:
+            ameacas = sorted(todas_ameacas,
+                             key=self.prioritizer.rate_threat,
+                             reverse=True)
+            for alvo in ameacas:
+                atacante = self.prioritizer.best_attacker_for(alvo, available)
+                if atacante and self.prioritizer.pode_eliminar(atacante, alvo):
+                    self._attack(str(atacante.card_id), str(alvo.card_id))
+                    return (f'eliminate_{atacante.card_id}'
+                            f'_vs_{alvo.card_id}')
 
         # Se nao ha alvos, ataca Hunting Grounds
         best = max(available, key=lambda c: c.rage)

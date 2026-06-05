@@ -861,15 +861,16 @@ def main():
 # Construir partida a partir de decks do banco de dados
 # ------------------------------------------------------------------
 
-def build_game_from_decks(deck1_id: int, deck2_id: int,
-                          seed: int = 42) -> GameState:
-    """Converte decks do banco SQLite em uma partida.
+def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
+    """Converte N decks do banco SQLite em uma partida.
 
     Args:
-        deck1_id: ID do deck do jogador 1.
-        deck2_id: ID do deck do jogador 2.
+        *deck_ids: IDs dos decks, um por jogador.
         seed: Semente aleatoria.
     """
+    if len(deck_ids) < 2:
+        raise ValueError('Precisa de pelo menos 2 decks')
+
     g_rng = random.Random(seed)
 
     from rage_web import create_app
@@ -899,7 +900,6 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                     continue
                 qtd = row.quantity
                 for _ in range(qtd):
-                    # Verifica se existe JSON de efeitos para esta carta
                     modelo_key = f'card_{card_model.id}'
                     modelo_id = modelo_key if modelo_key in CARTAS_EXEMPLO else None
 
@@ -924,24 +924,22 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                     uid += 1
         return cards
 
-    p1 = PlayerState(id='p1', name=f'Jogador 1 (Deck {deck1_id})')
-    p2 = PlayerState(id='p2', name=f'Jogador 2 (Deck {deck2_id})')
-
-    all_cards_p1 = _load_deck(deck1_id)
-    all_cards_p2 = _load_deck(deck2_id)
-
-    # Separa personagens para Pack Home, resto vai para os decks
-    combat_types = {'Combat Action', 'Combat Event', 'Equipment',
-                    'Gift', 'Victim', 'Enemy'}
     sept_types = {'Event', 'Action', 'Territory', 'Quest',
                   'Battlefield', 'Rite', 'Moot', 'Board Meeting'}
 
-    for cards, player in [(all_cards_p1, p1), (all_cards_p2, p2)]:
+    players = []
+    for idx, did in enumerate(deck_ids):
+        pid = f'p{idx+1}'
+        p = PlayerState(id=pid, name=f'Jogador {idx+1} (Deck {did})')
+        players.append(p)
+
+    for idx, did in enumerate(deck_ids):
+        cards = _load_deck(did)
         g_rng.shuffle(cards)
+        player = players[idx]
         for c in cards:
             c.owner_id = player.id
             c.controller_id = player.id
-
             if 'Character' in c.card_type:
                 c.zone = Zone.PACK_HOME
                 c.health_current = c.health
@@ -953,15 +951,26 @@ def build_game_from_decks(deck1_id: int, deck2_id: int,
                 c.zone = Zone.DECK_COMBAT
                 player.deck_combat.append(c)
 
-    g = GameState(players=[p1, p2], rng=g_rng)
+    g = GameState(players=players, rng=g_rng)
 
-    # Mao inicial (redraw)
     for p in g.players:
         p.draw_combat(p.hand_size_combat)
         if p.deck_sept:
             p.draw_sept(p.hand_size_sept)
 
     return g
+
+
+def build_game_from_decks(deck1_id: int, deck2_id: int,
+                          seed: int = 42) -> GameState:
+    """Converte dois decks do banco SQLite em uma partida (compatibilidade).
+
+    Args:
+        deck1_id: ID do deck do jogador 1.
+        deck2_id: ID do deck do jogador 2.
+        seed: Semente aleatoria.
+    """
+    return build_game_from_decks_n(deck1_id, deck2_id, seed=seed)
 
 
 if __name__ == '__main__':

@@ -21,7 +21,9 @@ def evaluator(game):
 class TestBoardEvaluator:
     def test_create(self, evaluator):
         assert evaluator.player.id == 'p1'
-        assert evaluator.opponent.id == 'p2'
+        opps = evaluator._get_opponents()
+        assert len(opps) == 1
+        assert opps[0].id == 'p2'
 
     def test_threat_score(self, evaluator):
         score = evaluator.threat_score()
