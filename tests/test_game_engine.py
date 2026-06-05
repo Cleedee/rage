@@ -1339,3 +1339,140 @@ class TestTheBadgersHeart:
         resolve_combat(game)
         # Dano deveria ser effective_rage(2) em vez de rage(5)
         assert target_creature.health_current == 4  # 6 - 2 = 4
+
+
+# ---------------------------------------------------------------------------
+# Testes: Suporte a N jogadores
+# ---------------------------------------------------------------------------
+
+class TestMultiplayer:
+    """Testes para suporte a partidas com N jogadores."""
+
+    def test_get_oponentes_retorna_todos(self):
+        """_get_oponentes retorna todos os jogadores menos o atual."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        p3 = PlayerState(id='p3', name='J3')
+        game = GameState(players=[p1, p2, p3])
+        from rage_web.game_engine.effects import ResolvedorEfeitos
+        r = ResolvedorEfeitos(game)
+        oponentes = r._get_oponentes(p1)
+        assert len(oponentes) == 2
+        assert oponentes[0].id == 'p2'
+        assert oponentes[1].id == 'p3'
+
+    def test_find_player_por_id(self):
+        """_find_player encontra jogador pelo ID em N jogadores."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        p3 = PlayerState(id='p3', name='J3')
+        game = GameState(players=[p1, p2, p3])
+        from rage_web.game_engine.effects import ResolvedorEfeitos
+        r = ResolvedorEfeitos(game)
+        assert r._find_player('p2').name == 'J2'
+        assert r._find_player('p3').name == 'J3'
+        assert r._find_player('p999') is None
+
+    def test_criatura_inimiga_escolhe_de_todos(self):
+        """criatura_inimiga agrega criaturas de todos os oponentes."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        p3 = PlayerState(id='p3', name='J3')
+        game = GameState(players=[p1, p2, p3])
+        c1 = CardInstance(card_id=1, name='C1', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            health=5, health_current=5)
+        c2 = CardInstance(card_id=2, name='C2', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            health=5, health_current=5)
+        c3 = CardInstance(card_id=3, name='C3', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p3', controller_id='p3',
+            health=5, health_current=4)  # ferida
+        p1.pack_home.append(c1)
+        p2.pack_home.append(c2)
+        p3.pack_home.append(c3)
+        from rage_web.game_engine.effects import ResolvedorEfeitos, Efeito, EfeitoTipo
+        r = ResolvedorEfeitos(game)
+        # Testa criatura_inimiga
+        efeito = Efeito(tipo=EfeitoTipo.DANO, condicao='criatura_inimiga')
+        alvo = r._resolver_alvo(efeito, c1, p1)
+        assert alvo.name in ['C2', 'C3']
+        # Testa criatura_inimiga_ferida
+        efeito2 = Efeito(tipo=EfeitoTipo.DANO, condicao='criatura_inimiga_ferida')
+        alvo2 = r._resolver_alvo(efeito2, c1, p1)
+        assert alvo2 is not None
+        assert alvo2.health_current < alvo2.health
+        # Testa qualquer_criatura
+        efeito3 = Efeito(tipo=EfeitoTipo.DANO, condicao='qualquer_criatura')
+        alvo3 = r._resolver_alvo(efeito3, c1, p1)
+        assert alvo3.name in ['C1', 'C2', 'C3']
+
+    def test_jogador_inimigo_escolhe_aleatorio(self):
+        """jogador_inimigo escolhe um oponente aleatorio."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        p3 = PlayerState(id='p3', name='J3')
+        game = GameState(players=[p1, p2, p3])
+        from rage_web.game_engine.effects import ResolvedorEfeitos, Efeito, EfeitoTipo
+        r = ResolvedorEfeitos(game)
+        efeito = Efeito(tipo=EfeitoTipo.DESCARTE, condicao='jogador_inimigo')
+        alvo = r._resolver_alvo(efeito, CardInstance(
+            card_id=-1, name='Test', card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1'
+        ), p1)
+        assert alvo.id in ['p2', 'p3']
+
+    def test_destruir_em_3_jogadores(self):
+        """_resolver_destruir encontra o dono correto em 3 jogadores."""
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo,
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        p3 = PlayerState(id='p3', name='J3')
+        game = GameState(players=[p1, p2, p3])
+        c1 = CardInstance(card_id=1, name='C1', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            health=5, health_current=5)
+        c3 = CardInstance(card_id=3, name='C3', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p3', controller_id='p3',
+            health=5, health_current=5)
+        p1.pack_home.append(c1)
+        p3.pack_home.append(c3)
+        r = ResolvedorEfeitos(game)
+        origem = CardInstance(card_id=-1, name='Test', card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1')
+        resultado = r._resolver_destruir(
+            Efeito(tipo=EfeitoTipo.DESTRUIR), origem, p1, c3
+        )
+        assert resultado
+        assert c3.zone == Zone.DISCARD_COMBAT
+        assert c3 not in p2.pack_home  # Nao foi para J2
+        assert c3 not in p1.pack_home  # Nao foi para J1
+
+    def test_jogador_inimigo_tem_mao_de_oponente(self):
+        """mao_inimiga acessa mao de um oponente aleatorio."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        p3 = PlayerState(id='p3', name='J3')
+        game = GameState(players=[p1, p2, p3])
+        origem = CardInstance(card_id=-1, name='Test', card_type='Gift',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1')
+        p2.hand.append(CardInstance(
+            card_id=10, name='Card J2', card_type='Equipment',
+            zone=Zone.HAND, owner_id='p2', controller_id='p2'
+        ))
+        p3.hand.append(CardInstance(
+            card_id=11, name='Card J3', card_type='Equipment',
+            zone=Zone.HAND, owner_id='p3', controller_id='p3'
+        ))
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo,
+        )
+        r = ResolvedorEfeitos(game)
+        efeito = Efeito(tipo=EfeitoTipo.DESCARTE, condicao='mao_inimiga')
+        alvo = r._resolver_alvo(efeito, origem, p1)
+        # mao_inimiga retorna a mao de um oponente
+        assert alvo is not None
+        assert len(alvo) >= 1
+        assert alvo is not p1.hand  # Nao e a propria mao

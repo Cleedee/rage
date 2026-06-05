@@ -220,41 +220,78 @@ class ResolvedorEfeitos:
 
     def _resolver_alvo(self, efeito: Efeito, origem: CardInstance,
                        jogador: PlayerState) -> Any:
-        """Resolve o alvo do efeito baseado na condicao."""
+        """Resolve o alvo do efeito baseado na condicao.
+
+        Suporta partidas com N jogadores: alvos inimigos sao
+        agregados de todos os oponentes.
+        """
         condicao = efeito.condicao or efeito.alvo
         if not condicao:
             return jogador  # Default: proprio jogador
 
-        oponente = self._get_oponente(jogador)
+        oponentes = self._get_oponentes(jogador)
+
+        def _criaturas_inimigas() -> list[CardInstance]:
+            """Agrega criaturas de todos os oponentes."""
+            resultado = []
+            for op in oponentes:
+                resultado.extend(op.pack_home)
+            return resultado
+
+        def _criaturas_inimigas_feridas() -> list[CardInstance]:
+            """Agrega criaturas feridas de todos os oponentes."""
+            resultado = []
+            for op in oponentes:
+                for c in op.pack_home:
+                    if c.health_current < c.health:
+                        resultado.append(c)
+            return resultado
+
+        def _umbra_inimiga() -> list[CardInstance]:
+            """Agrega criaturas na Umbra de todos os oponentes."""
+            resultado = []
+            for op in oponentes:
+                resultado.extend(op.umbra)
+            return resultado
+
+        def _todas_criaturas() -> list[CardInstance]:
+            """Agrega criaturas de todos os jogadores."""
+            resultado = list(jogador.pack_home)
+            for op in oponentes:
+                resultado.extend(op.pack_home)
+            return resultado
 
         resolvedores_alvo = {
             'criatura_inimiga': lambda: self._escolher_criatura(
-                oponente.pack_home
+                _criaturas_inimigas()
             ),
             'criatura_aliada': lambda: self._escolher_criatura(
                 jogador.pack_home
             ),
             'qualquer_criatura': lambda: self._escolher_criatura(
-                jogador.pack_home + oponente.pack_home
+                _todas_criaturas()
             ),
             'criatura_inimiga_ferida': lambda: self._escolher_criatura(
-                [c for c in oponente.pack_home
-                 if c.health_current < c.health]
+                _criaturas_inimigas_feridas()
             ),
             'criatura_aliada_ferida': lambda: self._escolher_criatura(
                 [c for c in jogador.pack_home
                  if c.health_current < c.health]
             ),
-            'jogador_inimigo': lambda: oponente,
+            'jogador_inimigo': lambda: self._escolher_jogador(
+                oponentes
+            ),
             'jogador_aliado': lambda: jogador,
-            'mao_inimiga': lambda: oponente.hand,
+            'mao_inimiga': lambda: self._escolher_jogador(
+                oponentes
+            ).hand,
             'mao_aliada': lambda: jogador.hand,
             'hunting_grounds': lambda: 'hg',
             'umbra_aliada': lambda: self._escolher_criatura(
                 jogador.umbra
             ),
             'umbra_inimiga': lambda: self._escolher_criatura(
-                oponente.umbra
+                _umbra_inimiga()
             ),
         }
 
@@ -263,6 +300,13 @@ class ResolvedorEfeitos:
             return resolvedor()
         return None
 
+    def _escolher_jogador(self, jogadores: list[PlayerState]
+                           ) -> Optional[PlayerState]:
+        """Escolhe um jogador aleatorio da lista."""
+        if not jogadores:
+            return None
+        return self.rng.choice(jogadores)
+
     def _escolher_criatura(self, criaturas: list[CardInstance
                            ]) -> Optional[CardInstance]:
         """Escolhe uma criatura da lista."""
@@ -270,11 +314,28 @@ class ResolvedorEfeitos:
             return None
         return self.rng.choice(criaturas)
 
-    def _get_oponente(self, jogador: PlayerState) -> PlayerState:
+    def _get_oponentes(self, jogador: PlayerState) -> list[PlayerState]:
+        """Retorna lista de todos os jogadores que nao sao o atual.
+
+        Suporta partidas com N jogadores.
+        """
+        return [p for p in self.game.players if p.id != jogador.id]
+
+    def _find_player(self, player_id: str) -> Optional[PlayerState]:
+        """Encontra um jogador pelo ID."""
         for p in self.game.players:
-            if p.id != jogador.id:
+            if p.id == player_id:
                 return p
-        return jogador  # fallback
+        return None
+
+    def _get_oponente(self, jogador: PlayerState) -> PlayerState:
+        """[DEPRECATED] Retorna o primeiro oponente.
+
+        Mantido para compatibilidade, mas prefira _get_oponentes().
+        Para 2 jogadores, equivale ao unico oponente.
+        """
+        oponentes = self._get_oponentes(jogador)
+        return oponentes[0] if oponentes else jogador
 
     # ------------------------------------------------------------------
     # Resolvedores individuais
@@ -314,21 +375,31 @@ class ResolvedorEfeitos:
 
     def _resolver_destruir(self, efeito: Efeito, origem: CardInstance,
                           jogador: PlayerState, alvo) -> bool:
-        """Remove uma criatura do jogo."""
+        """Remove uma criatura do jogo.
+
+        Suporta N jogadores: encontra o dono da criatura pelo owner_id.
+        """
         if isinstance(alvo, CardInstance):
             # Descarta cartas anexadas (regra 6.4.2)
-            dono_alvo = self._get_oponente(jogador)
-            if alvo in jogador.pack_home:
-                dono_alvo = jogador
-            elif alvo in self._get_oponente(jogador).pack_home:
-                dono_alvo = self._get_oponente(jogador)
-            descartar_anexos(alvo, dono_alvo)
-            # Move para o descarte
+            dono_alvo = self._find_player(alvo.owner_id)
+            if dono_alvo:
+                descartar_anexos(alvo, dono_alvo)
+            # Remove da zona atual
             alvo.zone = Zone.DISCARD_COMBAT
             if alvo in jogador.pack_home:
                 jogador.pack_home.remove(alvo)
-            elif alvo in self._get_oponente(jogador).pack_home:
-                self._get_oponente(jogador).pack_home.remove(alvo)
+            else:
+                # Procura em todos os jogadores
+                for op in self._get_oponentes(jogador):
+                    if alvo in op.pack_home:
+                        op.pack_home.remove(alvo)
+                        break
+                    if alvo in op.hunting_grounds:
+                        op.hunting_grounds.remove(alvo)
+                        break
+                    if alvo in op.umbra:
+                        op.umbra.remove(alvo)
+                        break
             self.game.add_log(f'{alvo.name} foi destruido')
             return True
         return False
@@ -512,15 +583,13 @@ class ResolvedorEfeitos:
         if not nova_zona:
             return False
 
-        # Remove da lista de origem (nos dois jogadores)
-        oponente = self._get_oponente(jogador)
-        for lista in (jogador.pack_home, jogador.hunting_grounds,
-                      jogador.umbra, jogador.hand,
-                      oponente.pack_home, oponente.hunting_grounds,
-                      oponente.umbra, oponente.hand):
-            if alvo in lista:
-                lista.remove(alvo)
-                break
+        # Remove da lista de origem (todos os jogadores)
+        for p in self.game.players:
+            for lista in (p.pack_home, p.hunting_grounds,
+                          p.umbra, p.hand):
+                if alvo in lista:
+                    lista.remove(alvo)
+                    break
 
         # Adiciona na lista de destino
         map_destino = {
@@ -587,14 +656,26 @@ class ResolvedorEfeitos:
 
     def _resolver_fugir(self, efeito: Efeito, origem: CardInstance,
                         jogador: PlayerState, alvo) -> bool:
-        """Forca uma criatura a fugir do combate."""
+        """Forca uma criatura a fugir do combate.
+
+        Suporta N jogadores: encontra o dono da criatura pelo owner_id.
+        """
         if isinstance(alvo, CardInstance):
+            dono_alvo = self._find_player(alvo.owner_id)
             alvo.zone = Zone.DISCARD_COMBAT
-            if alvo in jogador.pack_home:
-                jogador.pack_home.remove(alvo)
-            elif alvo in self._get_oponente(jogador).pack_home:
-                self._get_oponente(jogador).pack_home.remove(alvo)
-            jogador.discard_combat.append(alvo)
+            # Remove da zona atual (procura em todos os jogadores)
+            for p in self.game.players:
+                for zone_list in (p.pack_home, p.hunting_grounds,
+                                  p.umbra):
+                    if alvo in zone_list:
+                        zone_list.remove(alvo)
+                        break
+            # Adiciona ao descarte do dono
+            if dono_alvo:
+                dono_alvo.discard_combat.append(alvo)
+            else:
+                # Fallback: descarte do jogador atual
+                jogador.discard_combat.append(alvo)
             self.game.add_log(f'{alvo.name} foi forcado a fugir do combate')
             return True
         return False
@@ -603,12 +684,20 @@ class ResolvedorEfeitos:
                                          origem: CardInstance,
                                          jogador: PlayerState,
                                          alvo) -> bool:
-        """Faz o oponente descartar metade da mao (arredondado para cima).
+        """Faz um oponente descartar metade da mao (arredondado para cima).
 
         Usado por cartas como Savage Beatdown quando danificam
         uma criatura frenzied.
+        Suporta N jogadores: se alvo for um PlayerState, usa ele;
+        senao escolhe um oponente aleatorio.
         """
-        oponente = self._get_oponente(jogador)
+        if isinstance(alvo, PlayerState):
+            oponente = alvo
+        else:
+            oponentes = self._get_oponentes(jogador)
+            if not oponentes:
+                return False
+            oponente = self._escolher_jogador(oponentes)
         mao = oponente.hand
         if not mao:
             self.game.add_log(f'{oponente.name} nao tem cartas na mao')
