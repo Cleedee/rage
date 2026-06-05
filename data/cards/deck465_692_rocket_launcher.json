@@ -1,0 +1,33 @@
+{
+    "id": "card_692",
+    "nome": "Rocket Launcher",
+    "tipo": "Equipment",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "(Homid Form)",
+    "keyword": "Non-Fetish - Weapon",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Lanca-foguetes",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "rage_max": 12,
+                    "descarte_apos_uso": true
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Firearm. 1 Combat Action ate Rage 12. Descartar apos uso."
+    }
+}

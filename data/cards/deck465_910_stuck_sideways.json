@@ -1,0 +1,32 @@
+{
+    "id": "card_910",
+    "nome": "Stuck Sideways",
+    "tipo": "Event",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Preso de lado",
+            "efeitos": [
+                {
+                    "tipo": "tapar",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "duracao": "ate_redraw"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Seleciona personagem step sideways. Preso ate Redraw. Atacavel por qualquer alpha."
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "id": "card_1440",
+    "nome": "Melvin Spivey",
+    "tipo": "Character - Wyrm",
+    "renown": 5,
+    "atributos": {
+        "rage": 3,
+        "gnosis": 4,
+        "health": 4
+    },
+    "requires": "",
+    "keyword": "Pentex Executive - Eater-of-Souls - Homid - Wyrm - Male",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "First Team 28",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Auto pack attack/defend FT28. Compra 3 combat cards. Pode equipar 2 weapons."
+    }
+}

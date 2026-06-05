@@ -160,7 +160,7 @@ def read_card(id):
     form.id.data = card.id
     return render_template('cards/edit.html', form=form, card=card)
 
-@bp.post('/<id>/delete')
+@bp.route('/<id>/delete', methods=['GET', 'POST'])
 def delete_card(id):
     card = rep.find_card_by_id(id)
     if card is None:

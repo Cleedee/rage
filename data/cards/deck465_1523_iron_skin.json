@@ -1,0 +1,25 @@
+{
+    "id": "card_1523",
+    "nome": "Iron Skin",
+    "tipo": "Combat Action",
+    "renown": 0,
+    "atributos": {
+        "rage": 1,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "(Rokea) - (Ship)",
+    "keyword": "Block - Instinctive",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Pele de ferro",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Instinctive. Bloqueia ate 3 de 1 ataque. Comportamento no sistema de combate."
+    }
+}

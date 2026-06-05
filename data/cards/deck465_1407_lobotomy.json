@@ -1,0 +1,37 @@
+{
+    "id": "card_1407",
+    "nome": "Lobotomy",
+    "tipo": "Combat Action",
+    "renown": 0,
+    "atributos": {
+        "rage": 4,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "3",
+    "modos": [
+        {
+            "descricao": "Lobotomia",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "alvo": "inimigo",
+                    "quantidade": 3
+                },
+                {
+                    "tipo": "modificar_gnosis",
+                    "alvo": "inimigo",
+                    "quantidade": -999,
+                    "duracao": "enquanto_ferido"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Gnosis=0 enquanto ferido."
+    }
+}

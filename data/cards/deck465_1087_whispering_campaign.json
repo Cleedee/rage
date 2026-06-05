@@ -1,0 +1,31 @@
+{
+    "id": "card_1087",
+    "nome": "Whispering Campaign",
+    "tipo": "Gift",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 5,
+        "health": 0
+    },
+    "requires": "Pentex Executive - Eater-of-Souls - Government Caste",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Campanha de rumores",
+            "efeitos": [
+                {
+                    "tipo": "combar_acao",
+                    "alvo": "inimigo",
+                    "quantidade": 0
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Alvo nao pode pack action. Cancelado se matar alguem solo."
+    }
+}

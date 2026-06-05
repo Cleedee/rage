@@ -1,0 +1,31 @@
+{
+    "id": "card_315",
+    "nome": "Entrail Rend",
+    "tipo": "Combat Action",
+    "renown": 0,
+    "atributos": {
+        "rage": 10,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "8",
+    "modos": [
+        {
+            "descricao": "Rasgar entranhas",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "alvo": "inimigo",
+                    "quantidade": 8
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Dano massivo."
+    }
+}

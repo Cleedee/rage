@@ -1,0 +1,31 @@
+{
+    "id": "card_1023",
+    "nome": "Psychotic Hallucinations",
+    "tipo": "Gift",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 5,
+        "health": 0
+    },
+    "requires": "Odyssey Fomori - 7th Generation (Medical Caste only)",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Alucinacoes psicoticas",
+            "efeitos": [
+                {
+                    "tipo": "tapar",
+                    "alvo": "inimigo",
+                    "quantidade": 0
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Proxima Combat Action do alvo e bluff. Descarte apos uso."
+    }
+}

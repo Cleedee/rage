@@ -80,7 +80,7 @@ def save():
     return render_template('decks/deck.html', form=form)
 
 
-@bp.post('/<id>/delete')
+@bp.route('/<id>/delete', methods=['GET', 'POST'])
 def delete_deck(id):
     deck = rep.find_deck_by_id(id)
     if deck is None:

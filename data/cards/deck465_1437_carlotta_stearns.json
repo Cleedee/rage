@@ -1,0 +1,25 @@
+{
+    "id": "card_1437",
+    "nome": "Carlotta Stearns",
+    "tipo": "Character - Wyrm",
+    "renown": 4,
+    "atributos": {
+        "rage": 1,
+        "gnosis": 6,
+        "health": 5
+    },
+    "requires": "",
+    "keyword": "Pentex - Odyssey Fomori - Homid - Eater-of-Souls - Wyrm - Female",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "First Team 28",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Oponentes nao usam Firearms vs ela. Auto pack defend FT28. Compra sept card ao pack defender."
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "id": "card_579",
+    "nome": "Caern of Rytthiku",
+    "tipo": "Caern",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 3,
+        "health": 0
+    },
+    "requires": "Eater-of-Souls",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Caern de Rytthiku",
+            "efeitos": [
+                {
+                    "tipo": "combar_acao",
+                    "alvo": "self",
+                    "quantidade": 0
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Pack pode atacar Enemies (nao so Victims) no HG por VP."
+    }
+}

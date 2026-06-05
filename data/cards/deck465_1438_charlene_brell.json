@@ -1,0 +1,25 @@
+{
+    "id": "card_1438",
+    "nome": "Charlene Brell",
+    "tipo": "Character - Wyrm",
+    "renown": 5,
+    "atributos": {
+        "rage": 2,
+        "gnosis": 5,
+        "health": 2
+    },
+    "requires": "",
+    "keyword": "Pentex - Iliad Fomori - Homid - Beast-of-War - Wyrm - Female",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "First Team 28",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 465,
+        "precisa_revisao": false,
+        "nota_revisao": "Auto pack attack/defend FT28. Ao entrar em combate, compra 1 combat card por FT28 com firearm."
+    }
+}

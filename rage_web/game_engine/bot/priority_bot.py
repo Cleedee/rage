@@ -119,13 +119,42 @@ class PriorityBot:
             self._pass_turn()
             return 'pass_resource_limit'
 
+        # 1. Prioridade: jogar personagens primeiro
+        for i, card in enumerate(me.hand):
+            if card.card_type == 'Character':
+                if self._pode_pagar_custos(card):
+                    self._play_card(i)
+                    self._cards_played_this_turn += 1
+                    return f'play_character_{card.card_id}'
+
+        # 2. Depois, cartas de efeito nao-combate (Gifts, Events, Actions, etc.)
+        #    Pula cartas com efeitos stub que o bot nao sabe usar
+        TIPOS_STUB = {'quest_check', 'combar_acao'}
         for i, card in enumerate(me.hand):
             if card.modelo_id and card.card_type not in (
                     'Combat Action', 'Combat Event'):
                 if self._pode_pagar_custos(card):
-                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    # Verifica se a carta tem efeito util
+                    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        modo = modelo.modos[0]
+                        if modo.efeitos:
+                            # Pula efeitos stub que o bot nao sabe usar
+                            tem_stub = any(
+                                e.tipo in TIPOS_STUB for e in modo.efeitos)
+                            if not tem_stub:
+                                modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                                self._cards_played_this_turn += 1
+                                return self._usar_carta_efeito(i, modo_idx, card)
+
+        # 3. Tenta jogar Ally, Equipment, Territory
+        for i, card in enumerate(me.hand):
+            if card.card_type in ('Ally', 'Equipment', 'Territory', 'Caern'):
+                if self._pode_pagar_custos(card):
+                    self._play_card(i)
                     self._cards_played_this_turn += 1
-                    return self._usar_carta_efeito(i, modo_idx, card)
+                    return f'play_{card.card_type.lower()}_{card.card_id}'
 
         self._pass_turn()
         return 'pass_resource'
@@ -660,30 +689,38 @@ class PriorityBot:
     def _try_develop_board(self) -> Optional[str]:
         """Prioridade 3: Desenvolver mesa.
 
-        Usa cartas de efeito, depois joga personagens.
+        Joga personagens primeiro, depois efeitos viaveis.
         """
         me = self.player
 
         if not me.hand:
             return None
 
-        # 1. Usa cartas com efeitos (modelo_id) prioritariamente
-        for i, card in enumerate(me.hand):
-            if card.modelo_id and self._pode_pagar_custos(card):
-                modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                return self._usar_carta_efeito(i, modo_idx, card)
-
-        # 2. Procura por personagens na mao
+        # 1. Joga personagens
         for i, card in enumerate(me.hand):
             if card.card_type == 'Character':
                 self._play_card(i)
                 return f'play_character_{card.card_id}'
 
-        # 3. Joga a primeira carta da mao
-        if me.hand:
-            card = me.hand[0]
-            self._play_card(0)
-            return f'play_{card.card_id}'
+        # 2. Joga Ally, Equipment, Territory, Caern
+        for i, card in enumerate(me.hand):
+            if card.card_type in ('Ally', 'Equipment', 'Territory', 'Caern'):
+                self._play_card(i)
+                return f'play_{card.card_type.lower()}_{card.card_id}'
+
+        # 3. Efeitos nao-stub
+        TIPOS_STUB = {'quest_check', 'combar_acao'}
+        for i, card in enumerate(me.hand):
+            if card.modelo_id and self._pode_pagar_custos(card):
+                from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                if modelo and modelo.modos and modelo.modos[0].efeitos:
+                    tem_stub = any(e.tipo in TIPOS_STUB
+                                   for e in modelo.modos[0].efeitos)
+                    if not tem_stub:
+                        modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                        return self._usar_carta_efeito(i, modo_idx, card)
+
         return None
 
     def _escolher_melhor_modo(self, modelo_id: str) -> int:
