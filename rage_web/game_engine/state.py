@@ -240,6 +240,9 @@ class PlayerState:
     # Recrutamento: tipos de ally que este jogador pode recrutar
     can_recruit: list[str] = field(default_factory=list)
 
+    # Gerador aleatorio (para reembaralhar decks)
+    rng: random.Random = field(default_factory=random.Random)
+
     @property
     def caerns_no_hunting_grounds(self) -> list[CardInstance]:
         """Retorna lista de Caerns no Hunting Grounds do jogador."""
@@ -252,14 +255,28 @@ class PlayerState:
                 + len(self.umbra))
 
     def draw_combat(self, count: int = 1) -> list[CardInstance]:
-        """Compra cartas do deck de combate."""
+        """Compra cartas do deck de combate.
+
+        Regra (04-cartas-em-detalhe.md:685):
+        Se o combat deck acabar, reembaralha o descarte de combate
+        num novo combat deck, e continua comprando.
+        Se nao houver cartas nem no deck nem no descarte,
+        joga com a mao atual.
+        """
         drawn = []
         for _ in range(count):
-            if self.deck_combat:
-                card = self.deck_combat.pop(0)
-                card.zone = Zone.HAND
-                self.hand.append(card)
-                drawn.append(card)
+            if not self.deck_combat:
+                # Tenta reembaralhar descarte
+                if self.discard_combat:
+                    self.deck_combat = list(self.discard_combat)
+                    self.discard_combat.clear()
+                    self.rng.shuffle(self.deck_combat)
+                else:
+                    break  # Sem cartas disponiveis
+            card = self.deck_combat.pop(0)
+            card.zone = Zone.HAND
+            self.hand.append(card)
+            drawn.append(card)
         return drawn
 
     def draw_sept(self, count: int = 1) -> list[CardInstance]:
@@ -635,6 +652,11 @@ class GameState:
 
     # Gerador de numeros aleatorios com seed (reprodutibilidade)
     rng: random.Random = field(default_factory=random.Random)
+
+    def __post_init__(self):
+        """Propaga o RNG do jogo para todos os jogadores."""
+        for p in self.players:
+            p.rng = self.rng
 
     @property
     def current_player(self) -> PlayerState:
