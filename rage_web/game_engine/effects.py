@@ -1417,12 +1417,14 @@ class ResolvedorEfeitos:
     # ──────────────────────────────────────────────
     def _resolver_olhar_topo_deck(self, efeito: Efeito,
                                    origem: CardInstance,
-                                   jogador: PlayerState) -> bool:
+                                   jogador: PlayerState,
+                                   alvo=None) -> bool:
         """Olha o topo do combat deck do alvo.
 
         Termite Mounds (780): olha topo 3 do combat deck de um oponente.
         """
-        alvo = self._resolver_alvo(efeito, origem, jogador)
+        if alvo is None:
+            alvo = self._resolver_alvo(efeito, origem, jogador)
         if not alvo:
             return False
         alvo_jogador = alvo if isinstance(alvo, PlayerState) else self._find_player(alvo)
@@ -1444,12 +1446,14 @@ class ResolvedorEfeitos:
     # ──────────────────────────────────────────────
     def _resolver_descartar_mao_combate(self, efeito: Efeito,
                                          origem: CardInstance,
-                                         jogador: PlayerState) -> bool:
+                                         jogador: PlayerState,
+                                         alvo=None) -> bool:
         """Alvo descarta toda a mao de combate.
 
         Dust Storm (1360): descarta combate hand.
         """
-        alvo = self._resolver_alvo(efeito, origem, jogador)
+        if alvo is None:
+            alvo = self._resolver_alvo(efeito, origem, jogador)
         if not alvo:
             return False
         alvo_jogador = alvo if isinstance(alvo, PlayerState) else self._find_player(alvo)
@@ -1474,7 +1478,8 @@ class ResolvedorEfeitos:
     # ──────────────────────────────────────────────
     def _resolver_registrar_trigger_combate(self, efeito: Efeito,
                                              origem: CardInstance,
-                                             jogador: PlayerState) -> bool:
+                                             jogador: PlayerState,
+                                             alvo=None) -> bool:
         """Registra um trigger que acontece durante o combate.
 
         Tzinzie (1348): no inicio do combate, nomeia uma Combat Action.
