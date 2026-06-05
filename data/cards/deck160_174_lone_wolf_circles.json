@@ -26,9 +26,10 @@
     "health": 5,
     "precisa_revisao": false,
     "notas": [
-      "Cancelar propria acao + esquivar requer integracao no fluxo de combate apos reveal",
+      "Cancelar propria acao + esquivar implementado via lone_wolf_circles_dodge()",
+      "Chamado apos reveal_all() no primeiro round de combate",
       "Nao pode participar de Pack Actions: flag 'sem_pack_actions'",
-      "Efeito de anular usa mecanismo existente, mas timing especifico (apos reveal, 1o round)"
+      "Integracao com CLI/API: chamar funcao apos REVEAL"
     ]
   }
 }

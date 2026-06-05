@@ -10,7 +10,7 @@ from rage_web.game_engine.combat_queue import (
     can_feint, resolve_combat, end_combat, get_declaration_summary,
     get_combatants, _find_criatura, _validar_tail_lash,
     _validar_tail_lash_bonus, COMBAT_ACTION_VALIDATORS,
-    _mesmo_lado_gauntlet,
+    _mesmo_lado_gauntlet, lone_wolf_circles_dodge,
 )
 from rage_web.game_engine.effects import (
     _validar_condicao_uso, _condicao_rokea_mokole_nao_homid,
@@ -1476,3 +1476,129 @@ class TestMultiplayer:
         assert alvo is not None
         assert len(alvo) >= 1
         assert alvo is not p1.hand  # Nao e a propria mao
+
+
+# ---------------------------------------------------------------------------
+# Testes: Efeitos implementados (Elethoi, Lone Wolf, Fog)
+# ---------------------------------------------------------------------------
+
+class TestElethoiImmunity:
+    """Testes para imunidade do Elethoi (so Gifts/Umbral)."""
+
+    def test_imune_fora_umbra_bloqueia_dano(self):
+        """Criatura com 'imune_fora_umbra' nao sofre dano de fora da Umbra."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        atacante = CardInstance(card_id=10, name='Atacante',
+            card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, health=6, health_current=6)
+        elethoi = CardInstance(card_id=1341, name='Elethoi',
+            card_type='Enemy',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, health=7, health_current=7,
+            restricoes=['imune_fora_umbra'])
+        p1.pack_home.append(atacante)
+        p2.pack_home.append(elethoi)
+        a_id, e_id = '10', '1341'
+        start_combat(game, [a_id], [e_id])
+        declare_action(game, a_id, 'strike')
+        declare_action(game, e_id, 'strike')
+        resolve_combat(game)
+        # Elethoi nao sofreu dano (atacante em Pack Home, nao Umbra)
+        assert elethoi.health_current == 7
+
+    def test_ataque_umbral_afeta_imune(self):
+        """Criatura com 'imune_fora_umbra' sofre dano de ataque umbral
+        (ambos no mesmo lado do Gauntlet)."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        atacante = CardInstance(card_id=20, name='Atacante Umbral',
+            card_type='Character',
+            zone=Zone.UMBRA, owner_id='p1', controller_id='p1',
+            rage=3, health=6, health_current=6)
+        elethoi = CardInstance(card_id=1341, name='Elethoi',
+            card_type='Enemy',
+            zone=Zone.UMBRA, owner_id='p2', controller_id='p2',
+            rage=3, health=7, health_current=7,
+            restricoes=['imune_fora_umbra'])
+        p1.umbra.append(atacante)
+        p2.umbra.append(elethoi)
+        a_id, e_id = '20', '1341'
+        start_combat(game, [a_id], [e_id])
+        declare_action(game, a_id, 'strike')
+        declare_action(game, e_id, 'strike')
+        resolve_combat(game)
+        # Elethoi sofreu dano do ataque umbral (ambos na Umbra)
+        assert elethoi.health_current < 7
+
+
+class TestLoneWolfDodge:
+    """Testes para Lone Wolf Circles dodge."""
+
+    def test_lone_wolf_dodge_cancela_ataque(self):
+        """Lone Wolf Circles pode cancelar propria acao e esquivar."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        lone = CardInstance(card_id=174, name='Lone Wolf Circles',
+            card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=3, health=5, health_current=5)
+        inimigo = CardInstance(card_id=30, name='Inimigo',
+            card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=4, health=6, health_current=6)
+        p1.pack_home.append(lone)
+        p2.pack_home.append(inimigo)
+        lone_id, ini_id = '174', '30'
+        start_combat(game, [ini_id], [lone_id])
+        declare_action(game, ini_id, 'strike')
+        declare_action(game, lone_id, 'strike')
+        reveal_all(game)
+        # Lone cancela sua acao e esquiva do inimigo
+        result = lone_wolf_circles_dodge(game, lone_id, ini_id)
+        assert result
+        # Acao do Lone foi alterada para 'dodge'
+        assert game.combat.declarations.get(lone_id) == 'dodge'
+        resolve_combat(game)
+        # Lone nao sofreu dano (esquivou)
+        assert lone.health_current == 5
+
+
+class TestFogCancel:
+    """Testes para Fog cancelamento."""
+
+    def test_fog_cancela_anuncio(self):
+        """Fog (anular) cancela o anuncio atual no anunciador."""
+        from rage_web.game_engine.anunciador import EfeitoAnunciado
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        # Cria um anuncio pendente
+        efeito = EfeitoAnunciado(
+            id='test', descricao='Test Event',
+            jogador_id='p2',
+            resolver=lambda g: ['resolvido']
+        )
+        game.anunciador.anunciar(efeito)
+        assert game.anunciador.tem_anuncio_ativo
+        # Aplica Fog (anular)
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo, Zone,
+        )
+        fog = CardInstance(card_id=1355, name='Fog',
+            card_type='Event',
+            zone=Zone.HAND, owner_id='p1', controller_id='p1')
+        p1.hand.append(fog)
+        r = ResolvedorEfeitos(game)
+        result = r._resolver_anular(
+            Efeito(tipo=EfeitoTipo.ANULAR), fog, p1, None
+        )
+        assert result
+        # Anuncio foi cancelado
+        assert not game.anunciador.tem_anuncio_ativo
+        # Fog foi descartado
+        assert fog.zone == Zone.DISCARD_COMBAT

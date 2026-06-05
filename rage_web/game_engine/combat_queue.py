@@ -525,6 +525,15 @@ def resolve_combat(game: GameState) -> bool:
         if not origem_card or not alvo_card:
             return
 
+        # Verifica imunidade (ex: Elethoi so e afetado por Gift/Umbral)
+        if 'imune_fora_umbra' in alvo_card.restricoes:
+            if origem_card.zone != Zone.UMBRA:
+                game.add_log(
+                    f'  {alvo_card.name} e imune a ataques nao-umbrais. '
+                    f'{origem_card.name} nao causou dano.'
+                )
+                return
+
         acao_origem = game.combat.declarations.get(origem_id, 'strike')
         acao_alvo = game.combat.declarations.get(alvo_id, 'strike')
 
@@ -695,6 +704,56 @@ def verificar_vitoria(game: GameState) -> Optional[str]:
     if vencedores[0].victory_points == vencedores[1].victory_points:
         return None
     return vencedores[0].id
+
+
+def lone_wolf_circles_dodge(game: GameState, lone_card_id: str,
+                              dodge_target_id: str) -> bool:
+    """Lone Wolf Circles cancela propria acao e esquiva de um ataque.
+
+    Regra: apos revelar no primeiro round, Lone pode cancelar sua
+    acao de combate e esquivar de uma acao de combate contra ele.
+    Deve ser chamado apos reveal_all() e antes de resolve_combat().
+
+    Args:
+        game: Estado da partida.
+        lone_card_id: ID da instancia de Lone Wolf Circles.
+        dodge_target_id: ID da criatura cuja acao Lone quer esquivar.
+
+    Returns:
+        True se o dodge foi aplicado.
+    """
+    if not game.combat.is_active:
+        return False
+    if game.combat.step != 'reveal':
+        return False
+
+    lone = _find_card(game, lone_card_id)
+    if not lone or lone.card_id != 174:  # 174 = Lone Wolf Circles
+        return False
+
+    alvo = _find_card(game, dodge_target_id)
+    if not alvo:
+        return False
+
+    # Cancela a acao do Lone (define como 'dodge')
+    game.combat.declarations[lone_card_id] = 'dodge'
+    game.add_log(
+        f'{lone.name} cancelou sua acao e esquivou (Lone Wolf Circles)'
+    )
+
+    # Esquiva da acao do alvo: se for ofensiva, muda pra 'dodge' tbm
+    # (assim o processamento ve que lone 'dodged' e nao aplica dano)
+    dodge_acao = game.combat.declarations.get(dodge_target_id, '')
+    if dodge_acao in ACOES_OFENSIVAS:
+        game.add_log(
+            f'{lone.name} esquivou do ataque de {alvo.name}'
+        )
+    else:
+        game.add_log(
+            f'{lone.name} esquivou (acao defensiva contra {alvo.name})'
+        )
+
+    return True
 
 
 def end_combat(game: GameState) -> bool:

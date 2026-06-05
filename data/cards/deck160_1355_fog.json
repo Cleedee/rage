@@ -27,7 +27,8 @@
     "notas": [
       "Efeito passivo 'oponentes nao usam Combat Events contra nao-alfa' nao implementado",
       "Para implementar passiva: verificar card_type=='Combat Event' no declare_action",
-      "Cancelamento via 'anular' existente, mas requer integracao com sistema de anuncio",
+      "Cancelamento integrado: _resolver_anular chama anunciador.anular()",
+      "Cartas do tipo Event sao descartadas apos anular",
       "Pack Totem em jogo: Fog fica no Hunting Grounds como permanente",
       "Sistema de permanentes/passivas continuas a ser implementado"
     ]

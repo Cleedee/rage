@@ -22,7 +22,7 @@
       "So afetado por Gifts e ataques Umbrais (imune a ataques normais)",
       "Pode usar Combat Actions Umbrais contra oponentes fora da Umbra",
       "Nao pode ser vinculado/controlado (imune a certos efeitos)",
-      "Imunidade requer validacao em _processar_ataque e aplicacao de efeitos",
+      "Imunidade implementada via 'imune_fora_umbra' restricao em _processar_ataque",
       "Uso de acoes umbrais contra nao-umbra requer logica especial em combate"
     ]
   }

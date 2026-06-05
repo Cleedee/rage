@@ -650,8 +650,28 @@ class ResolvedorEfeitos:
 
     def _resolver_anular(self, efeito: Efeito, origem: CardInstance,
                         jogador: PlayerState, alvo) -> bool:
-        """Anula uma acao ou ataque."""
-        self.game.add_log(f'{origem.name} anulou uma acao')
+        """Anula uma acao ou ataque.
+
+        Integra com o anunciador para cancelar o efeito anunciado
+        atualmente. Se for um Combat Event, o efeito e anulado e
+        a carta de origem (Fog) e descartada.
+        """
+        anunciador = self.game.anunciador
+        if anunciador and anunciador.tem_anuncio_ativo:
+            # Verifica se o anuncio atual e um Combat Event
+            anuncio = anunciador.anuncio_atual
+            anunciador.anular(self.game, jogador.id)
+            self.game.add_log(
+                f'{origem.name} anulou {anuncio.descricao} '
+                f'de {anuncio.jogador_id}'
+            )
+            # Descarta a carta de origem (Fog) se for um Event
+            if origem.card_type == 'Event':
+                origem.zone = Zone.DISCARD_COMBAT
+                jogador.discard_combat.append(origem)
+                self.game.add_log(f'{origem.name} foi descartado')
+        else:
+            self.game.add_log(f'{origem.name} anulou uma acao')
         return True
 
     def _resolver_fugir(self, efeito: Efeito, origem: CardInstance,
