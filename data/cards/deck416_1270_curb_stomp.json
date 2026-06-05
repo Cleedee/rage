@@ -1,0 +1,38 @@
+{
+    "id": "card_1270",
+    "nome": "Curb Stomp",
+    "tipo": "Combat Action",
+    "modos": [
+        {
+            "descricao": "Causar 3 de dano + nao vota em Juntas",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "quantidade": 3,
+                    "condicao_alvo": "criatura_inimiga"
+                },
+                {
+                    "tipo": "restringir",
+                    "quantidade": 1,
+                    "condicao_alvo": "criatura_inimiga",
+                    "params": {
+                        "restricao": "nao_vota_juntas_ate_curar"
+                    }
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 1270,
+        "texto_original": "A character wounded by a Curb Stomp cannot vote in Juntas until this wound is healed.",
+        "keywords": "",
+        "damage": "3",
+        "rage": 4,
+        "gnosis": 0,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false
+    }
+}

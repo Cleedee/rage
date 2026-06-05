@@ -1,0 +1,30 @@
+{
+    "id": "card_317",
+    "nome": "Evasion",
+    "tipo": "Combat Action",
+    "modos": [
+        {
+            "descricao": "Esquivar de todos ataques",
+            "efeitos": [
+                {
+                    "tipo": "fugir",
+                    "quantidade": 99,
+                    "condicao_alvo": "criatura_aliada"
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 317,
+        "texto_original": "Avoids (dodges) all attacks during the current combat round.",
+        "keywords": "Dodge",
+        "damage": "",
+        "rage": 2,
+        "gnosis": 0,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false
+    }
+}

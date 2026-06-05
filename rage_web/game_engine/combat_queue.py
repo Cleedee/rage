@@ -13,6 +13,9 @@ from rage_web.game_engine.rules import COMBAT_STEPS
 
 # --- Tipos de acoes de combate ---
 
+# Acoes defensivas (block/dodge e similares)
+ACOES_DEFENSIVAS = {'block', 'dodge'}
+
 COMBAT_ACTIONS = {
     'strike',           # Ataque basico
     'block',            # Defesa
@@ -131,6 +134,69 @@ COMBAT_ACTION_PROPS: dict[str, dict] = {
         'nao_pode_esquivar_se_frenetico': True,  # Alvo frenzied nao pode esquivar
     },
 }
+
+
+def _get_oponente_no_combate(game: GameState, card_id: str) -> Optional[str]:
+    """Retorna o ID do oponente direto de uma criatura no combate.
+
+    Os pares sao: atacantes[i] vs defensores[i].
+    """
+    if card_id in game.combat.attackers:
+        idx = game.combat.attackers.index(card_id)
+        if idx < len(game.combat.defenders):
+            return game.combat.defenders[idx]
+    elif card_id in game.combat.defenders:
+        idx = game.combat.defenders.index(card_id)
+        if idx < len(game.combat.attackers):
+            return game.combat.attackers[idx]
+    return None
+
+
+def _tem_whip_equipado(game: GameState, card_id: str) -> bool:
+    """Verifica se uma criatura tem Whip of the Wicked (720) equipado."""
+    criatura = _find_criatura(game, card_id)
+    if not criatura:
+        return False
+    for eq in criatura.attached_equipment:
+        if eq.card_id == 720:  # Whip of the Wicked
+            return True
+    return False
+
+
+def _validar_whip_constraint(game: GameState, card_id: str,
+                              action: str) -> Optional[str]:
+    """Valida constraint da Whip of the Wicked: oponente deve declarar
+    acoes defensivas (block/dodge) antes de acoes ofensivas.
+
+    Se o oponente direto tiver Whip equipado, o declarante precisa
+    ja ter declarado um block/dodge antes de poder declarar ofensivas.
+
+    Returns:
+        None se valido, string de erro se violado.
+    """
+    # Acoes defensivas sao sempre permitidas
+    if action in ACOES_DEFENSIVAS:
+        return None
+
+    oponente_id = _get_oponente_no_combate(game, card_id)
+    if not oponente_id:
+        return None
+
+    if not _tem_whip_equipado(game, oponente_id):
+        return None
+
+    # Oponente tem Whip: verifica se ja declarou alguma acao defensiva
+    declarou_defesa = any(
+        a in ACOES_DEFENSIVAS
+        for cid, a in game.combat.declarations.items()
+        if cid == card_id
+    )
+
+    if not declarou_defesa:
+        return (f'{card_id} deve declarar block ou dodge primeiro '
+                f'(Whip of the Wicked no oponente)')
+
+    return None
 
 
 def selecionar_alfa(game: GameState, jogador_id: str, card_id: str) -> bool:
@@ -345,6 +411,12 @@ def declare_action(game: GameState, card_id: str, action: str,
                 if erro:
                     game.add_log(f'Acao recusada: {erro}')
                     return False
+
+    # Whip of the Wicked (720): oponente deve declarar block/dodge primeiro
+    erro_whip = _validar_whip_constraint(game, card_id, action)
+    if erro_whip:
+        game.add_log(f'Whip of the Wicked: {erro_whip}')
+        return False
 
     success = game.combat.declare(card_id, action)
     if success:
@@ -584,12 +656,39 @@ def resolve_combat(game: GameState) -> bool:
                 f'{acao_origem} e unblockable!'
             )
 
+        # War Knife (716): dano agravado se Rage <= 4
+        war_knife_aggravated = False
+        for eq in origem_card.attached_equipment:
+            if eq.card_id == 716:  # War Knife of Benning Simon
+                if origem_card.effective_rage <= 4:
+                    war_knife_aggravated = True
+                    game.add_log(
+                        f'  War Knife: dano agravado '
+                        f'({origem_card.name} Rage {origem_card.effective_rage} <= 4)')
+                break
+
+        # Skin of the Hellbound (697): imune a dano de Rage 6+
+        skin_blocks = False
+        for eq in alvo_card.attached_equipment:
+            if eq.card_id == 697:  # Skin of the Hellbound
+                if origem_card.effective_rage >= 6:
+                    skin_blocks = True
+                    game.add_log(
+                        f'  Skin of the Hellbound: {alvo_card.name} '
+                        f'imune a dano de Rage {origem_card.effective_rage} '
+                        f'({origem_card.name})')
+                break
+
         # Aplica dano e cria damage card (regra 6.4)
-        dano = max(0, origem_card.effective_rage - alvo_card.reducao_dano)
-        if alvo_card.reducao_dano > 0:
+        if skin_blocks:
+            dano = 0
+        else:
+            dano = max(0, origem_card.effective_rage - alvo_card.reducao_dano)
+        if alvo_card.reducao_dano > 0 and not skin_blocks:
             game.add_log(f'  {alvo_card.name} reduziu {alvo_card.reducao_dano} '
                          f'de dano (equipamento)')
-        anexar_dano(alvo_card, origem_card, dano, dono_dono)
+        anexar_dano(alvo_card, origem_card, dano, dono_dono,
+                    is_aggravated=war_knife_aggravated)
         game.add_log(f'  {origem_card.name} causou {dano} de dano a '
                      f'{alvo_card.name} '
                      f'({alvo_card.health_current}/{alvo_card.health})')
@@ -658,6 +757,9 @@ def resolve_combat(game: GameState) -> bool:
                 game.check_death_triggers(
                     alvo_card, origem_card, dono_origem
                 )
+
+                # Kill bonuses (Questor, The Pit, Chronicle)
+                game.check_kill_bonuses(alvo_card, dono_origem)
 
                 # Marca dano em quests (se alvo era alvo de quest, reseta)
                 for p in game.players:

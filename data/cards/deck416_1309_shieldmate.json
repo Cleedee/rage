@@ -1,0 +1,38 @@
+{
+    "id": "card_1309",
+    "nome": "Shieldmate",
+    "tipo": "Combat Event",
+    "modos": [
+        {
+            "descricao": "Packmate junta-se a defesa",
+            "efeitos": [
+                {
+                    "tipo": "comprar",
+                    "quantidade": 1,
+                    "condicao_alvo": "jogador"
+                },
+                {
+                    "tipo": "restringir",
+                    "quantidade": 1,
+                    "condicao_alvo": "criatura_inimiga",
+                    "params": {
+                        "restricao": "redirecionar_ataque_para_shieldmate"
+                    }
+                }
+            ],
+            "condicao_uso": "quando_atacado"
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 1309,
+        "texto_original": "Play this card when 1 of your characters is attacked. 1 packmate joins your character in pack defense as a shieldmate.",
+        "keywords": "Pack Action",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "id": "card_716",
+    "nome": "War Knife of Benning Simon",
+    "tipo": "Equipment",
+    "modos": [
+        {
+            "descricao": "Dano agravado com Rage ≤4",
+            "efeitos": [
+                {
+                    "tipo": "modificar_reducao_dano",
+                    "quantidade": 0,
+                    "condicao_alvo": "criatura_aliada",
+                    "params": {
+                        "torna_dano_agravado": true,
+                        "condicao": "combat_actions_rage_4_ou_menos"
+                    }
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 716,
+        "texto_original": "The War Knife allows its user to do aggravated damage with Combat Actions of Rage 4 or less.",
+        "keywords": "Bane Fetish - Weapon",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 4,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false,
+        "nota_revisao": "War Knife aggravated damage in _processar_ataque"
+    }
+}

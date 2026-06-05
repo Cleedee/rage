@@ -1,0 +1,38 @@
+{
+    "id": "card_289",
+    "nome": "Block and Strike",
+    "tipo": "Combat Action",
+    "modos": [
+        {
+            "descricao": "Bloquear 2 dano + causar dano",
+            "efeitos": [
+                {
+                    "tipo": "curar",
+                    "quantidade": 2,
+                    "condicao_alvo": "criatura_aliada"
+                },
+                {
+                    "tipo": "dano",
+                    "quantidade": 0,
+                    "condicao_alvo": "criatura_inimiga",
+                    "params": {
+                        "dano_variavel": "simultaneo"
+                    }
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 289,
+        "texto_original": "You may block up to 2 points of damage from any 1 attack. You may play any damage-dealing Combat Action simultaneously with Block and Strike.",
+        "keywords": "Block",
+        "damage": "",
+        "rage": 4,
+        "gnosis": 0,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false
+    }
+}

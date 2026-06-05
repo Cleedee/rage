@@ -1,0 +1,37 @@
+{
+    "id": "card_565",
+    "nome": "Vigilante",
+    "tipo": "Victim",
+    "modos": [
+        {
+            "descricao": "Ataca quem matou menor Renome",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "quantidade": 0,
+                    "condicao_alvo": "criatura_inimiga",
+                    "params": {
+                        "alvo": "quem_matou_menor_renown",
+                        "ataque_auto_2_rounds": true,
+                        "desempate_aleatorio": true
+                    }
+                }
+            ],
+            "condicao_uso": "fim_da_fase_combate"
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 565,
+        "texto_original": "At the end of the Combat Phase the Vigilante will automatically attack whoever killed the lowest Renown victim for 2 rounds. Decide randomly in the event of a tie.",
+        "keywords": "Human",
+        "damage": "",
+        "rage": 3,
+        "gnosis": 1,
+        "health": 5,
+        "renown": 5,
+        "requires": "",
+        "precisa_revisao": false,
+        "nota_revisao": "Ataque automatico implementado em _check_victim_attacks()"
+    }
+}

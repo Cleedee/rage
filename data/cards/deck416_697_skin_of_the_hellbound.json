@@ -1,0 +1,34 @@
+{
+    "id": "card_697",
+    "nome": "Skin of the Hellbound",
+    "tipo": "Equipment",
+    "modos": [
+        {
+            "descricao": "Imune a dano de Rage 6+",
+            "efeitos": [
+                {
+                    "tipo": "modificar_reducao_dano",
+                    "quantidade": 99,
+                    "condicao_alvo": "criatura_aliada",
+                    "params": {
+                        "condicao": "rage_6_ou_mais"
+                    }
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 697,
+        "texto_original": "A character equipped with the Skin of the Hellbound is not affected by any Damage Cards of Rage 6 or higher.",
+        "keywords": "Bane Fetish - Armor",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 4,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false,
+        "nota_revisao": "Skin immunity implemented in _processar_ataque"
+    }
+}

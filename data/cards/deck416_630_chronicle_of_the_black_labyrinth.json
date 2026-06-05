@@ -1,0 +1,45 @@
+{
+    "id": "card_630",
+    "nome": "Chronicle of the Black Labyrinth",
+    "tipo": "Equipment",
+    "modos": [
+        {
+            "descricao": "+1 VP para vitimas de Wyrm",
+            "efeitos": [
+                {
+                    "tipo": "ganhar_vp",
+                    "quantidade": 1,
+                    "condicao_alvo": "jogador",
+                    "params": {
+                        "condicao": "quando_matar_vitima_wyrm"
+                    }
+                }
+            ],
+            "condicao_uso": "wyrm"
+        },
+        {
+            "descricao": "Gaia compra carta de combate extra",
+            "efeitos": [
+                {
+                    "tipo": "comprar",
+                    "quantidade": 1,
+                    "condicao_alvo": "jogador"
+                }
+            ],
+            "condicao_uso": "gaia"
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 630,
+        "texto_original": "If a Wyrm character controls the Chronicle, Victims it kills are worth +1 VP. If a Gaia character controls the Chronicle, they may draw an additional combat card.",
+        "keywords": "Gaia Fetish - Bane Fetish",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 1,
+        "health": 0,
+        "requires": "Wyrm",
+        "precisa_revisao": false,
+        "nota_revisao": "Chronicle bonus in register_card_passives + check_kill_bonuses"
+    }
+}

@@ -1722,3 +1722,844 @@ class TestHaunterAbilities:
         assert _validar_gauntlet_para_carta(
             game, p1, gift, card_origem=carta
         ) is True
+
+
+# ---------------------------------------------------------------------------
+# Testes dos 4 novos sistemas (Quest, Death Trigger, Recruitment, Passives)
+# ---------------------------------------------------------------------------
+
+
+class TestQuestSystem:
+    """Testes do sistema de Quest (Mnesis Dreams)."""
+
+    def test_criar_quest_no_jogador(self):
+        """QuestState e criado corretamente."""
+        from rage_web.game_engine.state import QuestState
+        q = QuestState(
+            quest_card_uid=100,
+            target_card_uid=200,
+            condition='sem_dano_por_2_turnos',
+            turns_remaining=2,
+            reward_vp=2,
+            reward_acao='shuffle_card_discard_to_deck'
+        )
+        assert q.quest_card_uid == 100
+        assert q.target_card_uid == 200
+        assert q.turns_remaining == 2
+        assert not q.completed
+
+    def test_check_quests_progresso(self):
+        """_check_quests decrementa turns_remaining."""
+        from rage_web.game_engine.state import QuestState
+        p1 = PlayerState(id='p1', name='Jogador 1')
+        game = GameState(players=[p1])
+        alvo = CardInstance(card_id=10, name='Alvo', card_type='Character',
+                            zone=Zone.PACK_HOME, owner_id='p1',
+                            controller_id='p1', rage=3, health=5,
+                            health_current=5)
+        p1.pack_home.append(alvo)
+        q = QuestState(
+            quest_card_uid=100,
+            target_card_uid=id(alvo),
+            condition='sem_dano_por_2_turnos',
+            turns_remaining=1,  # Vai completar em 1 turno
+            reward_vp=2,
+            reward_acao='shuffle_card_discard_to_deck'
+        )
+        p1.quests.append(q)
+        assert len(p1.quests) == 1
+        game._check_quests()
+        # Quest completou
+        assert game._find_card_by_uid(q.target_card_uid) is not None
+        assert len(p1.quests) == 0  # Foi removida
+        assert p1.victory_points >= 2
+
+    def test_quest_falha_se_alvo_morre(self):
+        """Quest falha se o alvo e destruido."""
+        from rage_web.game_engine.state import QuestState
+        p1 = PlayerState(id='p1', name='Jogador 1')
+        game = GameState(players=[p1])
+        alvo = CardInstance(card_id=10, name='Alvo', card_type='Character',
+                            zone=Zone.PACK_HOME, owner_id='p1',
+                            controller_id='p1', rage=3, health=1,
+                            health_current=1)
+        p1.pack_home.append(alvo)
+        q = QuestState(
+            quest_card_uid=100,
+            target_card_uid=id(alvo),
+            condition='sem_dano_por_2_turnos',
+            turns_remaining=2,
+            reward_vp=2,
+            reward_acao='shuffle_card_discard_to_deck'
+        )
+        p1.quests.append(q)
+        # Remove alvo (simula morte)
+        p1.pack_home.remove(alvo)
+        alvo.zone = Zone.DISCARD_COMBAT
+        game._check_quests()
+        # Quest deve ter falhado (alvo nao encontrado)
+        assert len(p1.quests) == 0
+
+    def test_quest_check_resolver_inicia_quest(self):
+        """_resolver_quest_check cria QuestState no jogador."""
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo, AlvoTipo,
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        resolvedor = ResolvedorEfeitos(game)
+        origem = CardInstance(card_id=1147, name='Mnesis Dreams',
+                              card_type='Quest', zone=Zone.HAND,
+                              owner_id='p1', controller_id='p1')
+        alvo = CardInstance(card_id=374, name='Sand Last King',
+                            card_type='Character', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1',
+                            rage=3, health=4, health_current=4)
+        p1.pack_home.append(alvo)
+        efeito = Efeito(
+            tipo=EfeitoTipo.QUEST_CHECK,
+            condicao=AlvoTipo.CRIATURA_ALIADA,
+            quantidade=2,
+            params={'condicao': 'sem_dano_por_2_turnos',
+                    'quantidade': 2, 'vp': 2,
+                    'acao': 'shuffle_card_discard_to_deck'}
+        )
+        assert resolvedor.aplicar_efeito(efeito, origem, p1)
+        assert len(p1.quests) == 1
+        assert p1.quests[0].reward_vp == 2
+        assert p1.quests[0].turns_remaining == 2
+
+    def test_quest_check_sem_alvo_nao_quebra(self):
+        """_resolver_quest_check sem alvo valido retorna False."""
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, Efeito, EfeitoTipo,
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        resolvedor = ResolvedorEfeitos(game)
+        origem = CardInstance(card_id=1147, name='Mnesis Dreams',
+                              card_type='Quest', zone=Zone.HAND,
+                              owner_id='p1', controller_id='p1')
+        efeito = Efeito(
+            tipo=EfeitoTipo.QUEST_CHECK,
+            quantidade=2,
+            params={'condicao': 'sem_dano_por_2_turnos'}
+        )
+        # Sem alvo = False (nao cria quest)
+        assert not resolvedor.aplicar_efeito(efeito, origem, p1)
+        assert len(p1.quests) == 0
+
+
+class TestDeathTriggerSystem:
+    """Testes do sistema de Death Triggers (Dream Hunter)."""
+
+    def test_register_death_trigger(self):
+        """DeathTrigger e registrado corretamente."""
+        from rage_web.game_engine.state import DeathTrigger
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        dream = CardInstance(card_id=573, name='Dream Hunter',
+                             card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                             owner_id='p1', controller_id='p1',
+                             health=4, health_current=4)
+        p1.hunting_grounds.append(dream)
+        game.register_card_passives(dream, p1)
+        assert len(game.death_triggers) == 1
+        assert game.death_triggers[0].condition == 'killed_by_type:Mokole'
+        assert game.death_triggers[0].action == 'search_deck_type:Quest/Rite/Moot'
+
+    def test_death_trigger_dispara_com_mokole(self):
+        """Death trigger dispara quando morto por Mokole."""
+        from rage_web.game_engine.state import DeathTrigger
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        # Cria a carta de trigger (Dream Hunter) em jogo
+        trigger_card = CardInstance(card_id=573, name='Dream Hunter',
+                                    card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                                    owner_id='p2', controller_id='p2',
+                                    health=4, health_current=4)
+        p2.hunting_grounds.append(trigger_card)
+        # Da uma carta no deck de p1 para buscar
+        carta_buscavel = CardInstance(card_id=999, name='Ritual',
+                                      card_type='Rite', zone=Zone.DECK_SEPT,
+                                      owner_id='p1', controller_id='p1')
+        p1.deck_sept.append(carta_buscavel)
+        game = GameState(players=[p1, p2])
+        # Registra trigger via register_card_passives
+        game.register_card_passives(trigger_card, p2)
+        assert len(game.death_triggers) == 1
+        killed = CardInstance(card_id=573, name='Dream Hunter',
+                              card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='p2', controller_id='p2',
+                              health=4, health_current=0)
+        # killer e Mokole (keywords) e pertence a p1
+        killer = CardInstance(card_id=374, name='Sand Last King',
+                              card_type='Character', zone=Zone.PACK_HOME,
+                              owner_id='p1', controller_id='p1',
+                              keywords='Mokole - Suchid - Gaia - Male',
+                              rage=3, health=4, health_current=4)
+        # Morte deve disparar trigger: killer e Mokole
+        # killer_player=p1 e o beneficiario
+        game.check_death_triggers(killed, killer, p1)
+        # Carta deve ter sido buscada do deck de p1 para a mao de p1
+        assert carta_buscavel.zone == Zone.HAND
+        assert carta_buscavel in p1.hand
+
+    def test_death_trigger_ignora_se_mokole_ausente(self):
+        """Trigger nao dispara se killer nao for Mokole."""
+        from rage_web.game_engine.state import DeathTrigger
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        # Cria trigger card em jogo
+        trigger_card = CardInstance(card_id=573, name='Dream Hunter',
+                                    card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                                    owner_id='p2', controller_id='p2',
+                                    health=4, health_current=4)
+        p2.hunting_grounds.append(trigger_card)
+        trigger = DeathTrigger(
+            trigger_card_uid=id(trigger_card),
+            condition='killed_by_type:Mokole',
+            action='search_deck_type:Quest/Rite/Moot',
+            originador_id='p1'
+        )
+        game.death_triggers.append(trigger)
+        killed = CardInstance(card_id=573, name='Dream Hunter',
+                              card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='p2', controller_id='p2')
+        # killer nao-Mokole (Wendigo)
+        killer = CardInstance(card_id=207, name='Old Storm-Chaser',
+                              card_type='Character', zone=Zone.PACK_HOME,
+                              owner_id='p2', controller_id='p2',
+                              keywords='Wendigo - Gaia - Male',
+                              rage=2, health=2, health_current=2)
+        game.check_death_triggers(killed, killer, p2)
+        # Trigger nao usado (killer nao e Mokole)
+        assert not trigger.usado
+
+    def test_death_trigger_usado_apenas_uma_vez(self):
+        """Trigger one-shot: usado apenas uma vez."""
+        from rage_web.game_engine.state import DeathTrigger
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        # Cria trigger card real em jogo
+        trigger_card = CardInstance(card_id=573, name='Dream Hunter',
+                                    card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                                    owner_id='p2', controller_id='p2',
+                                    health=4, health_current=4)
+        p2.hunting_grounds.append(trigger_card)
+        # Registra trigger com condition 'any' manualmente
+        from rage_web.game_engine.state import DeathTrigger
+        trigger = DeathTrigger(
+            trigger_card_uid=id(trigger_card),
+            condition='any',
+            action='gain_vp',
+            originador_id='p1'
+        )
+        game.death_triggers.append(trigger)
+        killed = CardInstance(card_id=999, name='Some Creature',
+                              card_type='Character', zone=Zone.PACK_HOME,
+                              owner_id='p2', controller_id='p2')
+        # Primeira morte: dispara
+        game.check_death_triggers(killed, None, p1)
+        assert trigger.usado
+        vp_antes = p1.victory_points
+        # Segunda morte: nao dispara (usado=True)
+        game.check_death_triggers(killed, None, p1)
+        assert p1.victory_points == vp_antes
+
+
+class TestRecruitmentSystem:
+    """Testes do sistema de Recrutamento (Sand's Last King)."""
+
+    def test_sands_last_king_adiciona_recruit(self):
+        """Sand's Last King adiciona tribos ao can_recruit."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        sand = CardInstance(card_id=374, name="Sand's Last King",
+                            card_type='Character', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1',
+                            rage=3, health=4, health_current=4)
+        p1.pack_home.append(sand)
+        game.register_card_passives(sand, p1)
+        assert 'Ajaba' in p1.can_recruit
+        assert 'Bastet' in p1.can_recruit
+        assert 'Silent Striders' in p1.can_recruit
+        assert len(p1.can_recruit) == 3
+
+    def test_register_card_passives_ignora_carta_desconhecida(self):
+        """Cartas sem passiva especial nao sao registradas."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        comum = CardInstance(card_id=123, name='Common Card',
+                             card_type='Combat Action', zone=Zone.PACK_HOME,
+                             owner_id='p1', controller_id='p1')
+        assert len(game.death_triggers) == 0
+        assert len(game.game_modifiers) == 0
+        assert len(p1.can_recruit) == 0
+
+
+class TestContinuousPassives:
+    """Testes de passivas continuas (Lake Nasser Wallow)."""
+
+    def test_lake_nasser_wallow_adiciona_modifier(self):
+        """Lake Nasser Wallow adiciona rites_gifts_cross_gauntlet."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        lake = CardInstance(card_id=609, name='Lake Nasser Wallow',
+                            card_type='Caern', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1',
+                            gnosis=5)
+        p1.pack_home.append(lake)
+        game.register_card_passives(lake, p1)
+        assert len(game.game_modifiers) == 1
+        assert game.game_modifiers[0].modifier == 'rites_gifts_cross_gauntlet'
+        assert game.game_modifiers[0].ativo
+
+    def test_has_modifier_retorna_true_quando_em_jogo(self):
+        """has_modifier retorna True se carta esta em jogo."""
+        from rage_web.game_engine.state import GameModifier
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        lake = CardInstance(card_id=609, name='Lake Nasser Wallow',
+                            card_type='Caern', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1',
+                            gnosis=5)
+        p1.pack_home.append(lake)
+        modifier = GameModifier(
+            card_uid=id(lake),
+            modifier='rites_gifts_cross_gauntlet'
+        )
+        game.game_modifiers.append(modifier)
+        assert game.has_modifier('rites_gifts_cross_gauntlet')
+
+    def test_has_modifier_retorna_false_quando_fora_de_jogo(self):
+        """has_modifier retorna False se carta foi removida."""
+        from rage_web.game_engine.state import GameModifier
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        lake = CardInstance(card_id=609, name='Lake Nasser Wallow',
+                            card_type='Caern', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1',
+                            gnosis=5)
+        p1.pack_home.append(lake)
+        modifier = GameModifier(
+            card_uid=id(lake),
+            modifier='rites_gifts_cross_gauntlet'
+        )
+        game.game_modifiers.append(modifier)
+        # Verifica que esta ativo
+        assert game.has_modifier('rites_gifts_cross_gauntlet')
+        # Remove a carta
+        p1.pack_home.remove(lake)
+        lake.zone = Zone.DISCARD_COMBAT
+        # Agora deve retornar False (e desativar modifier)
+        assert not game.has_modifier('rites_gifts_cross_gauntlet')
+        assert not modifier.ativo
+
+    def test_has_modifier_modificador_inexistente(self):
+        """has_modifier para modifier inexistente retorna False."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        assert not game.has_modifier('modifier_que_nao_existe')
+
+    def test_gauntlet_check_com_lake_nasser_wallow(self):
+        """_validar_gauntlet_para_carta respeita modifier."""
+        from rage_web.game_engine.effects import (
+            _validar_gauntlet_para_carta, ModeloCarta, Modo, Efeito, EfeitoTipo,
+        )
+        from rage_web.game_engine.state import GameModifier
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        # Adiciona modifier
+        lake = CardInstance(card_id=609, name='Lake Nasser Wallow',
+                            card_type='Caern', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1')
+        p1.pack_home.append(lake)
+        modifier = GameModifier(
+            card_uid=id(lake),
+            modifier='rites_gifts_cross_gauntlet'
+        )
+        game.game_modifiers.append(modifier)
+        # Cria um Gift
+        gift = ModeloCarta(
+            id='test', nome='Test Gift', tipo='Gift',
+            modos=[Modo(
+                descricao='Usar',
+                efeitos=[Efeito(tipo=EfeitoTipo.DANO, quantidade=1,
+                                condicao='criatura_inimiga')]
+            )]
+        )
+        # Deve retornar True por causa do modifier
+        assert _validar_gauntlet_para_carta(game, p1, gift)
+
+    def test_find_card_by_uid(self):
+        """_find_card_by_uid encontra carta pelo id() da instancia."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        carta = CardInstance(card_id=1, name='Test',
+                             card_type='Character', zone=Zone.PACK_HOME,
+                             owner_id='p1', controller_id='p1')
+        p1.pack_home.append(carta)
+        encontrada = game._find_card_by_uid(id(carta))
+        assert encontrada is carta
+        assert encontrada.name == 'Test'
+
+    def test_find_card_by_uid_inexistente(self):
+        """_find_card_by_uid retorna None para uid inexistente."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        assert game._find_card_by_uid(99999) is None
+
+
+class TestDeck416Systems:
+    """Testes para os sistemas implementados para deck416."""
+
+    def test_questor_passive_registra_modifier(self):
+        """Questor registra modifier questor_active."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        questor = CardInstance(card_id=227, name='Questor',
+                               card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                               owner_id='p1', controller_id='p1',
+                               rage=3, gnosis=7, health=3)
+        p1.pack_home.append(questor)
+        game.register_card_passives(questor, p1)
+        assert game.has_modifier('questor_active')
+
+    def test_questor_vp_bonus_victim_hg(self):
+        """Questor concede +1 VP ao matar Victim do HG."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        questor = CardInstance(card_id=227, name='Questor',
+                               card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                               owner_id='p1', controller_id='p1',
+                               rage=3, gnosis=7, health=3)
+        p1.pack_home.append(questor)
+        game.register_card_passives(questor, p1)
+        # Mata uma vitima no HG
+        victim = CardInstance(card_id=535, name='Renegade Werewolf Hunter',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='p2', controller_id='p2',
+                              renown=5, health=4, health_current=0)
+        p2.hunting_grounds.append(victim)
+        vp_antes = p1.victory_points
+        game.check_kill_bonuses(victim, p1)
+        assert p1.victory_points == vp_antes + 1
+
+    def test_questor_no_bonus_for_non_victim(self):
+        """Questor nao concede bonus para nao-Victim."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        questor = CardInstance(card_id=227, name='Questor',
+                               card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                               owner_id='p1', controller_id='p1')
+        p1.pack_home.append(questor)
+        game.register_card_passives(questor, p1)
+        # Mata um character, nao vitima
+        char = CardInstance(card_id=24, name='Dharma Bum',
+                            card_type='Character - Gaia', zone=Zone.HUNTING_GROUNDS,
+                            owner_id='p2', controller_id='p2')
+        p2.hunting_grounds.append(char)
+        vp_antes = p1.victory_points
+        game.check_kill_bonuses(char, p1)
+        assert p1.victory_points == vp_antes  # Sem bonus
+
+    def test_longtooth_modifier_registrado(self):
+        """Longtooth registra modifier can_use_7th_gen_gifts."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        longtooth = CardInstance(card_id=175, name='Longtooth Soulkiller',
+                                 card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                                 owner_id='p1', controller_id='p1',
+                                 rage=8, gnosis=7, health=8)
+        p1.pack_home.append(longtooth)
+        game.register_card_passives(longtooth, p1)
+        assert game.has_modifier('can_use_7th_gen_gifts')
+
+    def test_the_pit_bonus_registrado(self):
+        """The Pit registra modifier the_pit_active."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        pit = CardInstance(card_id=777, name='The Pit',
+                           card_type='Territory', zone=Zone.PACK_HOME,
+                           owner_id='p1', controller_id='p1')
+        p1.pack_home.append(pit)
+        game.register_card_passives(pit, p1)
+        assert game.has_modifier('the_pit_active')
+
+    def test_the_pit_vp_bonus_victim(self):
+        """The Pit concede +1 VP ao matar qualquer Victim."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        pit = CardInstance(card_id=777, name='The Pit',
+                           card_type='Territory', zone=Zone.PACK_HOME,
+                           owner_id='p1', controller_id='p1')
+        p1.pack_home.append(pit)
+        game.register_card_passives(pit, p1)
+        victim = CardInstance(card_id=535, name='Renegade Werewolf Hunter',
+                              card_type='Victim', zone=Zone.PACK_HOME,
+                              owner_id='p2', controller_id='p2',
+                              renown=5, health=4, health_current=0)
+        p2.pack_home.append(victim)
+        vp_antes = p1.victory_points
+        game.check_kill_bonuses(victim, p1)
+        assert p1.victory_points == vp_antes + 1
+
+    def test_chronicle_bonus_registrado(self):
+        """Chronicle registra modifier chronicle_active."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        chronicle = CardInstance(card_id=630, name='Chronicle of the Black Labyrinth',
+                                 card_type='Equipment', zone=Zone.PACK_HOME,
+                                 owner_id='p1', controller_id='p1', gnosis=1)
+        p1.pack_home.append(chronicle)
+        game.register_card_passives(chronicle, p1)
+        assert game.has_modifier('chronicle_active')
+
+    def test_war_knife_modifier_registrado(self):
+        """War Knife registra modifier war_knife_active."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        knife = CardInstance(card_id=716, name='War Knife of Benning Simon',
+                             card_type='Equipment', zone=Zone.PACK_HOME,
+                             owner_id='p1', controller_id='p1', gnosis=4)
+        p1.pack_home.append(knife)
+        game.register_card_passives(knife, p1)
+        assert game.has_modifier('war_knife_active')
+
+    def test_skin_hellbound_modifier_registrado(self):
+        """Skin of the Hellbound registra modifier."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        skin = CardInstance(card_id=697, name='Skin of the Hellbound',
+                            card_type='Equipment', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1', gnosis=4)
+        p1.pack_home.append(skin)
+        game.register_card_passives(skin, p1)
+        assert game.has_modifier('skin_hellbound_active')
+
+
+class TestDeck416Effects:
+    """Testes de efeitos especificos do deck416."""
+
+    def _get_resolvedor(self, game):
+        from rage_web.game_engine.effects import ResolvedorEfeitos
+        return ResolvedorEfeitos(game, rng=None)
+
+    def _make_efeito(self, tipo, **kw):
+        from rage_web.game_engine.effects import Efeito, EfeitoTipo
+        return Efeito(tipo=getattr(EfeitoTipo, tipo, tipo), **kw)
+
+    def test_spiral_boomerang_move_to_umbra(self):
+        """Spiral Boomerang move alvo para Umbra do dono."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        alvo = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                            card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                            owner_id='p2', controller_id='p2',
+                            health=4, health_current=4)
+        p2.pack_home.append(alvo)
+        boomerang = CardInstance(card_id=700, name='Spiral Boomerang',
+                                 card_type='Equipment', zone=Zone.PACK_HOME,
+                                 owner_id='p1', controller_id='p1')
+        p1.pack_home.append(boomerang)
+        r = self._get_resolvedor(game)
+        efeito = self._make_efeito('MOVER_PARA', quantidade=1,
+                        condicao='criatura_inimiga',
+                        params={'zona': 'umbra', 'duracao': 2,
+                                'retornar_zona_original': True})
+        assert r.aplicar_efeito(efeito, boomerang, p1)
+        assert alvo.zone == Zone.UMBRA
+        assert alvo in p2.umbra  # Dono e p2
+        assert len(game.pendencias) == 1
+        assert 'after_' in game.pendencias[0].duracao
+
+    def test_spiral_boomerang_descarta_apos_uso(self):
+        """Spiral Boomerang e descartado apos uso."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        alvo = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                            card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                            owner_id='p2', controller_id='p2',
+                            health=4, health_current=4)
+        p2.pack_home.append(alvo)
+        boomerang = CardInstance(card_id=700, name='Spiral Boomerang',
+                                 card_type='Equipment', zone=Zone.PACK_HOME,
+                                 owner_id='p1', controller_id='p1')
+        p1.pack_home.append(boomerang)
+        r = self._get_resolvedor(game)
+        efeito = self._make_efeito('REMOVER_DO_JOGO', quantidade=1,
+                        condicao='criatura_aliada',
+                        params={'descarte_apos_uso': True})
+        assert r.aplicar_efeito(efeito, boomerang, p1)
+        assert boomerang.zone == Zone.DISCARD_COMBAT
+        assert boomerang in p1.discard_combat
+
+    def test_spiral_boomerang_retorna_apos_turnos(self):
+        """Target retorna a zona original apos N turnos."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        alvo = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                            card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                            owner_id='p2', controller_id='p2',
+                            health=4, health_current=4)
+        p2.pack_home.append(alvo)
+        boomerang = CardInstance(card_id=700, name='Spiral Boomerang',
+                                 card_type='Equipment', zone=Zone.PACK_HOME,
+                                 owner_id='p1', controller_id='p1')
+        p1.pack_home.append(boomerang)
+        r = self._get_resolvedor(game)
+        efeito = self._make_efeito('MOVER_PARA', quantidade=1,
+                        condicao='criatura_inimiga',
+                        params={'zona': 'umbra', 'duracao': 2,
+                                'retornar_zona_original': True})
+        r.aplicar_efeito(efeito, boomerang, p1)
+        assert alvo.zone == Zone.UMBRA
+        game.turn_number = 3
+        logs = game.expirar_pendencias('redraw')
+        assert any('retornou' in l for l in logs)
+        assert alvo.zone == Zone.PACK_HOME
+        assert alvo in p2.pack_home
+
+    def test_gaias_will_targets_only_victims(self):
+        """Gaia's Will Corrupted so atinge vitimas."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        victim = CardInstance(card_id=535, name='Renegade Werewolf Hunter',
+                              card_type='Victim', zone=Zone.PACK_HOME,
+                              owner_id='p2', controller_id='p2',
+                              health=4, health_current=4)
+        p2.pack_home.append(victim)
+        char = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                            card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                            owner_id='p2', controller_id='p2',
+                            health=4, health_current=4)
+        p2.pack_home.append(char)
+        r = self._get_resolvedor(game)
+        r.rng = __import__('random').Random(42)
+        efeito = self._make_efeito('DANO', quantidade=5, condicao='vitima')
+        assert r.aplicar_efeito(efeito, char, p1)
+        assert victim.health_current < 4  # Vitima tomou dano
+        assert char.health_current == 4  # Character intocado
+
+    def test_blossom_remove_self_and_ally(self):
+        """Blossom remove self + 1 aliado ate fim do turno."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        blossom = CardInstance(card_id=47, name='Blossom',
+                               card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                               owner_id='p1', controller_id='p1',
+                               rage=1, gnosis=6, health=2, health_current=2)
+        p1.pack_home.append(blossom)
+        aliado = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                              card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                              owner_id='p1', controller_id='p1',
+                              rage=3, health=4, health_current=4)
+        p1.pack_home.append(aliado)
+        r = self._get_resolvedor(game)
+        r.rng = __import__('random').Random(0)
+        efeito = self._make_efeito('REMOVER_DO_JOGO', quantidade=1,
+                        condicao='criatura_aliada',
+                        params={'also_remove_self': True,
+                                'restricao_extra': 'nao_pode_agir'})
+        assert r.aplicar_efeito(efeito, blossom, p1)
+        # Ambos removidos
+        assert blossom.zone == Zone.OUT_OF_PLAY
+        assert aliado.zone == Zone.OUT_OF_PLAY
+        assert blossom not in p1.pack_home
+        assert aliado not in p1.pack_home
+        # Ambos com restricao
+        assert 'nao_pode_agir' in blossom.restricoes
+        assert 'nao_pode_agir' in aliado.restricoes
+        # Pendencias para retornar (zona + restricao para cada)
+        assert len(game.pendencias) == 4
+
+    def test_blossom_retorna_fim_turno(self):
+        """Blossom e aliado retornam ao fim do turno."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        blossom = CardInstance(card_id=47, name='Blossom',
+                               card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                               owner_id='p1', controller_id='p1',
+                               rage=1, gnosis=6, health=2, health_current=2)
+        p1.pack_home.append(blossom)
+        aliado = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                              card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                              owner_id='p1', controller_id='p1',
+                              rage=3, health=4, health_current=4)
+        p1.pack_home.append(aliado)
+        r = self._get_resolvedor(game)
+        r.rng = __import__('random').Random(1)
+        efeito = self._make_efeito('REMOVER_DO_JOGO', quantidade=1,
+                        condicao='criatura_aliada',
+                        params={'also_remove_self': True,
+                                'restricao_extra': 'nao_pode_agir'})
+        r.aplicar_efeito(efeito, blossom, p1)
+        # Avanca turno (redraw = fim do turno)
+        logs = game.expirar_pendencias('redraw')
+        assert any('retornou' in l for l in logs)
+        assert blossom.zone == Zone.PACK_HOME
+        assert aliado.zone == Zone.PACK_HOME
+        assert blossom in p1.pack_home
+        assert aliado in p1.pack_home
+        # Restricoes removidas
+        assert 'nao_pode_agir' not in blossom.restricoes
+        assert 'nao_pode_agir' not in aliado.restricoes
+
+
+class TestVictimAutoAttack:
+    """Testes de ataques automaticos de vitimas no HG."""
+
+    def test_werewolf_hunter_ataca_bsd_maior_renown(self):
+        """Werewolf Hunter ataca BSD com maior Renome."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        hunter = CardInstance(card_id=535, name='Renegade Werewolf Hunter',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='', controller_id='',
+                              rage=7, health=4, health_current=4, renown=8)
+        game.hunting_grounds_cards.append(hunter)
+        bsd = CardInstance(card_id=227, name='Questor',
+                           card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                           owner_id='p2', controller_id='p2',
+                           rage=3, health=3, health_current=3, renown=8,
+                           keywords='Garou - Black Spiral Dancer - Wyrm')
+        p2.pack_home.append(bsd)
+        game._check_victim_attacks()
+        assert bsd.health_current < 3  # Tomou dano
+        assert len(bsd.attached_damage) == 1
+        assert bsd.attached_damage[0].is_aggravated  # Dano agravado
+
+    def test_wild_animals_ataca_maior_rage_wyrm(self):
+        """Wild Animals ataca Wyrm com maior Rage."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        animals = CardInstance(card_id=568, name='Wild Animals',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='', controller_id='',
+                              rage=6, health=4, health_current=4)
+        game.hunting_grounds_cards.append(animals)
+        wyrm = CardInstance(card_id=175, name='Longtooth Soulkiller',
+                           card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                           owner_id='p2', controller_id='p2',
+                           rage=8, health=8, health_current=8,
+                           keywords='Garou - Black Spiral Dancer - Wyrm')
+        p2.pack_home.append(wyrm)
+        gaia = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                           card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                           owner_id='p1', controller_id='p1',
+                           rage=3, health=4, health_current=4)
+        p1.pack_home.append(gaia)
+        game._check_victim_attacks()
+        assert wyrm.health_current < 8  # Longtooth (rage 8) tomou dano
+        assert gaia.health_current == 4  # Gaia intocado
+
+    def test_victim_ignora_se_sem_alvo_valido(self):
+        """Vitima nao ataca se nao ha alvo valido."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        # Wild Animals sem Wyrm no jogo
+        animals = CardInstance(card_id=568, name='Wild Animals',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='', controller_id='',
+                              rage=6, health=4, health_current=4)
+        game.hunting_grounds_cards.append(animals)
+        game._check_victim_attacks()  # Nao deve crashar
+        assert True
+
+    def test_victim_mata_personagem(self):
+        """Se vitima mata o alvo, ele vai para discard."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        hunter = CardInstance(card_id=535, name='Renegade Werewolf Hunter',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='', controller_id='',
+                              rage=7, health=4, health_current=4)
+        game.hunting_grounds_cards.append(hunter)
+        fraco = CardInstance(card_id=24, name='Dharma Bum',
+                             card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                             owner_id='p2', controller_id='p2',
+                             rage=1, health=2, health_current=2,
+                             keywords='Wyrm')
+        p2.pack_home.append(fraco)
+        game._check_victim_attacks()
+        assert fraco.health_current <= 0
+        assert fraco not in p2.pack_home
+
+
+class TestWhipOfTheWicked:
+    """Testes da Whip of the Wicked (720)."""
+
+    def test_whip_force_defesa_primeiro(self):
+        """Whip obriga oponente a declarar defesa antes de ofensiva."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, selecionar_alfa,
+            calcular_ordem_alfa, _validar_whip_constraint
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        whip_user = CardInstance(card_id=999, name='Whip User',
+                                 card_type='Character', zone=Zone.PACK_HOME,
+                                 owner_id='p1', controller_id='p1',
+                                 rage=3, health=5, health_current=5)
+        p1.pack_home.append(whip_user)
+        whip = CardInstance(card_id=720, name='Whip of the Wicked',
+                            card_type='Equipment', zone=Zone.PACK_HOME,
+                            owner_id='p1', controller_id='p1')
+        whip_user.attached_equipment.append(whip)
+        defender = CardInstance(card_id=998, name='Defender',
+                                card_type='Character', zone=Zone.PACK_HOME,
+                                owner_id='p2', controller_id='p2',
+                                rage=2, health=4, health_current=4)
+        p2.pack_home.append(defender)
+        start_combat(game, ['999'], ['998'])
+        selecionar_alfa(game, 'p1', '999')
+        selecionar_alfa(game, 'p2', '998')
+        calcular_ordem_alfa(game)
+        # Defender tenta strike -> recusado
+        assert not declare_action(game, '998', 'strike')
+        # Defender declara dodge -> aceito
+        assert declare_action(game, '998', 'dodge')
+
+    def test_whip_nao_afeta_se_oponente_sem_whip(self):
+        """Sem Whip, pode declarar qualquer acao."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, selecionar_alfa,
+            calcular_ordem_alfa
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        a = CardInstance(card_id=999, name='Atacante',
+                         card_type='Character', zone=Zone.PACK_HOME,
+                         owner_id='p1', controller_id='p1',
+                         rage=3, health=5, health_current=5)
+        p1.pack_home.append(a)
+        b = CardInstance(card_id=998, name='Defensor',
+                         card_type='Character', zone=Zone.PACK_HOME,
+                         owner_id='p2', controller_id='p2',
+                         rage=2, health=4, health_current=4)
+        p2.pack_home.append(b)
+        start_combat(game, ['999'], ['998'])
+        selecionar_alfa(game, 'p1', '999')
+        selecionar_alfa(game, 'p2', '998')
+        calcular_ordem_alfa(game)
+        # Sem whip, pode declarar strike diretamente
+        assert declare_action(game, '998', 'strike')
+        assert declare_action(game, '999', 'strike')

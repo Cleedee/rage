@@ -1,0 +1,30 @@
+{
+    "id": "card_111",
+    "nome": "Fox Frenzy",
+    "tipo": "Combat Event",
+    "modos": [
+        {
+            "descricao": "Remover personagem do combate",
+            "efeitos": [
+                {
+                    "tipo": "fugir",
+                    "quantidade": 1,
+                    "condicao_alvo": "criatura_aliada"
+                }
+            ],
+            "condicao_uso": "antes_ou_entre_rounds_combate"
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 111,
+        "texto_original": "Play this card between rounds of combat or before the first round of combat. A character in a fox frenzy tucks tail and heads for the hills.",
+        "keywords": "Frenzy",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false
+    }
+}

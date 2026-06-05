@@ -270,6 +270,15 @@ class ResolvedorEfeitos:
                 resultado.extend(op.pack_home)
             return resultado
 
+        def _vitimas_inimigas() -> list[CardInstance]:
+            """Agrega apenas criaturas do tipo Victim de todos os oponentes."""
+            resultado = []
+            for op in oponentes:
+                for c in op.pack_home + op.hunting_grounds:
+                    if c.card_type and 'Victim' in c.card_type:
+                        resultado.append(c)
+            return resultado
+
         resolvedores_alvo = {
             'criatura_inimiga': lambda: self._escolher_criatura(
                 _criaturas_inimigas()
@@ -301,6 +310,9 @@ class ResolvedorEfeitos:
             ),
             'umbra_inimiga': lambda: self._escolher_criatura(
                 _umbra_inimiga()
+            ),
+            'vitima': lambda: self._escolher_criatura(
+                _vitimas_inimigas()
             ),
         }
 
@@ -436,36 +448,95 @@ class ResolvedorEfeitos:
         para restaura-la no fim da proxima fase.
 
         Usado por Chant of Morpheus e efeitos similares.
+
+        Se params['descarte_apos_uso'] for True, move para DISCARD_COMBAT
+        (usado por equipamentos descartaveis como Spiral Boomerang).
         """
         if not isinstance(alvo, CardInstance):
             return False
 
-        # Salva a zona original para restaurar depois
-        zona_original = alvo.zone
+        params = efeito.params or {}
+        descarte = params.get('descarte_apos_uso')
+        also_self = params.get('also_remove_self')
+        restricao = params.get('restricao_extra', '')
 
-        # Remove da zona atual
-        _remove_creature(self.game, alvo)
+        if descarte:
+            for p in self.game.players:
+                for lista in (p.pack_home, p.hunting_grounds,
+                              p.umbra, p.hand):
+                    if alvo in lista:
+                        lista.remove(alvo)
+                        break
+            alvo.zone = Zone.DISCARD_COMBAT
+            dono = self._find_player(alvo.owner_id) or jogador
+            dono.discard_combat.append(alvo)
+            self.game.add_log(
+                f'{alvo.name} foi descartado (descarte apos uso)'
+            )
+            return True
 
-        # Move para OUT_OF_PLAY
-        alvo.zone = Zone.OUT_OF_PLAY
+        def _remover_um(card: CardInstance) -> bool:
+            zona_original = card.zone
+            if zona_original == Zone.OUT_OF_PLAY:
+                if restricao and restricao not in card.restricoes:
+                    card.restricoes.append(restricao)
+                return True
+            if zona_original not in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS,
+                                     Zone.UMBRA):
+                return False
+            _remove_creature(self.game, card)
+            card.zone = Zone.OUT_OF_PLAY
+            dono_out = self._find_player(card.owner_id) or jogador
+            if card not in dono_out.out_of_play:
+                dono_out.out_of_play.append(card)
+            if restricao and restricao not in card.restricoes:
+                card.restricoes.append(restricao)
+            from rage_web.game_engine.state import PendenciaEfeito
+            # Usa 'end_of_turn' se Blossom, 'end_of_phase' para outros (Chant)
+            duracao_pend = 'end_of_turn' if also_self else 'end_of_phase'
+            pendencia = PendenciaEfeito(
+                card_uid=id(card),
+                atributo='zona',
+                delta=0,
+                duracao=duracao_pend,
+                valor_str=zona_original.value,
+                turno_aplicado=self.game.turn_number,
+                fase_aplicada=self.game.phase,
+            )
+            if restricao:
+                pend2 = PendenciaEfeito(
+                    card_uid=id(card),
+                    atributo='restricao',
+                    delta=0,
+                    duracao=duracao_pend,
+                    valor_str=restricao,
+                    turno_aplicado=self.game.turn_number,
+                    fase_aplicada=self.game.phase,
+                )
+                self.game.pendencias.append(pend2)
+            self.game.pendencias.append(pendencia)
+            verb = 'turno' if also_self else 'fase'
+            self.game.add_log(
+                f'{card.name} foi removido do jogo ate o fim do {verb}'
+            )
+            return True
 
-        # Cria pendencia para restaurar no fim da proxima fase
-        from rage_web.game_engine.state import PendenciaEfeito
-        pendencia = PendenciaEfeito(
-            card_uid=id(alvo),
-            atributo='zona',
-            delta=0,
-            duracao='end_of_phase',
-            valor_str=zona_original.value,
-            turno_aplicado=self.game.turn_number,
-            fase_aplicada=self.game.phase,
-        )
-        self.game.pendencias.append(pendencia)
+        ok = _remover_um(alvo)
 
-        self.game.add_log(
-            f'{alvo.name} foi removido do jogo ate o fim da proxima fase'
-        )
-        return True
+        if also_self:
+            if origem is alvo:
+                # Alvo foi o proprio Blossom - precisa remover outro
+                # Escolhe outra criatura aliada (nao Blossom)
+                outros = [c for c in jogador.pack_home
+                          if c is not origem and c.zone != Zone.OUT_OF_PLAY]
+                if outros:
+                    outro = self._escolher_criatura(outros)
+                    if outro:
+                        ok = _remover_um(outro) or ok
+            else:
+                ok = _remover_um(origem) or ok
+
+        return ok
 
     def _resolver_descarte(self, efeito: Efeito, origem: CardInstance,
                           jogador: PlayerState, alvo) -> bool:
@@ -592,10 +663,18 @@ class ResolvedorEfeitos:
 
     def _resolver_mover_para(self, efeito: Efeito, origem: CardInstance,
                             jogador: PlayerState, alvo) -> bool:
-        """Move uma criatura entre zonas (listas do PlayerState + zone tag)."""
+        """Move uma criatura entre zonas.
+
+        Suporta params:
+        - 'zona': nome da zona destino ('umbra', 'hunting_grounds', etc)
+        - 'duracao': numero de turnos antes de retornar (ex: 2)
+        - 'retornar_zona_original': bool, se deve voltar para zona original
+        """
         if not isinstance(alvo, CardInstance):
             return False
-        zona_destino = efeito.alvo or efeito.condicao or 'hunting_grounds'
+
+        zona_destino = (efeito.params.get('zona') if efeito.params
+                        else None) or efeito.alvo or efeito.condicao or 'hunting_grounds'
         zonas = {
             'hunting_grounds': Zone.HUNTING_GROUNDS,
             'umbra': Zone.UMBRA,
@@ -606,6 +685,9 @@ class ResolvedorEfeitos:
         if not nova_zona:
             return False
 
+        # Salva zona original antes de mover
+        zona_original = alvo.zone
+
         # Remove da lista de origem (todos os jogadores)
         for p in self.game.players:
             for lista in (p.pack_home, p.hunting_grounds,
@@ -614,12 +696,13 @@ class ResolvedorEfeitos:
                     lista.remove(alvo)
                     break
 
-        # Adiciona na lista de destino
+        # Adiciona na lista de destino do DONO do alvo (nao do jogador atual)
+        dono_alvo = self._find_player(alvo.owner_id) or jogador
         map_destino = {
-            Zone.PACK_HOME: jogador.pack_home,
-            Zone.UMBRA: jogador.umbra,
-            Zone.HUNTING_GROUNDS: jogador.hunting_grounds,
-            Zone.DISCARD_COMBAT: jogador.discard_combat,
+            Zone.PACK_HOME: dono_alvo.pack_home,
+            Zone.UMBRA: dono_alvo.umbra,
+            Zone.HUNTING_GROUNDS: dono_alvo.hunting_grounds,
+            Zone.DISCARD_COMBAT: dono_alvo.discard_combat,
         }
         lista_destino = map_destino.get(nova_zona)
         if lista_destino is not None:
@@ -627,6 +710,27 @@ class ResolvedorEfeitos:
 
         alvo.zone = nova_zona
         self.game.add_log(f'{alvo.name} movido para {zona_destino}')
+
+        # Se tem duracao, cria pendencia para retornar
+        duracao = int(efeito.params.get('duracao', 0)) if efeito.params else 0
+        if duracao > 0:
+            from rage_web.game_engine.state import PendenciaEfeito
+            zona_retorno = zona_original.value if (efeito.params.get('retornar_zona_original')
+                           and zona_original in zonas.values()) else Zone.PACK_HOME.value
+            pendencia = PendenciaEfeito(
+                card_uid=id(alvo),
+                atributo='zona',
+                delta=0,
+                duracao=f'after_{self.game.turn_number + duracao}_turns',
+                turno_aplicado=self.game.turn_number,
+                fase_aplicada=self.game.phase,
+                valor_str=zona_retorno,
+            )
+            self.game.pendencias.append(pendencia)
+            self.game.add_log(
+                f'{alvo.name} retornara em {duracao} turno(s)'
+            )
+
         return True
 
     def _resolver_ganhar_vp(self, efeito: Efeito, origem: CardInstance,
@@ -866,7 +970,7 @@ class ResolvedorEfeitos:
         acao = efeito.params.get('acao', '')
 
         # Alvo: o proprio personagem alvo (passado via efeito)
-        if not alvo or not hasattr(alvo, 'uid'):
+        if not alvo or not hasattr(alvo, 'card_id'):
             self.game.add_log(f'{origem.name}: alvo invalido para quest')
             return False
 

@@ -1,0 +1,30 @@
+{
+    "id": "card_312",
+    "nome": "Dodge",
+    "tipo": "Combat Action",
+    "modos": [
+        {
+            "descricao": "Esquivar de 1 ataque",
+            "efeitos": [
+                {
+                    "tipo": "fugir",
+                    "quantidade": 1,
+                    "condicao_alvo": "criatura_aliada"
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 312,
+        "texto_original": "Avoids one attack. Choose one damage card played this round on the character who has dodged and discard it.",
+        "keywords": "Dodge",
+        "damage": "",
+        "rage": 1,
+        "gnosis": 0,
+        "health": 0,
+        "requires": "",
+        "precisa_revisao": false
+    }
+}

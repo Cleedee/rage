@@ -217,6 +217,7 @@ class PlayerState:
     discard_combat: list[CardInstance] = field(default_factory=list)
     discard_sept: list[CardInstance] = field(default_factory=list)
     victory_pile: list[CardInstance] = field(default_factory=list)
+    out_of_play: list[CardInstance] = field(default_factory=list)
 
     # Atributos do jogador
     rage_pool: int = 0
@@ -699,7 +700,10 @@ class GameState:
                         selecionar_alfa(self, p.id, str(melhor.card_id))
                 calcular_ordem_alfa(self)
         else:
-            # Fim do Combat phase -> verificar vitoria
+            # Fim do Combat phase: vitimas atacam automaticamente
+            self._check_victim_attacks()
+
+            # Verificar vitoria
             from rage_web.game_engine.combat_queue import verificar_vitoria
             winner_id = verificar_vitoria(self)
             if winner_id:
@@ -795,6 +799,88 @@ class GameState:
             # Remove quests completas/falhas
             p.quests = [q for q in p.quests if q not in completas]
 
+    def _check_victim_attacks(self):
+        """Executa ataques automaticos de Victimas no Hunting Grounds.
+
+        Chamado ao fim do Combat phase, antes da verificacao de vitoria.
+        Cada vitima ataca o personagem mais vulneravel/conveniente.
+        """
+        from rage_web.game_engine.state import anexar_dano
+
+        vitimas = [c for c in self.hunting_grounds_cards
+                   if c.card_type and 'Victim' in c.card_type
+                   and c.health_current > 0]
+
+        if not vitimas:
+            return
+
+        # Coleta personagens de todos os jogadores
+        todos_personagens = []
+        for p in self.players:
+            todos_personagens.extend(
+                (c, p) for c in p.pack_home
+                if 'Character' in (c.card_type or '')
+                or 'Ally' in (c.card_type or '')
+            )
+
+        if not todos_personagens:
+            return
+
+        for vitima in vitimas:
+            alvo = None
+            dono_alvo = None
+
+            # 535 - Renegade Werewolf Hunter: ataca BSD com maior Renome
+            if vitima.card_id == 535:
+                bsd_candidates = [
+                    (c, p) for c, p in todos_personagens
+                    if 'Black Spiral Dancer' in (c.keywords or '')
+                    or 'Wyrm' in (c.keywords or '')
+                ]
+                if not bsd_candidates:
+                    continue
+                bsd_candidates.sort(key=lambda x: x[0].renown, reverse=True)
+                alvo, dono_alvo = bsd_candidates[0]
+
+            # 565 - Vigilante: ataca quem matou vitima de menor Renome
+            elif vitima.card_id == 565:
+                if not todos_personagens:
+                    continue
+                # Escolhe aleatoriamente entre os personagens
+                idx = self.rng.randint(0, len(todos_personagens) - 1) if self.rng else 0
+                alvo, dono_alvo = todos_personagens[idx]
+
+            # 568 - Wild Animals: ataca maior Rage Wyrm
+            elif vitima.card_id == 568:
+                wyrm_candidates = [
+                    (c, p) for c, p in todos_personagens
+                    if 'Wyrm' in (c.keywords or '')
+                ]
+                if not wyrm_candidates:
+                    continue
+                wyrm_candidates.sort(key=lambda x: x[0].effective_rage, reverse=True)
+                alvo, dono_alvo = wyrm_candidates[0]
+
+            if alvo and dono_alvo:
+                dano = max(1, vitima.effective_rage)
+                agravado = (vitima.card_id == 535)  # Werewolf Hunter does aggravated
+                self.add_log(
+                    f'⚔️ {vitima.name} atacou {alvo.name} '
+                    f'com {dano} de dano{" agravado" if agravado else ""}!'
+                )
+                anexar_dano(alvo, vitima, dano, dono_alvo.id,
+                            is_aggravated=agravado)
+
+                # Se alvo morreu, vai pro Victory Pile de ninguem (desaparece)
+                if alvo.health_current <= 0:
+                    from rage_web.game_engine.combat_queue import _remove_creature
+                    _remove_creature(self, alvo)
+                    alvo.zone = Zone.DISCARD_COMBAT
+                    dono_alvo.discard_combat.append(alvo)
+                    self.add_log(
+                        f'💀 {alvo.name} foi morto por {vitima.name}!'
+                    )
+
     def register_card_passives(self, card: CardInstance, owner: PlayerState):
         """Registra efeitos passivos especiais de cartas sem efeitos
         estruturados.
@@ -836,6 +922,60 @@ class GameState:
                 f'{card.name}: {owner.name} pode recrutar '
                 f'Ajaba, Bastet e Silent Striders')
 
+        elif card.card_id == 175:  # Longtooth Soulkiller
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_use_7th_gen_gifts'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: {owner.name} pode usar Gifts de 7a Geracao')
+
+        elif card.card_id == 227:  # Questor
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='questor_active'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: bonus de +1 VP por vitima no HG ativado')
+
+        elif card.card_id == 630:  # Chronicle of the Black Labyrinth
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='chronicle_active'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: Wyrm ganha +1 VP por vitima')
+
+        elif card.card_id == 777:  # The Pit
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='the_pit_active'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: {owner.name} ganha +1 VP por vitima')
+
+        elif card.card_id == 716:  # War Knife of Benning Simon
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='war_knife_active'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: dano agravado com Combat Actions Rage <= 4')
+
+        elif card.card_id == 697:  # Skin of the Hellbound
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='skin_hellbound_active'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: imune a dano de Rage 6+')
+
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
         self.death_triggers.append(trigger)
@@ -862,14 +1002,17 @@ class GameState:
             if t.condition == 'any':
                 pass  # Qualquer morte dispara
             elif t.condition.startswith('killed_by_type:'):
-                tipo_necessario = t.condition.split(':', 1)[1].strip()
-                if (killer_card is None
-                        or tipo_necessario.lower() not in (killer_card.name.lower()
-                        or '')):
-                    # Verifica se o jogador killer tem o tipo
-                    if killer_player and tipo_necessario.lower() not in (
-                            killer_player.name.lower() or ''):
-                        continue
+                tipo_necessario = t.condition.split(':', 1)[1].strip().lower()
+                if killer_card is None:
+                    continue
+                # Verifica em keywords, nome e card_type
+                keywords = (killer_card.keywords or '').lower()
+                nome = (killer_card.name or '').lower()
+                card_type = (killer_card.card_type or '').lower()
+                if (tipo_necessario not in keywords
+                        and tipo_necessario not in nome
+                        and tipo_necessario not in card_type):
+                    continue
             else:
                 continue  # Condicao nao reconhecida
 
@@ -877,7 +1020,8 @@ class GameState:
             if t.action.startswith('search_deck_type:'):
                 tipos = t.action.split(':', 1)[1].strip()
                 tipos_lista = [x.strip() for x in tipos.split('/')]
-                beneficiario = self._find_player(t.originador_id)
+                # Beneficiario: primeiro o killer_player, depois originador
+                beneficiario = killer_player or self._find_player(t.originador_id)
                 if beneficiario:
                     # Procura no sept deck por carta do tipo
                     encontrada = None
@@ -993,14 +1137,83 @@ class GameState:
         return True
 
     def _find_card_by_uid(self, uid: int) -> Optional[CardInstance]:
-        """Busca uma CardInstance pelo seu Python id() em todas as zonas."""
+        """Busca uma CardInstance pelo seu Python id() em todas as zonas.
+
+        Inclui cartas em OUT_OF_PLAY (que nao estao em nenhuma lista).
+        """
         for p in self.players:
             for zone_cards in (p.pack_home, p.hunting_grounds,
-                               p.umbra, p.hand):
+                               p.umbra, p.hand,
+                               p.discard_combat, p.discard_sept,
+                               p.deck_combat, p.deck_sept,
+                               p.victory_pile, p.out_of_play):
                 for c in zone_cards:
                     if id(c) == uid:
                         return c
+        for c in self.hunting_grounds_cards:
+            if id(c) == uid:
+                return c
         return None
+
+    def check_kill_bonuses(self, killed_card: CardInstance,
+                             killer_player: PlayerState) -> None:
+        """Verifica bonus de VP por matar criaturas.
+
+        Cartas que concedem bonus:
+        - Questor (227): +1 VP ao matar Victim do Hunting Grounds
+        - The Pit (777): +1 VP ao matar qualquer Victim
+        - Chronicle of the Black Labyrinth (630): +1 VP ao matar Victim
+          se o controlador for Wyrm
+        """
+        if killed_card.card_type != 'Victim':
+            return
+
+        z_orig = killed_card.zone
+        if z_orig != Zone.HUNTING_GROUNDS and z_orig != Zone.PACK_HOME:
+            return
+
+        # Questor: so bonus se vitima estava no Hunting Grounds
+        questor_bonus = False
+        if z_orig == Zone.HUNTING_GROUNDS and self.has_modifier('questor_active'):
+            # Verifica se quem matou e dono do Questor
+            for m in self.game_modifiers:
+                if m.modifier == 'questor_active' and m.ativo:
+                    card = self._find_card_by_uid(m.card_uid)
+                    if card and card.zone in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS, Zone.UMBRA):
+                        dono = self._find_player(card.owner_id)
+                        if dono and dono.id == killer_player.id:
+                            killer_player.victory_points += 1
+                            questor_bonus = True
+                            self.add_log(
+                                f'Questor: +1 VP ({killed_card.name} do HG)')
+                            break
+
+        # The Pit: bonus para qualquer vitima (nao cumulativo com Questor?)
+        if not questor_bonus and self.has_modifier('the_pit_active'):
+            for m in self.game_modifiers:
+                if m.modifier == 'the_pit_active' and m.ativo:
+                    card = self._find_card_by_uid(m.card_uid)
+                    if card and card.zone in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS, Zone.UMBRA):
+                        dono = self._find_player(card.owner_id)
+                        if dono and dono.id == killer_player.id:
+                            killer_player.victory_points += 1
+                            self.add_log(
+                                f'The Pit: +1 VP ({killed_card.name} morta)')
+                            break
+
+        # Chronicle: bonus para Wyrm
+        if self.has_modifier('chronicle_active'):
+            for m in self.game_modifiers:
+                if m.modifier == 'chronicle_active' and m.ativo:
+                    card = self._find_card_by_uid(m.card_uid)
+                    if card and card.zone in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS, Zone.UMBRA):
+                        dono = self._find_player(card.owner_id)
+                        if dono and dono.id == killer_player.id:
+                            # Chronicle bonus: +1 VP
+                            killer_player.victory_points += 1
+                            self.add_log(
+                                f'Chronicle: +1 VP ({killed_card.name} morta)')
+                            break
 
     def expirar_pendencias(self, fase_entrando: str) -> list[str]:
         """Reverte efeitos temporarios cuja duracao expirou.
@@ -1023,6 +1236,14 @@ class GameState:
                 expirou = True
             elif pend.duracao == 'end_of_phase' and pend.fase_aplicada != fase_entrando:
                 expirou = True
+            elif pend.duracao.startswith('after_'):
+                # Formato: 'after_N_turns' - expira quando turno atual >= N
+                try:
+                    target_turn = int(pend.duracao.split('_')[1])
+                    if self.turn_number >= target_turn:
+                        expirou = True
+                except (ValueError, IndexError):
+                    pass
 
             if expirou:
                 c = self._find_card_by_uid(pend.card_uid)
@@ -1040,6 +1261,41 @@ class GameState:
                         if pend.valor_str in c.restricoes:
                             c.restricoes.remove(pend.valor_str)
                             log.append(f'{c.name}: restricao "{pend.valor_str}" expirou')
+                    elif pend.atributo == 'zona' and pend.valor_str:
+                        # Move a carta de volta para a zona original
+                        zonas_rev = {
+                            'pack_home': Zone.PACK_HOME,
+                            'hunting_grounds': Zone.HUNTING_GROUNDS,
+                            'umbra': Zone.UMBRA,
+                            'discard_combat': Zone.DISCARD_COMBAT,
+                            'hand': Zone.HAND,
+                        }
+                        zona_retorno = zonas_rev.get(pend.valor_str)
+                        if zona_retorno:
+                            # Remove da lista atual (inclui out_of_play)
+                            for p in self.players:
+                                for lista in (p.pack_home, p.hunting_grounds,
+                                              p.umbra, p.hand, p.out_of_play):
+                                    if c in lista:
+                                        lista.remove(c)
+                                        break
+                            # Adiciona na lista correta
+                            map_destino = {
+                                Zone.PACK_HOME: [p.pack_home for p in self.players],
+                                Zone.UMBRA: [p.umbra for p in self.players],
+                                Zone.HUNTING_GROUNDS: [p.hunting_grounds for p in self.players],
+                            }
+                            # Tenta encontrar o dono original
+                            dono = self._find_player(c.owner_id)
+                            if dono:
+                                if zona_retorno == Zone.PACK_HOME:
+                                    dono.pack_home.append(c)
+                                elif zona_retorno == Zone.UMBRA:
+                                    dono.umbra.append(c)
+                                elif zona_retorno == Zone.HUNTING_GROUNDS:
+                                    dono.hunting_grounds.append(c)
+                            c.zone = zona_retorno
+                            log.append(f'{c.name} retornou para {pend.valor_str}')
                 removidas.append(pend)
 
         # Limpa restricoes de fim de turno (ex: nao_pode_frenzy)

@@ -1,0 +1,33 @@
+{
+    "id": "card_706",
+    "nome": "Tambertail's heart",
+    "tipo": "Equipment",
+    "modos": [
+        {
+            "descricao": "Escapar de combate apos round 2",
+            "efeitos": [
+                {
+                    "tipo": "fugir",
+                    "quantidade": 1,
+                    "condicao_alvo": "criatura_aliada",
+                    "params": {
+                        "condicao": "apos_round_2"
+                    }
+                }
+            ],
+            "condicao_uso": ""
+        }
+    ],
+    "_metadata": {
+        "fonte": "revisao_deck416",
+        "card_id": 706,
+        "texto_original": "A character equipped with Tambertail's Heart may escape from any combat after the second round.",
+        "keywords": "Bane Fetish",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 4,
+        "health": 0,
+        "requires": "Black Spiral Dancer",
+        "precisa_revisao": false
+    }
+}
