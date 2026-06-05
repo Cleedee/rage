@@ -684,6 +684,24 @@ def resolve_combat(game: GameState) -> bool:
             dano = 0
         else:
             dano = max(0, origem_card.effective_rage - alvo_card.reducao_dano)
+
+        # Ironjaw (369): +1 dano se nem ela nem alvo tem arma
+        if 'ironjaw_bonus' in origem_card.restricoes:
+            tem_arma_origem = any(
+                'weapon' in (eq.keywords or '').lower()
+                for eq in origem_card.attached_equipment)
+            tem_arma_alvo = any(
+                'weapon' in (eq.keywords or '').lower()
+                for eq in alvo_card.attached_equipment)
+            if not tem_arma_origem and not tem_arma_alvo:
+                dano += 1
+                game.add_log(f'  Ironjaw: +1 dano (sem armas)')
+
+        # Njoki Scarface (373): reduz 1 de dano (precisa +1 card pra morrer)
+        if 'njoki_tough' in alvo_card.restricoes:
+            dano = max(0, dano - 1)
+            game.add_log(f'  Njoki scarface reduziu 1 de dano')
+
         if alvo_card.reducao_dano > 0 and not skin_blocks:
             game.add_log(f'  {alvo_card.name} reduziu {alvo_card.reducao_dano} '
                          f'de dano (equipamento)')
@@ -793,6 +811,9 @@ def resolve_combat(game: GameState) -> bool:
         if acao in ACOES_OFENSIVAS:
             _processar_ataque(d_id, a_id)
 
+    # Clan of Hyenas (96): foge do combate se tomou >=3 dano neste round
+    _check_hyenas_escape(game)
+
     game.combat.step = 'end'
     game.add_log('━ Combate encerrado.')
     return True
@@ -885,6 +906,37 @@ def end_combat(game: GameState) -> bool:
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')
     return True
+
+
+def _check_hyenas_escape(game: GameState):
+    """Clan of Hyenas (96): foge do combate se tomou >=3 dano neste round.
+
+    Verifica todos os combatentes. Se um deles e o Clan of Hyenas
+    e tem >=3 de dano total anexado (attached_damage), remove-o
+    do combate e devolve ao pack home.
+    """
+    from rage_web.game_engine.combat_queue import get_combatants
+    combatentes = get_combatants(game)
+    for cid in combatentes:
+        carta = _find_card(game, cid)
+        if not carta or carta.card_id != 96:
+            continue
+        dano_total = sum(getattr(d, 'rage', 0) or 0
+                        for d in carta.attached_damage)
+        if dano_total >= 3:
+            dono = _find_owner(game, carta)
+            if dono and carta in dono.pack_home:
+                game.add_log(
+                    f'  Clan of Hyenas fugiu do combate '
+                    f'(tomou {dano_total} de dano)')
+                # Remove do combate (apenas remove das listas de combatentes)
+                if cid in game.combat.attackers:
+                    game.combat.attackers.remove(cid)
+                if cid in game.combat.defenders:
+                    game.combat.defenders.remove(cid)
+                if cid in game.combat.declarations:
+                    del game.combat.declarations[cid]
+                break
 
 
 def get_declaration_summary(game: GameState) -> dict:

@@ -20,6 +20,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "Foge do combate no fim do round se tomou >=3 dano."
+        "nota_revisao": "Foge do combate se >=3 dano no round (passiva + resolve_combat)"
     }
 }

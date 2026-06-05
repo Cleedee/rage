@@ -20,6 +20,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "+2 Renome em Moots de Renome menor. Loyalty: Ajaba."
+        "nota_revisao": "+2 Renome em Moots (passiva via register_card_passives + votar_moot)"
     }
 }

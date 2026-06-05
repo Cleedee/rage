@@ -20,6 +20,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "Precisa +1 card de dano pra morrer. Nao joga CA a menos que ferida."
+        "nota_revisao": "+1 dano extra pra morrer (passiva via register_card_passives)"
     }
 }

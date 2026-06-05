@@ -1000,6 +1000,51 @@ class GameState:
             self.add_log(
                 f'{card.name}: imune a dano de Rage 6+')
 
+        # ── Deck 484: Ajaba Aggression ──
+
+        elif card.card_id == 369:  # Ironjaw
+            card.restricoes.append('ironjaw_bonus')
+            self.add_log(
+                f'{card.name}: +1 dano sem armas (Rivalry: Simba)')
+
+        elif card.card_id == 373:  # Njoki Scarface
+            card.restricoes.append('njoki_tough')
+            self.add_log(
+                f'{card.name}: precisa +1 dano extra pra morrer')
+
+        elif card.card_id == 376:  # Thousand Cubs
+            card.restricoes.append('thousand_cubs_moot')
+            self.add_log(
+                f'{card.name}: +2 Renome em Moots')
+
+        elif card.card_id == 96:  # Clan of Hyenas
+            card.restricoes.append('hyenas_escape')
+            self.add_log(
+                f'{card.name}: foge se tomou >=3 dano no round')
+
+        elif card.card_id == 90:  # Unseelie Troll
+            card.restricoes.append('considerado_crinos')
+            self.add_log(
+                f'{card.name}: considerado Crinos/Battle form')
+
+        # ── Deck 484: Enemies ──
+
+        elif card.card_id == 1335:  # Bitter Hatar
+            card.restricoes.append('pode_ser_ally')
+            self.add_log(
+                f'{card.name}: pode ser jogado como Ally (Ananasi)')
+
+        elif card.card_id == 1337:  # Ootani Oil Bane
+            card.restricoes.append('impede_retirada')
+            card.restricoes.append('impede_armas')
+            self.add_log(
+                f'{card.name}: sem withdraw ate mao vazia, sem armas')
+
+        elif card.card_id == 553:  # Toreador Poseur
+            card.restricoes.append('impede_retirada')
+            self.add_log(
+                f'{card.name}: nao pode withdraw; 3 rounds sem ferir = alpha penalty')
+
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
         self.death_triggers.append(trigger)
@@ -1141,6 +1186,9 @@ class GameState:
     def votar_moot(self, jogador_id: str, a_favor: bool) -> bool:
         """Vota na Junta atual com todo o Renome do jogador.
 
+        Thousand Cubs (376): +2 Renome em Moots chamados por
+        personagens de Renome menor.
+
         Returns:
             True se o voto foi computado.
         """
@@ -1149,11 +1197,29 @@ class GameState:
         jogador = next((p for p in self.players if p.id == jogador_id), None)
         if not jogador:
             return False
+
         # Soma Renome de todos os personagens do jogador
         renown_total = sum(c.renown for c in jogador.pack_home)
+
+        # Thousand Cubs: +2 Renome se votando em Moot de Renome menor
+        motivo_bonus = ''
+        for c in jogador.pack_home:
+            if 'thousand_cubs_moot' in c.restricoes:
+                # So se o dono da Junta tem Renome menor que o dela
+                dono_moot = next(
+                    (p for p in self.players
+                     if p.id == self.moot_atual.dono_id), None)
+                if dono_moot and dono_moot is not jogador:
+                    renown_dono = sum(
+                        cc.renown for cc in dono_moot.pack_home)
+                    if renown_dono < c.renown:
+                        renown_total += 2
+                        motivo_bonus = f' (+2 Thousand Cubs)'
+                        break
+
         self.moot_atual.votar(renown_total, a_favor)
         self.add_log(f'{jogador.name} votou {"SIM" if a_favor else "NAO"} '
-                     f'com {renown_total} votos')
+                     f'com {renown_total} votos{motivo_bonus}')
         return True
 
     def resolver_moot(self) -> bool:

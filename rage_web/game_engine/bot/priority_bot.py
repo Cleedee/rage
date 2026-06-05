@@ -274,8 +274,13 @@ class PriorityBot:
 
         # Se tem uma Junta ativa, vota
         if g.moot_atual and not g.moot_atual.resolvido:
-            # Vota SIM (bot sempre aprova sua propria junta)
-            g.votar_moot(self.player_id, a_favor=True)
+            # Estrategia de voto para N jogadores:
+            # - SIM se for propria junta
+            # - SIM se for de oponente que NAO e o lider (alianca implicita)
+            #   (assume que nao-lideres estao mirando no lider)
+            # - NAO se for do lider ou de oponente qualquer
+            a_favor = self._moot_voto_estrategico(g.moot_atual)
+            g.votar_moot(self.player_id, a_favor=a_favor)
             g.resolver_moot()
             return f'moot_voto_{g.moot_atual.nome}'
 
@@ -385,6 +390,28 @@ class PriorityBot:
     def _get_opponents(self) -> list[PlayerState]:
         """Retorna todos os oponentes (N players)."""
         return [p for p in self.game.players if p.id != self.player_id]
+
+    def _moot_voto_estrategico(self, moot) -> bool:
+        """Decide o voto em Moot baseado em estrategia para N jogadores.
+
+        Returns:
+            True se vota a favor, False se contra.
+        """
+        # Propria junta: sempre a favor
+        if moot.dono_id == self.player_id:
+            return True
+
+        # Encontra o lider (maior VP) entre todos os jogadores
+        lider = max(self.game.players,
+                    key=lambda p: p.victory_points / max(p.renown_level, 1))
+
+        # Se o dono da junta NAO e o lider, e o lider nao e o proprio bot,
+        # vota SIM (alianca implicita contra o lider)
+        if moot.dono_id != lider.id and lider.id != self.player_id:
+            return True
+
+        # Cenario padrao: vota contra
+        return False
 
     def _agir_alpha(self) -> Optional[str]:
         """Acao alfa: o alpha do jogador age.

@@ -20,6 +20,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "+1 dano se nem ela nem alvo tem arma. Rivalry: Simba."
+        "nota_revisao": "+1 dano sem armas (passiva via register_card_passives)"
     }
 }

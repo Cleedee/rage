@@ -20,6 +20,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "Nao pode withdraw. 3 rounds sem ferir: atacante perde alpha 2 turnos."
+        "nota_revisao": "Nao pode withdraw (impedir_retirada). 3 rounds sem ferir = alpha penalty (stub)"
     }
 }
