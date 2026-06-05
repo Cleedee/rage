@@ -1,0 +1,31 @@
+{
+    "id": "card_1522",
+    "nome": "Bar the Way",
+    "tipo": "Combat Action",
+    "renown": 0,
+    "atributos": {
+        "rage": 2,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "2",
+    "modos": [
+        {
+            "descricao": "Barrar o Caminho",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "alvo": "inimigo",
+                    "quantidade": 2
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Se nao tomou dano neste round e nao frenzied, oponentes nao podem withdraw/escapar ate prox round."
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "id": "card_553",
+    "nome": "Toreador Poseur",
+    "tipo": "Enemy",
+    "renown": 0,
+    "atributos": {
+        "rage": 2,
+        "gnosis": 4,
+        "health": 4
+    },
+    "requires": "",
+    "keyword": "Vampire",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Toreador Poseur",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Nao pode withdraw. 3 rounds sem ferir: atacante perde alpha 2 turnos."
+    }
+}

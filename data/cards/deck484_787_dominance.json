@@ -1,0 +1,32 @@
+{
+    "id": "card_787",
+    "nome": "Dominance",
+    "tipo": "Action",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Dominancia",
+            "efeitos": [
+                {
+                    "tipo": "anular",
+                    "alvo": "acao",
+                    "quantidade": 0,
+                    "condicao_alvo": "renown_lte_user"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Cancela Action de Renome <= user. Vai pro VP valendo 1 de Renome."
+    }
+}

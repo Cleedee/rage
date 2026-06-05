@@ -1,0 +1,33 @@
+{
+    "id": "card_1149",
+    "nome": "Scavenger's Quest",
+    "tipo": "Quest",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "Ajaba - Bone Gnawer - Corax",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Missao do Carniceiro",
+            "efeitos": [
+                {
+                    "tipo": "quest_check",
+                    "alvo": "self",
+                    "quantidade": 0,
+                    "acao": "kill_prey_after_alpha",
+                    "vp": 1
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Quando combate alpha vs prey termina, ataca o Prey. Se kill, VP."
+    }
+}

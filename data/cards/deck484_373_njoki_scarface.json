@@ -1,0 +1,25 @@
+{
+    "id": "card_373",
+    "nome": "Njoki Scarface",
+    "tipo": "Character - Gaia",
+    "renown": 0,
+    "atributos": {
+        "rage": 1,
+        "gnosis": 1,
+        "health": 2
+    },
+    "requires": "",
+    "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Njoki Cara-Cortada",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Precisa +1 card de dano pra morrer. Nao joga CA a menos que ferida."
+    }
+}

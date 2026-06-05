@@ -1,0 +1,31 @@
+{
+    "id": "card_1348",
+    "nome": "Tzinzie",
+    "tipo": "Event",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "Ajaba - Bastet",
+    "keyword": "Personal Totem",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Tzinzie",
+            "efeitos": [
+                {
+                    "tipo": "combar_acao",
+                    "alvo": "self",
+                    "quantidade": 0
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Inicio do combate: nomeia CA. Oponente descarta randomico ao revela-la."
+    }
+}

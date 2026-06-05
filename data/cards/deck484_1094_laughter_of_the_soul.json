@@ -1,0 +1,32 @@
+{
+    "id": "card_1094",
+    "nome": "Laughter of the Soul",
+    "tipo": "Gift",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 5,
+        "health": 0
+    },
+    "requires": "Ajaba",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Riso da Alma",
+            "efeitos": [
+                {
+                    "tipo": "tapar",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "duracao": "fim_do_turno_ou_ataque"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Alvo nao pode agir. Descarta fim do turno ou se atacado. Nao-jogavel em combate."
+    }
+}

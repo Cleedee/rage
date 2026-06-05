@@ -1,0 +1,25 @@
+{
+    "id": "card_369",
+    "nome": "Ironjaw",
+    "tipo": "Character - Gaia",
+    "renown": 0,
+    "atributos": {
+        "rage": 2,
+        "gnosis": 6,
+        "health": 3
+    },
+    "requires": "",
+    "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Mandibula de Ferro",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "+1 dano se nem ela nem alvo tem arma. Rivalry: Simba."
+    }
+}

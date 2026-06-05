@@ -1,0 +1,25 @@
+{
+    "id": "card_1337",
+    "nome": "Ootani Oil Bane",
+    "tipo": "Enemy",
+    "renown": 0,
+    "atributos": {
+        "rage": 5,
+        "gnosis": 5,
+        "health": 5
+    },
+    "requires": "",
+    "keyword": "Spirit - Bane",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Ootani Bane do Oleo",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Atacantes nao podem withdraw ate mao vazia. Sem armas neste combate."
+    }
+}

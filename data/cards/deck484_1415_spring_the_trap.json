@@ -1,0 +1,31 @@
+{
+    "id": "card_1415",
+    "nome": "Spring the Trap",
+    "tipo": "Combat Event",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "",
+    "keyword": "Pack Action",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Armadilha pronta",
+            "efeitos": [
+                {
+                    "tipo": "combar_acao",
+                    "alvo": "self",
+                    "quantidade": 0
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Packmate Animal form entra no combate entre rounds. +1 combat card."
+    }
+}

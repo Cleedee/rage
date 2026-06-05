@@ -1,0 +1,25 @@
+{
+    "id": "card_96",
+    "nome": "Clan of Hyenas",
+    "tipo": "Ally",
+    "renown": 0,
+    "atributos": {
+        "rage": 6,
+        "gnosis": 2,
+        "health": 8
+    },
+    "requires": "Ajaba",
+    "keyword": "Animal - Kinfolk",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Cla das Hienas",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Foge do combate no fim do round se tomou >=3 dano."
+    }
+}

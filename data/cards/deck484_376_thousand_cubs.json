@@ -1,0 +1,25 @@
+{
+    "id": "card_376",
+    "nome": "Thousand Cubs",
+    "tipo": "Character - Gaia",
+    "renown": 0,
+    "atributos": {
+        "rage": 4,
+        "gnosis": 6,
+        "health": 4
+    },
+    "requires": "",
+    "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Mil Filhotes",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "+2 Renome em Moots de Renome menor. Loyalty: Ajaba."
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "id": "card_361",
+    "nome": "Amber Eyes-Like-Knives",
+    "tipo": "Character - Gaia",
+    "renown": 0,
+    "atributos": {
+        "rage": 1,
+        "gnosis": 3,
+        "health": 1
+    },
+    "requires": "",
+    "keyword": "Mokole - Homid - Gaia - Female",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Olhos de Ambar",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Fim da Regen: alvo + ela mesma so Combat Actions no prox Resource."
+    }
+}

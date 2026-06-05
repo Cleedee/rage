@@ -1,0 +1,31 @@
+{
+    "id": "card_780",
+    "nome": "Termite Mounds",
+    "tipo": "Territory",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0
+    },
+    "requires": "Ajaba - Bagheera - Swara",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Montes de Cupim",
+            "efeitos": [
+                {
+                    "tipo": "combar_acao",
+                    "alvo": "self",
+                    "quantidade": 0
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "1x/turno: olha topo 3 do combat deck de um oponente."
+    }
+}

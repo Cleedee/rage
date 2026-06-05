@@ -1,0 +1,25 @@
+{
+    "id": "card_1335",
+    "nome": "Bitter Hatar",
+    "tipo": "Enemy",
+    "renown": 0,
+    "atributos": {
+        "rage": 7,
+        "gnosis": 6,
+        "health": 7
+    },
+    "requires": "Ananasi",
+    "keyword": "Ananasi",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Bitter Hatar",
+            "efeitos": []
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Ananasi. Pode jogar como Ally requerendo Ananasi."
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "id": "card_978",
+    "nome": "Gnaw",
+    "tipo": "Gift",
+    "renown": 0,
+    "atributos": {
+        "rage": 0,
+        "gnosis": 5,
+        "health": 0
+    },
+    "requires": "Lupus - Hyaena - Ratkin",
+    "keyword": "",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Roer",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "alvo": "inimigo",
+                    "quantidade": 0,
+                    "descarta_equipamento": true
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "deck": 484,
+        "precisa_revisao": false,
+        "nota_revisao": "Se dano no round 1, oponente descarta 1 Equipment."
+    }
+}
