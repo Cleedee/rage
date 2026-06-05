@@ -98,6 +98,7 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42):
 
 
 def run_match(seed: int = 42, max_turns: int = 30,
+              max_steps_override: int | None = None,
               difficulty_p1: str = 'hard',
               difficulty_p2: str = 'hard',
               deck1_id: int | None = None,
@@ -173,7 +174,9 @@ def run_match(seed: int = 42, max_turns: int = 30,
     stale_steps = 0
     last_turn = game.turn_number
     last_phase = game.phase
-    max_steps = max_turns * 50  # limite de seguranca
+    max_steps = max_steps_override if max_steps_override else max_turns * 50
+    if max_steps_override:
+        print(f'  (max-steps: {max_steps})')
     _log_fase(game, last_turn, last_phase)
 
     while step < max_steps:
@@ -324,6 +327,8 @@ Exemplos:
                         help='Compatibilidade: dificuldade J2')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--max-turns', type=int, default=30)
+    parser.add_argument('--max-steps', type=int, default=0,
+                        help='Override: max steps em vez de turnos*50')
     parser.add_argument('--deck1', type=int, default=None,
                         help='Compatibilidade: ID do deck J1')
     parser.add_argument('--deck2', type=int, default=None,
@@ -339,6 +344,8 @@ Exemplos:
                         help='Dificuldade (repetir para cada jogador)')
     args = parser.parse_args()
 
+    max_steps_override = args.max_steps if args.max_steps > 0 else None
+
     if args.watch:
         delay = args.delay
     else:
@@ -349,6 +356,7 @@ Exemplos:
         result = run_match(
             seed=args.seed,
             max_turns=args.max_turns,
+            max_steps_override=max_steps_override,
             delay=delay,
             deck_ids=args.deck,
             difficulties=args.diff,
@@ -357,6 +365,7 @@ Exemplos:
         result = run_match(
             seed=args.seed,
             max_turns=args.max_turns,
+            max_steps_override=max_steps_override,
             difficulty_p1=args.p1,
             difficulty_p2=args.p2,
             deck1_id=args.deck1,

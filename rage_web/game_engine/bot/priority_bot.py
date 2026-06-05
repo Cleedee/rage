@@ -45,6 +45,9 @@ class PriorityBot:
         self._cards_played_this_turn = 0
         self._umbra_agiu = False  # So uma acao de Umbra por fase
         self._feinted_ids = set()  # IDs que ja usaram Feint neste combate
+        # Slow deck detection
+        self._vp_history: list[float] = []  # VP total ao final de cada turno
+        self._vp_rate: float = 0.0  # VP/turn medio
 
     @property
     def player(self) -> PlayerState:
@@ -95,6 +98,12 @@ class PriorityBot:
             return self._agir_redraw()
 
         if g.phase == 'regeneration':
+            # Atualiza historico de VP ao fim de cada turno
+            if len(self._vp_history) < g.turn_number:
+                self._vp_history.append(self.player.victory_points)
+                if len(self._vp_history) >= 4:
+                    ultimos = self._vp_history[-4:]
+                    self._vp_rate = (ultimos[-1] - ultimos[0]) / len(ultimos)
             self._pass_turn()
             return 'pass_regen'
 
@@ -110,9 +119,24 @@ class PriorityBot:
         # Combat phase
         return self._agir_combate()
 
+    def _is_slow_deck(self) -> bool:
+        """Detecta se o deck esta progredindo devagar.
+
+        Retorna True se a taxa de VP/turno estiver abaixo de 0.8
+        apos o turno 5, indicando um deck de controle lento.
+        """
+        if self.game.turn_number <= 5:
+            return False
+        if len(self._vp_history) < 4:
+            return False
+        # VP rate = (VP atual - VP ha 3 turnos) / 3
+        taxa = self._vp_rate
+        return taxa < 0.8
+
     def _agir_recurso(self) -> str:
         """Age na fase de Resource."""
         me = self.player
+        lento = self._is_slow_deck()
 
         # Heuristica: max 3 cartas por turno (nao queimar mao)
         if self._cards_played_this_turn >= 3:
@@ -127,26 +151,25 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return f'play_character_{card.card_id}'
 
-        # 2. Depois, cartas de efeito nao-combate (Gifts, Events, Actions, etc.)
-        #    Pula cartas com efeitos stub que o bot nao sabe usar
-        TIPOS_STUB = {'quest_check', 'combar_acao'}
-        for i, card in enumerate(me.hand):
-            if card.modelo_id and card.card_type not in (
-                    'Combat Action', 'Combat Event'):
-                if self._pode_pagar_custos(card):
-                    # Verifica se a carta tem efeito util
-                    from rage_web.game_engine.effects import CARTAS_EXEMPLO
-                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
-                    if modelo and modelo.modos:
-                        modo = modelo.modos[0]
-                        if modo.efeitos:
-                            # Pula efeitos stub que o bot nao sabe usar
-                            tem_stub = any(
-                                e.tipo in TIPOS_STUB for e in modo.efeitos)
-                            if not tem_stub:
-                                modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                                self._cards_played_this_turn += 1
-                                return self._usar_carta_efeito(i, modo_idx, card)
+        # Se o deck e lento, pula efeitos nao-combate (gifts, events, quests)
+        # e joga so Ally/Equip/Caern que ficam em jogo
+        if not lento:
+            TIPOS_STUB = {'quest_check', 'combar_acao'}
+            for i, card in enumerate(me.hand):
+                if card.modelo_id and card.card_type not in (
+                        'Combat Action', 'Combat Event'):
+                    if self._pode_pagar_custos(card):
+                        from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                        modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                        if modelo and modelo.modos:
+                            modo = modelo.modos[0]
+                            if modo.efeitos:
+                                tem_stub = any(
+                                    e.tipo in TIPOS_STUB for e in modo.efeitos)
+                                if not tem_stub:
+                                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                                    self._cards_played_this_turn += 1
+                                    return self._usar_carta_efeito(i, modo_idx, card)
 
         # 3. Tenta jogar Ally, Equipment, Territory
         for i, card in enumerate(me.hand):
@@ -270,17 +293,15 @@ class PriorityBot:
         """Age na fase de Combat: acao alfa + cartas + atacar."""
         me = self.player
         g = self.game
+        lento = self._is_slow_deck()
 
         # ── ACAO ALFA ──
-        # Verifica se e a vez deste jogador como alpha
         alfa_atual = g.combat.current_alpha
         meu_alpha = g.combat.alphas.get(self.player_id)
 
         if alfa_atual and meu_alpha and alfa_atual == meu_alpha:
-            # Este jogador esta na vez de agir como alpha
             action = self._agir_alpha()
             if action:
-                # Avanca para o proximo alpha
                 g.combat.current_alpha_index += 1
                 return action
 
@@ -296,6 +317,33 @@ class PriorityBot:
             self._pass_turn()
             return 'pass_combat_limit'
 
+        # Se deck lento, inverte prioridades: atacar > sobreviver
+        # (nao adianta proteger criaturas se nunca ganha VP)
+        if lento:
+            # Lento: eliminar > atacar > sobreviver
+            # Tenta usar cartas de combate primeiro
+            for i, card in enumerate(me.hand):
+                if card.modelo_id and card.card_type in (
+                        'Combat Action', 'Combat Event', 'Action'):
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    if self._pode_pagar_custos(card):
+                        self._cards_played_this_turn += 1
+                        return self._usar_carta_efeito(i, modo_idx, card)
+
+            action = self._try_eliminate_threat()
+            if action:
+                return action
+            action = self._try_attack()
+            if action:
+                return action
+            # Pula sobreviver em deck lento — agressivo
+            action = self._try_survive()
+            if action:
+                return action
+            self._pass_turn()
+            return 'pass_combat'
+
+        # ── NORMAL (hard) ──
         # 1. SOBREVIVER
         action = self._try_survive()
         if action:
@@ -655,6 +703,7 @@ class PriorityBot:
         """
         me = self.player
         opponents = self._get_opponents()
+        lento = self._is_slow_deck()
 
         if not me.pack_home:
             return None
@@ -680,9 +729,12 @@ class PriorityBot:
 
         for alvo in ameacas:
             atacante = self.prioritizer.best_attacker_for(alvo, available)
-            if atacante and self.prioritizer.pode_eliminar(atacante, alvo):
-                self._attack(str(atacante.card_id), str(alvo.card_id))
-                return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
+            if atacante:
+                pode = self.prioritizer.pode_eliminar(atacante, alvo)
+                # Deck lento: ataca mesmo sem garantia de eliminar
+                if pode or (lento and atacante.rage >= alvo.rage * 0.5):
+                    self._attack(str(atacante.card_id), str(alvo.card_id))
+                    return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
 
         return None
 
@@ -822,6 +874,7 @@ class PriorityBot:
         """
         me = self.player
         opponents = self._get_opponents()
+        lento = self._is_slow_deck()
 
         available = [c for c in me.pack_home if not c.is_tapped]
         if not available:
@@ -840,10 +893,14 @@ class PriorityBot:
                              reverse=True)
             for alvo in ameacas:
                 atacante = self.prioritizer.best_attacker_for(alvo, available)
-                if atacante and self.prioritizer.pode_eliminar(atacante, alvo):
-                    self._attack(str(atacante.card_id), str(alvo.card_id))
-                    return (f'eliminate_{atacante.card_id}'
-                            f'_vs_{alvo.card_id}')
+                if atacante:
+                    # Deck lento: abaixa threshold — ataca mesmo sem
+                    # garantia de eliminar, so para causar dano
+                    if self.prioritizer.pode_eliminar(atacante, alvo) or (
+                            lento and atacante.rage >= alvo.rage * 0.5):
+                        self._attack(str(atacante.card_id), str(alvo.card_id))
+                        return (f'eliminate_{atacante.card_id}'
+                                f'_vs_{alvo.card_id}')
 
         # Se nao ha alvos, ataca Hunting Grounds
         best = max(available, key=lambda c: c.rage)
