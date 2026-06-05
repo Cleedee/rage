@@ -14,18 +14,12 @@
     "modos": [
         {
             "descricao": "Caern de Rytthiku",
-            "efeitos": [
-                {
-                    "tipo": "combar_acao",
-                    "alvo": "self",
-                    "quantidade": 0
-                }
-            ]
+            "efeitos": []
         }
     ],
     "_metadata": {
         "deck": 465,
         "precisa_revisao": false,
-        "nota_revisao": "Pack pode atacar Enemies (nao so Victims) no HG por VP."
+        "nota_revisao": "Pack pode atacar Enemies (nao so Victims) no HG por VP. Passiva via GameModifier."
     }
 }

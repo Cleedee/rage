@@ -655,6 +655,9 @@ class GameState:
     # Gerador de numeros aleatorios com seed (reprodutibilidade)
     rng: random.Random = field(default_factory=random.Random)
 
+    # Triggers de combate (ex: Tzinzie nomeia Combat Action)
+    combat_triggers: dict = field(default_factory=dict)
+
     def __post_init__(self):
         """Propaga o RNG do jogo para todos os jogadores."""
         for p in self.players:
@@ -1044,6 +1047,26 @@ class GameState:
             card.restricoes.append('impede_retirada')
             self.add_log(
                 f'{card.name}: nao pode withdraw; 3 rounds sem ferir = alpha penalty')
+
+        # ── Segundo grupo ──
+
+        elif card.card_id == 579:  # Caern of Rytthiku
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_attack_enemies_hg'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pack pode atacar Enemies no HG por VP')
+
+        elif card.card_id == 780:  # Termite Mounds
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='termite_mounds_active'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: 1x/turno: olha topo 3 do combat deck')
 
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""

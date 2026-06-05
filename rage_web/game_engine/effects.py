@@ -32,8 +32,8 @@ from enum import Enum
 from typing import Any, Callable, Optional
 
 from rage_web.game_engine.state import (
-    CardInstance, GameState, PendenciaEfeito, PlayerState, Zone,
-    anexar_dano, descartar_anexos,
+    CardInstance, GameState, GameModifier, PendenciaEfeito,
+    PlayerState, Zone, anexar_dano, descartar_anexos,
 )
 from rage_web.game_engine.combat_queue import _remove_creature
 
@@ -78,6 +78,9 @@ class EfeitoTipo(str, Enum):
     REMOVER_DO_COMBATE = 'remover_do_combate'  # Remover criatura do combate em andamento
     FORCAR_BLUFF = 'forcar_bluff'  # Proxima Combat Action do alvo e bluff
     IMPEDIR_FRENZY = 'impedir_frenzy'  # Ninguem pode frenzir (global)
+    OLHAR_TOPO_DECK = 'olhar_topo_deck'  # Olhar topo do deck do oponente
+    DESCARTAR_MAO_COMBATE = 'descartar_mao_combate'  # Oponente descarta toda mao de combate
+    REGISTRAR_TRIGGER_COMBATE = 'registrar_trigger_combate'  # Registrar trigger de combate (ex: Tzinzie)
 
 
 # -----------------------------------------------------------------------
@@ -235,10 +238,13 @@ class ResolvedorEfeitos:
     EfeitoTipo.REMOVER_DO_COMBATE: self._resolver_remover_do_combate,
     EfeitoTipo.FORCAR_BLUFF: self._resolver_forcar_bluff,
     EfeitoTipo.IMPEDIR_FRENZY: self._resolver_impedir_frenzy,
-            EfeitoTipo.EQUIPAR: self._resolver_equipar,
-            EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
-            EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
-            EfeitoTipo.REMOVER_DO_JOGO: self._resolver_remover_do_jogo,
+    EfeitoTipo.OLHAR_TOPO_DECK: self._resolver_olhar_topo_deck,
+    EfeitoTipo.DESCARTAR_MAO_COMBATE: self._resolver_descartar_mao_combate,
+    EfeitoTipo.REGISTRAR_TRIGGER_COMBATE: self._resolver_registrar_trigger_combate,
+    EfeitoTipo.EQUIPAR: self._resolver_equipar,
+    EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
+    EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
+    EfeitoTipo.REMOVER_DO_JOGO: self._resolver_remover_do_jogo,
         }
         return resolvedores.get(tipo)
 
@@ -1195,6 +1201,86 @@ class ResolvedorEfeitos:
                             f'{c.name} +1 Gnosis (Ragabash - New Moon)'
                         )
         self.game.add_log(f'{origem.name}: ninguem pode frenzir (New Moon)')
+        return True
+
+    # ──────────────────────────────────────────────
+    # OLHAR_TOPO_DECK
+    # ──────────────────────────────────────────────
+    def _resolver_olhar_topo_deck(self, efeito: Efeito,
+                                   origem: CardInstance,
+                                   jogador: PlayerState) -> bool:
+        """Olha o topo do combat deck do alvo.
+
+        Termite Mounds (780): olha topo 3 do combat deck de um oponente.
+        """
+        alvo = self._resolver_alvo(efeito, origem, jogador)
+        if not alvo:
+            return False
+        alvo_jogador = alvo if isinstance(alvo, PlayerState) else self._find_player(alvo)
+        if not alvo_jogador:
+            return False
+        qtd = int(getattr(efeito, 'quantidade', 0) or 3)
+        topo = alvo_jogador.deck_combat[:qtd]
+        nomes = [c.name for c in topo]
+        self.game.add_log(
+            f'{origem.name}: topo {qtd} do combat deck de '
+            f'{alvo_jogador.name}: {nomes}'
+        )
+        # Marca como usado para 1x/turno
+        self.game.used_effects.append(id(origem))
+        return True
+
+    # ──────────────────────────────────────────────
+    # DESCARTAR_MAO_COMBATE
+    # ──────────────────────────────────────────────
+    def _resolver_descartar_mao_combate(self, efeito: Efeito,
+                                         origem: CardInstance,
+                                         jogador: PlayerState) -> bool:
+        """Alvo descarta toda a mao de combate.
+
+        Dust Storm (1360): descarta combate hand.
+        """
+        alvo = self._resolver_alvo(efeito, origem, jogador)
+        if not alvo:
+            return False
+        alvo_jogador = alvo if isinstance(alvo, PlayerState) else self._find_player(alvo)
+        if not alvo_jogador:
+            return False
+        mao = alvo_jogador.hand[:]
+        descartadas = []
+        for c in mao:
+            c.zone = Zone.DISCARD_COMBAT
+            alvo_jogador.discard_combat.append(c)
+            descartadas.append(c.name)
+        if mao:
+            alvo_jogador.hand.clear()
+        self.game.add_log(
+            f'{origem.name}: {alvo_jogador.name} descartou '
+            f'{len(descartadas)} cartas da mao de combate'
+        )
+        return True
+
+    # ──────────────────────────────────────────────
+    # REGISTRAR_TRIGGER_COMBATE
+    # ──────────────────────────────────────────────
+    def _resolver_registrar_trigger_combate(self, efeito: Efeito,
+                                             origem: CardInstance,
+                                             jogador: PlayerState) -> bool:
+        """Registra um trigger que acontece durante o combate.
+
+        Tzinzie (1348): no inicio do combate, nomeia uma Combat Action.
+        Quando oponente revela essa acao, descarta uma carta da mao.
+        """
+        if efeito.params and efeito.params.get('trigger') == 'tzinzie':
+            modifier = GameModifier(
+                card_uid=id(origem),
+                modifier='tzinzie_active'
+            )
+            self.game.game_modifiers.append(modifier)
+            self.game.add_log(
+                f'{origem.name}: Tzinzie ativo - nomeia Combat Action '
+                f'no inicio do combate'
+            )
         return True
 
 

@@ -16,9 +16,9 @@
             "descricao": "Montes de Cupim",
             "efeitos": [
                 {
-                    "tipo": "combar_acao",
-                    "alvo": "self",
-                    "quantidade": 0
+                    "tipo": "olhar_topo_deck",
+                    "alvo": "inimigo",
+                    "quantidade": 3
                 }
             ]
         }

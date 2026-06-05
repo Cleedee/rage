@@ -16,8 +16,8 @@
             "descricao": "Tempestade de Poeira",
             "efeitos": [
                 {
-                    "tipo": "combar_acao",
-                    "alvo": "self",
+                    "tipo": "descartar_mao_combate",
+                    "alvo": "inimigo",
                     "quantidade": 0
                 }
             ]
@@ -26,6 +26,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "Combat Phase apos alphas anunciados, antes da declaracao."
+        "nota_revisao": "Combat Phase apos alphas anunciados, antes da declaracao. Alvo descarta mao de combate."
     }
 }

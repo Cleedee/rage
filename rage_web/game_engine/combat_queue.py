@@ -356,6 +356,10 @@ def start_combat(game: GameState, attackers: list[str],
         f'Combate iniciado: {len(attackers)} atacante(s) vs '
         f'{len(defenders)} defensor(es)'
     )
+
+    # Tzinzie (1348): trigger de inicio de combate
+    _check_tzinzie_trigger(game)
+
     return True
 
 
@@ -479,6 +483,30 @@ def reveal_all(game: GameState) -> bool:
     game.add_log('Acoes reveladas!')
     for cid, action in game.combat.declarations.items():
         game.add_log(f'  {cid}: {action}')
+
+    # Tzinzie (1348): se oponente revelou a acao nomeada, descarta
+    if 1348 in game.combat_triggers:
+        tz = game.combat_triggers[1348]
+        named_action = tz.get('named_action', '')
+        owner_id = tz.get('owner_id', '')
+        for cid, action in game.combat.declarations.items():
+            # Verifica se e um oponente que revelou a acao
+            card = _find_card(game, cid)
+            if card and action == named_action:
+                dono = _find_owner(game, card)
+                if dono and dono.id != owner_id:
+                    # Descarta uma carta aleatoria da mao
+                    if dono.hand:
+                        import random as rng
+                        idx = rng.randint(0, len(dono.hand) - 1)
+                        descartada = dono.hand.pop(idx)
+                        descartada.zone = Zone.DISCARD_COMBAT
+                        dono.discard_combat.append(descartada)
+                        game.add_log(
+                            f'Tzinzie: {dono.name} descartou '
+                            f'{descartada.name} da mao (revelou {action})'
+                        )
+                    break
 
     return True
 
@@ -906,6 +934,27 @@ def end_combat(game: GameState) -> bool:
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')
     return True
+
+
+def _check_tzinzie_trigger(game: GameState):
+    """Verifica se algum jogador tem Tzinzie (1348) ativo no combate.
+
+    Tzinzie: Personal Totem. No inicio do combate, o dono pode nomear
+    uma Combat Action. Quando oponente revela essa acao, descarta
+    uma carta aleatoria da mao de combate.
+    """
+    for p in game.players:
+        for c in p.pack_home + p.hunting_grounds:
+            if c.card_id == 1348:  # Tzinzie
+                # Nomeia a acao mais comum: strike
+                game.combat_triggers[1348] = {
+                    'named_action': 'strike',
+                    'owner_id': p.id,
+                    'card_uid': id(c),
+                }
+                game.add_log(
+                    f'{p.name} nomeou strike (Tzinzie)')
+                return
 
 
 def _check_hyenas_escape(game: GameState):

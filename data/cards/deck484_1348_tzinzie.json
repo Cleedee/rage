@@ -16,9 +16,12 @@
             "descricao": "Tzinzie",
             "efeitos": [
                 {
-                    "tipo": "combar_acao",
+                    "tipo": "registrar_trigger_combate",
                     "alvo": "self",
-                    "quantidade": 0
+                    "quantidade": 0,
+                    "params": {
+                        "trigger": "tzinzie"
+                    }
                 }
             ]
         }
@@ -26,6 +29,6 @@
     "_metadata": {
         "deck": 484,
         "precisa_revisao": false,
-        "nota_revisao": "Inicio do combate: nomeia CA. Oponente descarta randomico ao revela-la."
+        "nota_revisao": "Personal Totem. Inicio do combate: nomeia Combat Action. Oponente descarta randomico ao revela-la. Trigger via GameModifier."
     }
 }

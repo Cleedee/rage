@@ -14,12 +14,13 @@
     "modos": [
         {
             "descricao": "Pele de ferro",
+            "acao_combate": "block",
             "efeitos": []
         }
     ],
     "_metadata": {
         "deck": 465,
         "precisa_revisao": false,
-        "nota_revisao": "Instinctive. Bloqueia ate 3 de 1 ataque. Comportamento no sistema de combate."
+        "nota_revisao": "Instinctive. Block acao. Bloqueia ate 3 dano de 1 ataque. Comportamento nativo do sistema de combate."
     }
 }

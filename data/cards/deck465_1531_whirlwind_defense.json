@@ -14,12 +14,13 @@
     "modos": [
         {
             "descricao": "Defesa turbilhao",
+            "acao_combate": "block",
             "efeitos": []
         }
     ],
     "_metadata": {
         "deck": 465,
         "precisa_revisao": false,
-        "nota_revisao": "Fast Striking. Bloqueia 1 de cada ataque contra user ou packmate."
+        "nota_revisao": "Fast Striking. Block acao. Bloqueia 1 de cada ataque contra user ou packmate. Comportamento nativo do sistema de combate."
     }
 }
