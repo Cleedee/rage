@@ -1068,6 +1068,62 @@ class GameState:
             self.add_log(
                 f'{card.name}: 1x/turno: olha topo 3 do combat deck')
 
+        # ── Deck 524: Wailer special ──
+
+        elif card.card_id == 42:  # Barnaby Shadrack
+            # +2 sept cards ja resolvido via efeito comprar
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='barnaby_ignora_gifts'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: ignora efeitos de Gifts')
+
+        elif card.card_id == 64:  # Fangs-Through-Eye
+            card.restricoes.append('nao_defende_fomori')
+            self.add_log(
+                f'{card.name}: nunca defende Fomori no HG')
+
+        elif card.card_id == 347:  # Wailer
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='wailer_battle_form'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: forma Battle impede Combat Actions'
+                f' de oponentes com menos Gnosis')
+
+        elif card.card_id == 398:  # Enticer
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='enticer_bloqueia_round1'
+            )
+            self.game_modifiers.append(modifier)
+            card.restricoes.append('enticer_sem_bluff_rage6')
+            self.add_log(
+                f'{card.name}: oponentes sem Combat Action no round 1'
+                f' se tiverem menos Gnosis')
+
+        elif card.card_id == 430:  # Pentex Executive
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='pentex_executive_votos_moot'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: 3 votos em Moot, pode destruir 1 Caern')
+
+        elif card.card_id == 491:  # Greenpeace Assault Team
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='greenpeace_destroi_caern_wyrm'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: destroi 1 Caern Wyrm por Combat Phase')
+
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
         self.death_triggers.append(trigger)

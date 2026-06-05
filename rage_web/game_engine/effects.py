@@ -195,6 +195,9 @@ class ResolvedorEfeitos:
             self.log.append(f'Sem alvo valido para {efeito.tipo.value}')
             return False
 
+        # Armazena ultimo alvo para condicao_estado
+        self._ultimo_alvo = alvo if not isinstance(alvo, list) else (alvo[0] if alvo else None)
+
         resultado = resolvedor(efeito, origem, jogador, alvo)
         if resultado:
             if isinstance(alvo, list):
@@ -611,10 +614,30 @@ class ResolvedorEfeitos:
 
     def _resolver_comprar(self, efeito: Efeito, origem: CardInstance,
                          jogador: PlayerState, alvo) -> bool:
-        """Compra cartas do deck de combate."""
+        """Compra cartas do deck de combate.
+
+        Suporta params:
+        - por_packmate: bool — compra N cartas por packmate
+        - zona: str — 'deck_combate' (padrao) ou 'deck_sept'
+        """
         qtd = efeito.quantidade or 1
-        jogador.draw_combat(qtd)
-        self.game.add_log(f'{jogador.name} comprou {qtd} carta(s)')
+        por_packmate = efeito.params.get('por_packmate', False)
+        zona = efeito.params.get('zona', 'deck_combate')
+
+        if por_packmate:
+            # Conta packmates (aliados em pack_home, excluindo origem)
+            packmates = [c for c in jogador.pack_home
+                        if str(c.card_id) != str(origem.card_id)]
+            qtd = qtd * len(packmates)
+            self.game.add_log(
+                f'{len(packmates)} packmate(s): comprando {qtd} carta(s)'
+            )
+
+        if zona == 'deck_sept':
+            jogador.draw_sept(qtd)
+        else:
+            jogador.draw_combat(qtd)
+        self.game.add_log(f'{jogador.name} comprou {qtd} carta(s) de {zona}')
         return True
 
     def _resolver_comprar_ate(self, efeito: Efeito, origem: CardInstance,
@@ -804,22 +827,53 @@ class ResolvedorEfeitos:
 
     def _resolver_restringir(self, efeito: Efeito, origem: CardInstance,
                             jogador: PlayerState, alvo) -> bool:
-        """Adiciona uma restricao temporaria a uma criatura."""
-        if not isinstance(alvo, CardInstance) or not efeito.alvo:
+        """Adiciona uma restricao temporaria a uma criatura.
+
+        Suporta params:
+        - restricao: str — nome da restricao (se nao usar efeito.alvo)
+        - exceto: list[str] — tipos que ignoram a restricao
+        - duracao: str — duracao da restricao
+        """
+        restricao = efeito.params.get('restricao', efeito.alvo or '')
+        exceto = efeito.params.get('exceto', [])
+        duracao = efeito.duracao or efeito.params.get('duracao', 'permanente_ate_cancelar')
+
+        if not restricao:
             return False
-        if efeito.alvo not in alvo.restricoes:
-            alvo.restricoes.append(efeito.alvo)
-            if efeito.duracao:
-                self.game.pendencias.append(PendenciaEfeito(
-                    card_uid=id(alvo), atributo='restricao',
-                    delta=0, valor_str=efeito.alvo,
-                    duracao=efeito.duracao,
-                    turno_aplicado=self.game.turn_number,
-                    fase_aplicada=self.game.phase,
-                ))
+
+        # Se tem exceto, verifica se o alvo se qualifica
+        if exceto:
+            # Verifica se a origem (quem recebe a restricao) e do tipo exceto
+            if hasattr(origem, 'card_type') and origem.card_type:
+                for tipo in exceto:
+                    if tipo.lower() in origem.card_type.lower():
+                        self.game.add_log(
+                            f'{origem.name} e {tipo}: ignorando restricao "{restricao}"'
+                        )
+                        return True  # Nao aplica restricao, mas consideramos sucesso
+
+        if isinstance(alvo, CardInstance):
+            if restricao not in alvo.restricoes:
+                alvo.restricoes.append(restricao)
+                if duracao and duracao != 'permanente_ate_cancelar':
+                    self.game.pendencias.append(PendenciaEfeito(
+                        card_uid=id(alvo), atributo='restricao',
+                        delta=0, valor_str=restricao,
+                        duracao=duracao,
+                        turno_aplicado=self.game.turn_number,
+                        fase_aplicada=self.game.phase,
+                    ))
+                self.game.add_log(
+                    f'{alvo.name} recebeu restricao "{restricao}"'
+                    f'{" ate " + duracao if duracao else ""}'
+                )
+                return True
+        elif isinstance(alvo, list):
+            for c in alvo:
+                if restricao not in c.restricoes:
+                    c.restricoes.append(restricao)
             self.game.add_log(
-                f'{alvo.name} recebeu restricao "{efeito.alvo}"'
-                f'{" ate " + efeito.duracao if efeito.duracao else ""}'
+                f'{len(alvo)} criatura(s) receberam restricao "{restricao}"'
             )
             return True
         return False
@@ -975,14 +1029,115 @@ class ResolvedorEfeitos:
                                        alvo) -> bool:
         """Modifica multiplos atributos (Rage, Gnosis, Health).
 
-        Usado por cartas como Sweet Luna's Smile (+1 todos os
-        atributos enquanto Lunar Phase em jogo).
-
-        Nota: efeito continuo condicional - implementacao futura.
+        Suporta params:
+        - atributos: list[str] — ex: ['rage', 'gnosis']
+        - minimo: int — valor minimo do atributo
+        - duracao: str — 'ate_fim_combate', 'permanente', etc.
+        - escolha: str — 'dono_caern' (escolhe qual atributo modificar)
+        - filtro_tipo: str — 'Wyrm' ou 'non_Wyrm'
+        - limite_afetar_mesmo_alvo: int
+        - trocar_forma: bool — para Shapeshift
         """
-        self.game.add_log(
-            f'{origem.name} modificou atributos (pendente: buff condicional)'
-        )
+        atributos = efeito.params.get('atributos', ['rage'])
+        quantidade = efeito.quantidade or 1
+        minimo = int(efeito.params.get('minimo', 0))
+        duracao = efeito.params.get('duracao', 'ate_fim_combate')
+        escolha = efeito.params.get('escolha', '')
+        filtro_tipo = efeito.params.get('filtro_tipo', '')
+        limite = int(efeito.params.get('limite_afetar_mesmo_alvo', 0))
+        trocar_forma = efeito.params.get('trocar_forma', False)
+
+        if trocar_forma:
+            # Shapeshift: alterna entre breed e Crinos
+            if hasattr(origem, 'is_crinos'):
+                origem.is_crinos = not origem.is_crinos
+                forma = 'Crinos' if origem.is_crinos else 'breed'
+                self.game.add_log(
+                    f'{origem.name} mudou para forma {forma}'
+                )
+                return True
+            self.game.add_log(f'{origem.name}: Shapeshift (stub)')
+            return True
+
+        # Determina alvos com base em filtro_tipo
+        alvos = []
+        if isinstance(alvo, CardInstance):
+            alvos = [alvo]
+        elif isinstance(alvo, list):
+            alvos = alvo
+        elif isinstance(alvo, PlayerState):
+            # Aplica a todas as criaturas do jogador
+            alvos = alvo.pack_home
+
+        if not alvos:
+            return False
+
+        # Aplica filtro_tipo se especificado
+        if filtro_tipo:
+            if filtro_tipo == 'Wyrm':
+                alvos = [c for c in alvos if c.card_type and 'Wyrm' in c.card_type]
+            elif filtro_tipo == 'non_Wyrm':
+                alvos = [c for c in alvos if not c.card_type or 'Wyrm' not in c.card_type]
+
+        if not alvos:
+            self.game.add_log(f'{origem.name}: nenhum alvo valido (filtro={filtro_tipo})')
+            return False
+
+        # Se escolha == 'dono_caern', o dono escolhe qual atributo
+        attrs_a_modificar = list(atributos)
+        if escolha == 'dono_caern' and len(atributos) > 1:
+            # Por enquanto, escolhe o primeiro (Rage) como padrao
+            # TODO: UI para escolha do jogador
+            attrs_a_modificar = [atributos[0]]
+
+        for c in alvos:
+            # Verifica limite_afetar_mesmo_alvo
+            if limite > 0:
+                chave = f'{origem.name}_mod_{c.name}'
+                vezes = getattr(self.game, '_mod_counter', {}).get(chave, 0)
+                if vezes >= limite:
+                    self.game.add_log(
+                        f'{c.name}: limite de {limite} modificacoes atingido'
+                    )
+                    continue
+                if not hasattr(self.game, '_mod_counter'):
+                    self.game._mod_counter = {}
+                self.game._mod_counter[chave] = vezes + 1
+
+            for attr in attrs_a_modificar:
+                if attr == 'rage':
+                    novo = max(minimo, c.rage + quantidade)
+                    delta = novo - c.rage
+                    c.rage = novo
+                elif attr == 'gnosis':
+                    novo = max(minimo, c.gnosis + quantidade)
+                    delta = novo - c.gnosis
+                    c.gnosis = novo
+                elif attr == 'health':
+                    novo = max(1, c.health + quantidade)
+                    delta = novo - c.health
+                    c.health = novo
+                    c.health_current = max(1, c.health_current + delta)
+                else:
+                    continue
+
+                # Se duracao for temporaria, registra pendencia para reverter
+                if duracao and duracao != 'permanente':
+                    from rage_web.game_engine.state import PendenciaEfeito
+                    self.game.pendencias.append(PendenciaEfeito(
+                        card_uid=id(c),
+                        atributo=attr,
+                        delta=-delta,
+                        duracao=duracao,
+                        turno_aplicado=self.game.turn_number,
+                        fase_aplicada=self.game.phase,
+                    ))
+
+                self.game.add_log(
+                    f'{c.name}: {attr} {"+" if delta >= 0 else ""}{delta} '
+                    f'= {getattr(c, attr)} ({duracao})'
+                )
+
         return True
 
     def _resolver_usar_gift(self, efeito: Efeito,
@@ -1044,8 +1199,16 @@ class ResolvedorEfeitos:
     def _resolver_combar_acao(self, efeito: Efeito,
                                origem: CardInstance,
                                jogador: PlayerState, alvo) -> bool:
-        """Stub para encadear acao (Combar)."""
-        self.game.add_log(f'{origem.name}: combar_acao (stub)')
+        """Encadeia uma acao apos a anterior (Combar).
+
+        Usado por: Head or Gut? (119) que da +1 VP se matar.
+        A acao encadeada e resolvida via se_sucesso.
+        """
+        # O combar_acao em si nao faz nada; os efeitos
+        # encadeados estao em se_sucesso/se_fracasso e serao
+        # resolvidos pelo fluxo em aplicar_carta.
+        # Retorna True para indicar que o encadeamento pode prosseguir.
+        self.game.add_log(f'{origem.name}: combar_acao')
         return True
 
     def _resolver_impedir_acoes(self, efeito: Efeito,
@@ -1058,22 +1221,68 @@ class ResolvedorEfeitos:
         Adiciona uma pendencia que impede acoes do alvo.
         Se params.restricao especificar um tipo (ex: 'pack_action'),
         so essa acao especifica e impedida.
+
+        Suporta params:
+        - condicao: str — 'alvo_gnosis_menor' para condicional
+        - valor_comparacao: int — valor de Gnosis para comparar
+        - tipo_acao: str — tipo de acao a impedir
         """
+        condicao_param = efeito.params.get('condicao', '')
+        valor_comp = int(efeito.params.get('valor_comparacao', 0))
+
+        # Verifica condicao: alvo_gnosis_menor
+        if condicao_param == 'alvo_gnosis_menor':
+            if isinstance(alvo, CardInstance):
+                gnosis_alvo = alvo.gnosis
+                if gnosis_alvo >= valor_comp:
+                    self.game.add_log(
+                        f'{origem.name}: {alvo.name} tem Gnosis {gnosis_alvo}'
+                        f' >= {valor_comp}, condicao nao atendida'
+                    )
+                    return False
+            elif isinstance(alvo, list):
+                alvos_validos = [c for c in alvo if c.gnosis < valor_comp]
+                if not alvos_validos:
+                    self.game.add_log(
+                        f'{origem.name}: nenhum alvo com Gnosis < {valor_comp}'
+                    )
+                    return False
+                alvo = alvos_validos
+
         restricao = efeito.params.get('restricao', 'nao_pode_agir')
+        duracao = efeito.duracao or efeito.params.get('duracao', 'proximo_round')
+
         if isinstance(alvo, CardInstance):
-            alvo.restricoes.append(restricao)
-            duracao = efeito.duracao or 'fim_do_turno'
-            self.game.add_log(
-                f'{origem.name}: {alvo.name} impedido de agir '
-                f'({restricao}, {duracao})'
-            )
+            if restricao not in alvo.restricoes:
+                alvo.restricoes.append(restricao)
+                if duracao and duracao != 'permanente':
+                    self.game.pendencias.append(PendenciaEfeito(
+                        card_uid=id(alvo), atributo='restricao',
+                        delta=0, valor_str=restricao,
+                        duracao=duracao,
+                        turno_aplicado=self.game.turn_number,
+                        fase_aplicada=self.game.phase,
+                    ))
+                self.game.add_log(
+                    f'{origem.name}: {alvo.name} impedido de agir '
+                    f'({restricao}, {duracao})'
+                )
             return True
         if isinstance(alvo, list):
             for c in alvo:
-                c.restricoes.append(restricao)
+                if restricao not in c.restricoes:
+                    c.restricoes.append(restricao)
+                    if duracao and duracao != 'permanente':
+                        self.game.pendencias.append(PendenciaEfeito(
+                            card_uid=id(c), atributo='restricao',
+                            delta=0, valor_str=restricao,
+                            duracao=duracao,
+                            turno_aplicado=self.game.turn_number,
+                            fase_aplicada=self.game.phase,
+                        ))
             self.game.add_log(
                 f'{origem.name}: {len(alvo)} criatura(s) impedida(s) '
-                f'({restricao})'
+                f'({restricao}, {duracao})'
             )
             return True
         return False
@@ -1473,7 +1682,27 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
     resolvedor = ResolvedorEfeitos(game)
     for efeito in modo.efeitos:
         resultado = resolvedor.aplicar_efeito(efeito, origem, jogador)
-        if resultado and efeito.se_sucesso:
+
+        # Verifica condicao_estado para efeitos condicionais
+        condicao_atendida = True
+        if efeito.condicao_estado and resultado:
+            if efeito.condicao_estado == 'alvo_destruido':
+                # Verifica se o alvo foi destruido (health <= 0 ou foi pro VP)
+                ultimo_alvo = getattr(resolvedor, '_ultimo_alvo', None)
+                if ultimo_alvo is not None:
+                    if hasattr(ultimo_alvo, 'health_current'):
+                        condicao_atendida = ultimo_alvo.health_current <= 0
+                    if hasattr(ultimo_alvo, 'zone'):
+                        condicao_atendida = condicao_atendida or (
+                            ultimo_alvo.zone in (Zone.VICTORY_PILE, Zone.DISCARD_COMBAT, Zone.DISCARD_SEPT)
+                        )
+                else:
+                    condicao_atendida = False
+            elif efeito.condicao_estado == 'se_desviado':
+                # Verifica se o ataque foi desviado (por marcacao no resolvedor)
+                condicao_atendida = getattr(resolvedor, '_ataque_desviado', False)
+
+        if resultado and efeito.se_sucesso and condicao_atendida:
             for sub in efeito.se_sucesso:
                 resolvedor.aplicar_efeito(sub, origem, jogador)
         elif not resultado and efeito.se_fracasso:

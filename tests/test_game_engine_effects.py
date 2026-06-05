@@ -175,6 +175,228 @@ class TestResolvedorEfeitos:
         assert p.victory_points == vp_antes + 3
 
 
+class TestResolverModificarAtributo:
+    def test_reduz_rage_gnosis(self, game):
+        """Gooshy Gooze: oponente perde 1 Rage e 1 Gnosis no combate."""
+        resolvedor = ResolvedorEfeitos(game)
+        alvo = game.players[1].pack_home[0]
+        rage_antes = alvo.rage
+        gnosis_antes = alvo.gnosis
+        efeito = Efeito(
+            tipo=EfeitoTipo.MODIFICAR_ATRIBUTO,
+            quantidade=-1,
+            condicao='criatura_inimiga',
+            params={'atributos': ['rage', 'gnosis'], 'minimo': 1, 'duracao': 'ate_fim_combate'}
+        )
+        origem = CardInstance(card_id=-1, name='Gooshy Gooze', card_type='Equipment',
+                              zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, game.players[0])
+        assert resultado
+        assert alvo.rage == max(1, rage_antes - 1)
+        assert alvo.gnosis == max(1, gnosis_antes - 1)
+
+    def test_aumenta_rage_uma_criatura(self, game):
+        """modificar_atributo em uma criatura aliada."""
+        resolvedor = ResolvedorEfeitos(game)
+        p = game.players[0]
+        rages_antes = {c.name: c.rage for c in p.pack_home}
+        efeito = Efeito(
+            tipo=EfeitoTipo.MODIFICAR_ATRIBUTO,
+            quantidade=3,
+            condicao='criatura_aliada',
+            params={'atributos': ['rage'], 'minimo': 0, 'duracao': 'permanente'}
+        )
+        origem = CardInstance(card_id=-1, name='Beast-of-War', card_type='Event',
+                              zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, p)
+        assert resultado
+        # Exatamente uma criatura (escolhida aleatoriamente) ganhou +3 Rage
+        modificadas = 0
+        for c in p.pack_home:
+            if c.rage == rages_antes[c.name] + 3:
+                modificadas += 1
+        assert modificadas == 1
+
+    def test_filtro_wyrm(self, game):
+        """Mass Pollution: so Wyrm ganha Gnosis."""
+        resolvedor = ResolvedorEfeitos(game)
+        p = game.players[0]
+        # Marca todas como nao-Wyrm
+        for c in p.pack_home:
+            c.card_type = 'Character - Gaia'
+        gnosis_antes = [c.gnosis for c in p.pack_home]
+        
+        efeito = Efeito(
+            tipo=EfeitoTipo.MODIFICAR_ATRIBUTO,
+            quantidade=1,
+            condicao='criatura_aliada',
+            params={'atributos': ['gnosis'], 'minimo': 0, 'duracao': 'permanente', 'filtro_tipo': 'Wyrm'}
+        )
+        origem = CardInstance(card_id=-1, name='Mass Pollution', card_type='Event',
+                              zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, p)
+        # Nenhuma criatura e Wyrm, filtro elimina -> fail
+        assert not resultado
+        for c, g_antes in zip(p.pack_home, gnosis_antes):
+            assert c.gnosis == g_antes
+
+
+class TestCondicaoEstado:
+    def test_combar_acao_se_sucesso(self, game):
+        """Head or Gut?: se matar, +1 VP via condicao_estado."""
+        from rage_web.game_engine.effects import aplicar_carta
+        from rage_web.game_engine.state import GameState, PlayerState
+        # Simula alvo com 1 de vida
+        alvo = game.players[1].pack_home[0]
+        alvo.health_current = 1
+        alvo.zone = Zone.PACK_HOME
+        
+        # Cria modelo Head or Gut? diretamente
+        modelo = ModeloCarta(
+            id='card_119',
+            nome='Head or Gut?',
+            tipo='Combat Action',
+            modos=[
+                Modo(
+                    descricao='Causar 3 de dano',
+                    efeitos=[
+                        Efeito(tipo=EfeitoTipo.DANO, quantidade=3, condicao='criatura_inimiga'),
+                        Efeito(
+                            tipo=EfeitoTipo.COMBAR_ACAO,
+                            condicao_estado='alvo_destruido',
+                            se_sucesso=[
+                                Efeito(tipo=EfeitoTipo.GANHAR_VP, quantidade=1, condicao='jogador_aliado')
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+        vp_antes = game.players[0].victory_points
+        origem = CardInstance(card_id=119, name='Head or Gut?', card_type='Combat Action',
+                              zone=Zone.HAND, owner_id='p1', controller_id='p1')
+        game.players[0].hand.append(origem)
+        
+        aplicar_carta(game, modelo, game.players[0].id, modo_idx=0, card_origem=origem)
+        assert game.players[0].victory_points >= vp_antes + 1
+
+
+class TestComprarPorPackmate:
+    def test_ass_whuppin_lynch_mob(self, game):
+        """Ass Whuppin' Lynch Mob: compra por packmate."""
+        resolvedor = ResolvedorEfeitos(game)
+        p = game.players[0]
+        deck_antes = len(p.deck_combat)
+        packmates = [c for c in p.pack_home]
+        
+        efeito = Efeito(
+            tipo=EfeitoTipo.COMPRAR,
+            quantidade=1,
+            condicao='jogador_aliado',
+            params={'por_packmate': True}
+        )
+        origem = CardInstance(card_id=281, name='Ass Whuppin Lynch Mob', card_type='Combat Event',
+                              zone=Zone.HAND, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, p)
+        assert resultado
+        # Deveria ter comprado 1 * (packmates count) cartas
+        # packmates = todos menos origem (que nao esta em pack_home)
+        expected = len(packmates)
+        assert len(p.deck_combat) == deck_antes - expected
+
+
+class TestResolverImpedirAcoes:
+    def test_impedir_gnosis_menor(self, game):
+        """Wailer: oponente com Gnosis menor nao pode agir."""
+        resolvedor = ResolvedorEfeitos(game)
+        # Cria alvo com Gnosis baixo
+        alvo = game.players[1].pack_home[0]
+        alvo.gnosis = 2
+        
+        efeito = Efeito(
+            tipo=EfeitoTipo.IMPEDIR_ACOES,
+            condicao='criatura_inimiga',
+            params={
+                'condicao': 'alvo_gnosis_menor',
+                'valor_comparacao': 3,
+                'restricao': 'nao_pode_combat_action',
+                'duracao': 'proximo_round'
+            }
+        )
+        origem = CardInstance(card_id=347, name='Wailer', card_type='Character - Wyrm',
+                              zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, game.players[0])
+        assert resultado
+        assert 'nao_pode_combat_action' in alvo.restricoes
+
+    def test_impedir_gnosis_maior_nega(self, game):
+        """Wailer: se Gnosis >= threshold, nao aplica restricao."""
+        resolvedor = ResolvedorEfeitos(game)
+        alvo = game.players[1].pack_home[0]
+        alvo.gnosis = 5  # Maior que threshold 3
+        
+        efeito = Efeito(
+            tipo=EfeitoTipo.IMPEDIR_ACOES,
+            condicao='criatura_inimiga',
+            params={
+                'condicao': 'alvo_gnosis_menor',
+                'valor_comparacao': 3,
+                'restricao': 'nao_pode_combat_action',
+                'duracao': 'proximo_round'
+            }
+        )
+        origem = CardInstance(card_id=347, name='Wailer', card_type='Character - Wyrm',
+                              zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, game.players[0])
+        assert not resultado  # Condicao nao atendida
+        assert 'nao_pode_combat_action' not in alvo.restricoes
+
+
+class TestResolverRestringirExceto:
+    def test_exceto_tipo(self, game):
+        """Stench of Death: exceto=espirito,bane,metis."""
+        resolvedor = ResolvedorEfeitos(game)
+        alvo = game.players[1].pack_home[0]
+        origem = game.players[0].pack_home[0]
+        
+        efeito = Efeito(
+            tipo=EfeitoTipo.RESTRICAO,
+            condicao='criatura_inimiga',
+            params={
+                'restricao': 'nao_pode_atacar_usuario',
+                'exceto': ['Spirit', 'Bane', 'Metis'],
+                'duracao': 'permanente_ate_cancelar'
+            }
+        )
+        resultado = resolvedor.aplicar_efeito(efeito, origem, game.players[0])
+        assert resultado
+        # O alvo (inimigo normal) recebe a restricao
+        assert 'nao_pode_atacar_usuario' in alvo.restricoes
+
+    def test_exceto_ignora_se_tipo_correto(self, game):
+        """Stench of Death: se origem e Metis, restricao ignorada."""
+        resolvedor = ResolvedorEfeitos(game)
+        alvo = game.players[1].pack_home[0]
+        alvo.card_type = 'Metis - Garou'
+        
+        efeito = Efeito(
+            tipo=EfeitoTipo.RESTRICAO,
+            condicao='criatura_inimiga',
+            params={
+                'restricao': 'nao_pode_atacar_usuario',
+                'exceto': ['Spirit', 'Bane', 'Metis'],
+                'duracao': 'permanente_ate_cancelar'
+            }
+        )
+        # Origem e Metis, entao restricao nao se aplica ao alvo
+        origem = CardInstance(card_id=-1, name='Test', card_type='Metis',
+                              zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1')
+        resultado = resolvedor.aplicar_efeito(efeito, origem, game.players[0])
+        # Como a origem e Metis, o efeito retorna True mas nao adiciona restricao
+        assert resultado
+        assert 'nao_pode_atacar_usuario' not in alvo.restricoes
+
+
 class TestAplicarCartaCompleta:
     def test_golpe_misericordia_dano(self, game):
         """Aplica modo dano do Golpe de Misericordia."""
