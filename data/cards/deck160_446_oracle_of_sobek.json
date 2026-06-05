@@ -4,12 +4,21 @@
   "tipo": "Ally",
   "modos": [
     {
-      "descricao": "Aliado em jogo",
-      "efeitos": []
+      "descricao": "Perguntar tipo de carta e descartar",
+      "condicao_uso": "uma_vez_por_turno",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "alvo": "mao",
+          "quantidade": 1,
+          "filtro_tipo": "escolhido_pelo_jogador"
+        }
+      ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 446,
     "texto_original": "Unique.  Animal.  Kinfolk.  Once per turn you may ask a player if he has a specific type of card in his sept hand (e.g. Gift).  If so, he discards one card of that type from his hand.  Oracle of Sobek can use Mokole Gifts.",
     "keywords": "Animal - Kinfolk",
@@ -17,6 +26,11 @@
     "rage": 2,
     "gnosis": 5,
     "health": 4,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Descarte direcionado por tipo de carta: requer interacao do usuario",
+      "Pode usar Mokole Gifts: restricao de tribo",
+      "Mecanica de 'escolher tipo' depende de UI do jogador"
+    ]
   }
 }

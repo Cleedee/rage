@@ -7,21 +7,21 @@ Legenda:
 
 ## Personagens (Gaia)
 
-- [ ] 174 — Lone Wolf Circles
-- [ ] 269 — Sweet Luna's Smile
-- [ ] 374 — Sand's Last King
+- [x] 174 — Lone Wolf Circles
+- [x] 269 — Sweet Luna's Smile
+- [x] 374 — Sand's Last King
 
 ## Aliados
 
 - [x] 391 — Carpet Snake
-- [ ] 408 — Haunter
-- [ ] 446 — Oracle of Sobek
+- [x] 408 — Haunter
+- [x] 446 — Oracle of Sobek
 - [~] 395 — Dreamspeaker Mage (deck7)
 
 ## Inimigos
 
-- [ ] 573 — Dream Hunter
-- [ ] 1341 — Elethoi
+- [x] 573 — Dream Hunter
+- [x] 1341 — Elethoi
 
 ## Caern
 
@@ -29,7 +29,7 @@ Legenda:
 
 ## Equipamentos
 
-- [ ] 725 — Animal Mummy
+- [x] 725 — Animal Mummy
 - [x] 726 — Assegai
 
 ## Gift
@@ -44,11 +44,11 @@ Legenda:
 
 ## Quest
 
-- [ ] 1147 — Mnesis Dreams
+- [x] 1147 — Mnesis Dreams
 
 ## Evento
 
-- [ ] 1355 — Fog
+- [x] 1355 — Fog
 
 ## Ações de Combate
 
@@ -67,4 +67,4 @@ Legenda:
 
 ---
 
-**Total: 10 pendentes, 17 revisadas, 3 em outros decks**
+**Total: 0 pendentes, 27 revisadas, 3 em outros decks**

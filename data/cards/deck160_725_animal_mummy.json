@@ -4,19 +4,33 @@
   "tipo": "Equipment",
   "modos": [
     {
-      "descricao": "Equipamento equipado",
-      "efeitos": []
+      "descricao": "Tentar destruir carta de sept (random 50%)",
+      "condicao_uso": "uma_vez_por_turno",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "condicao_alvo": "qualquer_carta",
+          "alvo": "sept_card",
+          "probabilidade": 0.5
+        }
+      ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 725,
-    "texto_original": "Unique.  This animal was once mummified as a sacrifice to the gods, and the Fera now use it to pray for spiritual intervention.  Once per turn you may try to destroy any one sept card in play.  Decide randomly if the card is discarded or not.  If it is di",
+    "texto_original": "Unique. This animal was once mummified as a sacrifice to the gods, and the Fera now use it to pray for spiritual intervention. Once per turn you may try to destroy any one sept card in play. Decide randomly if the card is discarded or not.",
     "keywords": "Gaia Fetish",
     "damage": "",
     "rage": 0,
     "gnosis": 8,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Gnosis=8 para usar (custo de ativacao)",
+      "Destruicao aleatoria (coin flip): probabilidade=0.5",
+      "'Sept card' inclui totens, territorios, caerns - filtro por tipo pendente",
+      "Sistema de ativacao de equipamentos uma vez por turno pendente"
+    ]
   }
 }

@@ -8,15 +8,19 @@
       "condicao_uso": "personagem_na_umbra",
       "efeitos": [
         {
-          "tipo": "combar_acao",
+          "tipo": "usar_gift",
           "condicao_alvo": "criatura_aliada",
-          "alvo": "umbra"
+          "alvo": "umbra",
+          "restricoes": {
+            "gifts_permitidos": ["Fomori", "Metis", "Shadow Lords"],
+            "gifts_cruzam_gauntlet_se_gnosis_lte": 4
+          }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 408,
     "texto_original": "The Haunter is a wraith adept at inducing terror. It may use Fomori, Metis and Shadow Lords Gifts. Any Gifts of 4 Gnosis or lower it uses may cross the Gauntlet. The Haunter exists only in the Umbra.",
     "keywords": "Spirit - Wraith",
@@ -24,13 +28,13 @@
     "rage": 4,
     "gnosis": 7,
     "health": 4,
-    "precisa_revisao": true,
-    "habilidades_passivas": [
-      "pode_usar_gifts: Fomori, Metis, Shadow Lords",
-      "gifts_cruzam_gauntlet_se_gnosis_<=_4",
-      "existe_apenas_na_umbra",
-      "requer: Character in the Umbra"
-    ],
-    "renown": 7
+    "precisa_revisao": false,
+    "renown": 7,
+    "notas": [
+      "Existe apenas na Umbra: so pode ser jogado na Umbra",
+      "Gifts de Fomori/Metis/Shadow Lords: restricao de tribo no uso de gifts",
+      "Gifts com Gnosis <=4 cruzam Gauntlet: bypass do requerimento de Gauntlet",
+      "Integracao com sistema de gift usage pendente"
+    ]
   }
 }

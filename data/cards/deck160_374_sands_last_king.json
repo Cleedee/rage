@@ -9,7 +9,7 @@
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 374,
     "texto_original": "Sand's Last King is using his position in the Ahadi to gain access to other Fera's allies.  He may recruit Allies which require Ajaba, Bastet or Silent Striders.",
     "keywords": "Mokole - Suchid - Gaia - Male",
@@ -17,6 +17,11 @@
     "rage": 3,
     "gnosis": 10,
     "health": 4,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Pode recrutar Aliados que exigem Ajaba, Bastet ou Silent Striders",
+      "Modifica restricoes de recrutamento: flag 'recrutamento_estendido'",
+      "Depende de sistema de recrutamento de aliados (futuro)"
+    ]
   }
 }
