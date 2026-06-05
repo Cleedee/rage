@@ -4,7 +4,7 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 1 de dano (+4 se Rokea/Mokole)",
+      "descricao": "Causar 1 de dano (uso generico)",
       "efeitos": [
         {
           "tipo": "dano",
@@ -12,10 +12,21 @@
           "quantidade": 1
         }
       ]
+    },
+    {
+      "descricao": "Causar 5 de dano (1+4 se Rokea/Mokole nao-Homid)",
+      "condicao_uso": "atacante_rokea_ou_mokole_nao_homid",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 5
+        }
+      ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1331,
     "texto_original": "Tail Lash does +4 damage if played by a Rokea or Mokole not in Homid form.  It may not be used with a weapon.",
     "keywords": "",
@@ -23,6 +34,11 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Bono de +4 dano modelado como modo separado com condicao_uso",
+      "Restricao 'nao pode usar com arma' vai para sistema de validacao de equipamento",
+      "Implementar condicao 'atacante_rokea_ou_mokole_nao_homid' no resolvedor quando necessario"
+    ]
   }
 }

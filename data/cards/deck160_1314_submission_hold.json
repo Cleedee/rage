@@ -4,7 +4,8 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 1 de dano",
+      "descricao": "Causar 1 de dano + efeito baseado no estado do alvo",
+      "condicao_uso": "nao_frenetico",
       "efeitos": [
         {
           "tipo": "dano",
@@ -15,7 +16,7 @@
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1314,
     "texto_original": "Requires: not frenzied. If Submission Hold damages a non-frenzied creature, that creature is removed from combat at the end of this round. If Submission Hold damages a frenzied creature, that creature cannot dodge next round.",
     "keywords": "",
@@ -23,6 +24,12 @@
     "rage": 2,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Alvo nao-frenzied: retirada do combate via _retirar_do_combate()",
+      "Alvo frenzied: restricao 'nao_pode_esquivar' adicionada a criatura",
+      "Restricao limpa no start_combat (novo combate)",
+      "Condicao 'not frenzied' validada via COMBAT_ACTION_VALIDATORS"
+    ]
   }
 }

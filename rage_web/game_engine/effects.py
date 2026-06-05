@@ -33,6 +33,7 @@ from typing import Any, Callable, Optional
 
 from rage_web.game_engine.state import (
     CardInstance, GameState, PendenciaEfeito, PlayerState, Zone,
+    anexar_dano, descartar_anexos,
 )
 
 
@@ -63,6 +64,9 @@ class EfeitoTipo(str, Enum):
     INICIAR_COMBATE = 'iniciar_combate'
     RESTRICAO = 'restringir'  # Adicionar restricao temporaria a criatura
     COMPRAR_ATE = 'comprar_ate'  # Comprar ate ter N cartas na mao
+    EQUIPAR = 'equipar'  # Anexar equipamento a uma criatura
+    MODIFICAR_REDUCAO_DANO = 'modificar_reducao_dano'  # Modificar reducao de dano passiva
+    DESCARTAR_METADE_MAO = 'descartar_metade_mao'  # Oponente descarta metade da mao (arred. cima)
 
 
 # -----------------------------------------------------------------------
@@ -97,11 +101,13 @@ class Efeito:
     tipo: EfeitoTipo
     alvo: Optional[str] = None
     quantidade: int = 0
-    condicao: Optional[str] = None  # Nome da funcao de condicao
+    condicao: Optional[str] = None  # Nome da funcao de resolucao de alvo
     modo_idx: int = 0  # Indice do modo (para cartas modais)
     duracao: str = ''  # 'end_of_turn', 'end_of_combat', 'end_of_phase', ''
     se_sucesso: list[Efeito] = field(default_factory=list)
     se_fracasso: list[Efeito] = field(default_factory=list)
+    condicao_estado: Optional[str] = None  # Condicao de estado do jogo
+    # Ex: 'alvo_frenetico' — so aplica se_sucesso se condicao for verdadeira
 
     def __post_init__(self):
         if isinstance(self.tipo, str):
@@ -203,6 +209,10 @@ class ResolvedorEfeitos:
             EfeitoTipo.ANULAR: self._resolver_anular,
             EfeitoTipo.RESTRICAO: self._resolver_restringir,
             EfeitoTipo.COMPRAR_ATE: self._resolver_comprar_ate,
+            EfeitoTipo.FUGIR: self._resolver_fugir,
+            EfeitoTipo.EQUIPAR: self._resolver_equipar,
+            EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
+            EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
         }
         return resolvedores.get(tipo)
 
@@ -270,17 +280,16 @@ class ResolvedorEfeitos:
 
     def _resolver_dano(self, efeito: Efeito, origem: CardInstance,
                        jogador: PlayerState, alvo) -> bool:
-        """Aplica dano a um alvo."""
+        """Aplica dano a um alvo e anexa damage card (regra 6.4)."""
         qtd = efeito.quantidade or 2
         if isinstance(alvo, CardInstance):
-            alvo.health_current = max(0, alvo.health_current - qtd)
+            anexar_dano(alvo, origem, qtd, jogador.id)
             self.game.add_log(
                 f'{alvo.name} sofreu {qtd} de dano '
                 f'({alvo.health_current}/{alvo.health})'
             )
             return True
         elif isinstance(alvo, PlayerState):
-            # Dano direto ao jogador (futuro: perder VP)
             self.game.add_log(
                 f'{alvo.name} sofreu {qtd} de dano direto'
             )
@@ -305,6 +314,13 @@ class ResolvedorEfeitos:
                           jogador: PlayerState, alvo) -> bool:
         """Remove uma criatura do jogo."""
         if isinstance(alvo, CardInstance):
+            # Descarta cartas anexadas (regra 6.4.2)
+            dono_alvo = self._get_oponente(jogador)
+            if alvo in jogador.pack_home:
+                dono_alvo = jogador
+            elif alvo in self._get_oponente(jogador).pack_home:
+                dono_alvo = self._get_oponente(jogador)
+            descartar_anexos(alvo, dono_alvo)
             # Move para o descarte
             alvo.zone = Zone.DISCARD_COMBAT
             if alvo in jogador.pack_home:
@@ -527,13 +543,153 @@ class ResolvedorEfeitos:
         self.game.add_log(f'{origem.name} anulou uma acao')
         return True
 
+    def _resolver_fugir(self, efeito: Efeito, origem: CardInstance,
+                        jogador: PlayerState, alvo) -> bool:
+        """Forca uma criatura a fugir do combate."""
+        if isinstance(alvo, CardInstance):
+            alvo.zone = Zone.DISCARD_COMBAT
+            if alvo in jogador.pack_home:
+                jogador.pack_home.remove(alvo)
+            elif alvo in self._get_oponente(jogador).pack_home:
+                self._get_oponente(jogador).pack_home.remove(alvo)
+            jogador.discard_combat.append(alvo)
+            self.game.add_log(f'{alvo.name} foi forcado a fugir do combate')
+            return True
+        return False
+
+    def _resolver_descartar_metade_mao(self, efeito: Efeito,
+                                         origem: CardInstance,
+                                         jogador: PlayerState,
+                                         alvo) -> bool:
+        """Faz o oponente descartar metade da mao (arredondado para cima).
+
+        Usado por cartas como Savage Beatdown quando danificam
+        uma criatura frenzied.
+        """
+        oponente = self._get_oponente(jogador)
+        mao = oponente.hand
+        if not mao:
+            self.game.add_log(f'{oponente.name} nao tem cartas na mao')
+            return True
+        import math
+        qtd = math.ceil(len(mao) / 2)
+        descartadas = mao[:qtd]
+        for c in descartadas:
+            c.zone = Zone.DISCARD_COMBAT
+            mao.remove(c)
+            oponente.discard_combat.append(c)
+        self.game.add_log(
+            f'{oponente.name} descartou {len(descartadas)} carta(s) '
+            f'(metade da mao, arred. cima)'
+        )
+        return True
+
+    def _resolver_equipar(self, efeito: Efeito, origem: CardInstance,
+                          jogador: PlayerState, alvo) -> bool:
+        """Anexa um equipamento a uma criatura.
+
+        A origem deve ser a carta de equipamento real (vinda da mao).
+        """
+        if not isinstance(alvo, CardInstance):
+            return False
+        origem.zone = Zone.OUT_OF_PLAY
+        alvo.attached_equipment.append(origem)
+        self.game.add_log(f'{origem.name} equipado em {alvo.name}')
+        return True
+
+    def _resolver_modificar_reducao_dano(self, efeito: Efeito,
+                                          origem: CardInstance,
+                                          jogador: PlayerState,
+                                          alvo) -> bool:
+        """Modifica a reducao de dano passiva de uma criatura."""
+        if not isinstance(alvo, CardInstance):
+            return False
+        qtd = efeito.quantidade or 0
+        alvo.reducao_dano = max(0, alvo.reducao_dano + qtd)
+        self.game.add_log(
+            f'{alvo.name} agora tem reducao de dano {alvo.reducao_dano}')
+        return True
+
+
+# -----------------------------------------------------------------------
+# Validadores de condicao_uso
+# -----------------------------------------------------------------------
+# Cada validador recebe (game, jogador) e retorna True se a condicao
+# foi atendida.
+
+
+def _validar_condicao_uso(game: GameState, jogador: 'PlayerState',
+                          condicao: str) -> bool:
+    """Valida se a condicao de uso de um modo foi atendida.
+
+    Args:
+        game: Estado da partida.
+        jogador: Jogador que esta usando a carta.
+        condicao: Nome da condicao a validar.
+
+    Returns:
+        True se a condicao foi atendida (ou se nao ha validador).
+    """
+    validadores = {
+        'atacante_rokea_ou_mokole_nao_homid':
+            lambda: _condicao_rokea_mokole_nao_homid(game, jogador),
+        'personagem_na_umbra':
+            lambda: _condicao_personagem_na_umbra(game, jogador),
+        'nao_frenetico':
+            lambda: _condicao_nao_frenetico(game, jogador),
+    }
+    validador = validadores.get(condicao)
+    if validador:
+        return validador()
+    # Condicao desconhecida: permite (backward compatible)
+    return True
+
+
+def _condicao_rokea_mokole_nao_homid(game: GameState,
+                                     jogador: 'PlayerState') -> bool:
+    """Verifica se ha uma criatura Rokea ou Mokole nao-Homid no pack.
+
+    Usado pelo modo bonus do Tail Lash.
+    """
+    for c in jogador.pack_home:
+        keywords = (c.keywords or '').lower()
+        is_rokea = 'rokea' in keywords
+        is_mokole = 'mokole' in keywords
+        is_homid = 'homid' in keywords
+        if (is_rokea or is_mokole) and not is_homid:
+            return True
+    return False
+
+
+def _condicao_personagem_na_umbra(game: GameState,
+                                  jogador: 'PlayerState') -> bool:
+    """Verifica se ha um personagem na Umbra do jogador."""
+    for c in jogador.umbra:
+        if 'Character' in (c.card_type or ''):
+            return True
+    return False
+
+
+def _condicao_nao_frenetico(game: GameState,
+                            jogador: 'PlayerState') -> bool:
+    """Verifica se a criatura que esta jogando nao esta frenzied.
+
+    Usado por Anatomy Lesson e outras Combat Actions que exigem
+    que o atacante nao esteja em frenzy.
+    """
+    for c in jogador.pack_home:
+        if c.is_frenzied:
+            return False
+    return True
+
 
 # -----------------------------------------------------------------------
 # API de alto nivel
 # -----------------------------------------------------------------------
 
 def aplicar_carta(game: GameState, modelo: ModeloCarta,
-                  jogador_id: str, modo_idx: int = 0) -> list[str]:
+                  jogador_id: str, modo_idx: int = 0,
+                  card_origem: Optional[CardInstance] = None) -> list[str]:
     """Aplica uma carta completa no jogo.
 
     Args:
@@ -541,6 +697,8 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
         modelo: Modelo da carta com efeitos.
         jogador_id: ID do jogador que esta usando a carta.
         modo_idx: Indice do modo escolhido (para cartas modais).
+        card_origem: Instancia real da carta (para equipamentos que
+                     precisam persistir). Se None, cria uma temporaria.
 
     Returns:
         Lista de mensagens de log da aplicacao.
@@ -557,12 +715,20 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
     if not modo:
         return ['Modo invalido']
 
-    # Cria uma instancia temporaria para origem
-    origem = CardInstance(
-        card_id=-1, name=modelo.nome, card_type=modelo.tipo,
-        zone=Zone.OUT_OF_PLAY, owner_id=jogador_id,
-        controller_id=jogador_id,
-    )
+    # Valida condicao_uso do modo (se houver)
+    if modo.condicao_uso:
+        if not _validar_condicao_uso(game, jogador, modo.condicao_uso):
+            return [f'Condicao de uso nao atendida: {modo.condicao_uso}']
+
+    # Usa a carta real (se fornecida) ou cria temporaria
+    if card_origem:
+        origem = card_origem
+    else:
+        origem = CardInstance(
+            card_id=-1, name=modelo.nome, card_type=modelo.tipo,
+            zone=Zone.OUT_OF_PLAY, owner_id=jogador_id,
+            controller_id=jogador_id,
+        )
 
     resolvedor = ResolvedorEfeitos(game)
     for efeito in modo.efeitos:
@@ -620,6 +786,7 @@ def _efeito_from_json(e: dict) -> Efeito:
         duracao=e.get('duracao', ''),
         se_sucesso=[_efeito_from_json(s) for s in e.get('se_sucesso', [])],
         se_fracasso=[_efeito_from_json(f) for f in e.get('se_fracasso', [])],
+        condicao_estado=e.get('condicao_estado'),
     )
 
 

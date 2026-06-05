@@ -4,7 +4,8 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 4 de dano",
+      "descricao": "Causar 4 de dano unblockado + retirada do combate",
+      "condicao_uso": "nao_frenetico",
       "efeitos": [
         {
           "tipo": "dano",
@@ -15,7 +16,7 @@
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 280,
     "texto_original": "Requires: not frenzied. A creature wounded by Anatomy Lesson must withdraw from combat if able. The damage from Anatomy Lesson cannot be blocked.",
     "keywords": "Unblockable",
@@ -23,6 +24,12 @@
     "rage": 6,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Unblockable implementado em COMBAT_ACTION_PROPS (ignora block/dodge)",
+      "Retirada do combate implementada em _retirar_do_combate (combat_queue.py)",
+      "Condicao 'nao_frenetico' validada em _validar_condicao_uso (effects.py)",
+      "Efeito 'fugir' removido do JSON — a retirada e feita no combate, nao via aplicar_carta"
+    ]
   }
 }

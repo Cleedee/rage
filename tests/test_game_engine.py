@@ -8,7 +8,13 @@ from rage_web.game_engine.state import (
 from rage_web.game_engine.combat_queue import (
     start_combat, declare_action, reveal_all, feint_action,
     can_feint, resolve_combat, end_combat, get_declaration_summary,
-    get_combatants,
+    get_combatants, _find_criatura, _validar_tail_lash,
+    _validar_tail_lash_bonus, COMBAT_ACTION_VALIDATORS,
+    _mesmo_lado_gauntlet,
+)
+from rage_web.game_engine.effects import (
+    _validar_condicao_uso, _condicao_rokea_mokole_nao_homid,
+    _condicao_personagem_na_umbra,
 )
 
 
@@ -345,3 +351,640 @@ class TestCombatQueue:
         assert 'c2' in combatants
         assert 'c3' in combatants
         assert len(combatants) == 3
+
+
+# ---------------------------------------------------------------------------
+# Testes: Validadores de Combat Actions (Tail Lash)
+# ---------------------------------------------------------------------------
+
+class TestCombatActionValidators:
+    """Testes para o sistema de validacao de Combat Actions."""
+
+    @pytest.fixture
+    def rokea_creature(self, player1: PlayerState) -> CardInstance:
+        """Criatura Rokea em forma nao-Homid (Crinos)."""
+        return CardInstance(
+            card_id=10, name='Rokea Crinos', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, gnosis=3, health=8, health_current=8,
+            keywords='Rokea - Gaia - Male',
+        )
+
+    @pytest.fixture
+    def rokea_homid(self, player1: PlayerState) -> CardInstance:
+        """Criatura Rokea em forma Homid."""
+        return CardInstance(
+            card_id=11, name='Rokea Homid', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=3, gnosis=5, health=5, health_current=5,
+            keywords='Rokea - Homid - Gaia - Male',
+        )
+
+    @pytest.fixture
+    def mokole_creature(self, player1: PlayerState) -> CardInstance:
+        """Criatura Mokole em forma nao-Homid."""
+        return CardInstance(
+            card_id=12, name='Mokole', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=6, health=7, health_current=7,
+            keywords='Mokole - Suchid - Gaia - Male',
+        )
+
+    @pytest.fixture
+    def garou_creature(self, player1: PlayerState) -> CardInstance:
+        """Criatura Garou (nao Rokea, nao Mokole)."""
+        return CardInstance(
+            card_id=13, name='Garou', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=4, health=6, health_current=6,
+            keywords='Garou - Red Talons - Gaia - Male',
+        )
+
+    @pytest.fixture
+    def weapon_equipment(self) -> CardInstance:
+        """Equipamento do tipo Weapon."""
+        return CardInstance(
+            card_id=20, name='Sword', card_type='Equipment',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            keywords='Weapon',
+        )
+
+    def test_find_criatura_encontra_no_pack(self, game, rokea_creature):
+        """_find_criatura encontra criatura no pack_home."""
+        game.players[0].pack_home.append(rokea_creature)
+        found = _find_criatura(game, '10')
+        assert found is not None
+        assert found.name == 'Rokea Crinos'
+
+    def test_find_criatura_nao_encontra(self, game):
+        """_find_criatura retorna None se nao existir."""
+        found = _find_criatura(game, '999')
+        assert found is None
+
+    def test_tail_lash_valido_rokea(self, game, rokea_creature):
+        """Tail Lash aceito para Rokea nao-Homid sem arma."""
+        game.players[0].pack_home.append(rokea_creature)
+        erro = _validar_tail_lash(game, rokea_creature)
+        assert erro is None
+
+    def test_tail_lash_valido_mokole(self, game, mokole_creature):
+        """Tail Lash aceito para Mokole nao-Homid sem arma."""
+        game.players[0].pack_home.append(mokole_creature)
+        erro = _validar_tail_lash(game, mokole_creature)
+        assert erro is None
+
+    def test_tail_lash_recusado_garou(self, game, garou_creature):
+        """Tail Lash recusado para Garou (nao Rokea/Mokole)."""
+        game.players[0].pack_home.append(garou_creature)
+        erro = _validar_tail_lash(game, garou_creature)
+        assert erro is not None
+        assert 'Rokea ou Mokole' in erro
+
+    def test_tail_lash_recusado_com_arma(self, game, rokea_creature, weapon_equipment):
+        """Tail Lash recusado se criatura tem arma equipada."""
+        rokea_creature.attached_equipment.append(weapon_equipment)
+        game.players[0].pack_home.append(rokea_creature)
+        erro = _validar_tail_lash(game, rokea_creature)
+        assert erro is not None
+        assert 'nao pode ser usado com arma' in erro
+
+    def test_tail_lash_bonus_nao_homid(self, game, rokea_creature):
+        """Bônus de +4 valido para Rokea nao-Homid."""
+        game.players[0].pack_home.append(rokea_creature)
+        erro = _validar_tail_lash_bonus(game, rokea_creature)
+        assert erro is None
+
+    def test_tail_lash_bonus_homid_sem_bonus(self, game, rokea_homid):
+        """Bônus de +4 negado para Rokea em forma Homid."""
+        game.players[0].pack_home.append(rokea_homid)
+        erro = _validar_tail_lash_bonus(game, rokea_homid)
+        assert erro is not None
+        assert 'Homid' in erro
+
+    def test_combat_action_validators_registrado(self):
+        """Tail Lash esta registrado no dicionario de validadores."""
+        assert 'tail_lash' in COMBAT_ACTION_VALIDATORS
+        assert 'tail_lash_bonus' in COMBAT_ACTION_VALIDATORS
+
+    def test_declare_action_com_validador_tail_lash_rokea(
+        self, game, rokea_creature
+    ):
+        """declare_action aceita tail_lash para Rokea valido."""
+        game.players[0].pack_home.append(rokea_creature)
+        start_combat(game, ['10'], ['2'])
+        result = declare_action(
+            game, '10', 'tail_lash', acoes_extra=['tail_lash']
+        )
+        assert result is True
+
+    def test_declare_action_com_validador_tail_lash_garou(
+        self, game, garou_creature
+    ):
+        """declare_action recusa tail_lash para Garou."""
+        game.players[0].pack_home.append(garou_creature)
+        start_combat(game, ['13'], ['2'])
+        result = declare_action(
+            game, '13', 'tail_lash', acoes_extra=['tail_lash']
+        )
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# Testes: condicao_uso no aplicar_carta
+# ---------------------------------------------------------------------------
+
+class TestCondicaoUso:
+    """Testes para validacao de condicao_uso em modos de carta."""
+
+    @pytest.fixture
+    def player_with_rokea(self, player1: PlayerState) -> PlayerState:
+        rokea = CardInstance(
+            card_id=10, name='Rokea Crinos', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, gnosis=3, health=8, health_current=8,
+            keywords='Rokea - Gaia - Male',
+        )
+        player1.pack_home.append(rokea)
+        return player1
+
+    @pytest.fixture
+    def player_with_garou(self, player1: PlayerState) -> PlayerState:
+        garou = CardInstance(
+            card_id=13, name='Garou', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=4, health=6, health_current=6,
+            keywords='Garou - Red Talons - Gaia - Male',
+        )
+        player1.pack_home.append(garou)
+        return player1
+
+    @pytest.fixture
+    def player_with_umbra_char(self, player1: PlayerState) -> PlayerState:
+        char = CardInstance(
+            card_id=14, name='Umbra Character', card_type='Character',
+            zone=Zone.UMBRA, owner_id='p1', controller_id='p1',
+            rage=3, gnosis=7, health=5, health_current=5,
+            keywords='Spirit - Wraith',
+        )
+        player1.umbra.append(char)
+        return player1
+
+    def test_condicao_rokea_mokole_nao_homid_atendida(
+        self, game, player_with_rokea
+    ):
+        """Condicao atendida: ha Rokea nao-Homid no pack."""
+        result = _condicao_rokea_mokole_nao_homid(game, player_with_rokea)
+        assert result is True
+
+    def test_condicao_rokea_mokole_nao_homid_nao_atendida(
+        self, game, player_with_garou
+    ):
+        """Condicao nao atendida: so ha Garou no pack."""
+        result = _condicao_rokea_mokole_nao_homid(game, player_with_garou)
+        assert result is False
+
+    def test_condicao_personagem_na_umbra_atendida(
+        self, game, player_with_umbra_char
+    ):
+        """Condicao atendida: ha personagem na Umbra."""
+        result = _condicao_personagem_na_umbra(game, player_with_umbra_char)
+        assert result is True
+
+    def test_condicao_personagem_na_umbra_nao_atendida(
+        self, game, player_with_rokea
+    ):
+        """Condicao nao atendida: nenhum personagem na Umbra."""
+        result = _condicao_personagem_na_umbra(game, player_with_rokea)
+        assert result is False
+
+    def test_validar_condicao_uso_desconhecida_permite(self, game, player1):
+        """Condicao desconhecida e permitida (backward compatible)."""
+        result = _validar_condicao_uso(game, player1, 'condicao_inexistente')
+        assert result is True
+
+
+# ---------------------------------------------------------------------------
+# Testes: Head Butt (bounce se bloqueado)
+# ---------------------------------------------------------------------------
+
+class TestHeadButt:
+    """Testes para o efeito especial do Head Butt."""
+
+    @pytest.fixture
+    def attacker(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=100, name='Garou Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=3, health=6, health_current=6,
+            keywords='Garou - Red Talons - Gaia',
+        )
+
+    @pytest.fixture
+    def mokole_attacker(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=101, name='Mokole Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=6, health=7, health_current=7,
+            keywords='Mokole - Suchid - Gaia',
+        )
+
+    @pytest.fixture
+    def defender(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=200, name='Defensor', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, gnosis=2, health=5, health_current=5,
+            keywords='Garou - Wyrm',
+        )
+
+    def test_head_butt_bounce_se_bloqueado(
+        self, game, attacker, defender
+    ):
+        """Head Butt bloqueado causa 4 de dano no atacante (nao-Mokole)."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(defender)
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'head_butt',
+                       acoes_extra=['head_butt'])
+        declare_action(game, '200', 'block')
+        resolve_combat(game)
+        # Atacante deve ter recebido 4 de dano
+        assert attacker.health_current == 2  # 6 - 4 = 2
+        # Defensor deve estar intacto
+        assert defender.health_current == 5
+
+    def test_head_butt_sem_bounce_se_mokole(
+        self, game, mokole_attacker, defender
+    ):
+        """Head Butt bloqueado por Mokole nao causa dano de volta."""
+        game.players[0].pack_home.append(mokole_attacker)
+        game.players[1].pack_home.append(defender)
+        start_combat(game, ['101'], ['200'])
+        declare_action(game, '101', 'head_butt',
+                       acoes_extra=['head_butt'])
+        declare_action(game, '200', 'block')
+        resolve_combat(game)
+        # Mokole atacante deve estar intacto (excecao)
+        assert mokole_attacker.health_current == 7
+        # Defensor deve estar intacto
+        assert defender.health_current == 5
+
+    def test_head_butt_dano_normal_se_nao_bloqueado(
+        self, game, attacker, defender
+    ):
+        """Head Butt sem bloqueio causa dano normal baseado no Rage."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(defender)
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'head_butt',
+                       acoes_extra=['head_butt'])
+        declare_action(game, '200', 'strike')  # nao bloqueia, contra-ataca
+        resolve_combat(game)
+        # Defensor leva dano = Rage do atacante (4)
+        assert defender.health_current == 1  # 5 - 4 = 1
+        # Atacante leva dano do contra-ataque do defensor (Rage 3)
+        assert attacker.health_current == 3  # 6 - 3 = 3
+
+    def test_head_butt_em_acaoes_ofensivas(self):
+        """Head Butt esta na lista de acoes ofensivas."""
+        from rage_web.game_engine.combat_queue import ACOES_OFENSIVAS
+        assert 'head_butt' in ACOES_OFENSIVAS
+
+    def test_head_butt_em_combat_actions(self):
+        """Head Butt esta na lista de Combat Actions."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTIONS
+        assert 'head_butt' in COMBAT_ACTIONS
+
+
+# ---------------------------------------------------------------------------
+# Testes: Anatomy Lesson (unblockable + retirada)
+# ---------------------------------------------------------------------------
+
+class TestAnatomyLesson:
+    """Testes para Anatomy Lesson."""
+
+    @pytest.fixture
+    def attacker(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=100, name='Garou Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=3, health=6, health_current=6,
+            keywords='Garou - Red Talons - Gaia',
+        )
+
+    @pytest.fixture
+    def frenzied_attacker(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=102, name='Frenzy Garou', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, gnosis=2, health=6, health_current=6,
+            keywords='Garou - Wyrm',
+            is_frenzied=True,
+        )
+
+    @pytest.fixture
+    def defender(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=200, name='Defensor', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, gnosis=2, health=5, health_current=5,
+            keywords='Garou - Wyrm',
+        )
+
+    def test_anatomy_lesson_unblockable(
+        self, game, attacker, defender
+    ):
+        """Anatomy Lesson ignora block do defensor."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(defender)
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'anatomy_lesson',
+                       acoes_extra=['anatomy_lesson'])
+        declare_action(game, '200', 'block')
+        resolve_combat(game)
+        # Defensor deveria ter levado dano (unblockable)
+        assert defender.health_current < 5
+
+    def test_anatomy_lesson_retira_se_ferido(
+        self, game, attacker, defender
+    ):
+        """Criatura ferida por Anatomy Lesson retira do combate."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(defender)
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'anatomy_lesson',
+                       acoes_extra=['anatomy_lesson'])
+        declare_action(game, '200', 'strike')
+        resolve_combat(game)
+        # Defensor deve ter sido retirado do combate (discard)
+        assert defender.zone.value == 'discard_combat'
+
+    def test_anatomy_lesson_recusado_se_frenetico(
+        self, game, frenzied_attacker, defender
+    ):
+        """Anatomy Lesson recusado se atacante esta frenzied."""
+        game.players[0].pack_home.append(frenzied_attacker)
+        game.players[1].pack_home.append(defender)
+        start_combat(game, ['102'], ['200'])
+        result = declare_action(
+            game, '102', 'anatomy_lesson',
+            acoes_extra=['anatomy_lesson']
+        )
+        assert result is False
+
+    def test_anatomy_lesson_em_acaoes_ofensivas(self):
+        """Anatomy Lesson esta na lista de acoes ofensivas."""
+        from rage_web.game_engine.combat_queue import ACOES_OFENSIVAS
+        assert 'anatomy_lesson' in ACOES_OFENSIVAS
+
+    def test_anatomy_lesson_em_combat_actions(self):
+        """Anatomy Lesson esta na lista de Combat Actions."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTIONS
+        assert 'anatomy_lesson' in COMBAT_ACTIONS
+
+    def test_anatomy_lesson_props_unblockable(self):
+        """Anatomy Lesson tem propriedade unblockable."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS
+        props = COMBAT_ACTION_PROPS.get('anatomy_lesson', {})
+        assert props.get('unblockable') is True
+        assert props.get('retira_se_ferido') is True
+
+    def test_condicao_nao_frenetico_atendida(self, game, attacker):
+        """Condicao nao_frenetico atendida: criatura nao esta frenzied."""
+        game.players[0].pack_home.append(attacker)
+        from rage_web.game_engine.effects import _condicao_nao_frenetico
+        result = _condicao_nao_frenetico(game, game.players[0])
+        assert result is True
+
+    def test_condicao_nao_frenetico_nao_atendida(
+        self, game, frenzied_attacker
+    ):
+        """Condicao nao_frenetico nao atendida: criatura frenzied."""
+        game.players[0].pack_home.append(frenzied_attacker)
+        from rage_web.game_engine.effects import _condicao_nao_frenetico
+        result = _condicao_nao_frenetico(game, game.players[0])
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# Testes: Savage Beatdown (descarte metade se frenzied)
+# ---------------------------------------------------------------------------
+
+class TestSavageBeatdown:
+    """Testes para Savage Beatdown."""
+
+    @pytest.fixture
+    def attacker(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=100, name='Garou Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=3, health=6, health_current=6,
+            keywords='Garou - Red Talons - Gaia',
+        )
+
+    @pytest.fixture
+    def frenzied_defender(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=200, name='Frenzy Defender', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, gnosis=2, health=5, health_current=5,
+            keywords='Garou - Wyrm',
+            is_frenzied=True,
+        )
+
+    @pytest.fixture
+    def normal_defender(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=201, name='Normal Defender', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, gnosis=2, health=5, health_current=5,
+            keywords='Garou - Wyrm',
+        )
+
+    def test_savage_beatdown_descarta_metade_se_frenzied(
+        self, game, attacker, frenzied_defender
+    ):
+        """Savage Beatdown em criatura frenzied faz oponente descartar metade."""
+        # Adiciona cartas na mao do oponente
+        for i in range(4):
+            frenzied_defender.owner_id  # p2
+            card = CardInstance(
+                card_id=300 + i, name=f'Card {i}', card_type='Combat Action',
+                zone=Zone.HAND, owner_id='p2', controller_id='p2',
+            )
+            game.players[1].hand.append(card)
+
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(frenzied_defender)
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'savage_beatdown',
+                       acoes_extra=['savage_beatdown'])
+        declare_action(game, '200', 'strike')
+        resolve_combat(game)
+        # Oponente deveria ter descartado metade (4/2 = 2)
+        assert len(game.players[1].hand) == 2
+        assert len(game.players[1].discard_combat) >= 2
+
+    def test_savage_beatdown_sem_descarte_se_nao_frenzied(
+        self, game, attacker, normal_defender
+    ):
+        """Savage Beatdown em criatura normal nao causa descarte."""
+        for i in range(4):
+            card = CardInstance(
+                card_id=300 + i, name=f'Card {i}', card_type='Combat Action',
+                zone=Zone.HAND, owner_id='p2', controller_id='p2',
+            )
+            game.players[1].hand.append(card)
+
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(normal_defender)
+        start_combat(game, ['100'], ['201'])
+        declare_action(game, '100', 'savage_beatdown',
+                       acoes_extra=['savage_beatdown'])
+        declare_action(game, '201', 'strike')
+        resolve_combat(game)
+        # Oponente nao deveria ter descartado nada
+        assert len(game.players[1].hand) == 4
+
+    def test_savage_beatdown_em_acaoes_ofensivas(self):
+        """Savage Beatdown esta na lista de acoes ofensivas."""
+        from rage_web.game_engine.combat_queue import ACOES_OFENSIVAS
+        assert 'savage_beatdown' in ACOES_OFENSIVAS
+
+    def test_savage_beatdown_em_combat_actions(self):
+        """Savage Beatdown esta na lista de Combat Actions."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTIONS
+        assert 'savage_beatdown' in COMBAT_ACTIONS
+
+    def test_savage_beatdown_props(self):
+        """Savage Beatdown tem propriedade descarte_metade_se_frenetico."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS
+        props = COMBAT_ACTION_PROPS.get('savage_beatdown', {})
+        assert props.get('descarte_metade_se_frenetico') is True
+
+
+# ---------------------------------------------------------------------------
+# Testes: Submission Hold (remove se nao-frenzied, anti-dodge se frenzied)
+# ---------------------------------------------------------------------------
+
+class TestSubmissionHold:
+    """Testes para Submission Hold."""
+
+    @pytest.fixture
+    def attacker(self, player1: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=100, name='Garou Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=3, health=6, health_current=6,
+            keywords='Garou - Red Talons - Gaia',
+        )
+
+    @pytest.fixture
+    def frenzied_defender(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=200, name='Frenzy Defender', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, gnosis=2, health=5, health_current=5,
+            keywords='Garou - Wyrm',
+            is_frenzied=True,
+        )
+
+    @pytest.fixture
+    def normal_defender(self, player2: PlayerState) -> CardInstance:
+        return CardInstance(
+            card_id=201, name='Normal Defender', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p2', controller_id='p2',
+            rage=3, gnosis=2, health=5, health_current=5,
+            keywords='Garou - Wyrm',
+        )
+
+    def test_submission_hold_retira_nao_frenzied(
+        self, game, attacker, normal_defender
+    ):
+        """Submission Hold em criatura nao-frenzied remove do combate."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(normal_defender)
+        start_combat(game, ['100'], ['201'])
+        declare_action(game, '100', 'submission_hold',
+                       acoes_extra=['submission_hold'])
+        declare_action(game, '201', 'strike')
+        resolve_combat(game)
+        # Defensor deve ter sido retirado do combate
+        assert normal_defender.zone.value == 'discard_combat'
+
+    def test_submission_hold_anti_dodge_se_frenzied(
+        self, game, attacker, frenzied_defender
+    ):
+        """Submission Hold em criatura frenzied impede dodge."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(frenzied_defender)
+        start_combat(game, ['100'], ['200'])
+        declare_action(game, '100', 'submission_hold',
+                       acoes_extra=['submission_hold'])
+        declare_action(game, '200', 'strike')
+        resolve_combat(game)
+        # Defensor deve ter restricao nao_pode_esquivar
+        assert 'nao_pode_esquivar' in frenzied_defender.restricoes
+
+    def test_submission_hold_nao_pode_esquivar(
+        self, game, attacker, frenzied_defender
+    ):
+        """Criatura com restricao nao_pode_esquivar nao consegue esquivar."""
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(frenzied_defender)
+        start_combat(game, ['100'], ['200'])
+        # Simula restricao aplicada por Submission Hold na rodada anterior
+        frenzied_defender.restricoes.append('nao_pode_esquivar')
+        declare_action(game, '100', 'strike')
+        declare_action(game, '200', 'dodge')
+        resolve_combat(game)
+        # Defensor deveria ter levado dano (dodge falhou)
+        assert frenzied_defender.health_current < 5
+
+    def test_submission_hold_recusado_se_frenetico(
+        self, game, normal_defender
+    ):
+        """Submission Hold recusado se atacante esta frenzied."""
+        frenzied_attacker = CardInstance(
+            card_id=102, name='Frenzy Atacante', card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=5, gnosis=2, health=6, health_current=6,
+            keywords='Garou - Wyrm',
+            is_frenzied=True,
+        )
+        game.players[0].pack_home.append(frenzied_attacker)
+        game.players[1].pack_home.append(normal_defender)
+        start_combat(game, ['102'], ['201'])
+        result = declare_action(
+            game, '102', 'submission_hold',
+            acoes_extra=['submission_hold']
+        )
+        assert result is False
+
+    def test_submission_hold_em_acaoes_ofensivas(self):
+        """Submission Hold esta na lista de acoes ofensivas."""
+        from rage_web.game_engine.combat_queue import ACOES_OFENSIVAS
+        assert 'submission_hold' in ACOES_OFENSIVAS
+
+    def test_submission_hold_em_combat_actions(self):
+        """Submission Hold esta na lista de Combat Actions."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTIONS
+        assert 'submission_hold' in COMBAT_ACTIONS
+
+    def test_submission_hold_props(self):
+        """Submission Hold tem propriedades corretas."""
+        from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS
+        props = COMBAT_ACTION_PROPS.get('submission_hold', {})
+        assert props.get('retira_se_nao_frenetico') is True
+        assert props.get('nao_pode_esquivar_se_frenetico') is True
+
+    def test_restricoes_limpas_no_novo_combate(
+        self, game, attacker, frenzied_defender
+    ):
+        """Restricoes de combates anteriores sao limpas no start_combat."""
+        frenzied_defender.restricoes.append('nao_pode_esquivar')
+        game.players[0].pack_home.append(attacker)
+        game.players[1].pack_home.append(frenzied_defender)
+        # Inicia um novo combate — deve limpar restricoes
+        start_combat(game, ['100'], ['200'])
+        assert 'nao_pode_esquivar' not in frenzied_defender.restricoes

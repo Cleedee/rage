@@ -4,7 +4,7 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 4 de dano",
+      "descricao": "Causar 4 de dano (bounce se bloqueado, exceto Mokole)",
       "efeitos": [
         {
           "tipo": "dano",
@@ -15,7 +15,7 @@
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1328,
     "texto_original": "If any damage from this card is blocked, this card becomes a damage card on the creature that played it, unless it is a Mokole.",
     "keywords": "",
@@ -23,6 +23,11 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Efeito 'bounce se bloqueado' implementado no _processar_ataque do combat_queue.py",
+      "Excecao para Mokole (keywords contem 'mokole') verificada na resolucao",
+      "Adicionado em ACOES_OFENSIVAS e COMBAT_ACTIONS"
+    ]
   }
 }

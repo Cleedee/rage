@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from typing import Optional
 
-from rage_web.game_engine.state import CombatState, GameState, PlayerState, Zone
+from rage_web.game_engine.state import (
+    CombatState, GameState, PlayerState, Zone,
+    anexar_dano, descartar_anexos,
+)
 from rage_web.game_engine.rules import COMBAT_STEPS
 
 
@@ -23,6 +26,110 @@ COMBAT_ACTIONS = {
     'use_gift',         # Usar Gift em combate
     'use_equipment',    # Usar Equipment em combate
     'flee',             # Fugir do combate
+    'head_butt',        # Head Butt (dano 4, bounce se bloqueado)
+    'tail_lash',        # Tail Lash (dano 1, +4 se Rokea/Mokole)
+    'anatomy_lesson',   # Anatomy Lesson (dano 4, unblockable, retira)
+    'savage_beatdown',  # Savage Beatdown (dano 3, descarte se frenzied)
+    'submission_hold',  # Submission Hold (dano 1, remove ou anti-dodge)
+}
+
+
+# -----------------------------------------------------------------------
+# Validadores de Combat Actions
+# -----------------------------------------------------------------------
+# Cada validador recebe (game, criatura) e retorna None se valido,
+# ou uma string de erro se invalido.
+
+
+def _find_criatura(game: GameState, card_id: str):
+    """Busca uma criatura pelo card_id em todas as zonas visiveis.
+
+    Args:
+        game: Estado da partida.
+        card_id: ID da criatura (string).
+
+    Returns:
+        CardInstance ou None se nao encontrada.
+    """
+    for p in game.players:
+        for zone_cards in (p.pack_home, p.hunting_grounds,
+                           p.umbra, p.hand):
+            for c in zone_cards:
+                if str(c.card_id) == card_id:
+                    return c
+    return None
+
+
+def _validar_tail_lash(game: GameState, criatura) -> Optional[str]:
+    """Valida se a criatura pode usar Tail Lash.
+
+    Restricoes:
+    - So pode ser usado por Rokea ou Mokole (keywords).
+    - Nao pode ser usado com arma (attached_equipment do tipo Weapon).
+    """
+    keywords = (criatura.keywords or '').lower()
+    is_rokea = 'rokea' in keywords
+    is_mokole = 'mokole' in keywords
+    if not is_rokea and not is_mokole:
+        return ('Tail Lash so pode ser usado por Rokea ou Mokole '
+                f'(keywords: {criatura.keywords})')
+    # Verifica se tem arma equipada
+    for eq in criatura.attached_equipment:
+        eq_kw = (eq.keywords or '').lower()
+        if 'weapon' in eq_kw:
+            return ('Tail Lash nao pode ser usado com arma '
+                    f'({eq.name} equipado)')
+    return None
+
+
+def _validar_tail_lash_bonus(game: GameState, criatura) -> Optional[str]:
+    """Valida se a criatura recebe o bônus de +4 do Tail Lash.
+
+    O bônus de +4 dano se aplica apenas se a criatura NÃO está
+    em forma Homid.
+    """
+    keywords = (criatura.keywords or '').lower()
+    is_homid = 'homid' in keywords
+    if is_homid:
+        return 'Bônus de +4 não se aplica em forma Homid'
+    return None
+
+
+def _validar_anatomy_lesson(game: GameState, criatura) -> Optional[str]:
+    """Valida se a criatura pode usar Anatomy Lesson.
+
+    Restricoes:
+    - Requer: not frenzied.
+    """
+    if criatura.is_frenzied:
+        return 'Anatomy Lesson requer: not frenzied'
+    return None
+
+
+COMBAT_ACTION_VALIDATORS: dict[str, list] = {
+    'tail_lash': [_validar_tail_lash],
+    'tail_lash_bonus': [_validar_tail_lash_bonus],
+    'anatomy_lesson': [_validar_anatomy_lesson],
+    'submission_hold': [_validar_anatomy_lesson],  # mesma regra: not frenzied
+}
+
+
+# -----------------------------------------------------------------------
+# Propriedades de Combat Actions
+# -----------------------------------------------------------------------
+
+COMBAT_ACTION_PROPS: dict[str, dict] = {
+    'anatomy_lesson': {
+        'unblockable': True,       # Dano nao pode ser bloqueado/esquivado
+        'retira_se_ferido': True,  # Criatura ferida deve retirar do combate
+    },
+    'savage_beatdown': {
+        'descarte_metade_se_frenetico': True,  # Oponente descarta metade da mao se alvo frenzied
+    },
+    'submission_hold': {
+        'retira_se_nao_frenetico': True,     # Remove do combate se alvo NAO frenzied
+        'nao_pode_esquivar_se_frenetico': True,  # Alvo frenzied nao pode esquivar
+    },
 }
 
 
@@ -154,6 +261,12 @@ def start_combat(game: GameState, attackers: list[str],
     if game.combat.is_active:
         return False
 
+    # Limpa restricoes de combates anteriores (ex: nao_pode_esquivar)
+    for p in game.players:
+        for zone_cards in (p.pack_home, p.hunting_grounds, p.umbra):
+            for c in zone_cards:
+                c.restricoes.clear()
+
     # Verifica Gauntlet
     for atk in attackers:
         for dfd in defenders:
@@ -190,7 +303,8 @@ def get_combatants(game: GameState) -> list[str]:
     return result
 
 
-def declare_action(game: GameState, card_id: str, action: str) -> bool:
+def declare_action(game: GameState, card_id: str, action: str,
+                     acoes_extra: Optional[list[str]] = None) -> bool:
     """Declara uma acao de combate para uma criatura.
 
     A ordem da declaracao importa: quem declara por ultimo
@@ -200,6 +314,8 @@ def declare_action(game: GameState, card_id: str, action: str) -> bool:
         game: Estado da partida.
         card_id: ID da criatura que esta declarando.
         action: Nome da acao (ex: 'strike', 'block', 'dodge').
+        acoes_extra: Lista opcional de acoes extras permitidas
+                      (ex: Combat Actions especificas como 'tail_lash').
 
     Returns:
         True se a declaracao foi aceita.
@@ -210,8 +326,22 @@ def declare_action(game: GameState, card_id: str, action: str) -> bool:
         return False
     if card_id not in get_combatants(game):
         return False
+
+    # Valida se a acao e permitida
     if action not in COMBAT_ACTIONS:
-        return False
+        # Verifica em acoes extras (Combat Actions especificas)
+        if not acoes_extra or action not in acoes_extra:
+            return False
+
+    # Valida restricoes especificas da Combat Action
+    if action in COMBAT_ACTION_VALIDATORS:
+        criatura = _find_criatura(game, card_id)
+        if criatura:
+            for validador in COMBAT_ACTION_VALIDATORS[action]:
+                erro = validador(game, criatura)
+                if erro:
+                    game.add_log(f'Acao recusada: {erro}')
+                    return False
 
     success = game.combat.declare(card_id, action)
     if success:
@@ -307,13 +437,45 @@ def _remove_creature(game: GameState, card: CardInstance):
                 return
 
 
+def _retirar_do_combate(game: GameState, criatura: CardInstance) -> bool:
+    """Retira uma criatura do combate (retreat/withdraw).
+
+    A criatura e removida das listas de attackers/defenders
+    e movida para o discard de combate do seu dono.
+
+    Returns:
+        True se a criatura foi retirada com sucesso.
+    """
+    combat = game.combat
+    if not combat.is_active:
+        return False
+
+    # Remove das listas de combate
+    if criatura.card_id in [str(c) for c in combat.attackers]:
+        combat.attackers = [a for a in combat.attackers
+                            if str(a) != str(criatura.card_id)]
+    if criatura.card_id in [str(c) for c in combat.defenders]:
+        combat.defenders = [d for d in combat.defenders
+                            if str(d) != str(criatura.card_id)]
+
+    # Remove da zona atual e move para discard
+    dono = _find_owner(game, criatura)
+    _remove_creature(game, criatura)
+    criatura.zone = Zone.DISCARD_COMBAT
+    if dono:
+        dono.discard_combat.append(criatura)
+    return True
+
+
 def _find_owner(game: GameState, card: CardInstance) -> Optional[PlayerState]:
     """Encontra o jogador dono de uma carta."""
     return _find_player(game, card.owner_id)
 
 
 ACOES_OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
-                    'ranged_strike', 'use_gift'}
+                    'ranged_strike', 'use_gift',
+                    'head_butt', 'tail_lash', 'anatomy_lesson',
+                    'savage_beatdown', 'submission_hold'}
 
 
 def resolve_combat(game: GameState) -> bool:
@@ -367,22 +529,109 @@ def resolve_combat(game: GameState) -> bool:
         if acao_origem not in ACOES_OFENSIVAS:
             return
 
-        # Alvo pode bloquear/esquivar
-        if acao_alvo in ('block', 'dodge'):
+        # Calcula dono da origem (necessario para Head Butt bounce e dano)
+        dono_origem = _find_owner(game, origem_card)
+        dono_dono = dono_origem.id if dono_origem else origem_card.owner_id
+
+        # Verifica propriedades especiais da acao
+        props = COMBAT_ACTION_PROPS.get(acao_origem, {})
+        is_unblockable = props.get('unblockable', False)
+        retira_se_ferido = props.get('retira_se_ferido', False)
+
+        # Verifica se o alvo tem restricao de nao poder esquivar
+        if acao_alvo == 'dodge' and 'nao_pode_esquivar' in alvo_card.restricoes:
+            game.add_log(
+                f'  {alvo_card.name} tentou esquivar, mas nao pode! '
+                f'(restricao de Submission Hold)'
+            )
+            # Trata como se nao tivesse bloqueado — o dano sera aplicado
+            # Continua para a aplicacao de dano abaixo
+        # Alvo pode bloquear/esquivar (a menos que seja unblockable)
+        elif acao_alvo in ('block', 'dodge') and not is_unblockable:
             game.add_log(f'  {alvo_card.name} {acao_alvo}ou o ataque de '
                          f'{origem_card.name}')
+            # Head Butt: se bloqueado, vira damage card no atacante (exceto Mokole)
+            if acao_origem == 'head_butt':
+                keywords = (origem_card.keywords or '').lower()
+                if 'mokole' not in keywords:
+                    anexar_dano(origem_card, origem_card, 4, dono_dono)
+                    game.add_log(
+                        f'  Head Butt bloqueado! {origem_card.name} '
+                        f'recebe 4 de dano de volta'
+                    )
+                else:
+                    game.add_log(
+                        f'  Head Butt bloqueado, mas {origem_card.name} '
+                        f'e Mokole (sem dano de volta)'
+                    )
             return
 
-        # Aplica dano
-        dano = origem_card.rage
-        alvo_card.health_current = max(0, alvo_card.health_current - dano)
+        if is_unblockable and acao_alvo in ('block', 'dodge'):
+            game.add_log(
+                f'  {alvo_card.name} tentou {acao_alvo}, mas '
+                f'{acao_origem} e unblockable!'
+            )
+
+        # Aplica dano e cria damage card (regra 6.4)
+        dano = max(0, origem_card.rage - alvo_card.reducao_dano)
+        if alvo_card.reducao_dano > 0:
+            game.add_log(f'  {alvo_card.name} reduziu {alvo_card.reducao_dano} '
+                         f'de dano (equipamento)')
+        anexar_dano(alvo_card, origem_card, dano, dono_dono)
         game.add_log(f'  {origem_card.name} causou {dano} de dano a '
                      f'{alvo_card.name} '
                      f'({alvo_card.health_current}/{alvo_card.health})')
 
+        # Retirada do combate (Anatomy Lesson: criatura ferida deve retirar)
+        if retira_se_ferido and alvo_card.health_current < alvo_card.health:
+            if _retirar_do_combate(game, alvo_card):
+                game.add_log(
+                    f'  {alvo_card.name} ferida por {acao_origem}! '
+                    f'Retirou-se do combate.'
+                )
+
+        # Savage Beatdown: se alvo frenzied, oponente descarta metade da mao
+        if props.get('descarte_metade_se_frenetico') and alvo_card.is_frenzied:
+            dono_alvo = _find_owner(game, alvo_card)
+            if dono_alvo:
+                mao = dono_alvo.hand
+                import math
+                qtd = math.ceil(len(mao) / 2)
+                if qtd > 0:
+                    descartadas = mao[:qtd]
+                    for c in descartadas:
+                        c.zone = Zone.DISCARD_COMBAT
+                        mao.remove(c)
+                        dono_alvo.discard_combat.append(c)
+                    game.add_log(
+                        f'  Savage Beatdown! {alvo_card.name} esta '
+                        f'frenzied. {dono_alvo.name} descartou '
+                        f'{len(descartadas)} carta(s) (metade da mao).'
+                    )
+
+        # Submission Hold: efeito baseado no estado do alvo
+        if props.get('retira_se_nao_frenetico'):
+            if not alvo_card.is_frenzied:
+                # Alvo nao-frenzied: remove do combate
+                if _retirar_do_combate(game, alvo_card):
+                    game.add_log(
+                        f'  Submission Hold! {alvo_card.name} '
+                        f'(nao-frenzied) retirou-se do combate.'
+                    )
+            elif props.get('nao_pode_esquivar_se_frenetico'):
+                # Alvo frenzied: nao pode esquivar na proxima rodada
+                alvo_card.restricoes.append('nao_pode_esquivar')
+                game.add_log(
+                    f'  Submission Hold! {alvo_card.name} (frenzied) '
+                    f'nao podera esquivar na proxima rodada.'
+                )
+
         # Morte
         if alvo_card.health_current <= 0:
-            dono_origem = _find_owner(game, origem_card)
+            dono_alvo = _find_owner(game, alvo_card)
+            # Descarta cartas anexadas (regra 6.4.2)
+            if dono_alvo:
+                descartar_anexos(alvo_card, dono_alvo)
             vp = alvo_card.renown if alvo_card.renown > 0 else 1
             if dono_origem:
                 dono_origem.victory_points += vp

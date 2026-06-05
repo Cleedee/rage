@@ -4,18 +4,23 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 3 de dano",
+      "descricao": "Causar dano + descarte metade da mao se alvo frenzied",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
           "quantidade": 3
+        },
+        {
+          "tipo": "descartar_metade_mao",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 0
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "deck160_analysis",
+    "fonte": "deck160_analysis+revisado",
     "card_id": 1306,
     "texto_original": "If Savage Beatdown damages a frenzied creature, its controlling player must randomly discard half their combat hand (round up).",
     "keywords": "",
@@ -23,6 +28,11 @@
     "rage": 5,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": true
+    "precisa_revisao": false,
+    "notas": [
+      "Efeito 'descarte metade da mao se frenzied' implementado no _processar_ataque",
+      "Propriedade 'descarte_metade_se_frenetico' em COMBAT_ACTION_PROPS",
+      "Usa _resolver_descartar_metade_mao como referencia, mas logica esta inline no combate"
+    ]
   }
 }
