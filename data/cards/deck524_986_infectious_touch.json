@@ -1,0 +1,35 @@
+{
+    "id": "card_986",
+    "nome": "Infectious Touch",
+    "tipo": "Gift",
+    "requires": "Iliad Fomori - Defiler",
+    "modos": [
+        {
+            "descricao": "Alvo perde 1 Rage e 1 Gnosis (permanente)",
+            "efeitos": [
+                {
+                    "tipo": "modificar_atributo",
+                    "condicao_alvo": "criatura_inimiga",
+                    "quantidade": -1,
+                    "params": {
+                        "atributos": ["rage", "gnosis"],
+                        "duracao": "permanente",
+                        "minimo": 0,
+                        "limite_afetar_mesmo_alvo": 2
+                    }
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 986,
+        "texto_original": "The target of this Gift loses 1 Rage and 1 Gnosis. An individual target cannot be affected by more than 2 Infections. This Gift is permanent until canceled.",
+        "expansion": "TheWyrm",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 3,
+        "health": 0,
+        "precisa_revisao": false
+    }
+}

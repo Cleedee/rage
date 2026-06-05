@@ -1,0 +1,44 @@
+{
+    "id": "card_885",
+    "nome": "Mass Pollution",
+    "tipo": "Event",
+    "modos": [
+        {
+            "descricao": "Wyrm +1 Gnosis, non-Wyrm -1 Gnosis",
+            "efeitos": [
+                {
+                    "tipo": "modificar_atributo",
+                    "condicao_alvo": "criatura_aliada",
+                    "quantidade": 1,
+                    "params": {
+                        "atributos": ["gnosis"],
+                        "duracao": "permanente",
+                        "filtro_tipo": "Wyrm"
+                    }
+                },
+                {
+                    "tipo": "modificar_atributo",
+                    "condicao_alvo": "criatura_inimiga",
+                    "quantidade": -1,
+                    "params": {
+                        "atributos": ["gnosis"],
+                        "duracao": "permanente",
+                        "filtro_tipo": "non_Wyrm",
+                        "minimo": 0
+                    }
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 885,
+        "texto_original": "All Wyrm characters gain 1 Gnosis. Non-Wyrm characters (those weak servants of Gaia) lose 1 Gnosis.",
+        "expansion": "TheWyrm",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0,
+        "precisa_revisao": false
+    }
+}

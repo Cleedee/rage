@@ -1,0 +1,43 @@
+{
+    "id": "card_1296",
+    "nome": "Reckless Swing",
+    "tipo": "Combat Action",
+    "modos": [
+        {
+            "descricao": "Causar 3 de dano",
+            "efeitos": [
+                {
+                    "tipo": "dano",
+                    "condicao_alvo": "criatura_inimiga",
+                    "quantidade": 3
+                }
+            ]
+        },
+        {
+            "descricao": "Se desviado, nao age no proximo round",
+            "efeitos": [
+                {
+                    "tipo": "impedir_acoes",
+                    "condicao_alvo": "criatura_aliada",
+                    "quantidade": 0,
+                    "params": {
+                        "tipo_acao": "combat_action",
+                        "duracao": "proximo_round",
+                        "condicao": "se_desviado"
+                    }
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 1296,
+        "texto_original": "If this attack is dodged your character cannot play a combat action during the next round of combat.",
+        "expansion": "TheWyrm",
+        "damage": "3",
+        "rage": 2,
+        "gnosis": 0,
+        "health": 0,
+        "precisa_revisao": false
+    }
+}

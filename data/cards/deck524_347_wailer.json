@@ -1,0 +1,48 @@
+{
+    "id": "card_347",
+    "nome": "Wailer",
+    "tipo": "Character - Wyrm",
+    "renown": 4,
+    "atributos": {
+        "rage": 1,
+        "gnosis": 3,
+        "health": 2,
+        "rage_morph": 3,
+        "gnosis_morph": 5,
+        "health_morph": 4
+    },
+    "keyword": "Iliad - Fomori - Pentex - Homid - Defiler - Wyrm - Male",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Wailer forma base",
+            "efeitos": [],
+            "restricoes": []
+        },
+        {
+            "descricao": "Battle form",
+            "efeitos": [
+                {
+                    "tipo": "impedir_acoes",
+                    "condicao_alvo": "criatura_inimiga",
+                    "quantidade": 0,
+                    "params": {
+                        "tipo_acao": "combat_action",
+                        "duracao": "proximo_round",
+                        "condicao": "alvo_gnosis_menor",
+                        "valor_comparacao": 3,
+                        "trigger": "apos_transformacao_battle"
+                    }
+                }
+            ],
+            "condicao_uso": "quando_transforma_battle"
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 347,
+        "texto_original": "When in combat against Wailer, opponents with less Gnosis than Wailer cannot play a Combat Action on the round following the Wailer's transformation into his Battle form.",
+        "expansion": "TheWyrm",
+        "precisa_revisao": false
+    }
+}

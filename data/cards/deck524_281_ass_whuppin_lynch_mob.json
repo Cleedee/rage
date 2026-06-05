@@ -1,0 +1,33 @@
+{
+    "id": "card_281",
+    "nome": "Ass Whuppin' Lynch Mob",
+    "tipo": "Combat Event",
+    "modos": [
+        {
+            "descricao": "Pack attack em vitima no HG",
+            "efeitos": [
+                {
+                    "tipo": "comprar",
+                    "condicao_alvo": "jogador_aliado",
+                    "quantidade": 1,
+                    "params": {
+                        "zona": "deck_combate",
+                        "por_packmate": true
+                    }
+                }
+            ],
+            "condicao_uso": "quando_alpha_declara_ataque_vitima_hg"
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 281,
+        "texto_original": "Play when your alpha declares an attack on a victim in the Hunting Grounds. Choose any or all members of your pack to join the attack. Draw 1 additional combat card for each additional pack member who joins the attack.",
+        "keywords": "Pack Action",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0,
+        "precisa_revisao": false
+    }
+}

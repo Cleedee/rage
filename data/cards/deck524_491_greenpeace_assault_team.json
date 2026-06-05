@@ -1,0 +1,36 @@
+{
+    "id": "card_491",
+    "nome": "Greenpeace Assault Team",
+    "tipo": "Victim",
+    "renown": 9,
+    "atributos": {
+        "rage": 7,
+        "gnosis": 2,
+        "health": 10
+    },
+    "keyword": "Human",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Greenpeace Assault Team",
+            "efeitos": [],
+            "passivas": [
+                {
+                    "tipo": "destroi_caern_wyrm",
+                    "descricao": "Destroi 1 Caern Wyrm ao final de cada Combat Phase",
+                    "params": {
+                        "alvo": "caern_wyrm",
+                        "frequencia": "fim_combat_phase"
+                    }
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 491,
+        "texto_original": "The Greenpeace Assault Team will destroy 1 Wyrm caern at the end of each Combat Phase.",
+        "expansion": "TheWyrm",
+        "precisa_revisao": false
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "id": "card_806",
+    "nome": "Shapeshift",
+    "tipo": "Action",
+    "modos": [
+        {
+            "descricao": "Trocar forma breed/Crinos",
+            "efeitos": [
+                {
+                    "tipo": "modificar_atributo",
+                    "condicao_alvo": "criatura_aliada",
+                    "quantidade": 0,
+                    "params": {
+                        "atributos": ["forma"],
+                        "trocar_forma": true,
+                        "formas": ["breed", "crinos"],
+                        "pode_jogar_a_qualquer_momento": true
+                    }
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 806,
+        "texto_original": "This card can be played at any time by a character in your pack.  The character playing this card immediately changes from breed form to Crinos form or from Crinos form to breed form.",
+        "expansion": "Unlimited",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 0,
+        "health": 0,
+        "precisa_revisao": false
+    }
+}

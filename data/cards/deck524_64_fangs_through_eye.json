@@ -1,0 +1,35 @@
+{
+    "id": "card_64",
+    "nome": "Fangs-Through-Eye",
+    "tipo": "Character - Wyrm",
+    "renown": 3,
+    "atributos": {
+        "rage": 4,
+        "gnosis": 2,
+        "health": 4,
+        "rage_morph": 4,
+        "gnosis_morph": 2,
+        "health_morph": 4
+    },
+    "keyword": "Garou - Black Spiral Dancer - Ahroun - Metis - Beast-of-War - Wyrm - Male",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Fangs-Through-Eye",
+            "efeitos": [],
+            "restricoes": [
+                {
+                    "tipo": "nao_defende_fomori",
+                    "descricao": "Nunca defende Fomori no Hunting Grounds"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 64,
+        "texto_original": "Whacked-out and prejudiced, Fangs-Through-Eye will never act to defend a Fomori in the Hunting Grounds.",
+        "expansion": "TheWarOfTheAmazon",
+        "precisa_revisao": false
+    }
+}

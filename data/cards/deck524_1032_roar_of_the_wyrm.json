@@ -1,0 +1,36 @@
+{
+    "id": "card_1032",
+    "nome": "Roar of the Wyrm",
+    "tipo": "Gift",
+    "requires": "Bane - Iliad Fomori",
+    "modos": [
+        {
+            "descricao": "Oponente nao joga Combat Action no proximo round",
+            "efeitos": [
+                {
+                    "tipo": "impedir_acoes",
+                    "condicao_alvo": "criatura_inimiga",
+                    "quantidade": 0,
+                    "params": {
+                        "tipo_acao": "combat_action",
+                        "duracao": "proximo_round",
+                        "alvo": "oponente_combate"
+                    }
+                }
+            ],
+            "condicao_uso": "",
+            "descarte_apos_uso": true
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 1032,
+        "texto_original": "1 opponent facing the Gift user in combat cannot play a Combat Action in the upcoming round. Discard this Gift after its effect takes place.",
+        "expansion": "TheWyrm",
+        "damage": "",
+        "rage": 0,
+        "gnosis": 4,
+        "health": 0,
+        "precisa_revisao": false
+    }
+}

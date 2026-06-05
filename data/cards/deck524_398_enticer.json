@@ -1,0 +1,42 @@
+{
+    "id": "card_398",
+    "nome": "Enticer",
+    "tipo": "Ally",
+    "renown": 4,
+    "atributos": {
+        "rage": 1,
+        "gnosis": 6,
+        "health": 3
+    },
+    "requires": "Pentex - Bane",
+    "keyword": "Human",
+    "damage": "",
+    "modos": [
+        {
+            "descricao": "Enticer",
+            "efeitos": [],
+            "passivas": [
+                {
+                    "tipo": "bloquear_combat_action_round1",
+                    "descricao": "Oponentes com menos Gnosis nao jogam Combat Action no round 1",
+                    "params": {
+                        "condicao": "oponente_gnosis_menor",
+                        "valor_comparacao": 6,
+                        "round": 1
+                    }
+                },
+                {
+                    "tipo": "nao_pode_bluff_rage6",
+                    "descricao": "Enticer nao pode bluff com Combat Actions de Rage > 6"
+                }
+            ]
+        }
+    ],
+    "_metadata": {
+        "fonte": "deck524",
+        "card_id": 398,
+        "texto_original": "Opponents who have less Gnosis than the Enticer cannot play a Combat Action during the first round of combat.  The Enticer cannot bluff with Combat Actions which exceed Rage 6.",
+        "expansion": "TheWyrm",
+        "precisa_revisao": false
+    }
+}
