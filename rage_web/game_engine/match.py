@@ -30,9 +30,19 @@ FASE_NOMES = {
 }
 
 def _log_fase(game, turno, fase):
-    """Loga mudanca de fase com destaque."""
+    """Loga mudanca de fase com destaque e lista HG."""
     nome = FASE_NOMES.get(fase, fase.upper())
     print(f'\n  ── [{turno}] {nome} ──\n')
+    # Mostra Hunting Grounds no inicio de cada fase
+    hg_cards = []
+    for p in game.players:
+        for c in p.hunting_grounds:
+            hg_cards.append(f'{c.name}(dono:{p.name})')
+    hg_global = getattr(game, 'hunting_grounds_cards', [])
+    for c in hg_global:
+        hg_cards.append(f'{c.name}(global)')
+    if hg_cards:
+        print(f'    🎯 Hunting Grounds: {", ".join(hg_cards)}')
 
 
 def print_separator(char='━', width=60):
@@ -55,12 +65,20 @@ def print_board(game: GameState):
         hand = len(p.hand)
         deck_c = len(p.deck_combat)
         deck_s = len(p.deck_sept)
-        hg_local = ', '.join(c.name[:15] for c in p.hunting_grounds) or '—'
+        hg_local = ', '.join(f'{c.name}({c.health_current}/{c.health})' if hasattr(c,'health') and c.health else c.name[:15] for c in p.hunting_grounds) or '—'
         print(f'  {p.name:20s} 🃏{hand:2d} 📚C{deck_c:2d} S{deck_s:2d} '
               f'🏆{p.victory_points}')
         print(f'  {" "*20} 🏠 {pack}')
         if p.hunting_grounds:
             print(f'  {" "*20} 🎯 {hg_local}')
+    # Global Hunting Grounds
+    hg_global = getattr(game, 'hunting_grounds_cards', [])
+    if hg_global:
+        hg_names = ', '.join(
+            f'{c.name}({c.health_current}/{c.health})' if hasattr(c,'health') and c.health
+            else c.name[:15] for c in hg_global
+        )
+        print(f'  {" "*20} 🌍 HG Global: {hg_names}')
     if game.combat.is_active:
         atk = ', '.join(game.combat.attackers)
         dfd = ', '.join(game.combat.defenders)
