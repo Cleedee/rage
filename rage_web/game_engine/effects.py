@@ -1394,6 +1394,19 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
             for sub in efeito.se_fracasso:
                 resolvedor.aplicar_efeito(sub, origem, jogador)
 
+    # Move a carta para o descarte apropriado apos uso (se ainda
+    # nao foi movida por um efeito, ex: equipar)
+    if card_origem and card_origem.zone == Zone.HAND:
+        ct = (modelo.tipo or '').lower()
+        if 'combat action' in ct or 'combat event' in ct:
+            card_origem.zone = Zone.DISCARD_COMBAT
+            jogador.discard_combat.append(card_origem)
+        elif 'equipment' not in ct:
+            # Gift, Event, Action, Quest: descarte de sept
+            card_origem.zone = Zone.DISCARD_SEPT
+            jogador.discard_sept.append(card_origem)
+        # Equipment: fica equipado (resolvido por _resolver_equipar)
+
     game.add_log(f'{jogador.name} usou {modelo.nome} ({modo.descricao})')
     return resolvedor.log
 
