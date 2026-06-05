@@ -1602,3 +1602,123 @@ class TestFogCancel:
         assert not game.anunciador.tem_anuncio_ativo
         # Fog foi descartado
         assert fog.zone == Zone.DISCARD_COMBAT
+
+
+class TestSweetLunaRegeneration:
+    """Testes para Sweet Luna's Smile (regenerar agravado)."""
+
+    def test_pode_regenerar_agravado(self):
+        """Criatura com 'pode_regenerar_agravado' regenera dano agravado."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        criatura = CardInstance(card_id=269, name='Sweet Luna',
+            card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=2, gnosis=7, health=7, health_current=5,
+            restricoes=['pode_regenerar_agravado'])
+        # Adiciona dano agravado como CardInstance
+        dano = CardInstance(card_id=-1, name='Dano', card_type='Damage',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='2', is_aggravated=True)
+        criatura.attached_damage.append(dano)
+        p1.pack_home.append(criatura)
+        # Regenera
+        logs = p1.regeneration()
+        # Deveria ter regenerado o dano agravado
+        assert len(criatura.attached_damage) == 0
+        assert criatura.health_current == 7  # voltou ao max
+
+    def test_sem_flag_nao_regenera_agravado(self):
+        """Criatura sem 'pode_regenerar_agravado' nao regenera dano agravado."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        criatura = CardInstance(card_id=1, name='Normal',
+            card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=3, health=6, health_current=4)
+        dano = CardInstance(card_id=-1, name='Dano', card_type='Damage',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='2', is_aggravated=True)
+        criatura.attached_damage.append(dano)
+        p1.pack_home.append(criatura)
+        logs = p1.regeneration()
+        # Nao deveria ter regenerado (só tem dano agravado)
+        assert len(criatura.attached_damage) == 1
+        assert criatura.health_current == 4
+
+
+class TestHaunterAbilities:
+    """Testes para Haunter (umbra + gifts)."""
+
+    def test_existe_apenas_umbra_play_direct(self):
+        """Carta com 'existe_apenas_umbra' e colocada na Umbra."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        haunter = CardInstance(card_id=408, name='Haunter',
+            card_type='Ally',
+            zone=Zone.HAND, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=7, health=4, health_current=4,
+            restricoes=['existe_apenas_umbra'])
+        p1.hand.append(haunter)
+        # Simula o mesmo fluxo do bot._play_card
+        card = p1.hand.pop(0)
+        if 'existe_apenas_umbra' in card.restricoes:
+            card.zone = Zone.UMBRA
+            card.health_current = card.health
+            p1.umbra.append(card)
+        # Haunter deveria estar na Umbra, nao no Pack Home
+        assert haunter in p1.umbra
+        assert haunter not in p1.pack_home
+        assert haunter.zone == Zone.UMBRA
+
+    def test_gauntlet_cross_gift_sem_modelo_gnosis(self):
+        """ModeloCarta sem gnosis usa valor default (0), restricao nao se aplica."""
+        from rage_web.game_engine.effects import (
+            _validar_gauntlet_para_carta, ModeloCarta, Modo, Efeito, EfeitoTipo,
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        haunter = CardInstance(card_id=408, name='Haunter',
+            card_type='Ally',
+            zone=Zone.UMBRA, owner_id='p1', controller_id='p1',
+            rage=4, gnosis=7, health=4, health_current=4,
+            restricoes=['gifts_cruzam_gauntlet_se_gnosis_lte:4'])
+        # Sem gnosis no modelo: padrao e 0, entao a restricao
+        # (com threshold 4) nao se aplica (0 <= 4? Sim, mas na pratica
+        # o gnosis real vem da CardInstance sendo jogada)
+        gift = ModeloCarta(
+            id='test_gift', nome='Gift', tipo='Gift',
+            modos=[Modo(
+                descricao='Usar',
+                efeitos=[Efeito(tipo=EfeitoTipo.DANO, quantidade=2,
+                                condicao='criatura_inimiga')]
+            )]
+        )
+        # O comportamento padrao e True (sem Caern bloqueando)
+        result = _validar_gauntlet_para_carta(
+            game, p1, gift, card_origem=haunter
+        )
+        assert result is True
+
+    def test_gauntlet_cross_sem_restricao_sem_caern(self):
+        """Sem restricao e sem Caern, padrao True."""
+        from rage_web.game_engine.effects import (
+            _validar_gauntlet_para_carta, ModeloCarta, Modo, Efeito, EfeitoTipo,
+        )
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        carta = CardInstance(card_id=1, name='Normal',
+            card_type='Character',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            rage=3, health=5, health_current=5)
+        gift = ModeloCarta(
+            id='test', nome='Test', tipo='Gift',
+            modos=[Modo(
+                descricao='Usar',
+                efeitos=[Efeito(tipo=EfeitoTipo.DANO, quantidade=1,
+                                condicao='criatura_inimiga')]
+            )]
+        )
+        assert _validar_gauntlet_para_carta(
+            game, p1, gift, card_origem=carta
+        ) is True

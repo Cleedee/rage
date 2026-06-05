@@ -842,10 +842,19 @@ class PriorityBot:
 
         Regra (1.2): Enemy, Victim e Battlefield vao
         para o Hunting Grounds, nao para o Pack Home.
+        Spirit cards com 'existe_apenas_umbra' vao para a Umbra.
         """
         if 0 <= hand_index < len(self.player.hand):
-            from rage_web.game_engine.rules import zona_da_carta
             card = self.player.hand.pop(hand_index)
+            # Verifica se e uma criatura que existe apenas na Umbra
+            if 'existe_apenas_umbra' in card.restricoes:
+                card.zone = Zone.UMBRA
+                card.health_current = card.health
+                self.player.umbra.append(card)
+                self.game.add_log(
+                    f'[BOT] {self.player.name} jogou {card.name} na Umbra')
+                return
+            from rage_web.game_engine.rules import zona_da_carta
             zona = zona_da_carta(card.card_type or '')
             if zona == 'hunting_grounds':
                 card.zone = Zone.HUNTING_GROUNDS

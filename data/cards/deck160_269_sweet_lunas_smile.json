@@ -27,7 +27,7 @@
     "health": 7,
     "precisa_revisao": false,
     "notas": [
-      "Regenerar dano agravado: flag 'pode_regenerar_agravado'",
+      "Regenerar dano agravado: 'pode_regenerar_agravado' implementado em state.py",
       "+1 Rage/Gnosis/Health enquanto Lunar Phase em jogo: buff continuo condicional",
       "Sistema de buffs condicionais (lunar_phase) pendente de implementacao"
     ]

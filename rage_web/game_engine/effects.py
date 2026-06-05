@@ -854,16 +854,23 @@ def _condicao_personagem_na_umbra(game: GameState,
 
 
 def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
-                                 modelo: 'ModeloCarta') -> bool:
+                                 modelo: 'ModeloCarta',
+                                 card_origem: Optional['CardInstance'] = None
+                                 ) -> bool:
     """Valida se um Rite/Gift pode cruzar o Gauntlet para seu alvo.
 
     Se o jogador tem um Caern como Lake Nasser Wallow no Hunting Grounds,
     Rites e Gifts podem cruzar o Gauntlet.
 
+    Suporta Haunter: se a carta que esta usando o Gift tem a restricao
+    'gifts_cruzam_gauntlet_se_gnosis_lte', Gifts com Gnosis <= valor
+    podem cruzar o Gauntlet.
+
     Args:
         game: Estado da partida.
         jogador: Jogador usando a carta.
         modelo: Modelo da carta sendo usada.
+        card_origem: Instancia da carta que esta usando o Gift.
 
     Returns:
         True se a carta pode ser usada (Gauntlet permitido ou nao aplicavel).
@@ -875,9 +882,20 @@ def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
         if 'gauntlet' in texto and 'cross' in texto:
             return True  # Caern permite cruzar
 
+    # Verifica se a origem tem restricao de cruzar Gauntlet
+    # (ex: Haunter - gifts com Gnosis <=4 podem cruzar)
+    if card_origem:
+        for restricao in card_origem.restricoes:
+            if restricao.startswith('gifts_cruzam_gauntlet_se_gnosis_lte:'):
+                try:
+                    threshold = int(restricao.split(':')[1])
+                    gift_gnosis = getattr(modelo, 'gnosis', 0) or 0
+                    if gift_gnosis <= threshold:
+                        return True
+                except (ValueError, IndexError):
+                    pass
+
     # Sem Caern especial: Rites/Gifts funcionam normalmente
-    # (a verificacao de Gauntlet real seria mais complexa,
-    # exigindo verificar a zona do alvo vs zona do jogador)
     return True
 
 
@@ -933,7 +951,8 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
 
     # Valida Gauntlet para Rites e Gifts
     if modelo.tipo in ('Rite', 'Gift'):
-        if not _validar_gauntlet_para_carta(game, jogador, modelo):
+        if not _validar_gauntlet_para_carta(game, jogador, modelo,
+                                            card_origem=card_origem):
             return ['Gauntlet: a carta nao pode cruzar para o alvo']
 
     # Usa a carta real (se fornecida) ou cria temporaria

@@ -353,8 +353,16 @@ class PlayerState:
                 continue
             if not c.attached_damage:
                 continue
-            # Filtra apenas damage cards nao-agravadas
-            normais = [d for d in c.attached_damage if not d.is_aggravated]
+            # Filtra damage cards: so pode regenerar nao-agravadas,
+            # a menos que a criatura tenha 'pode_regenerar_agravado'
+            pode_agravado = 'pode_regenerar_agravado' in c.restricoes
+            if pode_agravado:
+            # Pode regenerar qualquer dano (incluindo agravado)
+                normais = list(c.attached_damage)
+            else:
+                # Filtra apenas damage cards nao-agravadas
+                normais = [d for d in c.attached_damage
+                           if not d.is_aggravated]
             if not normais:
                 logs.append(f'{c.name} tem apenas dano agravado')
                 continue

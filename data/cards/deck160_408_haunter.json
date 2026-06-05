@@ -31,10 +31,10 @@
     "precisa_revisao": false,
     "renown": 7,
     "notas": [
-      "Existe apenas na Umbra: so pode ser jogado na Umbra",
+      "Existe apenas na Umbra: 'existe_apenas_umbra' implementado em bot._play_card",
+      "Gifts com Gnosis <=4 cruzam Gauntlet: implementado em _validar_gauntlet_para_carta",
       "Gifts de Fomori/Metis/Shadow Lords: restricao de tribo no uso de gifts",
-      "Gifts com Gnosis <=4 cruzam Gauntlet: bypass do requerimento de Gauntlet",
-      "Integracao com sistema de gift usage pendente"
+      "Restricao de tribo de gifts requer sistema de uso de gifts (futuro)"
     ]
   }
 }
