@@ -853,6 +853,8 @@ class PriorityBot:
                 self.player.umbra.append(card)
                 self.game.add_log(
                     f'[BOT] {self.player.name} jogou {card.name} na Umbra')
+                # Registra passivas especiais
+                self.game.register_card_passives(card, self.player)
                 return
             from rage_web.game_engine.rules import zona_da_carta
             zona = zona_da_carta(card.card_type or '')
@@ -862,12 +864,14 @@ class PriorityBot:
                 self.game.add_log(
                     f'[BOT] {self.player.name} jogou {card.name} '
                     f'no Hunting Grounds')
+                self.game.register_card_passives(card, self.player)
             else:
                 card.zone = Zone.PACK_HOME
                 card.health_current = card.health
                 self.player.pack_home.append(card)
                 self.game.add_log(
                     f'[BOT] {self.player.name} jogou {card.name}')
+                self.game.register_card_passives(card, self.player)
 
     def _attack(self, attacker_id: str, defender_id: str):
         """Inicia combate e tapa a criatura atacante."""

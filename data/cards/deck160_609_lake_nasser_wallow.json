@@ -21,8 +21,8 @@
     "notas": [
       "Caern existe em ambos os lados do Gauntlet (como todos os Caerns)",
       "Efeito passivo: Rites e Gifts do pack podem cruzar a Gauntlet",
-      "Implementado via PlayerState.caerns_no_hunting_grounds",
-      "Verificacao de Gauntlet para Rites/Gifts a ser implementada no aplicar_carta"
-    ]
+      "Implementado via game_modifiers: rites_gifts_cross_gauntlet"
+    ],
+    "sistemas_usados": ["continuous_passive", "gauntlet_crossing"]
   }
 }

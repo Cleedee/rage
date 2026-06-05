@@ -15,6 +15,46 @@ def _default_anunciador():
 
 
 @dataclass
+class QuestState:
+    """Estado de uma quest ativa no jogador.
+
+    Mnesis Dreams: marca um personagem e conta turnos sem dano.
+    """
+    quest_card_uid: int       # uid da carta de quest em jogo
+    target_card_uid: int      # uid do personagem alvo
+    condition: str            # 'sem_dano_por_N_turnos'
+    turns_remaining: int = 0  # turnos restantes para completar (N)
+    turns_with_damage: int = 0  # turnos em que alvo tomou dano
+    completed: bool = False
+    reward_vp: int = 0
+    reward_acao: str = ''     # 'shuffle_card_discard_to_deck', etc.
+
+
+@dataclass
+class DeathTrigger:
+    """Trigger que dispara quando uma criatura morre.
+
+    Ex: Dream Hunter — se morto por Mokole, dono busca carta.
+    """
+    trigger_card_uid: int     # uid da carta com o trigger
+    condition: str            # 'killed_by_type: Mokole', 'any', etc.
+    action: str               # 'search_deck_type:Quest/Rite/Junta'
+    originador_id: str = ''   # jogador que se beneficia
+    usado: bool = False       # trigger ja foi usado (one-shot)
+
+
+@dataclass
+class GameModifier:
+    """Modificador global do jogo aplicado por cartas em jogo.
+
+    Ex: Lake Nasser Wallow — Rites/Gifts cruzam Gauntlet.
+    """
+    card_uid: int
+    modifier: str             # 'rites_gifts_cross_gauntlet'
+    ativo: bool = True
+
+
+@dataclass
 class PendenciaEfeito:
     """Efeito temporario que expira em determinado momento.
 
@@ -192,6 +232,12 @@ class PlayerState:
 
     # Cartas em combate neste turno
     combatants: list[CardInstance] = field(default_factory=list)
+
+    # Quests ativas neste jogador
+    quests: list[QuestState] = field(default_factory=list)
+
+    # Recrutamento: tipos de ally que este jogador pode recrutar
+    can_recruit: list[str] = field(default_factory=list)
 
     @property
     def caerns_no_hunting_grounds(self) -> list[CardInstance]:
@@ -580,6 +626,12 @@ class GameState:
     # Efeitos temporarios pendentes de expiracao
     pendencias: list[PendenciaEfeito] = field(default_factory=list)
 
+    # Triggers de morte ativos (ex: Dream Hunter)
+    death_triggers: list[DeathTrigger] = field(default_factory=list)
+
+    # Modificadores globais do jogo (ex: Lake Nasser Wallow)
+    game_modifiers: list[GameModifier] = field(default_factory=list)
+
     # Gerador de numeros aleatorios com seed (reprodutibilidade)
     rng: random.Random = field(default_factory=random.Random)
 
@@ -616,6 +668,8 @@ class GameState:
                     logs = p.regeneration()
                     for log in logs:
                         self.add_log(log)
+                # Verificar progresso das quests
+                self._check_quests()
             elif self.phase == 'umbra':
                 # Closed Play: personagens com Gnosis >= Gauntlet
                 # PODEM stepping sideways (decisao do jogador/bot)
@@ -680,6 +734,207 @@ class GameState:
             if p.id == player_id:
                 return p
         return None
+
+    def _find_card_by_uid(self, uid: int) -> Optional[CardInstance]:
+        """Encontra uma CardInstance pelo uid (id() da instancia)."""
+        for p in self.players:
+            for zone_list in [p.pack_home, p.hunting_grounds, p.umbra,
+                              p.hand, p.deck_combat, p.deck_sept,
+                              p.discard_combat, p.discard_sept, p.victory_pile]:
+                for c in zone_list:
+                    if id(c) == uid:
+                        return c
+        for c in self.hunting_grounds_cards:
+            if id(c) == uid:
+                return c
+        return None
+
+    def _check_quests(self):
+        """Verifica progresso de todas as quests ativas.
+
+        Chamado na regeneration phase.
+        - Se o alvo tomou dano no turno anterior, reseta contador.
+        - Se passou N turnos sem dano, completa a quest.
+        """
+        for p in self.players:
+            completas = []
+            for q in p.quests:
+                if q.completed:
+                    completas.append(q)
+                    continue
+
+                # Procura a carta alvo pelo uid
+                target = self._find_card_by_uid(q.target_card_uid)
+                if target is None:
+                    # Alvo nao existe mais (foi destruido)
+                    q.completed = False
+                    completas.append(q)
+                    self.add_log(f'Quest falhou: alvo de {target.name if target else "?"} desapareceu')
+                    continue
+
+                # Decrementa turnos restantes
+                q.turns_remaining -= 1
+                if q.turns_remaining <= 0:
+                    # Quest completa!
+                    q.completed = True
+                    completas.append(q)
+                    self.add_log(f'✨ {p.name} completou quest! (+{q.reward_vp} VP)')
+                    p.victory_points += q.reward_vp
+
+                    # Acoes especiais
+                    if q.reward_acao == 'shuffle_card_discard_to_deck':
+                        # Shuffle uma carta do sept discard para sept deck
+                        if p.discard_sept:
+                            carta = p.discard_sept.pop(
+                                self.rng.randint(0, len(p.discard_sept) - 1)
+                            )
+                            carta.zone = Zone.DECK_SEPT
+                            p.deck_sept.append(carta)
+                            self.add_log(f'{p.name} shufflou {carta.name} do discard para o deck')
+
+            # Remove quests completas/falhas
+            p.quests = [q for q in p.quests if q not in completas]
+
+    def register_card_passives(self, card: CardInstance, owner: PlayerState):
+        """Registra efeitos passivos especiais de cartas sem efeitos
+        estruturados.
+
+        Cartas especiais:
+        - Dream Hunter (573): death trigger quando morto por Mokole
+        - Lake Nasser Wallow (609): Rites/Gifts cruzam Gauntlet
+        - Sand's Last King (374): pode recrutar Ajaba/Bastet/Silent Striders
+
+        Args:
+            card: A carta que entrou em jogo.
+            owner: O jogador dono.
+        """
+        if card.card_id == 573:  # Dream Hunter
+            trigger = DeathTrigger(
+                trigger_card_uid=id(card),
+                condition='killed_by_type:Mokole',
+                action='search_deck_type:Quest/Rite/Moot',
+                originador_id=owner.id
+            )
+            self.death_triggers.append(trigger)
+            self.add_log(f'{card.name}: trigger de morte registrado')
+
+        elif card.card_id == 609:  # Lake Nasser Wallow
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='rites_gifts_cross_gauntlet'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: Rites e Gifts cruzam o Gauntlet agora')
+
+        elif card.card_id == 374:  # Sand's Last King
+            tribos = ['Ajaba', 'Bastet', 'Silent Striders']
+            for t in tribos:
+                if t not in owner.can_recruit:
+                    owner.can_recruit.append(t)
+            self.add_log(
+                f'{card.name}: {owner.name} pode recrutar '
+                f'Ajaba, Bastet e Silent Striders')
+
+    def register_death_trigger(self, trigger: DeathTrigger):
+        """Registra um death trigger."""
+        self.death_triggers.append(trigger)
+
+    def check_death_triggers(self, killed_card: CardInstance,
+                              killer_card: Optional[CardInstance] = None,
+                              killer_player: Optional[PlayerState] = None):
+        """Verifica triggers de morte quando uma criatura morre.
+
+        Args:
+            killed_card: A carta que foi destruida.
+            killer_card: A carta que causou a destruicao.
+            killer_player: O jogador que controla o killer.
+        """
+        for t in self.death_triggers:
+            if t.usado:
+                continue
+
+            trigger_card = self._find_card_by_uid(t.trigger_card_uid)
+            if trigger_card is None:
+                continue
+
+            # Verifica condicao
+            if t.condition == 'any':
+                pass  # Qualquer morte dispara
+            elif t.condition.startswith('killed_by_type:'):
+                tipo_necessario = t.condition.split(':', 1)[1].strip()
+                if (killer_card is None
+                        or tipo_necessario.lower() not in (killer_card.name.lower()
+                        or '')):
+                    # Verifica se o jogador killer tem o tipo
+                    if killer_player and tipo_necessario.lower() not in (
+                            killer_player.name.lower() or ''):
+                        continue
+            else:
+                continue  # Condicao nao reconhecida
+
+            # Executa acao
+            if t.action.startswith('search_deck_type:'):
+                tipos = t.action.split(':', 1)[1].strip()
+                tipos_lista = [x.strip() for x in tipos.split('/')]
+                beneficiario = self._find_player(t.originador_id)
+                if beneficiario:
+                    # Procura no sept deck por carta do tipo
+                    encontrada = None
+                    for i, c in enumerate(beneficiario.deck_sept):
+                        if any(tt.lower() in (c.card_type or '').lower()
+                               or tt.lower() in (c.name or '').lower()
+                               for tt in tipos_lista):
+                            encontrada = beneficiario.deck_sept.pop(i)
+                            break
+                    if encontrada:
+                        encontrada.zone = Zone.HAND
+                        beneficiario.hand.append(encontrada)
+                        self.add_log(
+                            f'{beneficiario.name} buscou {encontrada.name} '
+                            f'do deck (trigger: {trigger_card.name})'
+                        )
+                    else:
+                        self.add_log(
+                            f'{beneficiario.name} nao encontrou carta '
+                            f'do tipo {tipos} no deck'
+                        )
+            elif t.action == 'gain_vp':
+                # Dar VP ao originador
+                beneficiario = self._find_player(t.originador_id)
+                if beneficiario:
+                    beneficiario.victory_points += 1
+                    self.add_log(
+                        f'{beneficiario.name} ganhou 1 VP (trigger: {trigger_card.name})'
+                    )
+            else:
+                self.add_log(f'Trigger action nao implementada: {t.action}')
+
+            t.usado = True
+
+    def has_modifier(self, modifier: str) -> bool:
+        """Verifica se um modificador global esta ativo."""
+        for m in self.game_modifiers:
+            if m.modifier == modifier and m.ativo:
+                # Verifica se a carta ainda esta em jogo
+                # Tenta uid da instancia primeiro, depois card_id
+                card = self._find_card_by_uid(m.card_uid)
+                if card is None:
+                    # Tenta buscar por card_id
+                    for p in self.players:
+                        for zone_list in [p.pack_home, p.hunting_grounds,
+                                          p.umbra]:
+                            for c in zone_list:
+                                if c.card_id == m.card_uid:
+                                    card = c
+                                    break
+                if card is not None and card.zone in (
+                        Zone.PACK_HOME, Zone.HUNTING_GROUNDS, Zone.UMBRA):
+                    return True
+                # Carta foi removida, desativa modificador
+                if card is None:
+                    m.ativo = False
+        return False
 
     def chamar_moot(self, jogador_id: str, nome: str = 'Moot',
                      is_board_meeting: bool = False) -> bool:

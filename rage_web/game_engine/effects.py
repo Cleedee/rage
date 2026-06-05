@@ -112,6 +112,9 @@ class Efeito:
     se_fracasso: list[Efeito] = field(default_factory=list)
     condicao_estado: Optional[str] = None  # Condicao de estado do jogo
     # Ex: 'alvo_frenetico' — so aplica se_sucesso se condicao for verdadeira
+    # Campos extras do JSON que nao mapeiam diretamente
+    # (ex: 'vp', 'acao' para quest_check)
+    params: dict = field(default_factory=dict)
 
     def __post_init__(self):
         if isinstance(self.tipo, str):
@@ -407,6 +410,20 @@ class ResolvedorEfeitos:
                         op.umbra.remove(alvo)
                         break
             self.game.add_log(f'{alvo.name} foi destruido')
+
+            # Death triggers
+            self.game.check_death_triggers(alvo, origem, jogador)
+
+            # Marca dano em quests
+            for p in self.game.players:
+                for q in p.quests:
+                    if q.target_card_uid == id(alvo) and not q.completed:
+                        q.completed = True
+                        self.game.add_log(
+                            f'  Quest falhou: {alvo.name} '
+                            f'(alvo da quest) foi destruido'
+                        )
+
             return True
         return False
 
@@ -830,14 +847,42 @@ class ResolvedorEfeitos:
     def _resolver_quest_check(self, efeito: Efeito,
                                 origem: CardInstance,
                                 jogador: PlayerState, alvo) -> bool:
-        """Verifica condicao de quest e aplica recompensa.
+        """Inicia uma quest no jogador.
 
-        Usado por Mnesis Dreams: espera 2 turnos sem dano.
+        Usado por Mnesis Dreams: cria QuestState que conta turnos
+        sem dano. Se completar, da VP + shuffle card do discard.
 
-        Nota: implementacao futura require sistema de triggers.
+        Parametros do JSON (acessiveis via efeito.params):
+        - 'condicao': tipo de condicao ('sem_dano_por_2_turnos')
+        - 'quantidade': numero de turnos (2)
+        - 'vp': VP concedido ao completar (2)
+        - 'acao': acao ao completar ('shuffle_card_discard_to_deck')
         """
+        from rage_web.game_engine.state import QuestState
+
+        quantidade = max(1, int(efeito.params.get('quantidade', 2)))
+        condicao = efeito.params.get('condicao', 'sem_dano_por_2_turnos')
+        vp = int(efeito.params.get('vp', 2))
+        acao = efeito.params.get('acao', '')
+
+        # Alvo: o proprio personagem alvo (passado via efeito)
+        if not alvo or not hasattr(alvo, 'uid'):
+            self.game.add_log(f'{origem.name}: alvo invalido para quest')
+            return False
+
+        # Cria quest state no jogador
+        quest = QuestState(
+            quest_card_uid=id(origem),
+            target_card_uid=id(alvo),
+            condition=condicao,
+            turns_remaining=quantidade,
+            reward_vp=vp,
+            reward_acao=acao
+        )
+        jogador.quests.append(quest)
         self.game.add_log(
-            f'{origem.name} quest check pendente'
+            f'{jogador.name} iniciou quest {origem.name} '
+            f'em {alvo.name} ({quantidade} turnos sem dano)'
         )
         return True
 
@@ -868,6 +913,8 @@ def _validar_condicao_uso(game: GameState, jogador: 'PlayerState',
             lambda: _condicao_personagem_na_umbra(game, jogador),
         'nao_frenetico':
             lambda: _condicao_nao_frenetico(game, jogador),
+        'fase_umbra_mokole':
+            lambda: _condicao_fase_umbra_mokole(game, jogador),
     }
     validador = validadores.get(condicao)
     if validador:
@@ -901,18 +948,26 @@ def _condicao_personagem_na_umbra(game: GameState,
     return False
 
 
+def _condicao_fase_umbra_mokole(game: GameState,
+                                 jogador: 'PlayerState') -> bool:
+    """Verifica se a fase atual e Umbra e ha personagem Mokole no pack."""
+    if game.phase != 'umbra':
+        return False
+    for c in jogador.pack_home:
+        keywords = (c.keywords or '').lower()
+        if 'mokole' in keywords and 'Character' in (c.card_type or ''):
+            return True
+    return False
+
+
 def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
                                  modelo: 'ModeloCarta',
                                  card_origem: Optional['CardInstance'] = None
                                  ) -> bool:
     """Valida se um Rite/Gift pode cruzar o Gauntlet para seu alvo.
 
-    Se o jogador tem um Caern como Lake Nasser Wallow no Hunting Grounds,
-    Rites e Gifts podem cruzar o Gauntlet.
-
-    Suporta Haunter: se a carta que esta usando o Gift tem a restricao
-    'gifts_cruzam_gauntlet_se_gnosis_lte', Gifts com Gnosis <= valor
-    podem cruzar o Gauntlet.
+    - Lake Nasser Wallow: Rites e Gifts cruzam o Gauntlet.
+    - Haunter: Gifts com Gnosis <= 4 podem cruzar.
 
     Args:
         game: Estado da partida.
@@ -923,6 +978,11 @@ def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
     Returns:
         True se a carta pode ser usada (Gauntlet permitido ou nao aplicavel).
     """
+    # Verifica modificador global: rites_gifts_cross_gauntlet
+    # (ex: Lake Nasser Wallow)
+    if game.has_modifier('rites_gifts_cross_gauntlet'):
+        return True
+
     # Verifica se o jogador tem Caern que permite cruzar Gauntlet
     caerns = jogador.caerns_no_hunting_grounds
     for caern in caerns:
@@ -1061,6 +1121,14 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
 
 def _efeito_from_json(e: dict) -> Efeito:
     """Converte um dict de efeito JSON para Efeito (recursivo)."""
+    # Campos conhecidos do Efeito
+    campos_conhecidos = {
+        'tipo', 'condicao_alvo', 'alvo', 'quantidade', 'duracao',
+        'se_sucesso', 'se_fracasso', 'condicao_estado',
+    }
+    # Campos extras viram params
+    params = {k: v for k, v in e.items() if k not in campos_conhecidos
+              and k != 'tipo'}
     return Efeito(
         tipo=e['tipo'],
         condicao=e.get('condicao_alvo'),
@@ -1070,6 +1138,7 @@ def _efeito_from_json(e: dict) -> Efeito:
         se_sucesso=[_efeito_from_json(s) for s in e.get('se_sucesso', [])],
         se_fracasso=[_efeito_from_json(f) for f in e.get('se_fracasso', [])],
         condicao_estado=e.get('condicao_estado'),
+        params=params,
     )
 
 

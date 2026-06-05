@@ -654,6 +654,22 @@ def resolve_combat(game: GameState) -> bool:
                              f'{dono_origem.name} ganhou {vp} VP '
                              f'(total: {dono_origem.victory_points})')
 
+                # Death triggers (ex: Dream Hunter)
+                game.check_death_triggers(
+                    alvo_card, origem_card, dono_origem
+                )
+
+                # Marca dano em quests (se alvo era alvo de quest, reseta)
+                for p in game.players:
+                    for q in p.quests:
+                        if q.target_card_uid == id(alvo_card) and not q.completed:
+                            # Alvo tomou dano fatal -> quest falhou
+                            q.completed = True
+                            game.add_log(
+                                f'  Quest falhou: {alvo_card.name} '
+                                f'(alvo da quest) foi destruido'
+                            )
+
     # Processa atacantes contra defensores (match por indice)
     for i, a_id in enumerate(game.combat.attackers):
         if a_id == 'hg':

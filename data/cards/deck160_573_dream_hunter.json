@@ -21,8 +21,8 @@
     "notas": [
       "Existe apenas na Umbra",
       "Pode usar Mokole e Get of Fenris Gifts",
-      "Se morto por Mokole: busca Quest/Rite/Junta do deck para mao",
-      "Busca no deck por tipo requer sistema de trigger de morte + busca"
-    ]
+      "Se morto por Mokole: busca Quest/Rite/Junta do deck para mao"
+    ],
+    "sistemas_usados": ["death_trigger", "umbra_only", "search_deck"]
   }
 }

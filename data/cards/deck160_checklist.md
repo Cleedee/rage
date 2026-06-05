@@ -67,4 +67,14 @@ Legenda:
 
 ---
 
-**Total: 0 pendentes, 27 revisadas, 3 em outros decks**
+---
+
+## Sistemas Implementados
+
+- [x] **Sistema de Quest** (`quest_check`) — Mnesis Dreams cria `QuestState`, conta turnos sem dano na Regeneration, completa com VP + shuffle
+- [x] **Death Triggers** (`death_trigger`) — Dream Hunter registra trigger ao entrar em jogo; dispara se morto por Mokole: busca Quest/Rite/Moot no deck
+- [x] **Recrutamento** (`recruitment`) — Sand's Last King adiciona tribos (`Ajaba`, `Bastet`, `Silent Striders`) ao `can_recruit` do dono
+- [x] **Passivas Contínuas** (`continuous_passive`) — Lake Nasser Wallow adiciona `rites_gifts_cross_gauntlet` aos `game_modifiers`; verificado em `_validar_gauntlet_para_carta`
+- [x] **Condição de Uso: `fase_umbra_mokole`** — Valida que a fase é Umbra e há um personagem Mokole no pack
+
+**Total: 0 pendentes, 27 revisadas, 3 em outros decks, 4 sistemas implementados**

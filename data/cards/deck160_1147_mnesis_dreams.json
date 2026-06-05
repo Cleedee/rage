@@ -10,12 +10,10 @@
         {
           "tipo": "quest_check",
           "condicao": "sem_dano_por_2_turnos",
-          "alvo": "personagem_alvo",
+          "condicao_alvo": "criatura_aliada",
           "quantidade": 2,
-          "recompensa": {
-            "vp": 2,
-            "acao": "shuffle_card_discard_to_deck"
-          }
+          "vp": 2,
+          "acao": "shuffle_card_discard_to_deck"
         }
       ]
     }
@@ -32,10 +30,10 @@
     "precisa_revisao": false,
     "notas": [
       "Permanent: fica em jogo ate completar ou falhar",
-      "Quest com delay de 2 turnos: requer sistema de contadores/triggers",
+      "Quest com delay de 2 turnos",
       "Alvo: personagem Mokole na Umbra",
-      "Recompensa: shuffle + 2 VP",
-      "Sistema de quests completo pendente de implementacao"
-    ]
+      "Recompensa: shuffle + 2 VP"
+    ],
+    "sistemas_usados": ["quest_system"]
   }
 }
