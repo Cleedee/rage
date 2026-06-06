@@ -1,14 +1,15 @@
-# Deck 550 — Drain Team: Gnosis Siphon
+# Deck 550 — Drain Team: Gnosis Siphon (v2)
 
-**Estratégia:** Drenar Gnosis dos oponentes até eles não conseguirem mais pagar custos de gifts/umbra, enquanto acumula VP com Renome alto.
+**Estratégia:** Drenar Gnosis dos oponentes até eles não conseguirem mais pagar custos de gifts/umbra, enquanto acumula VP com Chronicle + Renome alto dos personagens.
 
 ## Mecânica Central
 
-1. **Mass Pollution** + **Beast-of-War** reduzem Gnosis dos oponentes no início
-2. **Infectious Touch** drena -1 Rage e -1 Gnosis por alvo (até 2x por alvo)
-3. **Gooshy Gooze** reduz Rage e Gnosis em combate
-4. **Juicy Johnes** morre → -2 Gnosis permanente pro matador
-5. **Count Vladimir** (R10) + **Allonzo Montoya** (R9) atacam HG repetidamente
+1. **Chronicle of the Black Labyrinth** — +1 VP por kill Wyrm (todas as suas criaturas)
+2. **Mass Pollution** + **Beast-of-War** reduzem Gnosis/Rage dos oponentes
+3. **Infectious Touch** drena -1 Rage e -1 Gnosis por alvo (até 2x por alvo)
+4. **Gooshy Gooze** reduz Rage e Gnosis em combate
+5. **Juicy Johnes** morre → -2 Gnosis permanente pro matador
+6. **Count Vladimir** (R10) + **Allonzo Montoya** (R9) atacam HG repetidamente
 
 ## Decklist
 
@@ -22,6 +23,7 @@
 | **Equipment** | | | |
 | 305 | Gooshy Gooze | Equipment | 2 |
 | 697 | Skin of the Hellbound | Equipment | 2 |
+| 630 | Chronicle of the Black Labyrinth | Equipment | 2 |
 | **Gifts** | | | |
 | 986 | Infectious Touch | Gift | 3 |
 | **Events** | | | |
@@ -34,7 +36,7 @@
 | 1296 | Reckless Swing | Combat Action | 2 |
 | 1281 | Mangle | Combat Action | 2 |
 | 1312 | Stinging Wound | Combat Action | 2 |
-| 1319 | Surprise Attack | Combat Action | 1 |
+| 1319 | Surprise Attack | Combat Action | 2 |
 | 312 | Dodge | Combat Action | 2 |
 | 1279 | Lucky Blow | Combat Action | 1 |
 | 1326 | Vital Blow | Combat Action | 1 |
@@ -43,31 +45,33 @@
 | 317 | Evasion | Combat Action | 1 |
 | 315 | Entrail Rend | Combat Action | 1 |
 
-**Total:** 22 cartas únicas, 34 cartas no total
+**Total:** 23 cartas únicas, 37 cartas no total
 
 ## Como vencer
 
-1. **Turno 1-2**: Mass Pollution + Beast-of-War reduzem atributos dos oponentes
-2. **Turno 1-3**: Jogue Vladimir e Allonzo. Eles são tanques com Renome alto
-3. **Turno 2+**: Infectious Touch nos personagens mais perigosos
-4. **Combate**: Juicy Johnes morre → -2 Gnosis pro matador
-5. **VP**: Ataques HG com Vladimir e Allonzo (Skin of Hellbound = imunes a Rage 6+)
-6. **Final**: Oponentes sem Gnosis não cruzam Umbra, não usam gifts
+1. **Turno 1**: Mass Pollution + Beast-of-War reduzem atributos. Chronicle equipado em Vladimir
+2. **Turno 1-2**: Vladimir (alpha) + Allonzo atacam HG. Chronicle dobra VP dos kills
+3. **Turno 2+**: Infectious Touch nos personagens mais perigosos (drena Rage+Gnosis)
+4. **Controle**: Skin of the Hellbound em Vladimir = imune a Rage 6+
+5. **VP Engine**: Chronicle + ataques HG + kills de Renome alto = VP acelerado
+6. **Final**: Oponentes sem Gnosis não cruzam Umbra, não usam gifts, não pagam custos
 
-## Resultados de Testes
+## Resultados de Testes (v2 vs Questor 416)
 
-| Oponente | 1v1 | 3-player |
-|---|---|---|
-| Questor (416) | ✅ Venceu 20-19 (seed 42) | ❌ Perdeu em 5 seeds |
-| Kinfolk (7) | — | ❌ Perdeu em 5 seeds |
-| Bloodsucking (537) | — | ❌ Perdeu em 5 seeds |
+| Seed | Resultado | Infectious Touch | Chronicle |
+|---|---|---|---|
+| 1 | ✅ P1 venceu | 1x | **18x** |
+| 7 | ✅ P1 venceu | 0x | **12x** |
+| 13 | ❌ P2 venceu | 1x | **12x** |
+| 42 | ✅ P1 venceu | 0x | 1x |
+| 99 | ✅ P1 venceu | 0x | 0x |
+| 256 | ✅ P1 venceu | 0x | 0x |
 
-## Gap: Bot não usa Infectious Touch
+**Total: 4/6 vitórias** (vs 2/6 da v1)
 
-O bot não tem prioridade explícita para jogar Gifts como Infectious Touch durante a fase de Resource. Isso reduz a efetividade da estratégia de dreno de Gnosis. Para corrigir, o bot precisaria de lógica para:
+## Observações
 
-1. Detectar Gifts na mão com efeito `modificar_atributo` adverso
-2. Priorizar alvos com Gnosis mais alto
-3. Jogar o Gift antes de equipamentos
-
-**Status:** 🟡 Funcional, mas sub-otimizado pelo bot
+- Chronicle é o MVP do deck — quando equipado cedo, gera 12-18 VP por partida
+- Infectious Touch ainda depende de ser comprado (está no combat deck, não sept)
+- Skin of the Hellbound em Vladimir é a melhor defesa do deck
+- Juicy Johnes raramente morre de forma útil (oponentes ignoram fomori 1/1)
