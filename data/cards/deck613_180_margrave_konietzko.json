@@ -1,0 +1,24 @@
+{
+  "id": "card_180",
+  "nome": "Margrave Konietzko",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem Shadow Lord Theurge, acao alpha extra se Moot falhar",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck613",
+    "card_id": 180,
+    "texto_original": "The Margrave does not take kindly to those who oppose him. If a Moot he calls fails, he may take an additional alpha action during the next Combat Phase.",
+    "keywords": "Garou - Shadow Lords - Theurge - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 7,
+    "health": 6,
+    "renown": 10,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

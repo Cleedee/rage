@@ -1,0 +1,24 @@
+{
+  "id": "card_1671",
+  "nome": "Big Fisher",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem Wendigo Ahroun, 2 acoes de combate por round em forma Homid",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck613",
+    "card_id": 1671,
+    "texto_original": "Big Fisher can play two combat actions per round while he is in Homid form.",
+    "keywords": "Garou - Wendigo - Ahroun - Homid - Male - Gaia",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 7,
+    "health": 5,
+    "renown": 10,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

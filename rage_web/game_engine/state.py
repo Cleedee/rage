@@ -1007,6 +1007,24 @@ class GameState:
             self.death_triggers.append(trigger)
             self.add_log(
                 f'{card.name}: Wyrm Renown 4+ viram +1 VP')
+
+        elif card.card_id == 1671:  # Big Fisher
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='big_fisher_double_action'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: 2 acoes de combate por round')
+
+        elif card.card_id == 180:  # Margrave Konietzko
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='margrave_moot_bonus'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: acao alpha extra se Moot falhar')
             self.add_log(
                 f'{card.name}: Wyrm ganha +1 VP por vitima')
 
