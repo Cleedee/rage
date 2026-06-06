@@ -106,7 +106,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
               delay: float = 0.3,
               # Novos parametros N-player
               deck_ids: list[int] | None = None,
-              difficulties: list[str] | None = None) -> str:
+              difficulties: list[str] | None = None,
+              vp_to_win: int | None = None) -> str:
     """Roda uma partida entre bots (2 ou mais jogadores).
 
     Args:
@@ -144,6 +145,11 @@ def run_match(seed: int = 42, max_turns: int = 30,
         n_players = 2
         diffs = [difficulty_p1, difficulty_p2]
         game = create_sample_game(seed=seed)
+
+    # Override de VP para vencer (se informado)
+    if vp_to_win is not None:
+        for p in game.players:
+            p.renown_level = vp_to_win
 
     bots = {}
     for p in game.players:
@@ -349,6 +355,8 @@ Exemplos:
     parser.add_argument('--diff', type=str, action='append',
                         choices=['easy', 'medium', 'hard'],
                         help='Dificuldade (repetir para cada jogador)')
+    parser.add_argument('--vp', type=int, default=None,
+                        help='VP necessario para vencer (default: usa renown_cap do deck)')
     args = parser.parse_args()
 
     max_steps_override = args.max_steps if args.max_steps > 0 else None
@@ -367,6 +375,7 @@ Exemplos:
             delay=delay,
             deck_ids=args.deck,
             difficulties=args.diff,
+            vp_to_win=args.vp,
         )
     else:
         result = run_match(
@@ -378,6 +387,7 @@ Exemplos:
             deck1_id=args.deck1,
             deck2_id=args.deck2,
             delay=delay,
+            vp_to_win=args.vp,
         )
 
     print()
