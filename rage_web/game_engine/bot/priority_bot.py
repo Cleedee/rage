@@ -136,7 +136,6 @@ class PriorityBot:
     def _agir_recurso(self) -> str:
         """Age na fase de Resource."""
         me = self.player
-        lento = self._is_slow_deck()
 
         # Heuristica: max 3 cartas por turno (nao queimar mao)
         if self._cards_played_this_turn >= 3:
@@ -151,25 +150,23 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return f'play_character_{card.card_id}'
 
-        # Se o deck e lento, pula efeitos nao-combate (gifts, events, quests)
-        # e joga so Ally/Equip/Caern que ficam em jogo
-        if not lento:
-            TIPOS_STUB = {'quest_check', 'combar_acao'}
-            for i, card in enumerate(me.hand):
-                if card.modelo_id and card.card_type not in (
-                        'Combat Action', 'Combat Event'):
-                    if self._pode_pagar_custos(card):
-                        from rage_web.game_engine.effects import CARTAS_EXEMPLO
-                        modelo = CARTAS_EXEMPLO.get(card.modelo_id)
-                        if modelo and modelo.modos:
-                            modo = modelo.modos[0]
-                            if modo.efeitos:
-                                tem_stub = any(
-                                    e.tipo in TIPOS_STUB for e in modo.efeitos)
-                                if not tem_stub:
-                                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                                    self._cards_played_this_turn += 1
-                                    return self._usar_carta_efeito(i, modo_idx, card)
+        # Tenta jogar efeitos de Gifts/Events/Actions (sempre, mesmo deck lento)
+        TIPOS_STUB = {'quest_check', 'combar_acao'}
+        for i, card in enumerate(me.hand):
+            if card.modelo_id and card.card_type not in (
+                    'Combat Action', 'Combat Event'):
+                if self._pode_pagar_custos(card):
+                    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        modo = modelo.modos[0]
+                        if modo.efeitos:
+                            tem_stub = any(
+                                e.tipo in TIPOS_STUB for e in modo.efeitos)
+                            if not tem_stub:
+                                modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                                self._cards_played_this_turn += 1
+                                return self._usar_carta_efeito(i, modo_idx, card)
 
         # 3. Tenta jogar Ally, Equipment, Territory
         for i, card in enumerate(me.hand):
