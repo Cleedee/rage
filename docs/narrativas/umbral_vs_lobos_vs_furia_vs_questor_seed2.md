@@ -29,7 +29,7 @@ Ninguém marca. A calmaria antes da tempestade.
 
 **Big Fisher** (619) desperta. Com Beast-of-War e Silver Claws, ele **elimina um personagem do Questor** — primeiro sangue. +1 VP.
 
-Mas Questor revida. Quatro personagens atacam **Tim Rowantree** (629). Tim cai... e é eliminado quatro vezes no mesmo turno.
+Mas Questor revida. Quatro personagens atacam **Tim Rowantree** (629). Tim cai no primeiro ataque — mas o motor de jogo permitia que os ataques seguintes gerassem VP extra indevidamente (bug corrigido).
 
 Os **Lobos Solitários** (90) não perdem tempo: **eliminam Margrave Konietzko** (619) — Big Fisher perdeu seu parceiro.
 

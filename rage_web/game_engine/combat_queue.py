@@ -635,6 +635,14 @@ def resolve_combat(game: GameState) -> bool:
         if not origem_card or not alvo_card:
             return
 
+        # Se o alvo ja morreu neste combate, ignora o ataque
+        if alvo_card.zone == Zone.VICTORY_PILE or alvo_card.health_current <= 0:
+            game.add_log(
+                f'  {origem_card.name} atacou {alvo_card.name} '
+                f'mas ele ja estava morto.'
+            )
+            return
+
         # Verifica imunidade (ex: Elethoi so e afetado por Gift/Umbral)
         if 'imune_fora_umbra' in alvo_card.restricoes:
             if origem_card.zone != Zone.UMBRA:
