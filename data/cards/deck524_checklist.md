@@ -2,7 +2,7 @@
 
 **Estratégia:** Aliados + pack attack. Wailer flipa e trava Combat Actions.
 
-Gerado automaticamente em 06/06/2026 00:02
+Gerado automaticamente em 06/06/2026 00:25
 
 ## Checklist de Cartas
 
@@ -53,7 +53,7 @@ Gerado automaticamente em 06/06/2026 00:02
 | 448 | A Bus Full of People | Victim | 1 | ✅ | deck524 | 0 |
 | 491 | Greenpeace Assault Team | Victim | 2 | ✅ | deck524 | 0 |
 
-**Total:** 34 cartas unicas (39 novas + 24 reaproveitadas, 0 sem JSON)
+**Total:** 34 cartas unicas (19 novas + 15 reaproveitadas, 0 sem JSON)
 
 ## Efeitos Utilizados vs Motor
 

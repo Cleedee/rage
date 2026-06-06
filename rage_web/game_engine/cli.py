@@ -953,6 +953,11 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
 
     g = GameState(players=players, rng=g_rng)
 
+    # Registra passivas para personagens que ja comecaram em jogo
+    for p in g.players:
+        for c in p.pack_home:
+            g.register_card_passives(c, p)
+
     for p in g.players:
         p.draw_combat(p.hand_size_combat)
         if p.deck_sept:

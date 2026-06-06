@@ -2,7 +2,7 @@
 
 **Estratégia:** Gaia com quests, morte e recrutamento. Sand's Last King + Mnesis Dreams.
 
-Gerado automaticamente em 06/06/2026 00:02
+Gerado automaticamente em 06/06/2026 00:25
 
 ## Checklist de Cartas
 
@@ -49,7 +49,7 @@ Gerado automaticamente em 06/06/2026 00:02
 | **Rite** | | | | | | |
 | 1179 | Rite of the Opened Caern | Rite | 2 | ✅ | deck160 | 2 |
 
-**Total:** 30 cartas unicas (49 novas + 4 reaproveitadas, 0 sem JSON)
+**Total:** 30 cartas unicas (27 novas + 3 reaproveitadas, 0 sem JSON)
 
 ## Efeitos Utilizados vs Motor
 

@@ -124,6 +124,7 @@ class CardInstance:
     reducao_dano: int = 0
     # Reducao de dano passiva (ex: armaduras)
     is_aggravated: bool = False  # Se esta carta em si e dano agravado
+    is_crinos: bool = False  # True = em forma Crinos (alterna via Shapeshift)
 
     @property
     def effective_rage(self) -> int:
@@ -1081,6 +1082,26 @@ class GameState:
                 modifier='barnaby_ignora_gifts'
             )
             self.game_modifiers.append(modifier)
+            # start_equip: cria Submachine Gun (card_id 703) anexada
+            submachine = CardInstance(
+                card_id=703,
+                name='Submachine Gun',
+                card_type='Equipment',
+                zone=Zone.PACK_HOME,
+                owner_id=owner.id,
+                controller_id=owner.id,
+                damage='',
+                is_aggravated=True,
+                text=(
+                    'Weapon. Firearm. The character can play up to 2'
+                    ' Combat Actions of Rage 2 or lower each round.'
+                ),
+            )
+            card.attached_equipment.append(submachine)
+            owner.pack_home.append(submachine)
+            self.add_log(
+                f'{card.name}: comeca com Submachine Gun (dano agravado)'
+            )
             self.add_log(
                 f'{card.name}: ignora efeitos de Gifts')
 

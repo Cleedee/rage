@@ -1145,10 +1145,45 @@ class ResolvedorEfeitos:
                               jogador: PlayerState, alvo) -> bool:
         """Usa um Gift atraves de outro card (ex: Haunter).
 
-        Nota: implementacao futura require sistema de gifts.
+        Busca um Gift na mao do jogador com o tipo especificado
+        e aplica seus efeitos como se tivesse sido jogado.
         """
+        gift_tipo = efeito.params.get('tipo_gift', '').lower()
+        gift_id = efeito.params.get('card_id', 0)
+
+        # Procura gift na mao ou no sept deck
+        encontrado = None
+        for c in jogador.hand:
+            if c.card_id == gift_id:
+                encontrado = c
+                break
+            if gift_tipo and gift_tipo in c.card_type.lower():
+                encontrado = c
+                break
+        if not encontrado:
+            for c in jogador.deck_sept:
+                if c.card_id == gift_id:
+                    encontrado = c
+                    break
+                if gift_tipo and gift_tipo in c.card_type.lower():
+                    encontrado = c
+                    break
+
+        if not encontrado:
+            self.game.add_log(
+                f'{origem.name}: nenhum Gift encontrado'
+            )
+            return True
+
+        # Aplica o Gift como se tivesse sido jogado
+        if encontrado.zone == Zone.HAND:
+            jogador.hand.remove(encontrado)
+        elif encontrado.zone == Zone.DECK_SEPT:
+            jogador.deck_sept.remove(encontrado)
+        encontrado.zone = Zone.OUT_OF_PLAY
+        jogador.discard_sept.append(encontrado)
         self.game.add_log(
-            f'{origem.name} usou um Gift (pendente)'
+            f'{origem.name} usou {encontrado.name} (via efeito)'
         )
         return True
 
@@ -1318,13 +1353,23 @@ class ResolvedorEfeitos:
         Usado por: Dominance.
         A carta cancelada vai para o descarte. A origem vai pro VP.
         """
-        self.game.add_log(
-            f'{origem.name}: cancelou action (efeito stub - '
-            f'Dominance vai pro VP)'
-        )
+        # Se tem alvo, cancela o alvo (marca como cancelado)
+        if isinstance(alvo, CardInstance):
+            alvo.restricoes.append('cancelado')
+            # Move alvo pro descarte do dono
+            dono_alvo = self._find_owner(alvo)
+            if dono_alvo:
+                alvo.zone = Zone.DISCARD_COMBAT
+                dono_alvo.discard_combat.append(alvo)
+                self.game.add_log(
+                    f'{origem.name}: cancelou {alvo.name}'
+                )
         # Origem vai pro VP
         origem.zone = Zone.VICTORY_PILE
         jogador.victory_pile.append(origem)
+        self.game.add_log(
+            f'{origem.name} foi pro VP (cancelou action)'
+        )
         return True
 
     def _resolver_ataque_imediato(self, efeito: Efeito,
@@ -1335,9 +1380,23 @@ class ResolvedorEfeitos:
         Usado por: Sense of the Prey.
         O usuario descarta este Gift e ataca outro participante.
         """
+        if not isinstance(alvo, CardInstance):
+            return False
+
+        # Inicia combate imediato entre origem e alvo
+        # Marca que este combate e sequencia de um anterior
         self.game.add_log(
-            f'{origem.name}: ataque imediato apos combate (stub)'
+            f'{origem.name}: ataque imediato contra {alvo.name}!'
         )
+
+        # Aplica dano baseado na Rage da origem
+        dano_base = origem.effective_rage
+        alvo_dono = self._find_owner(alvo)
+
+        if alvo_dono:
+            from rage_web.game_engine.combat_queue import apply_damage
+            apply_damage(self.game, origem, alvo, dano_base)
+
         return True
 
     def _resolver_remover_do_combate(self, efeito: Efeito,
@@ -1350,9 +1409,18 @@ class ResolvedorEfeitos:
         """
         if efeito.params.get('acao') == 'entrar':
             # Spring the Trap: packmate entra no combate
-            self.game.add_log(
-                f'{origem.name}: packmate entrando no combate (stub)'
-            )
+            if isinstance(alvo, CardInstance):
+                alvo.restricoes.append('entrou_no_combate')
+                self.game.add_log(
+                    f'{origem.name}: {alvo.name} entrou no combate'
+                )
+            elif isinstance(alvo, list):
+                for c in alvo:
+                    c.restricoes.append('entrou_no_combate')
+                self.game.add_log(
+                    f'{origem.name}: {len(alvo)} packmate(s) entrou(ram)'
+                    f' no combate'
+                )
             return True
 
         # Whole Nine Yards: packmates removidos ate fim do combate

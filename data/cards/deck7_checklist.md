@@ -2,7 +2,7 @@
 
 **Estratégia:** Kinfolk + Firearms + Pack combat. Usa humanos armados e vitimas.
 
-Gerado automaticamente em 06/06/2026 00:08
+Gerado automaticamente em 06/06/2026 00:25
 
 ## Checklist de Cartas
 
@@ -57,7 +57,7 @@ Gerado automaticamente em 06/06/2026 00:08
 | 748 | Dead Zone | Territory | 2 | ✅ | deck7 | 1 |
 | 758 | Monster Joe's Truck-n-Tow | Territory | 2 | ✅ | deck7 | 1 |
 
-**Total:** 39 cartas unicas (60 novas + 5 reaproveitadas, 0 sem JSON)
+**Total:** 39 cartas unicas (37 novas + 2 reaproveitadas, 0 sem JSON)
 
 ## Efeitos Utilizados vs Motor
 
