@@ -125,6 +125,11 @@
         <div class="control">{{ form.description(class="textarea") }}</div>
       </div>
       <div class="field">
+        {{ form.renown_cap.label(for='renown_cap') }}
+        <div class="control">{{ form.renown_cap(class="input", type="number", min=1, max=99) }}</div>
+        <p class="help">Limite maximo de Renome dos personagens no deck.</p>
+      </div>
+      <div class="field">
         <div class="buttons">
           {{ form.submit(class='button is-primary') }}
           {% if deck %}

@@ -40,6 +40,7 @@ def read_deck(id):
     form.id.data = deck.id
     form.name.data = deck.name
     form.description.data = deck.description
+    form.renown_cap.data = deck.renown_cap or 20
 
     cards = rep.deck_get_cards(deck)
     grupos = rep.agrupar_cartas_do_deck(cards)
@@ -54,6 +55,7 @@ def read_deck(id):
 @bp.get('/new')
 def new():
     form = DeckForm()
+    form.renown_cap.data = 20
     return render_template('decks/deck.html', form=form)
 
 
@@ -68,12 +70,28 @@ def save():
                 abort(404)
             deck.name = form.name.data
             deck.description = form.description.data
+            deck.renown_cap = form.renown_cap.data or 20
         else:
             current_app.logger.info('Criando novo deck')
             deck = Deck()
             deck.name = form.name.data
             deck.description = form.description.data
+            deck.renown_cap = form.renown_cap.data or 20
         rep.save_deck(deck)
+
+        # Validar composicao do deck apos salvar
+        erros = _validar_deck(deck)
+        if erros:
+            for err in erros:
+                flash(err, 'danger')
+            # Se houver erros, carrega dados completos e re-renderiza
+            cards = rep.deck_get_cards(deck)
+            grupos = rep.agrupar_cartas_do_deck(cards)
+            return render_template('decks/deck.html', form=form, deck=deck,
+                                   cards=cards, grupos=grupos,
+                                   tipos=rep.get_tipos(),
+                                   expansoes=rep.get_expansions())
+
         flash('Deck salvo.')
         return redirect(url_for('decks.read_deck', id=deck.id))
     current_app.logger.error(form.errors)
@@ -204,6 +222,63 @@ def import_deck():
             logger.exception('Erro na importação do deck')
 
     return render_template('decks/import.html')
+
+
+def _validar_deck(deck) -> list[str]:
+    """Valida composicao do deck segundo as regras.
+
+    Regras:
+      - Renome total dos personagens ≤ renown_cap (padrao 20)
+      - Combat: minimo 20 cartas, max 2 copias por carta
+      - Sept: minimo 30 cartas, max 3 copias por carta
+    """
+    erros = []
+
+    cards = rep.deck_get_cards(deck)
+    if not cards:
+        return []  # Deck vazio na criacao, sem validacao ainda
+
+    # Agrupa por categoria
+    grupos = {'characters': [], 'combat': [], 'sept': []}
+    for entry in cards:
+        g = rep.grupo_carta(entry['card'].tipo or '')
+        grupos.setdefault(g, []).append(entry)
+
+    # 1. Renome total
+    total_renown = 0
+    for entry in grupos['characters']:
+        card = entry['card']
+        total_renown += (card.renown or 0) * entry['quantity']
+    cap = deck.renown_cap or 20
+    if total_renown > cap:
+        erros.append(
+            f'Renome total {total_renown} excede o limite de {cap}.')
+
+    # 2. Combat: minimo 20, max 2 copias
+    total_combat = sum(e['quantity'] for e in grupos['combat'])
+    if total_combat < 20:
+        erros.append(
+            f'Deck de combate tem {total_combat} cartas (minimo 20).')
+    for entry in grupos['combat']:
+        if entry['quantity'] > 2:
+            card = entry['card']
+            erros.append(
+                f'{card.name}: {entry["quantity"]} copias no combat '
+                f'(maximo 2).')
+
+    # 3. Sept: minimo 30, max 3 copias
+    total_sept = sum(e['quantity'] for e in grupos['sept'])
+    if total_sept < 30:
+        erros.append(
+            f'Deck de septo tem {total_sept} cartas (minimo 30).')
+    for entry in grupos['sept']:
+        if entry['quantity'] > 3:
+            card = entry['card']
+            erros.append(
+                f'{card.name}: {entry["quantity"]} copias no septo '
+                f'(maximo 3).')
+
+    return erros
 
 
 @bp.get('/<id>/export')

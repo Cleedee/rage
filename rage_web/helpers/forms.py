@@ -66,4 +66,5 @@ class DeckForm(FlaskForm):
     id = HiddenField()
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description')
+    renown_cap = IntegerField('Limite de Renome', default=20)
     submit = SubmitField('SAVE')
