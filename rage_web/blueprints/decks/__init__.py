@@ -227,16 +227,33 @@ def import_deck():
 def _validar_deck(deck) -> list[str]:
     """Valida composicao do deck segundo as regras.
 
-    Regras:
-      - Renome total dos personagens ≤ renown_cap (padrao 20)
+    Regras por nivel de Renome:
+
+    Nivel 20:
+      - Renome total ≤ 20
       - Combat: minimo 20 cartas, max 2 copias por carta
-      - Sept: minimo 30 cartas, max 3 copias por carta
+      - Sept:   minimo 30 cartas, max 3 copias por carta
+
+    Nivel 30:
+      - Renome total ≤ 30
+      - Combat: minimo 30 cartas, max 3 copias por carta
+      - Sept:   minimo 40 cartas, max 3 copias por carta
     """
     erros = []
 
     cards = rep.deck_get_cards(deck)
     if not cards:
         return []  # Deck vazio na criacao, sem validacao ainda
+
+    cap = deck.renown_cap or 20
+
+    # Limites por nivel
+    if cap <= 20:
+        min_combat, max_combat_copia = 20, 2
+        min_sept,   max_sept_copia   = 30, 3
+    else:
+        min_combat, max_combat_copia = 30, 3
+        min_sept,   max_sept_copia   = 40, 3
 
     # Agrupa por categoria
     grupos = {'characters': [], 'combat': [], 'sept': []}
@@ -249,34 +266,35 @@ def _validar_deck(deck) -> list[str]:
     for entry in grupos['characters']:
         card = entry['card']
         total_renown += (card.renown or 0) * entry['quantity']
-    cap = deck.renown_cap or 20
     if total_renown > cap:
         erros.append(
             f'Renome total {total_renown} excede o limite de {cap}.')
 
-    # 2. Combat: minimo 20, max 2 copias
+    # 2. Combat
     total_combat = sum(e['quantity'] for e in grupos['combat'])
-    if total_combat < 20:
+    if total_combat < min_combat:
         erros.append(
-            f'Deck de combate tem {total_combat} cartas (minimo 20).')
+            f'Deck de combate tem {total_combat} cartas '
+            f'(minimo {min_combat}).')
     for entry in grupos['combat']:
-        if entry['quantity'] > 2:
+        if entry['quantity'] > max_combat_copia:
             card = entry['card']
             erros.append(
                 f'{card.name}: {entry["quantity"]} copias no combat '
-                f'(maximo 2).')
+                f'(maximo {max_combat_copia}).')
 
-    # 3. Sept: minimo 30, max 3 copias
+    # 3. Sept
     total_sept = sum(e['quantity'] for e in grupos['sept'])
-    if total_sept < 30:
+    if total_sept < min_sept:
         erros.append(
-            f'Deck de septo tem {total_sept} cartas (minimo 30).')
+            f'Deck de septo tem {total_sept} cartas '
+            f'(minimo {min_sept}).')
     for entry in grupos['sept']:
-        if entry['quantity'] > 3:
+        if entry['quantity'] > max_sept_copia:
             card = entry['card']
             erros.append(
                 f'{card.name}: {entry["quantity"]} copias no septo '
-                f'(maximo 3).')
+                f'(maximo {max_sept_copia}).')
 
     return erros
 
