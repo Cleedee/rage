@@ -1,0 +1,28 @@
+{
+  "id": "card_290",
+  "nome": "Body Blow",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 290,
+    "texto_original": "This well-placed blow will give all but the mightiest warriors pause for thought.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

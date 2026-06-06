@@ -1,0 +1,34 @@
+{
+  "id": "card_956",
+  "nome": "Fatal Flaw",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn2)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 956,
+    "texto_original": "The Gift user assesses the weakness of his target by looking into her soul. For the current combat, the user of Fatal Flaw acts at +1 Rage. Discard this Gift after its effects take place.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "requires": "Shadow Lords - Ragabash - Lupus"
+  }
+}

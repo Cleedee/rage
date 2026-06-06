@@ -1,0 +1,31 @@
+{
+  "id": "card_67",
+  "nome": "Fek",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg5 Gn7 H5 (Ren6)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 67,
+    "texto_original": "Dark Trinity. Once per game Fek may redirect a fatal blow (or blows) from himself to target Victim. He may automatically join pack defenses with other members of the Dark Trinity. Draw a combat card when this occurs. He will not join pack attacks.",
+    "keywords": "Bane - Battle - Defiler - Wyrm - Dark Trinity - Male",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 7,
+    "health": 5,
+    "requires": ""
+  }
+}

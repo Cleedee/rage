@@ -1,0 +1,28 @@
+{
+  "id": "card_1274",
+  "nome": "Jaw Breaker",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1274,
+    "texto_original": "You tear your opponent's lower jaw entirely off.�",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

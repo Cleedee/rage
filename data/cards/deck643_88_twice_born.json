@@ -1,0 +1,30 @@
+{
+  "id": "card_88",
+  "nome": "Twice-Born",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado (H1)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "aliado_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 88,
+    "texto_original": "Twice-Born are reborn spirits of slain mice. Suited to the revelation of secrets, the Twice-Born allow the player of the pack who allies with them to ask any 1 player if he has any 1 specific card in his sept or combat deck. The player must answer truthfu",
+    "keywords": "Spirit",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 1,
+    "requires": "Silent Striders"
+  }
+}

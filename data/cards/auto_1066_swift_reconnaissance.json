@@ -1,0 +1,34 @@
+{
+  "id": "card_1066",
+  "nome": "Swift Reconnaissance",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1066,
+    "texto_original": "The Gift user may see her opponents Combat Action before it is played and select her own Combat Action once her opponents has been seen. The Gift user must play a Combat Action during each round of combat. Discard this Gift after 3 rounds of combat have p",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Ragabash - Silent Striders"
+  }
+}

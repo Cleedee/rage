@@ -1,0 +1,31 @@
+{
+  "id": "card_1488",
+  "nome": "Arms of the Abyss",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn3)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga"
+        },
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1488,
+    "texto_original": "The user may play an extra combat card during the first round of each combat. Permanent until cancelled.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "requires": "Chulorviah - Vampire"
+  }
+}

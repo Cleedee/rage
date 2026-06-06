@@ -15,6 +15,212 @@ from rage_web.models.card import Card
 
 
 # ---------------------------------------------------------------------------
+# Verificação de cobertura de JSON (engine de efeitos)
+# ---------------------------------------------------------------------------
+
+def _check_json_coverage(result: ValidationResult,
+                         cards_data: list[tuple[Card, int]]) -> None:
+    """Verifica se as cartas do deck têm JSON de efeitos estruturados.
+
+    Cartas sem JSON são jogadas como 'vanilla' pelo bot — não usam
+    efeitos especiais, apenas atributos básicos.
+    """
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+
+    missing: list[tuple[Card, int]] = []
+    for card, qty in cards_data:
+        modelo_key = f'card_{card.id}'
+        if modelo_key not in CARTAS_EXEMPLO:
+            missing.append((card, qty))
+
+    if not missing:
+        result.ok("JSON_COVERAGE",
+                  f"Todas as {sum(q for _, q in cards_data)} cartas têm JSON de efeitos")
+        return
+
+    total_missing = sum(q for _, q in missing)
+    total_cards = sum(q for _, q in cards_data)
+    pct = total_missing / total_cards * 100
+
+    result.warn("JSON_COVERAGE",
+                f"{total_missing}/{total_cards} cartas ({pct:.0f}%) sem JSON de efeitos")
+
+    # Agrupar por tipo para diagnóstico
+    from collections import Counter
+    tipos_missing: Counter[str] = Counter()
+    for card, qty in missing:
+        tipo_norm = (card.tipo or 'Unknown').strip()
+        tipos_missing[tipo_norm] += qty
+
+    result.warn("JSON_COVERAGE_TIPOS",
+                f"Distribuição por tipo:")
+    for tipo, qty in tipos_missing.most_common():
+        result.warn("JSON_COVERAGE_TIPOS_DET",
+                    f"  {qty:2d}x {tipo}")
+
+    result.warn("JSON_COVERAGE_CRAFT",
+                "Execute `auto_craft_deck({deck_id})` para gerar JSONs automaticamente")
+
+    # Listar cartas específicas
+    for card, qty in sorted(missing, key=lambda x: x[0].name):
+        result.warn("JSON_COVERAGE_CARD",
+                    f"  '{card.name}' x{qty} (id={card.id}, {card.tipo})")
+
+
+# ---------------------------------------------------------------------------
+# Auto-craft de JSONs
+# ---------------------------------------------------------------------------
+
+def auto_craft_deck(deck_id: int, dry_run: bool = False) -> list[dict]:
+    """Gera JSONs de efeitos para cartas do deck que ainda não têm.
+
+    Args:
+        deck_id: ID do deck.
+        dry_run: Se True, só lista o que seria gerado sem salvar.
+
+    Returns:
+        Lista de modelos JSON gerados.
+    """
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+
+    deck = db.session.get(Deck, deck_id)
+    if not deck:
+        raise ValueError(f"Deck {deck_id} não encontrado")
+
+    rows = db.session.execute(
+        db.select(deck_cards).where(deck_cards.c.deck_id == deck_id)
+    ).all()
+
+    missing: list[Card] = []
+    seen: set[int] = set()
+    for row in rows:
+        card = db.session.get(Card, row.card_id)
+        if not card or card.id in seen:
+            continue
+        seen.add(card.id)
+        modelo_key = f'card_{card.id}'
+        if modelo_key not in CARTAS_EXEMPLO:
+            missing.append(card)
+
+    if not missing:
+        return []
+
+    if dry_run:
+        print(f"📋 Dry-run: {len(missing)} carta(s) sem JSON")
+        for c in sorted(missing, key=lambda x: x.name):
+            print(f"   [{c.id}] {c.name} ({c.tipo})")
+        return []
+
+    # Importa e executa o crafter
+    from rage_web.helpers.auto_json.crafter import craft_card
+
+    gerados: list[dict] = []
+    for card in missing:
+        modelo = craft_card(card.id, deck_id)
+        if modelo:
+            gerados.append(modelo)
+            print(f"  ✅ {modelo['nome']} (id={card.id})")
+        else:
+            print(f"  ⚠️  {card.name} (id={card.id}) — não foi possível gerar JSON")
+
+    return gerados
+
+
+# ---------------------------------------------------------------------------
+# Função principal
+# ---------------------------------------------------------------------------
+
+def validate_deck(deck_id: int, check_json: bool = True) -> ValidationResult:
+    """
+    Valida um deck pelo seu ID.
+
+    Args:
+        deck_id: ID do deck.
+        check_json: Se True, verifica cobertura de JSON de efeitos.
+
+    Retorna um objeto ValidationResult com todos os checks.
+    """
+    deck = db.session.get(Deck, deck_id)
+    if not deck:
+        raise ValueError(f"Deck {deck_id} não encontrado")
+
+    result = ValidationResult(deck.id, deck.name)
+
+    # Carregar cartas do deck
+    rows = db.session.execute(
+        db.select(deck_cards).where(deck_cards.c.deck_id == deck_id)
+    ).all()
+
+    cards_data: list[tuple[Card, int]] = []
+    for row in rows:
+        card = db.session.get(Card, row.card_id)
+        if card:
+            cards_data.append((card, row.quantity))
+
+    if not cards_data:
+        result.fail("LEGAL_DECK_EMPTY", "Deck não contém cartas")
+        return result
+
+    result.ok("LEGAL_DECK_EMPTY", f"Deck contém {sum(q for _, q in cards_data)} cartas")
+
+    # 1. Legalidade
+    _check_legal(result, cards_data, deck)
+
+    # 2. Viabilidade
+    _check_viability(result, cards_data, deck)
+
+    # 3. Cobertura de JSON (engine de efeitos)
+    if check_json:
+        _check_json_coverage(result, cards_data)
+
+    return result
+
+
+def print_validation(deck_id: int, auto_craft: bool = False) -> str:
+    """Valida e retorna o relatório formatado.
+
+    Args:
+        deck_id: ID do deck.
+        auto_craft: Se True, gera automaticamente JSONs para cartas que faltam.
+    """
+    result = validate_deck(deck_id)
+    report = result.report()
+
+    # Verificar se há JSONs faltando
+    has_missing = any(c['key'] == 'JSON_COVERAGE' and c['status'] == 'warning'
+                      for c in result.checks)
+
+    if has_missing:
+        if auto_craft:
+            report += f"\n\n🔧 Gerando JSONs automaticamente...\n"
+            gerados = auto_craft_deck(deck_id)
+            if gerados:
+                report += f"\n✅ {len(gerados)} JSON(s) gerado(s) para deck {deck_id}\n"
+            else:
+                report += f"\nNenhum JSON novo necessário.\n"
+        else:
+            from rage_web.game_engine.effects import CARTAS_EXEMPLO
+            rows = db.session.execute(
+                db.select(deck_cards).where(deck_cards.c.deck_id == deck_id)
+            ).all()
+            missing_count = 0
+            seen = set()
+            for row in rows:
+                if row.card_id in seen:
+                    continue
+                seen.add(row.card_id)
+                if f'card_{row.card_id}' not in CARTAS_EXEMPLO:
+                    missing_count += 1
+
+            deck_ctx = deck_id
+            report += f"\n💡 Dica: Execute `auto_craft_deck({deck_ctx})` para gerar "
+            report += f"JSONs de efeitos para as {missing_count} carta(s) sem modelo.\n"
+            report += f"   Ou passe auto_craft=True em print_validation().\n"
+
+    return report
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -35,7 +241,7 @@ class ValidationResult:
     def __init__(self, deck_id: int, deck_name: str):
         self.deck_id = deck_id
         self.deck_name = deck_name
-        self.checks: list[dict[str, Any]] = []  # cada check: dict com chave, status, mensagem
+        self.checks: list[dict[str, Any]] = []
         self.errors: int = 0
         self.warnings: int = 0
 
@@ -52,7 +258,6 @@ class ValidationResult:
 
     @property
     def is_legal(self) -> bool:
-        """Erros de legalidade (não de viabilidade) indicam deck ilegal."""
         legal_errors = [c for c in self.checks
                         if c["status"] == "error" and c["key"].startswith("LEGAL_")]
         return len(legal_errors) == 0
@@ -106,7 +311,6 @@ def _check_legal(result: ValidationResult,
         else:
             sept.append((card, qty))
 
-    # -- Contagens mínimas ------------------------------------------------
     total_combat = sum(q for _, q in combat)
     total_sept = sum(q for _, q in sept)
 
@@ -122,7 +326,6 @@ def _check_legal(result: ValidationResult,
         result.fail("LEGAL_SEPT_MIN",
                      f"Cartas de sept: {total_sept} < 30 (mínimo 30)")
 
-    # -- Limites de cópia ------------------------------------------------
     combat_names: Counter[str] = Counter()
     sept_names: Counter[str] = Counter()
     char_names: Counter[str] = Counter()
@@ -154,13 +357,12 @@ def _check_legal(result: ValidationResult,
         result.ok("LEGAL_SEPT_COPIES",
                   "Limite de cópias em sept respeitado (máx. 3 por carta)")
 
-    # -- Personagens: cópia única (except Multiple) -----------------------
     char_copy_ok = True
     for card, qty in chars:
         if qty > 1:
             is_multiple = card.keyword and "multiple" in card.keyword.lower()
             if is_multiple and qty <= 5:
-                continue  # Multiple permite até 5
+                continue
             result.fail("LEGAL_CHAR_COPIES",
                         f"'{card.name}': {qty}x (personagem único, máx. 1)")
             char_copy_ok = False
@@ -168,7 +370,6 @@ def _check_legal(result: ValidationResult,
         result.ok("LEGAL_CHAR_COPIES",
                   "Todos os personagens têm cópia única respeitada")
 
-    # -- Renome total ----------------------------------------------------
     total_renown = sum((card.renown or 0) * qty for card, qty in chars)
     cap = deck.renown_cap
     if total_renown <= cap:
@@ -178,7 +379,6 @@ def _check_legal(result: ValidationResult,
         result.fail("LEGAL_RENOWN",
                     f"Renome total: {total_renown} > {cap} (cap do deck)")
 
-    # -- Alcunha (Allegiance) --------------------------------------------
     gaia_count = 0
     wyrm_count = 0
     rogue_count = 0
@@ -192,7 +392,6 @@ def _check_legal(result: ValidationResult,
         elif "gaia" in tipo.lower():
             gaia_count += qty
 
-    # Determinar alcunha do deck
     if gaia_count > 0 and wyrm_count == 0:
         result.ok("LEGAL_ALLEGIANCE",
                   f"Alcunha: Gaia ({gaia_count} Gaia + {rogue_count} Rogue)")
@@ -233,7 +432,6 @@ def _check_viability(result: ValidationResult,
                      deck: Deck) -> None:
     """Verifica se as cartas podem ser usadas pelos personagens do deck."""
 
-    # Extrair personagens e suas keywords + atributos
     chars: list[dict[str, Any]] = []
     for card, qty in cards_data:
         tipo = (card.tipo or "").lower()
@@ -254,7 +452,6 @@ def _check_viability(result: ValidationResult,
         result.warn("VIAB_CHARS", "Deck não tem personagens — nada a verificar")
         return
 
-    # Para cada carta não-personagem, verificar se pode ser jogada
     unplayable: list[tuple[Card, int, str]] = []
 
     for card, qty in cards_data:
@@ -265,10 +462,8 @@ def _check_viability(result: ValidationResult,
         requires_raw = card.requires or ""
         requires = requires_raw.strip()
 
-        # --- Cartas de Combate: requires é condição (e.g. "Umbra") -------
         if "combat" in tipo:
             if requires:
-                # verificar se tem personagem com Rage suficiente (damage = custo)
                 cost_str = (card.damage or "").strip()
                 cost = 0
                 if cost_str:
@@ -276,33 +471,25 @@ def _check_viability(result: ValidationResult,
                         cost = int(cost_str)
                     except ValueError:
                         cost = 0
-
                 has_user = any(c["rage"] >= cost for c in chars)
                 if not has_user:
                     unplayable.append(
                         (card, qty,
                          f"Custo Rage {cost} — nenhum personagem tem Rage ≥ {cost}"))
-                else:
-                    # Mesmo que tenha condição (Umbra), é jogável com suporte
-                    pass
             continue
 
-        # --- Recursos / Sept cards: requires é keyword requirement --------
         if not requires:
-            continue  # sem requisitos, sempre jogável
+            continue
 
         req_keywords = _parse_keywords(requires)
         if not req_keywords:
             continue
 
-        # Verificar se algum personagem atende ao keyword requirement
         viable_chars = []
         for ch in chars:
             matched = req_keywords & ch["keywords"]
             if not matched:
                 continue
-
-            # Gifts têm requisito adicional de Gnosis
             if "gift" in tipo:
                 if ch["gnosis"] < card.gnosis:
                     continue
@@ -316,7 +503,6 @@ def _check_viability(result: ValidationResult,
                  f"requer keyword: {requires_raw}"
                  + (f" + Gnosis ≥ {card.gnosis}" if "gift" in tipo else "")))
 
-    # Relatar cartas injogáveis
     if unplayable:
         total_unplayable = sum(qty for _, qty, _ in unplayable)
         result.warn("VIAB_UNPLAYABLE",
@@ -329,7 +515,7 @@ def _check_viability(result: ValidationResult,
         result.ok("VIAB_UNPLAYABLE",
                   "Todas as cartas são jogáveis por pelo menos um personagem")
 
-    # Verificar se há Caerns que podem ser jogados
+    # Caerns
     playable_caerns = []
     unplayable_caerns = []
     for card, qty in cards_data:
@@ -341,10 +527,7 @@ def _check_viability(result: ValidationResult,
             playable_caerns.append((card, qty))
             continue
         req_keywords = _parse_keywords(requires)
-        can_play = any(
-            req_keywords & ch["keywords"]
-            for ch in chars
-        )
+        can_play = any(req_keywords & ch["keywords"] for ch in chars)
         if can_play:
             playable_caerns.append((card, qty))
         else:
@@ -360,65 +543,15 @@ def _check_viability(result: ValidationResult,
         result.ok("VIAB_CAERNS",
                   "Pelo menos um Caern jogável pelos personagens")
 
-    # Verificar Pack Totems
+    # Pack Totems
     for card, qty in cards_data:
         if card.tipo == "Event" and card.keyword and "pack totem" in card.keyword.lower():
             requires = (card.requires or "").strip()
             if requires:
                 req_keywords = _parse_keywords(requires)
-                can_play = any(
-                    req_keywords & ch["keywords"]
-                    for ch in chars
-                )
+                can_play = any(req_keywords & ch["keywords"] for ch in chars)
                 if not can_play:
                     result.warn("VIAB_TOTEM",
                                 f"Pack Totem '{card.name}' requer keyword "
                                 f"'{requires}' — nenhum personagem atende")
 
-
-# ---------------------------------------------------------------------------
-# Função principal
-# ---------------------------------------------------------------------------
-
-def validate_deck(deck_id: int) -> ValidationResult:
-    """
-    Valida um deck pelo seu ID.
-
-    Retorna um objeto ValidationResult com todos os checks.
-    """
-    deck = db.session.get(Deck, deck_id)
-    if not deck:
-        raise ValueError(f"Deck {deck_id} não encontrado")
-
-    result = ValidationResult(deck.id, deck.name)
-
-    # Carregar cartas do deck
-    rows = db.session.execute(
-        db.select(deck_cards).where(deck_cards.c.deck_id == deck_id)
-    ).all()
-
-    cards_data: list[tuple[Card, int]] = []
-    for row in rows:
-        card = db.session.get(Card, row.card_id)
-        if card:
-            cards_data.append((card, row.quantity))
-
-    if not cards_data:
-        result.fail("LEGAL_DECK_EMPTY", "Deck não contém cartas")
-        return result
-
-    result.ok("LEGAL_DECK_EMPTY", f"Deck contém {sum(q for _, q in cards_data)} cartas")
-
-    # 1. Legalidade
-    _check_legal(result, cards_data, deck)
-
-    # 2. Viabilidade
-    _check_viability(result, cards_data, deck)
-
-    return result
-
-
-def print_validation(deck_id: int) -> str:
-    """Valida e retorna o relatório formatado."""
-    result = validate_deck(deck_id)
-    return result.report()

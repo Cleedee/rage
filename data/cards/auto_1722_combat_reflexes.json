@@ -1,0 +1,35 @@
+{
+  "id": "card_1722",
+  "nome": "Combat Reflexes",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
+        },
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "speed": "fast"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1722,
+    "texto_original": "Instinctive. If played instinctively, Combat Reflexes gains Fast Striking and blocks 4 damage from each attack that targets you this round.",
+    "keywords": "Instinctive",
+    "damage": "4",
+    "rage": 8,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "card_584",
+  "nome": "Caern of the Snow Leopard",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "Caern",
+      "efeitos": [
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 584,
+    "texto_original": "When one of your characters is killed in the Umbra, you may choose to discard this caern and return the character to full health in the physical world.  Only one Caern of the Snow Leopard can be in play at any time.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "requires": "Stargazers"
+  }
+}

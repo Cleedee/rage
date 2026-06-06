@@ -1,0 +1,30 @@
+{
+  "id": "card_348",
+  "nome": "Walks-with-Might",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg5 Gn7 H5 (Ren9)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg5_gn7_h5"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 348,
+    "texto_original": "Walks-with-Might may escape from any combat after the fourth round.",
+    "keywords": "Garou - Silent Striders - Ahroun - Lupus - Gaia - Male",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 7,
+    "health": 5,
+    "requires": ""
+  }
+}

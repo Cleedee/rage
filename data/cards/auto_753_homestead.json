@@ -1,0 +1,30 @@
+{
+  "id": "card_753",
+  "nome": "Homestead",
+  "tipo": "Territory",
+  "modos": [
+    {
+      "descricao": "Território",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "territorio"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 753,
+    "texto_original": "The Homestead is an excellent place in which to forge alliances. Once per game, the pack controlling the Homestead may select 1 Victim in play and make them an Ally. If the pack loses control of the Homestead, the Victim returns to the Hunting Grounds. On",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Gaia Garou"
+  }
+}

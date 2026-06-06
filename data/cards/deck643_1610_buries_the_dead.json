@@ -1,0 +1,31 @@
+{
+  "id": "card_1610",
+  "nome": "Buries the Dead",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg2 Gn5 H2 (Ren6)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1610,
+    "texto_original": "Buries-the-Dead bears many scars across her throat from her battles against Leeches. She may automatically pack attack or defend when a packmate fights a Vampire. Draw a combat card when this occurs. Rivalry: Vampires.",
+    "keywords": "Garou - Silent Strider - Ahroun - Homid - Female - Gaia - Rivalry: Vampires",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 5,
+    "health": 2,
+    "requires": ""
+  }
+}

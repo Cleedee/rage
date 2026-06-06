@@ -1,0 +1,34 @@
+{
+  "id": "card_1021",
+  "nome": "Power of the Ways",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn4)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1021,
+    "texto_original": "When in the Umbra the Philodox increases her Rage, Gnosis, and Health by 1. Discard this Gift when she returns to the physical world. A character cannot use more than one Power of the Ways at a time.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "requires": "Philodox"
+  }
+}

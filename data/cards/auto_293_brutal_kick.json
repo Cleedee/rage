@@ -1,0 +1,28 @@
+{
+  "id": "card_293",
+  "nome": "Brutal Kick",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 293,
+    "texto_original": "No matter where you get kicked, it's bound to hurt.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

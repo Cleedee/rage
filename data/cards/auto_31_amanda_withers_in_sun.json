@@ -1,0 +1,30 @@
+{
+  "id": "card_31",
+  "nome": "Amanda Withers-in-Sun",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg4 Gn7 H6 (Ren5)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg4_gn7_h6"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 31,
+    "texto_original": "Amanda can only regenerate when she is in the Umbra.",
+    "keywords": "Garou - Silver Fangs - Theurge - Metis - Gaia - Female",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 7,
+    "health": 6,
+    "requires": ""
+  }
+}

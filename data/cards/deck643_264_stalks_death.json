@@ -1,0 +1,30 @@
+{
+  "id": "card_264",
+  "nome": "Stalks Death",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg3 Gn8 H5 (Ren9)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg3_gn8_h5"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 264,
+    "texto_original": "Stalks-Death has never lost a combat in his life. Anyone who defeats him may take a 'trophy,' earning them +1 victory points for killing him. He may use Philodox Gifts in addition to his normal ones.",
+    "keywords": "Garou - Silent Striders - Ragabash - Lupus - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 8,
+    "health": 5,
+    "requires": ""
+  }
+}

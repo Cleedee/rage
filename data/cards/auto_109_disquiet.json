@@ -1,0 +1,34 @@
+{
+  "id": "card_109",
+  "nome": "Disquiet",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 109,
+    "texto_original": "The Gift user sends the target fleeing from the area. Remove one Ally or Prey creature in Homid form from play for one full turn. If the target has Gnosis 3 or less it is discarded instead. Discard this Gift after use.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Homid - Eater-of-Souls- ananasi"
+  }
+}

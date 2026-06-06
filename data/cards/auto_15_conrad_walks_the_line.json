@@ -1,0 +1,30 @@
+{
+  "id": "card_15",
+  "nome": "Conrad Walks-the-Line",
+  "tipo": "Character - Rogue",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg2 Gn3 H2 (Ren5)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg2_gn3_h2"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 15,
+    "texto_original": "Conrad may be in either Gaia or Wyrm packs. If he is in a Wyrm pack, he may only use Shadow Lords and Beast-of-War Gifts.",
+    "keywords": "Garou - Shadow Lords - Ahroun - Homid - Gaia - Wyrm - Male",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 3,
+    "health": 2,
+    "requires": ""
+  }
+}

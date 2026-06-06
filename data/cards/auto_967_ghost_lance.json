@@ -1,0 +1,27 @@
+{
+  "id": "card_967",
+  "nome": "Ghost Lance",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn4)",
+      "efeitos": [
+        {
+          "tipo": "forcar_bluff",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 967,
+    "texto_original": "The Gift user forges a bolt from Wind-spirits and War-spirits and casts it toward an opponent in combat. Targets affected by Ghost Lance may not bluff for the duration of the combat. Discard this Gift after its effects take place.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "requires": "Uktena - Silent Striders - Philodox"
+  }
+}

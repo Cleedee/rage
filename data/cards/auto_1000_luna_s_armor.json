@@ -1,0 +1,32 @@
+{
+  "id": "card_1000",
+  "nome": "Luna's Armor",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn4)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga"
+        },
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1000,
+    "texto_original": "The user of this Gift gains 2 Health. This Gift lasts until canceled.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "requires": "Children of Gaia - Shadow Lords - Silver Fangs"
+  }
+}

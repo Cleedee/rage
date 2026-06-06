@@ -1,0 +1,28 @@
+{
+  "id": "card_935",
+  "nome": "Benefactor's Boon",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn4)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 935,
+    "texto_original": "When played, pick Rage, Gnosis or Health. The user gains +3 to that stat. Pick a different stat: the user suffers -2 to it. If you pick Gnosis to decrease, the character must still be able to play  this Gift with the adjusted Gnosis. This Gift is permanen",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "requires": "Chulorviah - Pentex"
+  }
+}

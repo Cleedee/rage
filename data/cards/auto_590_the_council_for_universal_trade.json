@@ -1,0 +1,28 @@
+{
+  "id": "card_590",
+  "nome": "The Council for Universal Trade",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "Caern",
+      "efeitos": [
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 590,
+    "texto_original": "The Gauntlet of this caern can never be 'fluxed' higher than 6 or lower than 4.  This caern is unaffected by Pattern Spiders.  Only one Council for Universal Trade can be in play at any time.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Glass Walkers"
+  }
+}

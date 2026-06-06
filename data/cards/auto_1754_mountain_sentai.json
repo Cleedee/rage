@@ -1,0 +1,31 @@
+{
+  "id": "card_1754",
+  "nome": "Mountain Sentai",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 3,
+          "params": {
+            "zona": "deck_sept"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1754,
+    "texto_original": "Requires: Gaia. Play if you have exactly five characters in your pack, none of whom share an Auspice or Tribe and at least one is Hengeyokai. Mountain Sentai can start in play and you cannot have more than five packmembers. Your characters gain Hengeyokai; they can pack attack and defend with each other. Draw 3 cards when that happens.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Gaia"
+  }
+}

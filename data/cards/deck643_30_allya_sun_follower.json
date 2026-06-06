@@ -1,0 +1,30 @@
+{
+  "id": "card_30",
+  "nome": "Allya Sun-Follower",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg3 Gn3 H4 (Ren5)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg3_gn3_h4"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 30,
+    "texto_original": "Allya's calling takes many forms. She must attempt to undergo any Quests that are drawn into her pack's sept hand if she can fulfill the requirements.",
+    "keywords": "Garou - Silent Striders - Ahroun - Lupus - Gaia - Female",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 3,
+    "health": 4,
+    "requires": ""
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "card_308",
+  "nome": "Heart of Midnight",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipar (Gn6)",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 308,
+    "texto_original": "The owner of this fetish cannot be affected by any Gifts. He can, however, still use Gifts himself. All enemies (creatures in the Hunting Grounds) are at +1 Rage when fighting the owner of this fetish.",
+    "keywords": "Gaia Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "requires": ""
+  }
+}

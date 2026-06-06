@@ -1,0 +1,34 @@
+{
+  "id": "card_1089",
+  "nome": "World of Human",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn6)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1089,
+    "texto_original": "The Garou can use this Gift to raise the Gauntlet of any caern by 1. A caern cannot have its Gauntlet raised by more than 4 in this fashion. This card remains in effect until the Gift is removed.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "requires": "Homid"
+  }
+}

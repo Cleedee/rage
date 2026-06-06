@@ -1,0 +1,30 @@
+{
+  "id": "card_1419",
+  "nome": "The Breaking of the Storm",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "duracao": "proximo_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1419,
+    "texto_original": "Restricted.  May not be played during a combat. A horrific storm tears through the Umbra  and real world at the death of the corrupt Bastet, Black Tooth.  Shuffle all Allies and Prey with less than 7 Renown into their owners� sept decks.",
+    "keywords": "Restrained",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

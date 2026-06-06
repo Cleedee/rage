@@ -1,0 +1,34 @@
+{
+  "id": "card_892",
+  "nome": "Owl",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage",
+              "health"
+            ],
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 892,
+    "texto_original": "You may look at 1 opponent's hand (combat or sept) once every other turn. A pack may not have more than 1 Pack Totem at any time.",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Silent Striders"
+  }
+}

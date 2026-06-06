@@ -1,0 +1,34 @@
+{
+  "id": "card_1003",
+  "nome": "Messenger's Fortitude",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn3)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1003,
+    "texto_original": "The user outruns his opponent(s) before combat begins. The character acts at -1 Renown until he engages in combat with at least 1 of the attackers from whom he escaped. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "requires": "Silent Striders"
+  }
+}

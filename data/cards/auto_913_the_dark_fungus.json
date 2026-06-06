@@ -1,0 +1,31 @@
+{
+  "id": "card_913",
+  "nome": "The Dark Fungus",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_sept"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 913,
+    "texto_original": "The Dark Fungus's children are blessed with surreal visions. Once per turn, you may look at the top three cards of any player's Sept deck. You may place one of those cards on the bottom of that player's Sept deck; replace the other two on top of the Sept",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Defiler"
+  }
+}

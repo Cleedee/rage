@@ -1,0 +1,28 @@
+{
+  "id": "card_600",
+  "nome": "The Wheel of Ptah",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "Caern",
+      "efeitos": [
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 600,
+    "texto_original": "The controller of this caern can always choose which Moon Bridges affect her caern and which do not. At her discretion, other packs can use her caern to open Moon Bridges or step sideways into the Umbra. Only one Wheel of Ptah can be in play at any time.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 1,
+    "health": 0,
+    "requires": "Silent Striders"
+  }
+}

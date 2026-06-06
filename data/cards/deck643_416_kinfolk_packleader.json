@@ -1,0 +1,31 @@
+{
+  "id": "card_416",
+  "nome": "Kinfolk Packleader",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado (H3)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 416,
+    "texto_original": "Kinfolk Packleader can automatically pack defend with your Kinfolk Allies. Draw a combat card when this occurs. The Kinfolk Packleader is in Lupus form.",
+    "keywords": "Animal - Kinfolk",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 3,
+    "health": 3,
+    "requires": "Lupus"
+  }
+}

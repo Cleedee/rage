@@ -1,0 +1,34 @@
+{
+  "id": "card_1024",
+  "nome": "Purity of Spirit",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1024,
+    "texto_original": "The Ahroun protects himself from aggravated damage for one complete turn when in the Umbra. The Ahroun still takes any wounds, they simply are not aggravated injuries. This Gift is discarded after its effect takes place.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Ahroun"
+  }
+}

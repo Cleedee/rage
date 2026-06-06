@@ -1,0 +1,28 @@
+{
+  "id": "card_1760",
+  "nome": "Beckons",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "ganhar_vp",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1760,
+    "texto_original": "Once per Moot phase you may put the lowest-Renown Human (non-character) face down in your Victory Pile where it is worth 1 VP.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Bakemono - Vampire"
+  }
+}

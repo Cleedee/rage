@@ -1,0 +1,34 @@
+{
+  "id": "card_99",
+  "nome": "Command Spirit",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn3)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 99,
+    "texto_original": "The user may take control of any 1 spirit in play for 1 full turn. The Gift user's Gnosis must exceed the spirit's. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "requires": "Theurge - Uktena"
+  }
+}

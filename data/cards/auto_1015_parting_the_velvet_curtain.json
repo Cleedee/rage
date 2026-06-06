@@ -1,0 +1,34 @@
+{
+  "id": "card_1015",
+  "nome": "Parting the Velvet Curtain",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn4)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1015,
+    "texto_original": "The Garou can choose one non-Garou and bring him into the Umbra when stepping sideways. This may include individuals who cannot normally access the Umbra (like Kinfolk). The 'hitchhiker' must leave the Umbra when the Gift user does. This Gift is discarded",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "requires": "Theurge"
+  }
+}

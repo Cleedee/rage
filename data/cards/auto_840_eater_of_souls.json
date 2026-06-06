@@ -1,0 +1,31 @@
+{
+  "id": "card_840",
+  "nome": "Eater-of-Souls",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_sept"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 840,
+    "texto_original": "Your pack can now equip with fetish Equipment. They must still meet the Gnosis requirements.",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Pentex"
+  }
+}

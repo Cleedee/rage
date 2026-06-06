@@ -1,0 +1,28 @@
+{
+  "id": "card_961",
+  "nome": "Gaia's Favored Messenger",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn8)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 961,
+    "texto_original": "Play this Gift any time the user is not involved in a combat. The user of this Gift invokes the patronage of Gaia. Under Her care, the Gift user is immediately healed of all damage he currently suffers, including Aggravated Damage. The character using thi",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 8,
+    "health": 0,
+    "requires": "Silent Striders"
+  }
+}

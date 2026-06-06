@@ -1,0 +1,30 @@
+{
+  "id": "card_400",
+  "nome": "Experimental Fomori",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado (H5)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "aliado_h5"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 400,
+    "texto_original": "The Experimental Fomori can use Iliad Gifts of Gnosis 3 or less.",
+    "keywords": "Fomori - Pentex",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 1,
+    "health": 5,
+    "requires": "Pentex"
+  }
+}
