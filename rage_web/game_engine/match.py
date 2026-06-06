@@ -165,7 +165,10 @@ def run_match(seed: int = 42, max_turns: int = 30,
     else:
         deck_info = ' | Deck: Sample'
     diffs_str = ', '.join(d.upper() for d in diffs)
-    print(f'  {diffs_str}{deck_info} | {n_players} jogadores | Max: {max_turns}t')
+    # VP necessario para vencer (renown_level do primeiro jogador — todos iguais)
+    vp_to_win = game.players[0].renown_level if game.players else 20
+    print(f'  {diffs_str}{deck_info} | {n_players} jogadores | '
+          f'Max: {max_turns}t | VP para vencer: {vp_to_win}')
     print_separator()
     print_board(game)
 
@@ -287,7 +290,7 @@ def run_match(seed: int = 42, max_turns: int = 30,
         for p in game.players:
             if p.victory_points >= p.renown_level:
                 print_separator()
-                print(f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP)')
+                print(f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP necessarios)')
                 return p.id
 
         # Mostra tabuleiro na mudanca de fase/turno
