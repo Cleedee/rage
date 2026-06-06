@@ -2,111 +2,124 @@
 
 ## Ficha Técnica
 
-| | Jogador | Deck | VP |
+| | Jogador | Deck | VP final |
 |---|---|---|---|
 | **🏆** | **J1** | **629 — Umbral Wardens** | **20** |
 | 🥈 | J3 | 619 — Fúria e Sabedoria | 14 |
-| 🥉 | J2 | 90 — Lobos Solitários | 6 |
-| 4º | J4 | 7 — Questor | 6 |
+| 🥉 | J4 | 7 — Questor | 13 |
+| 4º | J2 | 90 — Lobos Solitários | 1 |
 
-**Seed:** 2 | **Dificuldade:** Hard/4 | **Turnos:** 7
+**Seed:** 2 | **Dificuldade:** Hard/4 | **Turnos:** 8
 
-> *Big Fisher explodiu cedo, mas o Umbral Wardens jogou o jogo longo e venceu na resistência.*
+> *Big Fisher dominou o meio da partida, mas não conseguiu fechar. Umbral Wardens e Questor empataram na reta final — e o deck da Umbra levou a melhor.*
 
 ---
 
 ## Turno 1 — Calmaria
 
-Todos se preparam. Quatro estratégias diferentes se formando.
-
-**Umbral Wardens** estabelece Caern of Rytthiku. **Fúria e Sabedoria** ativa Mass Pollution. **Lobos** se espalham. **Questor** busca suas quests.
+Todos se preparam. **Umbral Wardens** estabelece Caern of Rytthiku. **Fúria e Sabedoria** ativa Mass Pollution. **Lobos** se espalham. **Questor** busca suas quests.
 
 Ninguém marca. A calmaria antes da tempestade.
 
 ---
 
-## Turno 2 — Sangue no Hunting Grounds
+## Turno 2 — Primeiro Sangue
 
-**Big Fisher** (619) desperta. Com Beast-of-War e Silver Claws, ele **elimina um personagem do Questor** — primeiro sangue. +1 VP.
+**Big Fisher** (619) desperta. Com Beast-of-War, ele **elimina um personagem** do Questor — primeiro sangue. +5 VP no total para Fúria (Big Fisher em dobro).
 
-Mas Questor revida. Quatro personagens atacam **Tim Rowantree** (629). Tim cai no primeiro ataque — mas o motor de jogo permitia que os ataques seguintes gerassem VP extra indevidamente (bug corrigido).
+Os **Lobos Solitários** (90) eliminam alguém e marcam **1 VP**.
 
-Os **Lobos Solitários** (90) não perdem tempo: **eliminam Margrave Konietzko** (619) — Big Fisher perdeu seu parceiro.
+Umbral Wardens e Questor ainda não marcaram — 0 VP ambos.
 
-Umbral Wardens reage: **Rainpuddle** e **Shadow-Weaver** eliminam personagens do Questor.
-
-**Placar:** 619=5, 90=2, 629=1, 7=0
+**Placar:** 619=5, 90=1, 629=0, 7=0
 
 ---
 
 ## Turno 3 — Big Fisher Enlouquece
 
-Sem Margrave para proteger, Big Fisher parte para cima. **Dois ataques por round**. Cada golpe é +1 VP.
+Big Fisher entra em crinos. Dois ataques por round. Ele desmonta as linhas inimigas.
 
-**619 salta para 14 VP.** O líder disparado. Parece que a partida vai acabar no turno 4.
+Questor tenta revidar, mirando Tim Rowantree (629) — mas Tim morre uma vez e é respeitado. Os ataques seguintes contra ele são desperdiçados.
 
-Mas os Lobos e Questor não desistem. Eles continuam atacando Tim Rowantree do Umbral Wardens — que morre e volta, morre e volta, como um saco de pancadas.
+Quando a poeira baixa:
 
-**Enquanto isso, os Caerns trabalham em silêncio.**
+| Jogador | VP |
+|---|---|
+| **Fúria e Sabedoria (619)** | **14** 💥 |
+| Umbral Wardens (629) | 7 |
+| Lobos (90) | 1 |
+| Questor (7) | 0 |
+
+Big Fisher está imparável. Parece que a partida vai acabar em breve.
 
 ---
 
 ## Turno 4 — A Seca
 
-Big Fisher está a **6 VP de vencer**. Mas sem Margrave, sem cartas na mão, ele **não consegue finalizar**.
+Big Fisher está a **6 VP de vencer**. Mas algo errado acontece.
 
-14 VP. Mais um turno parado.
+As cartas de combate de Fisher acabaram. Margrave Konietzko, que deveria dar suporte, está isolado. Fisher tenta atacar — mas **não consegue finalizar**.
 
-**Umbral Wardens:** 8 VP — lento, constante. Fade-To-Black na Umbra usa **Redirected Attack** para refletir ataques. Sees-through-Stars usa Gauntlet de qualquer Caern para se mover entre planos.
+**619: 14 VP.** Parado.
 
-**Questor:** 0 VP. Zero. O deck mais forte do meta está irrelevante.
-
----
-
-## Turno 5 — A Virada Silenciosa
-
-Big Fisher ainda está a 14 VP. Ele tenta, tenta, mas **não consegue o golpe final**.
-
-Enquanto isso, Umbral Wardens **explode para 13 VP**. Fade-To-Black finalmente encontra um Redirected Attack bem-sucedido. Shadow-Weaver ataca o Hunting Grounds.
-
-Questor consegue **1 VP**. Finalmente.
-
-**619=14, 629=13, 90=6, 7=1** — a corrida está embolada.
+Enquanto isso, **Umbral Wardens** continua sua dança silenciosa. Fade-To-Black na Umbra usa **Redirected Attack** para refletir ataques. Os Caerns geram card advantage.
 
 ---
 
-## Turno 6 — O Empate
+## Turno 5 — A Recuperação de Questor
 
-Ninguém avança. Todos trocam golpes, ninguém finaliza.
+Big Fisher ainda não sai do lugar.
 
-619: 14 VP (parado há 3 turnos).
-629: 13 VP.
-90: 6 VP.
-7: 2 VP.
+Questor finalmente acorda. Seus personagens começam a eliminar inimigos e atacar o Hunting Grounds. **1 VP.**
 
-É uma guerra de atrito. E em guerra de atrito, quem tem mais resistência vence.
-
-Umbral Wardens tem **5 personagens**. Fúria tem **2**.
+Umbral Wardens sobe para **11 VP** — lento, constante, inevitável.
 
 ---
 
-## Turno 7 — O Golpe de Mestre
+## Turno 6 — Questor no Jogo
 
-Big Fisher tenta mais uma vez. Mas está exausto. As cartas de combate acabaram.
+Questor finalmente engrena. Os personagens de Deck 7 atacam em bando. **5 VP.**
 
-**Umbral Wardens sente o momento.** Fade-To-Black sai da Umbra. Tim Rowantree — que morreu 12 vezes na partida — finalmente acerta um golpe decisivo. Shadow-Weaver tece a teia final.
+Mas Big Fisher ainda está a 14 VP. Já são **3 turnos parado.**
+
+---
+
+## Turno 7 — A Reta Final
+
+Umbral Wardens: **11 VP** (estagnou também).
+
+Questor: **9 VP** — crescendo rápido.
+
+Fúria: **14 VP** — o mesmo número há 4 turnos.
+
+É uma corrida de três. Quem chega a 20 primeiro?
+
+---
+
+## Turno 8 — Umbral Wardens Fecha a Conta
+
+O round começa com:
+- Umbral Wardens: **15 VP**
+- Questor: **13 VP**
+- Fúria: **14 VP**
+- Lobos: **1 VP** (irrelevante)
+
+**Fade-To-Black** sai da Umbra com tudo. **Sees-through-Stars** usa o Gauntlet de um Caern para atacar onde ninguém espera. **Shadow-Weaver** tece a teia final.
+
+Eliminação após eliminação. O placar sobe.
 
 > **🏆 Jogador 1 (Deck 629) VENCEU! (20/20 VP)**
 
-| Turno | 629 (Umbral) | 619 (Fúria) | 90 (Lobos) | 7 (Questor) |
+| Turno | 629 (Umbral) | 90 (Lobos) | 619 (Fúria) | 7 (Questor) |
 |---|---|---|---|---|
 | 1 | 0 | 0 | 0 | 0 |
-| 2 | 1 | **5** | 2 | 0 |
-| 3 | 8 | **14** | 4 | 0 |
-| 4 | 8 | **14** | 4 | 0 |
-| 5 | 13 | **14** | 6 | 1 |
-| 6 | 13 | **14** | 6 | 2 |
-| 7 | **20** 🏆 | 14 | 6 | 6 |
+| 2 | 0 | 1 | **5** | 0 |
+| 3 | 7 | 1 | **14** | 0 |
+| 4 | 7 | 1 | **14** | 0 |
+| 5 | 11 | 1 | **14** | 1 |
+| 6 | 11 | 1 | **14** | 5 |
+| 7 | 11 | 1 | **14** | 9 |
+| 8 | **20** 🏆 | 1 | 14 | 13 |
 
 ---
 
@@ -114,19 +127,18 @@ Big Fisher tenta mais uma vez. Mas está exausto. As cartas de combate acabaram.
 
 ### Por que Umbral Wardens venceu
 
-1. **Resistência**: 5 personagens vs 2 de Fúria. Tim Rowantree morreu 12+ vezes mas sempre voltava.
-2. **Caerns**: 4 Caerns no jogo geraram card advantage via Spiritual Revelation.
-3. **Redirected Attack**: Fade-To-Black (Gnosis 8 na Umbra) refletiu ataques decisivos.
-4. **Big Fisher estagnou**: 14 VP do turno 3 ao 7. Sem Margrave para suporte, Fisher não conseguiu fechar.
+1. **Consistência**: 5 personagens vs 2 de Fúria. Enquanto Big Fisher estagnou, os Caerns do Umbral continuaram gerando valor.
+2. **Redirected Attack**: Fade-To-Black com Gnosis 8 refletiu ataques decisivos durante a partida.
+3. **Big Fisher estagnou**: 14 VP do turno 3 ao 8 — **5 turnos** sem conseguir finalizar. Margrave foi eliminado cedo e Fisher ficou sem suporte.
 
-### A Maldição de Big Fisher
+### O que mudou com o bugfix
 
-Big Fisher é o personagem mais forte do jogo — **2 ataques por round**. Mas ele depende de Margrave para suporte. Quando os Lobos eliminaram Margrave no turno 2, Fisher ficou isolado. Fez 14 VP em 2 turnos, mas **não conseguiu os últimos 6** em 4 turnos.
+Antes da correção, Tim Rowantree (629) morria 4 vezes no mesmo turno para 4 atacantes diferentes, gerando VP extra para Questor. Agora, após o primeiro ataque fatal, os ataques seguintes são ignorados — o que reduziu os VPs de Questor de 6 para números mais realistas, e estendeu a partida em 1 turno.
 
 ### MVP
 
-**Fade-To-Black** (629) — a especialista Umbral. +2 Gnosis (total 8) tornou Redirected Attack imbatível. Ninguém no campo tinha Gnosis maior que ela.
+**Fade-To-Black** (629) — a especialista Umbral com Gnosis 8 quebrou as linhas inimigas com Redirected Attack. Sem ela, Umbral Wardens não teria chegado aos 20.
 
-### O Abismo de Questor
+### O Abismo dos Lobos
 
-Deck 7, o meta mais forte, fez **0 VP até o turno 5**. Foi completamente neutralizado por Mass Pollution e pela guerra de atrito. Uma das piores atuações de Questor já registrada.
+Deck 90 terminou com **1 VP** — completamente irrelevante a partida inteira. Não eliminou ninguém relevante, não influenciou o jogo.
