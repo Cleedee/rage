@@ -4,14 +4,12 @@
   "tipo": "Moot",
   "modos": [
     {
-      "descricao": "Seleciona um Garou. Se aprovado, reverte à forma Breed até frenesi.",
+      "descricao": "Seleciona um Garou. Se aprovado, reverte a forma Breed.",
       "efeitos": [
         {
           "tipo": "moot_rebaixar_forma",
           "condicao_alvo": "criatura_inimiga_moot",
-          "params": {
-            "forma": "breed"
-          }
+          "forma": "breed"
         }
       ]
     }
@@ -19,12 +17,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1243,
-    "texto_original": "Select a Garou. Only members of that Garou's auspice may vote. If passed, the victim reverts to his breed form. He cannot change form until he frenzies.",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "Select a Garou. Only members of that Garou's auspice may vote. If passed, the victim reverts to his breed form. He cannot change form until he frenzies."
   }
 }

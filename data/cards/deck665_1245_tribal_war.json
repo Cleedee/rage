@@ -8,12 +8,9 @@
       "efeitos": [
         {
           "tipo": "moot_restricao_global",
-          "condicao_alvo": "jogador",
-          "params": {
-            "restricao": "tribal_war",
-            "descricao": "Tribal War: tribos escolhidas devem se atacar primeiro",
-            "duracao": "restante_do_jogo"
-          }
+          "restricao": "tribal_war",
+          "descricao": "Tribal War ativo",
+          "duracao": "restante_do_jogo"
         }
       ]
     }
@@ -21,12 +18,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1245,
-    "texto_original": "Choose 2 tribes. Characters from these tribes must attack each other before they attack any other opponents in the game. If members of both tribes are in 1 pack, then 1 must be discarded (no victory points will be gained).",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "Choose 2 tribes. Characters from these tribes must attack each other before they attack any other opponents in the game."
   }
 }

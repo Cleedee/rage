@@ -1650,11 +1650,10 @@ class ResolvedorEfeitos:
         """Aplica restricao global (Tribal War, Litany's Guidance)."""
         restricao = efeito.params.get('restricao', 'moot_global')
         descricao = efeito.params.get('descricao', 'Efeito de Moot ativo')
-        duracao = efeito.params.get('duracao', 'restante_do_jogo')
-        from rage_web.game_engine.state import GameModifier
         modifier = GameModifier(
-            nome=restricao, descricao=descricao,
-            origem=jogador.id, duracao=duracao,
+            card_uid=id(origem),
+            modifier=restricao,
+            ativo=True,
         )
         self.game.game_modifiers.append(modifier)
         self.game.add_log(f'[Moot] {descricao}')
@@ -1683,7 +1682,8 @@ class ResolvedorEfeitos:
         gnosis = efeito.params.get('gnosis', 1)
         caern = CardInstance(
             card_id=0, name='Caern (Moot)', card_type='Caern',
-            owner_id=jogador.id, zone=Zone.PACK_HOME,
+            owner_id=jogador.id, controller_id=jogador.id,
+            zone=Zone.PACK_HOME,
             rage=0, gnosis=gnosis, health=gnosis,
             health_current=gnosis, renown=0,
         )

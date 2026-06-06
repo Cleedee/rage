@@ -151,10 +151,12 @@ class PriorityBot:
                     return f'play_character_{card.card_id}'
 
         # Tenta jogar efeitos de Gifts/Events/Actions (sempre, mesmo deck lento)
+        # NOTA: Moots e Board Meetings NAO sao jogados aqui — sao jogados
+        # exclusivamente na fase de Moot via _agir_moot
         TIPOS_STUB = {'quest_check', 'combar_acao'}
+        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
         for i, card in enumerate(me.hand):
-            if card.modelo_id and card.card_type not in (
-                    'Combat Action', 'Combat Event'):
+            if card.modelo_id and card.card_type not in TIPOS_NAO_RECURSO:
                 if self._pode_pagar_custos(card):
                     from rage_web.game_engine.effects import CARTAS_EXEMPLO
                     modelo = CARTAS_EXEMPLO.get(card.modelo_id)

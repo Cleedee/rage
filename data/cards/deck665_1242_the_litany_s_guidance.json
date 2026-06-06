@@ -4,16 +4,13 @@
   "tipo": "Moot",
   "modos": [
     {
-      "descricao": "Declara guerra ao Wyrm. Gaia não ganha VP matando Gaia pelo resto do jogo.",
+      "descricao": "Declara guerra ao Wyrm. Gaia nao ganha VP matando Gaia pelo resto do jogo.",
       "efeitos": [
         {
           "tipo": "moot_restricao_global",
-          "condicao_alvo": "jogador",
-          "params": {
-            "restricao": "litany_guidance",
-            "descricao": "Litany's Guidance: Gaia packs não ganham VP matando Gaia",
-            "duracao": "restante_do_jogo"
-          }
+          "restricao": "litany_guidance",
+          "descricao": "Litany's Guidance ativo",
+          "duracao": "restante_do_jogo"
         }
       ]
     }
@@ -21,12 +18,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1242,
-    "texto_original": "The character who calls this vote declares war on the Wyrm and its followers. If The Litany's Guidance passes, for the remainder of the game Gaia packs will not gain any victory points for killing Gaia pack characters or allies.",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "The character who calls this vote declares war on the Wyrm and its followers. If The Litany's Guidance passes, for the remainder of the game Gaia packs will not gain any victory points for killing Gaia pack characters or allies."
   }
 }

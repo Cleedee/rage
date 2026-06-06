@@ -4,15 +4,12 @@
   "tipo": "Moot",
   "modos": [
     {
-      "descricao": "Registra exploits de um pack. Ganha 1 VP por personagem no pack.",
+      "descricao": "Registra exploits de um pack. Ganha 1 VP base + 1 VP por personagem.",
       "efeitos": [
         {
           "tipo": "moot_ganhar_vp",
-          "condicao_alvo": "jogador",
-          "params": {
-            "vp": 1,
-            "vp_por_personagem": 1
-          }
+          "vp": 1,
+          "vp_por_personagem": 1
         }
       ]
     }
@@ -20,12 +17,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1237,
-    "texto_original": "Select 1 pack in play. A successful vote includes 1 of this pack's exploits in the legendary Silver Record. If the vote passes, gain VP equal to the number of characters in that pack.",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "Select 1 pack in play. A successful vote includes 1 of this pack's exploits in the legendary Silver Record."
   }
 }

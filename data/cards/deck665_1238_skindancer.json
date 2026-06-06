@@ -4,17 +4,14 @@
   "tipo": "Moot",
   "modos": [
     {
-      "descricao": "Escolher 1 Garou. Se aprovado, o Garou é revelado como Skindancer (Wyrm) e removido do jogo.",
+      "descricao": "Escolher 1 Garou. Se aprovado, revelado como Skindancer e removido do jogo.",
       "efeitos": [
         {
           "tipo": "moot_remover_personagem",
           "condicao_alvo": "criatura_inimiga_moot",
-          "params": {
-            "renown_min": 0,
-            "renown_max": 99,
-            "vp": 0,
-            "nome_moot": "Skindancer"
-          }
+          "renown_min": 0,
+          "renown_max": 99,
+          "vp": 0
         }
       ]
     }
@@ -22,12 +19,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1238,
-    "texto_original": "Choose 1 Garou. Successful vote means that the Garou is revealed as being a Skindancer (thus of the Wyrm and considered an enemy card) and is removed from his pack and placed in the Hunting Grounds.",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "Choose 1 Garou. Successful vote means that the Garou is revealed as being a Skindancer (thus of the Wyrm and considered an enemy card) and is removed from his pack and placed in the Hunting Grounds."
   }
 }

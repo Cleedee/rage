@@ -9,12 +9,10 @@
         {
           "tipo": "moot_remover_personagem",
           "condicao_alvo": "criatura_inimiga_moot",
-          "params": {
-            "renown_min": 6,
-            "renown_max": 99,
-            "vp": 0,
-            "nome_moot": "Winter Wolf"
-          }
+          "renown_min": 6,
+          "renown_max": 99,
+          "vp": 0,
+          "vp_por_renown": true
         }
       ]
     }
@@ -22,12 +20,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1247,
-    "texto_original": "A successful vote removes any 1 Garou of Renown 6 or higher from play. This Garou is placed in its owner's victory pile and is worth its Renown in victory points.",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "A successful vote removes any 1 Garou of Renown 6 or higher from play. This Garou is placed in its owner's victory pile and is worth its Renown in victory points."
   }
 }

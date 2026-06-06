@@ -8,17 +8,11 @@
       "efeitos": [
         {
           "tipo": "moot_construir_caern",
-          "condicao_alvo": "jogador",
-          "params": {
-            "gnosis": 2
-          }
+          "gnosis": 2
         },
         {
           "tipo": "moot_ganhar_vp",
-          "condicao_alvo": "jogador",
-          "params": {
-            "vp": 4
-          }
+          "vp": 4
         }
       ]
     }
@@ -26,12 +20,6 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1198,
-    "texto_original": "This Rite takes the form of a moot, as caern building requires cooperation. Select a player to own the caern. If the vote passes, the player gains 4 victory points.",
-    "keywords": "",
-    "damage": "",
-    "rage": 0,
-    "gnosis": 0,
-    "health": 0,
-    "requires": ""
+    "texto_original": "This Rite takes the form of a moot, as caern building requires cooperation. Select a player to own the caern. If the vote passes, the player gains 4 victory points."
   }
 }
