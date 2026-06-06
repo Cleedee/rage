@@ -393,6 +393,26 @@ Character (Gaia/Wyrm/Rogue), Gift, Equipment, Combat Action, Event, Ally, Enemy,
 
 ---
 
+## 🤖 Automação: Checklist de Decks
+
+Quando o usuário pedir para analisar um deck, verificar status de cartas, efeitos ou criar/atualizar checklist, execute:
+
+```bash
+cd /workspace && .venv/bin/python3 scripts/gerar_checklist.py <deck_id>
+```
+
+O script:
+- Consulta o banco SQLite (`Card`, `Deck`, `deck_cards`)
+- Cruza com JSONs em `data/cards/` (detecta se a carta tem JSON novo, reaproveitado ou falta)
+- Lista tipos de efeito usados vs implementados no motor (`effects.py`)
+- Identifica gaps (passivas não registradas, efeitos sem resolvedor)
+- Sugere testes
+- Gera/salva `data/cards/deck<id>_checklist.md`
+
+Exemplo: `.venv/bin/python3 scripts/gerar_checklist.py 160`
+
+---
+
 ## 🔮 Sugestões de Melhorias (Pendentes)
 
 1. ~~Remover `database.db` do versionamento~~ ✅ (`.gitignore`)
