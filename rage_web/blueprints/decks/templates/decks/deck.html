@@ -162,6 +162,36 @@
       <span class="tag is-info is-light" id="card-count">{{ cards|length }}</span>
     </h2>
 
+    <!-- Sumario de composicao -->
+    <div class="box" style="padding:0.75rem; margin-bottom:1rem;">
+      <div class="columns is-vcentered is-mobile" style="margin-bottom:0;">
+        <div class="column">
+          <span class="tag is-light">💀 Ren {{ deck.renown_cap or 20 }}</span>
+          <span class="tag is-light">👤 {{ total_chars or 0 }} personagens</span>
+          <span class="tag is-light">🔴 Renown {{ total_renown or 0 }}/{{ deck.renown_cap or 20 }}</span>
+        </div>
+        <div class="column">
+          {% set cap = deck.renown_cap or 20 %}
+          {% if cap == 20 %}
+            {% set c_min, c_max = 20, 2 %}
+            {% set s_min, s_max = 30, 3 %}
+          {% else %}
+            {% set c_min, c_max = 30, 3 %}
+            {% set s_min, s_max = 40, 3 %}
+          {% endif %}
+          <span class="tag {% if (total_combat or 0) >= c_min %}is-success{% else %}is-warning{% endif %}">
+            ⚔️ Combate {{ total_combat or 0 }} (min {{ c_min }})
+          </span>
+          <span class="tag {% if (total_sept or 0) >= s_min %}is-success{% else %}is-warning{% endif %}">
+            📜 Septo {{ total_sept or 0 }} (min {{ s_min }})
+          </span>
+          <span class="tag is-light">
+            Máx {{ c_max }} cópias no combate, {{ s_max }} no septo
+          </span>
+        </div>
+      </div>
+    </div>
+
     <!-- Lista de cartas do deck -->
     <div id="deck-card-list" class="box">
       {% if cards %}

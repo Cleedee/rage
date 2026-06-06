@@ -44,11 +44,22 @@ def read_deck(id):
 
     cards = rep.deck_get_cards(deck)
     grupos = rep.agrupar_cartas_do_deck(cards)
+    total_combat = sum(e['quantity'] for e in grupos['combat'])
+    total_sept = sum(e['quantity'] for e in grupos['sept'])
+    total_chars = sum(e['quantity'] for e in grupos['characters'])
+    total_renown = sum(
+        (e['card'].renown or 0) * e['quantity']
+        for e in grupos['characters']
+    )
     tipos = rep.get_tipos()
     expansoes = rep.get_expansions()
 
     return render_template('decks/deck.html', form=form, deck=deck,
                            cards=cards, grupos=grupos,
+                           total_combat=total_combat,
+                           total_sept=total_sept,
+                           total_chars=total_chars,
+                           total_renown=total_renown,
                            tipos=tipos, expansoes=expansoes)
 
 
@@ -87,8 +98,19 @@ def save():
             # Se houver erros, carrega dados completos e re-renderiza
             cards = rep.deck_get_cards(deck)
             grupos = rep.agrupar_cartas_do_deck(cards)
+            total_combat = sum(e['quantity'] for e in grupos['combat'])
+            total_sept = sum(e['quantity'] for e in grupos['sept'])
+            total_chars = sum(e['quantity'] for e in grupos['characters'])
+            total_renown = sum(
+                (e['card'].renown or 0) * e['quantity']
+                for e in grupos['characters']
+            )
             return render_template('decks/deck.html', form=form, deck=deck,
                                    cards=cards, grupos=grupos,
+                                   total_combat=total_combat,
+                                   total_sept=total_sept,
+                                   total_chars=total_chars,
+                                   total_renown=total_renown,
                                    tipos=rep.get_tipos(),
                                    expansoes=rep.get_expansions())
 
