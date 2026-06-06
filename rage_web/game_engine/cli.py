@@ -925,7 +925,8 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
         return cards
 
     sept_types = {'Event', 'Action', 'Territory', 'Quest',
-                  'Battlefield', 'Rite', 'Moot', 'Board Meeting'}
+                  'Battlefield', 'Rite', 'Moot', 'Board Meeting',
+                  'Gift', 'Ally', 'Victim', 'Enemy'}
 
     players = []
     for idx, did in enumerate(deck_ids):

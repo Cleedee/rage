@@ -201,22 +201,17 @@ CHARACTER_TYPES = {
 COMBAT_TYPES = {
     'Combat Action', 'Combat Event',
     'Equipment', 'Equipment - Fetish - Bane Fetish',
-    'Gift',
-    'Ally', 'Ally - Caern', 'Ally - Enemy', 'Ally - Victim',
-    'Enemy', 'Enemy - Victim',
-    'Victim',
-}
-
-SEPT_TYPES = {
-    'Action', 'Battlefield', 'Board Meeting', 'Caern', 'Event',
-    'Moot', 'Past Life', 'Quest', 'Realm', 'Rite',
-    'Territory', 'Territory - Realm',
-    'combat Event', 'quest',
 }
 
 
 def grupo_carta(tipo: str) -> str:
-    """Retorna o grupo de uma carta: 'characters', 'sept' ou 'combat'."""
+    """Retorna o grupo de uma carta: 'characters', 'sept' ou 'combat'.
+
+    Regras:
+      - Characters → 'characters'
+      - Combat Actions/Events + Equipment → 'combat'
+      - Todo o resto (Gift, Ally, Victim, Enemy, Action, Event, ...) → 'sept'
+    """
     if tipo in CHARACTER_TYPES:
         return 'characters'
     if tipo in COMBAT_TYPES:
