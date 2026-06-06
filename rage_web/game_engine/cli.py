@@ -933,6 +933,11 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
     for idx, did in enumerate(deck_ids):
         pid = f'p{idx+1}'
         p = PlayerState(id=pid, name=f'Jogador {idx+1} (Deck {did})')
+        # Define renown_level baseado no renown_cap do deck
+        with flask_app.app_context():
+            d = db.session.get(Deck, did)
+            if d and d.renown_cap:
+                p.renown_level = d.renown_cap
         players.append(p)
 
     for idx, did in enumerate(deck_ids):

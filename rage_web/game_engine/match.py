@@ -165,10 +165,14 @@ def run_match(seed: int = 42, max_turns: int = 30,
     else:
         deck_info = ' | Deck: Sample'
     diffs_str = ', '.join(d.upper() for d in diffs)
-    # VP necessario para vencer (renown_level do primeiro jogador — todos iguais)
-    vp_to_win = game.players[0].renown_level if game.players else 20
+    # VP necessario para vencer (por jogador)
+    if game.players:
+        vp_strs = [f'J{p.id[-1]}: {p.renown_level}' for p in game.players]
+        vp_info = ' | VP: ' + ', '.join(vp_strs)
+    else:
+        vp_info = ''
     print(f'  {diffs_str}{deck_info} | {n_players} jogadores | '
-          f'Max: {max_turns}t | VP para vencer: {vp_to_win}')
+          f'Max: {max_turns}t{vp_info}')
     print_separator()
     print_board(game)
 
