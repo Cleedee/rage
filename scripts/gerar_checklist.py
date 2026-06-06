@@ -142,16 +142,16 @@ def gerar_checklist(deck_id):
             tipo_base = card.tipo.split(' - ')[0] if ' - ' in card.tipo else card.tipo
             categories[tipo_base].append((card, qty))
 
-            # Verifica JSON
+            # Verifica JSON (conta por carta unica, nao por quantidade)
             cid = card.id
             if cid in jsons:
                 j = jsons[cid]
                 if j['deck'] == f'deck{deck_id}':
-                    jsons_novos += qty
+                    jsons_novos += 1
                 else:
-                    jsons_reaproveitados += qty
+                    jsons_reaproveitados += 1
             else:
-                sem_json += qty
+                sem_json += 1
 
             # Tenta ler o JSON para extrair efeitos
             json_paths = glob.glob(f"data/cards/*_{cid}_*.json")

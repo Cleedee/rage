@@ -1,0 +1,34 @@
+{
+  "id": "card_1090",
+  "nome": "Wyrm Hide",
+  "tipo": "Gift",
+  "requires": "Black Spiral Dancer",
+  "modos": [
+    {
+      "descricao": "Ganha 2 Health (permanente, max 2 copias)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "atributos": ["health"],
+            "duracao": "permanente",
+            "limite_afetar_mesmo_alvo": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 1090,
+    "texto_original": "The user's skin is coated with a thick black hide. The user gains 2 Health. A character cannot be affected by more than 2 Wyrm Hides at a time. This Gift is permanent until canceled.",
+    "expansion": "TheWyrm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

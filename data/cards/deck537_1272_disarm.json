@@ -1,0 +1,33 @@
+{
+  "id": "card_1272",
+  "nome": "Disarm",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Equipamento do oponente nao pode ser usado ate fim do combate",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "alvo_especifico": "equipment",
+            "duracao": "fim_combate",
+            "nao_ataque": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 1272,
+    "texto_original": "Choose one piece of your opponent's Equipment. That piece of Equipment cannot be used for the remainder of the Combat Phase.",
+    "expansion": "Unlimited",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

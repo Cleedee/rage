@@ -1,0 +1,32 @@
+{
+  "id": "card_321",
+  "nome": "Feint",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Resposta imediata a Combat Action do oponente",
+      "efeitos": [
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "resposta_imediata": true,
+            "alvo": "mesmo_alvo_do_oponente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 321,
+    "texto_original": "You may play any Combat Action in immediate response to your opponent's Combat Action. If your Feint is a bluff and your opponent's Combat Action is not, you may not play another card. Attacks that exceed your Rage are still considered bluffs.",
+    "expansion": "Unlimited",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

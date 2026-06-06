@@ -1,0 +1,33 @@
+{
+  "id": "card_1079",
+  "nome": "True Fear",
+  "tipo": "Gift",
+  "requires": "Ahroun - Red Talons - Shadow Lords",
+  "modos": [
+    {
+      "descricao": "Alvo nao joga Combat Actions no proximo round",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "combat_action",
+            "duracao": "proximo_round"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 1079,
+    "texto_original": "The user causes her opponent to be seized with paralyzing fear. For the next round of combat, the target may play no Combat Actions. Discard this Gift after its effect takes place.",
+    "expansion": "Unlimited",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

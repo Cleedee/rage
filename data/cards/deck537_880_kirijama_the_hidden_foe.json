@@ -1,0 +1,35 @@
+{
+  "id": "card_880",
+  "nome": "Kirijama, 'The Hidden Foe'",
+  "tipo": "Event",
+  "requires": "Eater-of-Souls",
+  "modos": [
+    {
+      "descricao": "Personal Totem - desafios nao podem ser recusados",
+      "efeitos": [],
+      "passivas": [
+        {
+          "tipo": "desafios_nao_recusados",
+          "descricao": "Desafios desta criatura nao podem ser recusados"
+        }
+      ],
+      "restricoes": [
+        {
+          "tipo": "max_1_personal_totem",
+          "descricao": "So pode ter 1 personal totem por vez. Personagens com personal totem nao se beneficiam de pack totem."
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 880,
+    "texto_original": "Kirijama is a totem of cunning. He grants his children the Gift of stealth. This character's challenges cannot be refused. A character can only have 1 personal totem at a time. Characters with personal totems may no longer benefit from a pack totem.",
+    "expansion": "TheWyrm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

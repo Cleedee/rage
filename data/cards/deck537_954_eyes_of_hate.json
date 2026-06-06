@@ -1,0 +1,36 @@
+{
+  "id": "card_954",
+  "nome": "Eyes of Hate",
+  "tipo": "Gift",
+  "requires": "Eater-of-Souls - Bane",
+  "modos": [
+    {
+      "descricao": "Alvo joga lowest Rage/lowest damage CA em cada round",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "combat_action",
+            "duracao": "restante_combate",
+            "forcar_menor_rage": true,
+            "forcar_menor_dano": true
+          }
+        }
+      ],
+      "condicao_uso": "antes_das_acoes_combate"
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 954,
+    "texto_original": "The Gift user can force any 1 opponent she is in combat with to become terribly frightened. For the duration of the combat the affected character must always play her lowest Rage, lowest damage Combat Action during each round of combat. Discard this Gift",
+    "expansion": "TheWarOfTheAmazon",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

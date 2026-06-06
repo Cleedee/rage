@@ -1,0 +1,30 @@
+{
+  "id": "card_663",
+  "nome": "Mage's Talisman",
+  "tipo": "Equipment",
+  "requires": "",
+  "modos": [
+    {
+      "descricao": "Pode usar qualquer Gift (Gaia ou Wyrm) se tiver Gnosis",
+      "efeitos": [],
+      "passivas": [
+        {
+          "tipo": "usar_qualquer_gift",
+          "descricao": "Permite usar Gifts de Gaia ou Wyrm (requisito de Gnosis continua valendo)",
+          "params": {}
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 663,
+    "texto_original": "The Mage's Talisman allows its user to use any Gifts, whether of Gaia or the Wyrm (the character must still meet the Gnosis requirements of the Gift in Question).",
+    "expansion": "TheWyrm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 7,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "card_1324",
+  "nome": "Umbral Escape",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Step sideways para Umbra, volta inicio do proximo turno",
+      "efeitos": [
+        {
+          "tipo": "remover_do_combate",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "destino": "umbra",
+            "volta_proximo_turno": true,
+            "ignora_restricao_step_sideways": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 1324,
+    "texto_original": "Fast Striking. This creature steps sideways into the Umbra, even if it a creature type that could not normally step sideways. It returns from the Umbra at the start of the next turn. If you play Umbral Escape for a member of your pack, remove Umbral Escap",
+    "expansion": "Unlimited",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "keywords": "Fast Striking",
+    "precisa_revisao": false
+  }
+}

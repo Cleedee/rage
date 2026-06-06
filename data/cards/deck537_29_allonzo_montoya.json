@@ -1,0 +1,46 @@
+{
+  "id": "card_29",
+  "nome": "Allonzo Montoya",
+  "tipo": "Character - Wyrm",
+  "renown": 9,
+  "atributos": {
+    "rage": 5,
+    "gnosis": 6,
+    "health": 7,
+    "rage_morph": 10,
+    "gnosis_morph": 6,
+    "health_morph": 10
+  },
+  "keyword": "Abomination - Garou - Vampire - Homid - Beast-of-War - Wyrm - Male",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Allonzo Montoya",
+      "efeitos": [],
+      "passivas": [
+        {
+          "tipo": "regenerates",
+          "descricao": "Allonzo regenera"
+        },
+        {
+          "tipo": "nao_pode_ser_alpha_2_turnos",
+          "descricao": "Nao pode ser alpha 2 turnos seguidos"
+        },
+        {
+          "tipo": "usar_gifts_especiais",
+          "descricao": "Pode usar gifts Shadow Lords, Metis e Black Spiral Dancer",
+          "params": {
+            "tribos": ["shadow_lords", "metis", "black_spiral_dancer"]
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 29,
+    "texto_original": "Allonzo is a werewolf who has been turned into a vampire. Thoroughly insane, he now serves the Wyrm. Allonzo can use Shadow Lords, Metis and Black Spiral Dancer Gifts. He cannot be alpha 2 turns in a row.",
+    "expansion": "TheWyrm",
+    "precisa_revisao": false
+  }
+}

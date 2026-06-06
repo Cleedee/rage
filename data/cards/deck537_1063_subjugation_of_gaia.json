@@ -1,0 +1,33 @@
+{
+  "id": "card_1063",
+  "nome": "Subjugation of Gaia",
+  "tipo": "Gift",
+  "requires": "Eater-of-Souls",
+  "modos": [
+    {
+      "descricao": "Remove Pack Totem, Lunar Phase ou fetish Equipment do jogo",
+      "efeitos": [
+        {
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "alvo_especifico",
+          "quantidade": 1,
+          "params": {
+            "tipos_permitidos": ["pack_totem", "lunar_phase", "fetish_equipment", "bane_fetish"],
+            "inclui_bane_fetish": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 1063,
+    "texto_original": "The Gift user can select any 1 Pack Totem, Lunar Phase, or piece of fetish Equipment and remove it from play. Discard this Gift after its effect takes place.",
+    "expansion": "TheWyrm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 7,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}

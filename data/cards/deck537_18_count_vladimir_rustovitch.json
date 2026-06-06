@@ -1,0 +1,45 @@
+{
+  "id": "card_18",
+  "nome": "Count Vladimir Rustovitch",
+  "tipo": "Character - Wyrm",
+  "renown": 10,
+  "atributos": {
+    "rage": 5,
+    "gnosis": 7,
+    "health": 6,
+    "rage_morph": 9,
+    "gnosis_morph": 7,
+    "health_morph": 10
+  },
+  "keyword": "Vampire - Eater-of-Souls - Homid - Wyrm - Male",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Count Vladimir Rustovitch",
+      "efeitos": [],
+      "passivas": [
+        {
+          "tipo": "auto_regenerate_lowest",
+          "descricao": "Regenera carta de dano mais baixa no fim do combate se matou ao menos 1 oponente",
+          "params": {
+            "condicao": "killed_at_least_1_opponent"
+          }
+        },
+        {
+          "tipo": "usar_gifts_especiais",
+          "descricao": "Pode usar gifts Black Spiral Dancer, 7th Generation, Homid e Shadow Lords",
+          "params": {
+            "tribos": ["black_spiral_dancer", "7th_generation", "homid", "shadow_lords"]
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 18,
+    "texto_original": "Vladimir can automatically regenerate the lowest damage card at the end of any combat in which he killed at least 1 opponent. Vladimir can use Black Spiral Dancer, 7th Generation, Homid and Shadow Lords Gifts.",
+    "expansion": "TheWyrm",
+    "precisa_revisao": false
+  }
+}

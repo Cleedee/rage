@@ -1,0 +1,41 @@
+{
+  "id": "card_161",
+  "nome": "Juicy Johnes",
+  "tipo": "Character - Wyrm",
+  "renown": 1,
+  "atributos": {
+    "rage": 1,
+    "gnosis": 1,
+    "health": 1,
+    "rage_morph": 1,
+    "gnosis_morph": 1,
+    "health_morph": 1
+  },
+  "keyword": "Iliad - Fomori - Pentex - Homid - Wyrm - Male",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Juicy Johnes",
+      "efeitos": [],
+      "death_trigger": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "jogador_inimigo_matador",
+          "quantidade": -2,
+          "params": {
+            "atributos": ["gnosis"],
+            "duracao": "permanente",
+            "minimo": 0
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 161,
+    "texto_original": "Juicy subtracts 2 Gnosis from whoever kills him. This Gnosis penalty lasts until the end of the game.",
+    "expansion": "TheWarOfTheAmazon",
+    "precisa_revisao": false
+  }
+}

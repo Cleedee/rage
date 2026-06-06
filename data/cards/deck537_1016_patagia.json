@@ -1,0 +1,34 @@
+{
+  "id": "card_1016",
+  "nome": "Patagia",
+  "tipo": "Gift",
+  "requires": "Black Spiral Dancer",
+  "modos": [
+    {
+      "descricao": "So pode ser atingido por Weapon Equipment neste round",
+      "efeitos": [
+        {
+          "tipo": "modificar_reducao_dano",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 99,
+          "params": {
+            "condicao": "so_weapon_equipment",
+            "duracao": "round_atual"
+          }
+        }
+      ],
+      "condicao_uso": "antes_das_acoes_combate"
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck537",
+    "card_id": 1016,
+    "texto_original": "Forming his skin into baggy flaps, the Black Spiral Dancer gains limited flight abilities. For the current combat round the Gift user may only be hit by Combat Actions from weapon Equipment. Patagia may not be used by a character in frenzy. Discard this G",
+    "expansion": "LegacyOfTheTribes",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "precisa_revisao": false
+  }
+}
