@@ -5,8 +5,8 @@
 | | Jogador | Deck | Cap | VP final |
 |---|---|---|---|---|
 | 🥈 | J1 | 619 — Fúria e Sabedoria | Ren20 | 19 |
-| 🥉 | J2 | 484 — Ajaba Aggression | Ren30 | 7 |
-| **🏆** | **J3** | **160 — Lake Nassar (Mokole)** | **Ren30** | **20** |
+| 🥉 | J2 | 484 — Ajaba Aggression | Ren20 | 7 |
+| **🏆** | **J3** | **160 — Lake Nassar (Mokole)** | **Ren20** | **20** |
 
 **Seed:** 256 | **Dificuldade:** Hard/3 | **Turnos:** 6
 
