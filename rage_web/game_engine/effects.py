@@ -412,8 +412,10 @@ class ResolvedorEfeitos:
         """Retorna lista de todos os jogadores que nao sao o atual.
 
         Suporta partidas com N jogadores.
+        Regra 2.3: jogadores eliminados nao podem ser alvos.
         """
-        return [p for p in self.game.players if p.id != jogador.id]
+        return [p for p in self.game.players
+                if p.id != jogador.id and not p.eliminado]
 
     def _find_player(self, player_id: str) -> Optional[PlayerState]:
         """Encontra um jogador pelo ID."""

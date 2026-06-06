@@ -387,8 +387,12 @@ class PriorityBot:
         return 'pass_combat'
 
     def _get_opponents(self) -> list[PlayerState]:
-        """Retorna todos os oponentes (N players)."""
-        return [p for p in self.game.players if p.id != self.player_id]
+        """Retorna todos os oponentes (N players).
+
+        Regra 2.3: jogadores eliminados nao sao considerados oponentes.
+        """
+        return [p for p in self.game.players
+                if p.id != self.player_id and not p.eliminado]
 
     def _moot_voto_estrategico(self, moot) -> bool:
         """Decide o voto em Moot baseado em estrategia para N jogadores.

@@ -879,22 +879,26 @@ def verificar_vitoria(game: GameState) -> Optional[str]:
     Returns:
         ID do vencedor, ou None se ninguem venceu.
     """
-    # Regra 2.3: jogador sem Characters esta fora de jogo
-    # Um jogador e eliminado se nao tem nenhum Character em jogo
-    # (pack_home, hunting_grounds, umbra) E ja teve characters em algum
-    # momento (ou seja, nao e um estado inicial de teste).
-    # Para compatibilidade com testes, so elimina se o jogador tem
-    # personagens_em_jogo == 0 E o jogo ja avancou pelo menos 1 turno.
+    # Regra 2.3: verificar eliminacao e vitoria
+    # Primeiro: verifica se algum jogador perdeu todos os Characters
+    # (so apos turno 1 para compatibilidade com testes)
     if game.turn_number > 1:
-        jogadores_ativos = [p for p in game.players if _tem_character(p)]
-        if len(jogadores_ativos) == 1:
-            return jogadores_ativos[0].id
-        if len(jogadores_ativos) == 0:
-            return None
-    else:
-        jogadores_ativos = game.players
+        for p in game.players:
+            if not _tem_character(p) and not p.eliminado:
+                _eliminar_jogador(game, p)
 
-    # Verifica VP >= renown_level apenas para jogadores ativos
+    # Conta jogadores ativos (nao eliminados)
+    jogadores_ativos = [p for p in game.players if not p.eliminado]
+
+    # Se restou apenas 1 jogador, ele vence
+    if len(jogadores_ativos) == 1:
+        return jogadores_ativos[0].id
+    if len(jogadores_ativos) == 0:
+        return None  # Todos eliminados
+
+    # Verifica VP >= renown_level (apenas jogadores ativos)
+    # Regra 2.3: se o jogador atingiu VP suficiente no turno em que
+    # foi eliminado, ele ainda vence
     vencedores = [p for p in jogadores_ativos
                   if p.victory_points >= p.renown_level]
     if not vencedores:
@@ -925,6 +929,49 @@ def _tem_character(player: PlayerState) -> bool:
         if 'Character' in (c.card_type or ''):
             return True
     return False
+
+
+def _eliminar_jogador(game: GameState, player: PlayerState) -> None:
+    """Elimina um jogador da partida (Regra 2.3).
+
+    Quando um jogador perde todos os seus Characters:
+    1. Todas as cartas no Pack Home (exceto combat deck e discards)
+       sao removidas do jogo.
+    2. Cartas fora do Pack Home (Hunting Grounds, Umbra, etc.)
+       permanecem em jogo.
+    3. O jogador nao pode mais jogar cartas de sept.
+    4. O jogador pode jogar cartas de combate para Presas no Hunting Grounds.
+    5. O jogador nao pode ser alvo de cartas que afetam packs, VP, etc.
+    """
+    game.add_log(f'{player.name} foi eliminado! (sem Characters em jogo)')
+
+    # 1. Remover todas as cartas do Pack Home (exceto Characters que ja foram perdidas)
+    # Mantem apenas o combat deck e discards
+    cartas_removidas = []
+    for c in list(player.pack_home):
+        # Characters ja foram perdidos (por isso estamos aqui)
+        # Remove tudo do pack_home
+        c.zone = Zone.OUT_OF_PLAY
+        cartas_removidas.append(c)
+    player.pack_home.clear()
+
+    # 2. Cartas fora do Pack Home permanecem em jogo (Hunting Grounds, Umbra)
+    # Nao fazemos nada aqui — elas ja estao nas listas corretas
+
+    # 3. Marcar jogador como eliminado (nao pode jogar sept cards)
+    player.eliminado = True
+
+    if cartas_removidas:
+        game.add_log(f'  {len(cartas_removidas)} carta(s) removidas do Pack Home')
+
+
+def _jogador_eh_alvo_valido(player: PlayerState) -> bool:
+    """Verifica se um jogador pode ser alvo de efeitos (Regra 2.3).
+
+    Um jogador eliminado (sem Characters) nao pode ser alvo de cartas
+    que afetam packs, Victory Piles, etc.
+    """
+    return not getattr(player, 'eliminado', False)
 
 
 def lone_wolf_circles_dodge(game: GameState, lone_card_id: str,

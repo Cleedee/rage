@@ -232,6 +232,9 @@ class PlayerState:
     # Flag: primeiro turno (redraw inicial e especial)
     is_first_turn: bool = True
 
+    # Regra 2.3: jogador eliminado (perdeu todos os Characters)
+    eliminado: bool = False
+
     # Cartas em combate neste turno
     combatants: list[CardInstance] = field(default_factory=list)
 
