@@ -206,6 +206,128 @@ def import_deck():
     return render_template('decks/import.html')
 
 
+@bp.get('/<id>/export')
+def export_deck(id):
+    """Exporta deck em formato texto (TXT ou XML .dek)."""
+    deck = rep.find_deck_by_id(id)
+    if deck is None:
+        abort(404)
+
+    fmt = request.args.get('fmt', 'text')
+    cards = rep.deck_get_cards(deck)
+
+    # Agrupa por tipo real da carta (card.tipo)
+    grupos_por_tipo: dict[str, list] = {}
+    for entry in cards:
+        tipo = entry['card'].tipo or 'Outro'
+        grupos_por_tipo.setdefault(tipo, []).append(entry)
+
+    if fmt == 'xml':
+        return _export_xml(deck, grupos_por_tipo)
+    else:
+        return _export_text(deck, cards, grupos_por_tipo)
+
+
+def _card_stats_short(card) -> str:
+    """Retorna stats resumidos da carta para export."""
+    partes = []
+    if card.rage:
+        partes.append(f'R{card.rage}')
+    if card.gnosis:
+        partes.append(f'G{card.gnosis}')
+    if card.health:
+        partes.append(f'H{card.health}')
+    if hasattr(card, 'renown') and card.renown:
+        partes.append(f'Ren{card.renown}')
+    if partes:
+        return ' '.join(partes)
+    return ''
+
+
+def _export_text(deck, cards, grupos_por_tipo):
+    """Exporta deck no formato TXT legivel e reimportavel."""
+    ORDEM_TIPOS = [
+        'Character', 'Ally', 'Enemy', 'Victim',
+        'Gift', 'Equipment', 'Caern', 'Territory', 'Quest',
+        'Event', 'Action', 'Rite', 'Moot',
+        'Combat Action', 'Combat Event',
+    ]
+
+    lines = []
+    lines.append(f'# {deck.name or "Deck sem nome"}')
+    if deck.description:
+        lines.append(f'# {deck.description}')
+    lines.append('')
+
+    for tipo in ORDEM_TIPOS:
+        grupo = grupos_por_tipo.get(tipo, [])
+        if not grupo:
+            continue
+        lines.append(f'{tipo}:')
+        lines.append('')
+        for entry in sorted(grupo, key=lambda x: x['card'].name):
+            card = entry['card']
+            qty = entry['quantity']
+            stats = _card_stats_short(card)
+            nome = f'  {qty} {card.name}'
+            if stats:
+                nome += f'  ({stats})'
+            lines.append(nome)
+        lines.append('')
+
+    # Tipos remanescentes (nao listados em ORDEM_TIPOS)
+    for tipo in grupos_por_tipo:
+        if tipo not in ORDEM_TIPOS:
+            lines.append(f'{tipo}:')
+            lines.append('')
+            for entry in sorted(grupos_por_tipo[tipo], key=lambda x: x['card'].name):
+                card = entry['card']
+                qty = entry['quantity']
+                lines.append(f'  {qty} {card.name}')
+            lines.append('')
+
+    lines.append(f'# Total: {sum(e["quantity"] for e in cards)} cartas')
+
+    text = '\n'.join(lines)
+    nome_arquivo = f'{deck.name or "deck"}.txt'
+    return current_app.response_class(
+        text,
+        mimetype='text/plain',
+        headers={'Content-Disposition': f'attachment; filename={nome_arquivo}'}
+    )
+
+
+def _export_xml(deck, grupos_por_tipo):
+    """Exporta deck como XML .dek (LackeyCCG)."""
+    import xml.etree.ElementTree as ET
+    from xml.dom import minidom
+
+    root = ET.Element('deck')
+    meta = ET.SubElement(root, 'meta')
+    ET.SubElement(meta, 'title').text = deck.name or ''
+    ET.SubElement(meta, 'format').text = 'Rage CCG'
+
+    for tipo, grupo_cards in grupos_por_tipo.items():
+        sz = ET.SubElement(root, 'superzone')
+        ET.SubElement(sz, 'name').text = tipo
+        for entry in grupo_cards:
+            card = entry['card']
+            qty = entry['quantity']
+            for _ in range(qty):
+                ce = ET.SubElement(sz, 'card')
+                ET.SubElement(ce, 'name').text = card.name or ''
+                if card.expansion:
+                    ET.SubElement(ce, 'set').text = card.expansion
+
+    xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent='  ')
+    nome_arquivo = f'{deck.name or "deck"}.dek'
+    return current_app.response_class(
+        xml_str,
+        mimetype='application/xml',
+        headers={'Content-Disposition': f'attachment; filename={nome_arquivo}'}
+    )
+
+
 @bp.get('/<id>/search-cards')
 def search_cards(id):
     """Busca cartas via HTMX para adicionar ao deck."""

@@ -128,6 +128,14 @@
         <div class="buttons">
           {{ form.submit(class='button is-primary') }}
           {% if deck %}
+          <a class="button is-info is-light"
+             href="{{ url_for('decks.export_deck', id=deck.id) }}" download>
+            <i class="bi bi-download"></i> Exportar TXT
+          </a>
+          <a class="button is-info is-light"
+             href="{{ url_for('decks.export_deck', id=deck.id, fmt='xml') }}" download>
+            <i class="bi bi-code"></i> Exportar XML
+          </a>
           <a class="button is-danger is-light"
              href="{{ url_for('decks.delete_deck', id=deck.id) }}"
              onclick="return confirm('Excluir este deck?')">
