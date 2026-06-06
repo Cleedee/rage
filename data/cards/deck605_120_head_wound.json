@@ -1,0 +1,35 @@
+{
+  "id": "card_120",
+  "nome": "Head Wound",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 2, alvo nao joga Combat Action no prox round",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 2,
+          "condicao_alvo": "criatura_inimiga"
+        },
+        {
+          "tipo": "impedir_acoes",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 120,
+    "texto_original": "A victim damaged by this attack may not play any Combat Actions during the next round of combat.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

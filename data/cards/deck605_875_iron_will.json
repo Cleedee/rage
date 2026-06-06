@@ -1,0 +1,33 @@
+{
+  "id": "card_875",
+  "nome": "Iron Will",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Personagem imune a perda de acao",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "quantidade": 0,
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "efeito": "proteger"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 875,
+    "texto_original": "Allows a character to overcome effects that would force her to lose her next Combat Action.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "card_907",
+  "nome": "Spirit Backlash",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Remove fetishes com Gnosis 5+",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "alvo_extra": "equipment",
+            "gnosis_min": 5
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 907,
+    "texto_original": "All fetish and Bane fetish Equipment requiring Gnosis 5 or greater to equip are immediately discarded.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

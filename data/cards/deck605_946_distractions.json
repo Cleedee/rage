@@ -1,0 +1,30 @@
+{
+  "id": "card_946",
+  "nome": "Distractions",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cancelar acao de combate do alvo",
+      "efeitos": [
+        {
+          "tipo": "cancelar_acao",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 946,
+    "texto_original": "The user may interrupt any Combat Action. The target is distracted and may not take his intended action.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "renown": 0,
+    "requires": "Galliard - Stargazers",
+    "precisa_revisao": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "card_902",
+  "nome": "Red Alert",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Wyrm assume Crinos no combate",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributo": "forma",
+            "valor": "crinos",
+            "duracao": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 902,
+    "texto_original": "Any Wyrm character entering combat can assume Crinos form during the Red Alert. Discard after 2 turns.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

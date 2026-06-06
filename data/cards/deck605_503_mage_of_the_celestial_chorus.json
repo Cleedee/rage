@@ -1,0 +1,33 @@
+{
+  "id": "card_503",
+  "nome": "Mage of the Celestial Chorus",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Remove vitima de menor Renome no fim do turno",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "menor_renown": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 503,
+    "texto_original": "The mage can use ANY Gifts. Being in the business of saving lives, the Mage will remove the lowest Renown victim from play at the end of any turn the Mage is in play.",
+    "keywords": "Human - Mage",
+    "damage": "",
+    "rage": 7,
+    "gnosis": 10,
+    "health": 7,
+    "renown": 8,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

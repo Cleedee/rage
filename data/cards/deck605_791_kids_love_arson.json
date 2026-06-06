@@ -1,0 +1,30 @@
+{
+  "id": "card_791",
+  "nome": "Kids Love Arson",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Remove personagem por 1 turno + destrói territorio",
+      "efeitos": [
+        {
+          "tipo": "remover_do_combate",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 791,
+    "texto_original": "The character playing this card is removed from play for 1 turn. He destroys any single Territory of his choice immediately.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

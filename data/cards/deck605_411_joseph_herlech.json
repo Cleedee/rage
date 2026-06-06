@@ -1,0 +1,33 @@
+{
+  "id": "card_411",
+  "nome": "Joseph Herlech",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Remove todos os Reinos, impede novos",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "quantidade": 1,
+          "condicao_alvo": "jogador",
+          "params": {
+            "tipo": "realm"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 411,
+    "texto_original": "Joseph Herlech found his way to the Dorado Realm. Discard all Realms when Joseph enters play. No new Realms may be played while Joseph is in play.",
+    "keywords": "",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 3,
+    "health": 7,
+    "renown": 8,
+    "requires": "Any",
+    "precisa_revisao": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "card_938",
+  "nome": "Body Wrack",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Alvo nao age no proximo round + 1 dano",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga"
+        },
+        {
+          "tipo": "dano",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 938,
+    "texto_original": "The target of this Gift is enfeebled by spasmic pains. The target may take no actions during the next combat round and takes 1 damage.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 0,
+    "gnosis": 7,
+    "health": 0,
+    "renown": 0,
+    "requires": "Black Fury",
+    "precisa_revisao": false
+  }
+}

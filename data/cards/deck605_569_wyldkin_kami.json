@@ -1,0 +1,33 @@
+{
+  "id": "card_569",
+  "nome": "Wyldkin Kami",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Usa gifts de breed/auspicio, 2 Combat Actions por round",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributo": "acoes_combate",
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 569,
+    "texto_original": "Manifest spirit servants of Gaia. Wyldkin Kami may use breed and auspice Gifts and may play 2 Combat Actions per round of combat.",
+    "keywords": "Spirit",
+    "damage": "",
+    "rage": 6,
+    "gnosis": 8,
+    "health": 7,
+    "renown": 9,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

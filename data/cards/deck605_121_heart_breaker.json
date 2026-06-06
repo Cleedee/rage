@@ -1,0 +1,30 @@
+{
+  "id": "card_121",
+  "nome": "Heart Breaker",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 9, nao pode ser bluffado",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 9,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 121,
+    "texto_original": "When all else fails... punch right through some chump's sternum. This card cannot be bluffed.",
+    "keywords": "",
+    "damage": "9",
+    "rage": 12,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "Not bluffed",
+    "precisa_revisao": false
+  }
+}

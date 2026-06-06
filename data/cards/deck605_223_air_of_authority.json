@@ -1,0 +1,30 @@
+{
+  "id": "card_223",
+  "nome": "Air of Authority",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Encerrar um combate",
+      "efeitos": [
+        {
+          "tipo": "encerrar_combate",
+          "quantidade": 1,
+          "condicao_alvo": "jogador"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 223,
+    "texto_original": "The Gift user can end any 1 combat of her choice.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "renown": 0,
+    "requires": "7th Generation",
+    "precisa_revisao": false
+  }
+}

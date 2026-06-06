@@ -1,0 +1,33 @@
+{
+  "id": "card_599",
+  "nome": "Trinity Hive Caern",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "BSD causam dano agravado",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributo": "dano_agravado",
+            "valor": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 599,
+    "texto_original": "Any Black Spiral Dancers in your pack now do aggravated damage. However, these BSD can only regenerate in the Umbra.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "renown": 0,
+    "requires": "Black Spiral Dancer",
+    "precisa_revisao": false
+  }
+}

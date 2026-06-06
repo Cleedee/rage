@@ -1,0 +1,24 @@
+{
+  "id": "card_65",
+  "nome": "Fangthane Bloodjaw",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "Personagem Wyrm basico (R1 G2 H2)",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 65,
+    "texto_original": "When Fangthane is the attacker, decide randomly whether or not he withdraws at the end of each round.",
+    "keywords": "Garou - Black Spiral Dancer - Ahroun - Homid - Beast-of-War - Wyrm - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 2,
+    "health": 2,
+    "renown": 2,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

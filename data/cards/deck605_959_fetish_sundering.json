@@ -1,0 +1,32 @@
+{
+  "id": "card_959",
+  "nome": "Fetish Sundering",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Destruir equipamento Fetish",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "alvo_extra": "equipment"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 959,
+    "texto_original": "The Gift user may destroy any single piece of Fetish or Bane Fetish Equipment with a Gnosis lower than her own.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "renown": 0,
+    "requires": "Bane",
+    "precisa_revisao": false
+  }
+}

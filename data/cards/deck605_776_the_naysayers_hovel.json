@@ -1,0 +1,30 @@
+{
+  "id": "card_776",
+  "nome": "The Naysayer's Hovel",
+  "tipo": "Territory",
+  "modos": [
+    {
+      "descricao": "Neutraliza 1 territorio por turno",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "quantidade": 1,
+          "condicao_alvo": "jogador"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 776,
+    "texto_original": "At the beginning of the turn, the pack controlling the Naysayer's Hovel selects 1 Territory in play that offers no benefits for the current turn.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

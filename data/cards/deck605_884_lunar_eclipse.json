@@ -1,0 +1,30 @@
+{
+  "id": "card_884",
+  "nome": "Lunar Eclipse",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Remove fases lunares e gifts de auspicio",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "quantidade": 1,
+          "condicao_alvo": "jogador"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 884,
+    "texto_original": "Remove any 1 Lunar Phase from play. No Lunar Phase or auspice Gifts may be played while Lunar Eclipse is in play.",
+    "keywords": "Lunar Phase",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

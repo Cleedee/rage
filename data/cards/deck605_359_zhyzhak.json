@@ -1,0 +1,24 @@
+{
+  "id": "card_359",
+  "nome": "Zhyzhak",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "Personagem Wyrm (R4 G7 H4 Ren9)",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 359,
+    "texto_original": "Zhyzhak will never refuse a challenge. Zhyzhak is the Warder of the Trinity Hive Caern. If it belongs to her pack, Zhyzhak gains 1 Rage and 2 Health. Zhyzhak can never benefit from Past Lives or Personal Totems.",
+    "keywords": "Garou - Black Spiral Dancer - Ahroun - Homid - Beast-of-War - Wyrm - Female",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 7,
+    "health": 4,
+    "renown": 9,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

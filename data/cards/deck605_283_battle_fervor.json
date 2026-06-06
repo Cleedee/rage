@@ -1,0 +1,33 @@
+{
+  "id": "card_283",
+  "nome": "Battle Fervor",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "+1 Combat Action, comprar 2 cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "quantidade": 2,
+          "condicao_alvo": "jogador",
+          "params": {
+            "zona": "combat"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 283,
+    "texto_original": "Your character can play 1 additional Combat Action for the duration. Draw 2 additional Combat Cards.",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

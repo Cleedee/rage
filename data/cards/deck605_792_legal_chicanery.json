@@ -1,0 +1,36 @@
+{
+  "id": "card_792",
+  "nome": "Legal Chicanery",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Remove vitima Homid ou aliado Gaia",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "tipos_alvo": [
+              "Victim",
+              "Ally"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 792,
+    "texto_original": "Any Wyrm character may play this card to remove any single Homid form victim or Gaia pack ally from play.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "Wyrm",
+    "precisa_revisao": false
+  }
+}

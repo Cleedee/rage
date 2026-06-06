@@ -1,0 +1,33 @@
+{
+  "id": "card_488",
+  "nome": "Glade Child",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Remove Mass Pollution no fim do combate",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "quantidade": 1,
+          "condicao_alvo": "jogador",
+          "params": {
+            "tipo": "mass_pollution"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 488,
+    "texto_original": "At the end of the Combat Phase the Glade Child removes ALL Mass Pollution cards from play.",
+    "keywords": "Spirit",
+    "damage": "",
+    "rage": 5,
+    "gnosis": 7,
+    "health": 6,
+    "renown": 7,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

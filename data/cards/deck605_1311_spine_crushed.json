@@ -1,0 +1,30 @@
+{
+  "id": "card_1311",
+  "nome": "Spine Crushed",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 7, Crinos",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 7,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 1311,
+    "texto_original": "Only usable in Crinos form.",
+    "keywords": "",
+    "damage": "7",
+    "rage": 9,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "Crinos form",
+    "precisa_revisao": false
+  }
+}

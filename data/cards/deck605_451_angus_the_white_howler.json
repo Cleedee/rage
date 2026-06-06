@@ -1,0 +1,33 @@
+{
+  "id": "card_451",
+  "nome": "Angus, the White Howler",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Vitima R9 G8 H10 Ren12, vira aliado apos 3 turnos",
+      "efeitos": [
+        {
+          "tipo": "recrutar",
+          "quantidade": 1,
+          "condicao_alvo": "jogador",
+          "params": {
+            "apos_turnos": 3
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck605",
+    "card_id": 451,
+    "texto_original": "Angus can use Galliard, Homid, and Wendigo Gifts. If Angus survives in the Hunting Grounds for 3 turns he becomes an ally of the Gaia pack with the lowest total Renown.",
+    "keywords": "Garou",
+    "damage": "",
+    "rage": 9,
+    "gnosis": 8,
+    "health": 10,
+    "renown": 12,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}
