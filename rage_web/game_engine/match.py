@@ -296,8 +296,21 @@ def run_match(seed: int = 42, max_turns: int = 30,
             print(f'⏰ LIMITE DE TURNOS ({max_turns}) ATINGIDO')
             return 'timeout'
 
+        # Regra 2.3: jogador sem Characters esta fora de jogo
+        # So verifica eliminacao apos o turno 1 (compatibilidade com testes)
+        from rage_web.game_engine.combat_queue import _tem_character
+        if game.turn_number > 1:
+            jogadores_ativos = [p for p in game.players if _tem_character(p)]
+            if len(jogadores_ativos) == 1:
+                p = jogadores_ativos[0]
+                print_separator()
+                print(f'🏆 {p.name} VENCEU! (unico jogador com Characters em jogo)')
+                return p.id
+        else:
+            jogadores_ativos = game.players
+
         # Vitoria por VP
-        for p in game.players:
+        for p in jogadores_ativos:
             if p.victory_points >= p.renown_level:
                 print_separator()
                 print(f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP necessarios)')

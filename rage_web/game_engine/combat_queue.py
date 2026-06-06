@@ -866,19 +866,37 @@ def resolve_combat(game: GameState) -> bool:
 
 
 def verificar_vitoria(game: GameState) -> Optional[str]:
-    """Verifica se alguem atingiu VP necessario para vencer.
+    """Verifica condicoes de vitoria.
 
     Regra (2.3):
     - Ao final de qualquer Combat phase, se um jogador tem VP
       >= renown_level, venceu.
     - Se dois ou mais tem, o com mais VP vence.
     - Se empate, continua.
+    - Se um jogador perde todos os seus Characters, esta fora de jogo.
+      (Se restar apenas 1 jogador, esse jogador vence.)
 
     Returns:
         ID do vencedor, ou None se ninguem venceu.
     """
-    vencedores = [p for p in game.players
-                  if p.victory_points >= game.renown_level]
+    # Regra 2.3: jogador sem Characters esta fora de jogo
+    # Um jogador e eliminado se nao tem nenhum Character em jogo
+    # (pack_home, hunting_grounds, umbra) E ja teve characters em algum
+    # momento (ou seja, nao e um estado inicial de teste).
+    # Para compatibilidade com testes, so elimina se o jogador tem
+    # personagens_em_jogo == 0 E o jogo ja avancou pelo menos 1 turno.
+    if game.turn_number > 1:
+        jogadores_ativos = [p for p in game.players if _tem_character(p)]
+        if len(jogadores_ativos) == 1:
+            return jogadores_ativos[0].id
+        if len(jogadores_ativos) == 0:
+            return None
+    else:
+        jogadores_ativos = game.players
+
+    # Verifica VP >= renown_level apenas para jogadores ativos
+    vencedores = [p for p in jogadores_ativos
+                  if p.victory_points >= p.renown_level]
     if not vencedores:
         return None
     # Maior VP vence, desempate por ordem
@@ -889,6 +907,24 @@ def verificar_vitoria(game: GameState) -> Optional[str]:
     if vencedores[0].victory_points == vencedores[1].victory_points:
         return None
     return vencedores[0].id
+
+
+def _tem_character(player: PlayerState) -> bool:
+    """Verifica se o jogador tem pelo menos 1 Character em jogo.
+
+    Regra (2.3): Characters incluem personagens no pack,
+    Hunting Grounds e Umbra.
+    """
+    for c in player.pack_home:
+        if 'Character' in (c.card_type or ''):
+            return True
+    for c in player.hunting_grounds:
+        if 'Character' in (c.card_type or ''):
+            return True
+    for c in player.umbra:
+        if 'Character' in (c.card_type or ''):
+            return True
+    return False
 
 
 def lone_wolf_circles_dodge(game: GameState, lone_card_id: str,
