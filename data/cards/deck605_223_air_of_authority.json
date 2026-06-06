@@ -7,9 +7,9 @@
       "descricao": "Encerrar um combate",
       "efeitos": [
         {
-          "tipo": "encerrar_combate",
+          "tipo": "fugir",
           "quantidade": 1,
-          "condicao_alvo": "jogador"
+          "condicao_alvo": "criatura_aliada"
         }
       ]
     }

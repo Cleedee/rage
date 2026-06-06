@@ -4,15 +4,12 @@
   "tipo": "Victim",
   "modos": [
     {
-      "descricao": "Vitima R9 G8 H10 Ren12, vira aliado apos 3 turnos",
+      "descricao": "Vitima R9 G8 H10 Ren12, pode usar gifts Galliard/Homid/Wendigo",
       "efeitos": [
         {
-          "tipo": "recrutar",
-          "quantidade": 1,
-          "condicao_alvo": "jogador",
-          "params": {
-            "apos_turnos": 3
-          }
+          "tipo": "ganhar_vp",
+          "quantidade": 12,
+          "condicao_alvo": "jogador"
         }
       ]
     }
