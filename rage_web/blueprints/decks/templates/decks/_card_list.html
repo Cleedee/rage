@@ -39,7 +39,7 @@
       <div class="quantity-control">
         <form method="POST" action="{{ url_for('decks.update_quantity', id=deck.id) }}"
               hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
-              hx-target="#deck-card-list" hx-swap="outerHTML">
+              hx-target="#deck-card-list" hx-swap="innerHTML">
           <input type="hidden" name="card_id" value="{{ entry.card.id }}">
           <button class="button is-small is-outlined"
                   onclick="event.preventDefault(); var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=Math.max(1,parseInt(inp.value||1)-1); this.closest('form').requestSubmit();">−</button>
@@ -50,7 +50,7 @@
         </form>
         <form method="POST" action="{{ url_for('decks.remove_card', id=deck.id) }}"
               hx-post="{{ url_for('decks.remove_card', id=deck.id) }}"
-              hx-target="#deck-card-list" hx-swap="outerHTML">
+              hx-target="#deck-card-list" hx-swap="innerHTML">
           <input type="hidden" name="card_id" value="{{ entry.card.id }}">
           <button class="button is-small is-danger is-light" title="Remover">
             <i class="bi bi-x"></i>
