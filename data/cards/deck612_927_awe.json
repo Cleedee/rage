@@ -1,0 +1,34 @@
+{
+  "id": "card_927",
+  "nome": "Awe",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+1 Renown (+2 em Moots)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributo": "renown",
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 927,
+    "texto_original": "The Silver Fangs's regal manner increases her Renown by 1, except during moots, where her Renown increases by 2.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "renown": 0,
+    "requires": "Silver Fangs",
+    "precisa_revisao": false
+  }
+}

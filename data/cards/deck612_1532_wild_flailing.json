@@ -1,0 +1,30 @@
+{
+  "id": "card_1532",
+  "nome": "Wild Flailing",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 3, se acertar user joga aleatorio prox round",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 3,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 1532,
+    "texto_original": "If Wild Flailing damages an opponent, the user must play randomly in the next round.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "card_1052",
+  "nome": "Silver Claws",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Proximo ataque faz dano agravado",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributo": "dano_agravado",
+            "valor": true,
+            "duracao": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 1052,
+    "texto_original": "The user's next attack that connects does aggravated damage.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "renown": 0,
+    "requires": "Ahroun - Silver Fangs",
+    "precisa_revisao": false
+  }
+}

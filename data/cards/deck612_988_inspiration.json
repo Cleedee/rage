@@ -1,0 +1,35 @@
+{
+  "id": "card_988",
+  "nome": "Inspiration",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+1 Rage e +1 Gnosis para o round",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada"
+        },
+        {
+          "tipo": "modificar_gnosis",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 988,
+    "texto_original": "Play before any round of combat. The user and his packmates are +1 Rage and +1 Gnosis for the following round of combat.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "renown": 0,
+    "requires": "Silver Fangs - Ahroun - Cults",
+    "precisa_revisao": false
+  }
+}

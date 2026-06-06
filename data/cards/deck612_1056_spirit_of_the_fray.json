@@ -1,0 +1,35 @@
+{
+  "id": "card_1056",
+  "nome": "Spirit of the Fray",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Ataca primeiro na batalha (Fast Striking)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributo": "fast_striking",
+            "valor": true,
+            "duracao": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 1056,
+    "texto_original": "For the duration of the battle, the user strikes first, playing and resolving his Combat Action before all others.",
+    "keywords": "(Fast Striking)",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "renown": 0,
+    "requires": "Ahroun",
+    "precisa_revisao": false
+  }
+}

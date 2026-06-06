@@ -978,6 +978,35 @@ class GameState:
                 modifier='chronicle_active'
             )
             self.game_modifiers.append(modifier)
+
+        elif card.card_id == 167:  # King Albrecht
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='fast_striking_vs_wyrm'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: ataca primeiro contra Wyrm')
+
+        elif card.card_id == 134:  # Grimfang
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='+3_moot_renown'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: +3 Renown em Moots')
+
+        elif card.card_id == 176:  # Lord Albrecht
+            trigger = DeathTrigger(
+                trigger_card_uid=id(card),
+                condition='killed_enemy_renown_4_plus',
+                action='+1_vp_for_owner',
+                originador_id=owner.id
+            )
+            self.death_triggers.append(trigger)
+            self.add_log(
+                f'{card.name}: Wyrm Renown 4+ viram +1 VP')
             self.add_log(
                 f'{card.name}: Wyrm ganha +1 VP por vitima')
 

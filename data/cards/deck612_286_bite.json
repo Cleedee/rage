@@ -1,0 +1,30 @@
+{
+  "id": "card_286",
+  "nome": "Bite",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 3, requer forma nao-Homid",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 3,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 286,
+    "texto_original": "May not be played by Homid form characters.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "Not Homid form",
+    "precisa_revisao": false
+  }
+}

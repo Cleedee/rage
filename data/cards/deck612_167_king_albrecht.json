@@ -1,0 +1,24 @@
+{
+  "id": "card_167",
+  "nome": "King Albrecht",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem Silver Fang Ren13, ataca primeiro vs Wyrm",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 167,
+    "texto_original": "Jonas Albrecht has become the King of the Silver Fangs. When in combat with Wyrm creatures, Albrecht's Combat Actions are always resolved first. He may begin play equipped with a Grand Klaive.",
+    "keywords": "Garou - Silver Fangs - Ahroun - Homid - Gaia - Male - (Fast Striking)",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 10,
+    "health": 6,
+    "renown": 13,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

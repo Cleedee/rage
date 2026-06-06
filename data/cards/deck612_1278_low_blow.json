@@ -1,0 +1,30 @@
+{
+  "id": "card_1278",
+  "nome": "Low Blow",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 3, alvo entra em frenzy se bloqueado",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 3,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 1278,
+    "texto_original": "If Low Blow is blocked or dodged, the target immediately enters a full frenzy.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

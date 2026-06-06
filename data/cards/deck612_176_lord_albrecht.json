@@ -1,0 +1,24 @@
+{
+  "id": "card_176",
+  "nome": "Lord Albrecht",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem Silver Fang Ren7, Wyrm Renown 4+ viram +1 VP",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 176,
+    "texto_original": "Any Wyrm creature of Renown value 4 or greater that are killed by Albrecht or in pack combat involving Albrecht are worth +1 Renown for victory points.",
+    "keywords": "Garou - Silver Fangs - Ahroun - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 6,
+    "health": 4,
+    "renown": 7,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

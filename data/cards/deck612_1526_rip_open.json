@@ -1,0 +1,30 @@
+{
+  "id": "card_1526",
+  "nome": "Rip Open",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 2, so funciona se alvo ja estiver ferido",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "quantidade": 2,
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 1526,
+    "texto_original": "Rip Open does no damage if the target is not already wounded.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}

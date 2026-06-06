@@ -1,0 +1,24 @@
+{
+  "id": "card_134",
+  "nome": "Grimfang",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem Theurge Ren10, +3 Renown em Moots",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "criado_para_deck612",
+    "card_id": 134,
+    "texto_original": "Grimfang is considered +3 Renown for moot voting.",
+    "keywords": "Garou - Silver Fangs - Theurge - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 10,
+    "health": 3,
+    "renown": 10,
+    "requires": "",
+    "precisa_revisao": false
+  }
+}
