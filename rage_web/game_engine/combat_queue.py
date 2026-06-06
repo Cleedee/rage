@@ -236,7 +236,17 @@ def selecionar_alfa(game: GameState, jogador_id: str, card_id: str) -> bool:
     if 'Character' not in (criatura.card_type or '') and 'Ally' not in (criatura.card_type or ''):
         return False
 
+    # Verifica se criatura nao pode ser alpha 2 turnos seguidos (Allonzo Montoya)
+    if 'nao_pode_alpha_2_turnos_seguidos' in criatura.restricoes:
+        last_alpha = game.last_alpha_per_player.get(jogador_id)
+        if last_alpha == str(criatura.card_id):
+            game.add_log(f'{criatura.name} foi alpha no ultimo combate,'
+                         f' nao pode ser alpha agora')
+            return False
+
     game.combat.selecionar_alfa(jogador_id, card_id)
+    # Registra alpha atual para Next turn check
+    game.last_alpha_per_player[jogador_id] = str(criatura.card_id)
     game.add_log(f'{jogador.name} selecionou {criatura.name} como alpha')
     return True
 

@@ -658,6 +658,10 @@ class GameState:
     # Triggers de combate (ex: Tzinzie nomeia Combat Action)
     combat_triggers: dict = field(default_factory=dict)
 
+    # Rastreio de alpha por turno (ex: Allonzo Montoya nao pode 2x seguido)
+    last_alpha_per_player: dict = field(default_factory=dict)
+    """player_id -> card_id do alpha do ultimo combate."""
+
     def __post_init__(self):
         """Propaga o RNG do jogo para todos os jogadores."""
         for p in self.players:
@@ -1123,6 +1127,49 @@ class GameState:
             self.game_modifiers.append(modifier)
             self.add_log(
                 f'{card.name}: destroi 1 Caern Wyrm por Combat Phase')
+
+        # ── Deck 537: Bloodsucking Champions ──
+
+        elif card.card_id == 18:  # Count Vladimir Rustovitch
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='vladimir_auto_regenerate'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: regenera carta de dano mais baixa'
+                f' apos combate se matou oponente')
+
+        elif card.card_id == 663:  # Mage's Talisman
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_use_any_gift'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode usar Gifts de Gaia e Wyrm')
+
+        elif card.card_id == 880:  # Kirijama, The Hidden Foe
+            card.restricoes.append('personal_totem')
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='challenges_cannot_be_refused'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: desafios nao podem ser recusados')
+
+        elif card.card_id == 29:  # Allonzo Montoya
+            card.restricoes.append('regenerates')
+            card.restricoes.append('nao_pode_alpha_2_turnos_seguidos')
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_use_sl_metis_bsd_gifts'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: regenera, nao pode alpha 2x consecutivo,'
+                f' pode usar gifts Shadow Lords, Metis e BSD')
 
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
