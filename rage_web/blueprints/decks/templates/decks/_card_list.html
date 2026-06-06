@@ -41,12 +41,14 @@
               hx-post="{{ url_for('decks.update_quantity', id=deck.id) }}"
               hx-target="#deck-card-list" hx-swap="innerHTML">
           <input type="hidden" name="card_id" value="{{ entry.card.id }}">
-          <button class="button is-small is-outlined"
-                  onclick="event.preventDefault(); var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=Math.max(1,parseInt(inp.value||1)-1); this.closest('form').requestSubmit();">−</button>
+          <button type="button" class="button is-small is-outlined"
+                  onclick="var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=Math.max(1,parseInt(inp.value||1)-1); inp.dispatchEvent(new Event('change', {bubbles:true}));">−</button>
           <input class="input is-small" type="number" name="quantity"
-                 value="{{ entry.quantity }}" min="1" style="width:45px;text-align:center;">
-          <button class="button is-small is-outlined"
-                  onclick="event.preventDefault(); var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=parseInt(inp.value||1)+1; this.closest('form').requestSubmit();">+</button>
+                 value="{{ entry.quantity }}" min="1"
+                 style="width:45px;text-align:center;"
+                 onchange="this.closest('form').requestSubmit();">
+          <button type="button" class="button is-small is-outlined"
+                  onclick="var inp=this.closest('form').querySelector('input[name=quantity]'); inp.value=parseInt(inp.value||1)+1; inp.dispatchEvent(new Event('change', {bubbles:true}));">+</button>
         </form>
         <form method="POST" action="{{ url_for('decks.remove_card', id=deck.id) }}"
               hx-post="{{ url_for('decks.remove_card', id=deck.id) }}"
