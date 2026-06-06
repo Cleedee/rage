@@ -1,17 +1,17 @@
 {% if cards %}
   {% for card in cards %}
-  <div class="panel-block">
+  <div class="panel-block" style="gap:0.5rem;">
     <span style="flex:1">
-      <strong>{{ card.name }}</strong>
-      <span class="tag is-light is-small">{{ card.tipo }}</span>
+      <strong style="color:#363636;">{{ card.name }}</strong>
+      <span class="tag is-small" style="background:#e8e8e8;color:#444;">{{ card.tipo }}</span>
       {% if card.renown %}
-        <span class="tag is-light is-small">R{{ card.rage }} G{{ card.gnosis }} H{{ card.health }}</span>
+        <span class="tag is-small" style="background:#f5e6c8;color:#7a5c00;">R{{ card.rage }} G{{ card.gnosis }} H{{ card.health }}</span>
       {% endif %}
-      <span class="has-text-grey-light is-size-7"> {{ card.expansion }}</span>
+      <span class="is-size-7" style="color:#666;"> {{ card.expansion }}</span>
     </span>
     <span>
       {% if card.id in deck_card_ids %}
-      <span class="tag is-success is-light">
+      <span class="tag is-small" style="background:#d4edda;color:#155724;">
         <i class="bi bi-check"></i> No deck
       </span>
       {% else %}
