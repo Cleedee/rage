@@ -1,0 +1,35 @@
+{
+  "id": "card_1113",
+  "nome": "Yuri Tvarivich",
+  "tipo": "Past Life",
+  "modos": [
+    {
+      "descricao": "Vida Passada",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage",
+              "gnosis"
+            ],
+            "valor": 1,
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1113,
+    "texto_original": "+8 Renown for any moot votes. +1 Health. Weakness: None.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Silver Fangs"
+  }
+}

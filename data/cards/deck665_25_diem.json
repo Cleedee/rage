@@ -1,0 +1,30 @@
+{
+  "id": "card_25",
+  "nome": "Diem",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn2 H1 (Ren1)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg1_gn2_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 25,
+    "texto_original": "Once per game, Diem can interrupt the vote on one moot and delay it until next turn.  Voting begins next Moot Phase.",
+    "keywords": "Garou - Children of Gaia - Ragabash - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 2,
+    "health": 1,
+    "requires": ""
+  }
+}

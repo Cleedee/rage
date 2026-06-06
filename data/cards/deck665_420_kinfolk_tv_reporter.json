@@ -1,0 +1,30 @@
+{
+  "id": "card_420",
+  "nome": "Kinfolk TV Reporter",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado (H1)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "aliado_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 420,
+    "texto_original": "Your pack gains 2 votes during all moots while the TV Reporter is in play, due to his ability to sway public opinion around events.",
+    "keywords": "Human - Kinfolk",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 1,
+    "requires": "Homid"
+  }
+}

@@ -81,6 +81,12 @@ class EfeitoTipo(str, Enum):
     OLHAR_TOPO_DECK = 'olhar_topo_deck'  # Olhar topo do deck do oponente
     DESCARTAR_MAO_COMBATE = 'descartar_mao_combate'  # Oponente descarta toda mao de combate
     REGISTRAR_TRIGGER_COMBATE = 'registrar_trigger_combate'  # Registrar trigger de combate (ex: Tzinzie)
+    # Efeitos de Moot (Juntas)
+    MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
+    MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
+    MOOT_RESTRICAO_GLOBAL = 'moot_restricao_global'  # Restricao global (Tribal War, Litany's Guidance)
+    MOOT_REBAIXAR_FORMA = 'moot_rebaixar_forma'  # Reverte a forma breed (The Stolen Wolf)
+    MOOT_CONSTRUIR_CAERN = 'moot_construir_caern'  # Constrói um Caern (Caern Building)
 
 
 # -----------------------------------------------------------------------
@@ -248,6 +254,12 @@ class ResolvedorEfeitos:
     EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
     EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
     EfeitoTipo.REMOVER_DO_JOGO: self._resolver_remover_do_jogo,
+            # Efeitos de Moot
+            EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
+            EfeitoTipo.MOOT_GANHAR_VP: self._resolver_moot_ganhar_vp,
+            EfeitoTipo.MOOT_RESTRICAO_GLOBAL: self._resolver_moot_restricao_global,
+            EfeitoTipo.MOOT_REBAIXAR_FORMA: self._resolver_moot_rebaixar_forma,
+            EfeitoTipo.MOOT_CONSTRUIR_CAERN: self._resolver_moot_construir_caern,
         }
         return resolvedores.get(tipo)
 
@@ -311,10 +323,19 @@ class ResolvedorEfeitos:
                         return c
             return None
 
+        # Moot effects: escolher alvo mais ameaçador (maior Renome)
+        def _criaturas_inimigas_moot() -> Optional[CardInstance]:
+            """Para Moots: escolhe a criatura inimiga de maior Renome."""
+            alvos = _criaturas_inimigas()
+            if not alvos:
+                return None
+            return max(alvos, key=lambda c: c.renown)
+
         resolvedores_alvo = {
             'criatura_inimiga': lambda: self._escolher_criatura(
                 _criaturas_inimigas()
             ),
+            'criatura_inimiga_moot': lambda: _criaturas_inimigas_moot(),
             'criatura_aliada': lambda: self._escolher_criatura(
                 jogador.pack_home
             ),
@@ -1563,6 +1584,111 @@ class ResolvedorEfeitos:
                 f'{origem.name}: Tzinzie ativo - nomeia Combat Action '
                 f'no inicio do combate'
             )
+        return True
+
+    # -------------------------------------------------------------------
+    # Resolvedores de Efeitos de Moot (Juntas)
+    # -------------------------------------------------------------------
+
+    def _resolver_moot_remover_personagem(self, efeito: Efeito,
+                                            origem: CardInstance,
+                                            jogador: PlayerState,
+                                            alvo) -> bool:
+        """Remove um personagem do jogo (Skindancer, Winter Wolf)."""
+        if not isinstance(alvo, CardInstance):
+            return False
+        renown_min = efeito.params.get('renown_min', 0)
+        renown_max = efeito.params.get('renown_max', 99)
+        if not (renown_min <= alvo.renown <= renown_max):
+            self.game.add_log(
+                f'{alvo.name} (Ren {alvo.renown}) nao atende ao '
+                f'requisito de Renome ({renown_min}-{renown_max})'
+            )
+            return False
+        dono_alvo = self._find_player(alvo.owner_id)
+        if dono_alvo:
+            descartar_anexos(alvo, dono_alvo)
+            for zone_list in (dono_alvo.pack_home, dono_alvo.hunting_grounds,
+                              dono_alvo.umbra):
+                if alvo in zone_list:
+                    zone_list.remove(alvo)
+                    break
+            dono_alvo.discard_sept.append(alvo)
+            alvo.zone = Zone.DISCARD_SEPT
+            self.game.add_log(
+                f'[Moot] {alvo.name} foi removido do jogo!'
+            )
+            vp = efeito.params.get('vp', 0)
+            if efeito.params.get('vp_por_renown', False):
+                vp += alvo.renown
+            if vp > 0:
+                jogador.victory_points += vp
+                self.game.add_log(
+                    f'{jogador.name} ganhou {vp} VP ({jogador.victory_points})'
+                )
+            return True
+        return False
+
+    def _resolver_moot_ganhar_vp(self, efeito: Efeito, origem: CardInstance,
+                                  jogador: PlayerState, alvo) -> bool:
+        """Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)."""
+        vp = efeito.params.get('vp', 1)
+        vp_por_char = efeito.params.get('vp_por_personagem', 0)
+        if vp_por_char > 0:
+            num_chars = len([c for c in jogador.pack_home if c.health_current > 0])
+            vp += vp_por_char * num_chars
+        jogador.victory_points += vp
+        self.game.add_log(
+            f'[Moot] {jogador.name} ganhou {vp} VP ({jogador.victory_points})'
+        )
+        return True
+
+    def _resolver_moot_restricao_global(self, efeito: Efeito,
+                                         origem: CardInstance,
+                                         jogador: PlayerState,
+                                         alvo) -> bool:
+        """Aplica restricao global (Tribal War, Litany's Guidance)."""
+        restricao = efeito.params.get('restricao', 'moot_global')
+        descricao = efeito.params.get('descricao', 'Efeito de Moot ativo')
+        duracao = efeito.params.get('duracao', 'restante_do_jogo')
+        from rage_web.game_engine.state import GameModifier
+        modifier = GameModifier(
+            nome=restricao, descricao=descricao,
+            origem=jogador.id, duracao=duracao,
+        )
+        self.game.game_modifiers.append(modifier)
+        self.game.add_log(f'[Moot] {descricao}')
+        return True
+
+    def _resolver_moot_rebaixar_forma(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState,
+                                       alvo) -> bool:
+        """Reverte personagem a forma breed (The Stolen Wolf)."""
+        if not isinstance(alvo, CardInstance):
+            return False
+        forma = efeito.params.get('forma', 'breed')
+        forma_nome = {'breed': 'Breed', 'lupus': 'Lupus', 'homid': 'Homid'}.get(forma, forma)
+        restricao = f'forma_forcada_{forma}'
+        if restricao not in alvo.restricoes:
+            alvo.restricoes.append(restricao)
+        self.game.add_log(f'[Moot] {alvo.name} revertido a forma {forma_nome}!')
+        return True
+
+    def _resolver_moot_construir_caern(self, efeito: Efeito,
+                                        origem: CardInstance,
+                                        jogador: PlayerState,
+                                        alvo) -> bool:
+        """Constroi um Caern (Caern Building)."""
+        gnosis = efeito.params.get('gnosis', 1)
+        caern = CardInstance(
+            card_id=0, name='Caern (Moot)', card_type='Caern',
+            owner_id=jogador.id, zone=Zone.PACK_HOME,
+            rage=0, gnosis=gnosis, health=gnosis,
+            health_current=gnosis, renown=0,
+        )
+        jogador.pack_home.append(caern)
+        self.game.add_log(f'[Moot] Caern construido! (Gn {gnosis})')
         return True
 
 

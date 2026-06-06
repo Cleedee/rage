@@ -1,0 +1,27 @@
+{
+  "id": "card_708",
+  "nome": "The Silver Crown",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipar (Gn10)",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 708,
+    "texto_original": "The bearer of the Silver Crown gains +6 renown during Moots. Once per game, during the Moot Phase, you may look at another player's sept hand. You may then force them to play any 1 Action, Event or Gift immediately. Discard the Silver Crown after doing th",
+    "keywords": "Gaia Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 10,
+    "health": 0,
+    "requires": "Silver Fangs"
+  }
+}

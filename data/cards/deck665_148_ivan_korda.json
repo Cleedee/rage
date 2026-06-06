@@ -1,0 +1,30 @@
+{
+  "id": "card_148",
+  "nome": "Ivan Korda",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn3 H1 (Ren2)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg1_gn3_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 148,
+    "texto_original": "Ivan is a master of blackmail.  For any moot that Ivan's pack calls, Ivan can cause one other character in play to have -2 Renown for voting.",
+    "keywords": "Garou - Shadow Lords - Philodox - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 3,
+    "health": 1,
+    "requires": ""
+  }
+}

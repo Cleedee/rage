@@ -1,0 +1,27 @@
+{
+  "id": "card_642",
+  "nome": "Elder Stone",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipar (Gn3)",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 642,
+    "texto_original": "The owner of this stone gains an additional 3 votes during any moot.  The owner can discard this stone during a moot and gain an additional 10 votes.  A character cannot have more than 1 Elder Stone at a time.",
+    "keywords": "Gaia Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "requires": ""
+  }
+}

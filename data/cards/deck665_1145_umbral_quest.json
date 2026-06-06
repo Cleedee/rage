@@ -1,0 +1,27 @@
+{
+  "id": "card_1145",
+  "nome": "Umbral Quest",
+  "tipo": "Quest",
+  "modos": [
+    {
+      "descricao": "Quest",
+      "efeitos": [
+        {
+          "tipo": "quest_check",
+          "condicao_alvo": "jogador"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1145,
+    "texto_original": "Play this card on a character in your pack at the beginning of the Moot Phase. The character will immediately enter the Umbra and the Hunting Grounds for 2 turns. If she returns without having taken any damage, this card is worth 3 victory points. Charact",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Character"
+  }
+}

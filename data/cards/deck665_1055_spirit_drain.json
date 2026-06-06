@@ -1,0 +1,28 @@
+{
+  "id": "card_1055",
+  "nome": "Spirit Drain",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn8)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1055,
+    "texto_original": "The user drains all energy from any 1 spirit in play. The user regains full health and the spirit is discarded and worth no victory points. The user's Gnosis must exceed the Gnosis of the spirit. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 8,
+    "health": 0,
+    "requires": "Theurge"
+  }
+}

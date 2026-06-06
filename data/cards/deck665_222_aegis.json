@@ -1,0 +1,32 @@
+{
+  "id": "card_222",
+  "nome": "Aegis",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn6)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga"
+        },
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 222,
+    "texto_original": "The Gift user is surrounded by a tangible air of invulnerability. She gains +2 Renown during moots and +2 Health. This Gift lasts until canceled.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "requires": "Silver Fangs - Galliard"
+  }
+}
