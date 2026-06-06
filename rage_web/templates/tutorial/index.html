@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="columns">
+  <div class="column is-8 is-offset-2">
+    <div class="box" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff;">
+      <h2 class="title is-3" style="color: #e8a838;">
+        <i class="bi bi-moon-stars-fill"></i> Tutorial: Aprenda a Jogar Rage CCG
+      </h2>
+      <p class="subtitle is-5" style="color: rgba(255,255,255,0.8);">
+        Acompanhe uma partida de 5 rodadas com 3 jogadores e aprenda as regras básicas do jogo.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3 class="title is-4"><i class="bi bi-controller"></i> Jogar Tutorial</h3>
+      <p>Clique no botão abaixo para assistir uma partida de 5 turnos com 3 decks diferentes:</p>
+      <ul>
+        <li><strong>Jogador 1 — Grimfang Moot (Ren30):</strong> Deck focado em Moots (Juntas). Acumula votos e passa resoluções.</li>
+        <li><strong>Jogador 2 — Passos da Morte (Ren20):</strong> Silent Striders Ahroun. Combate agressivo com Stalks Death.</li>
+        <li><strong>Jogador 3 — Questor (Ren20):</strong> Kinfolk + Firearms. Elimina personagens para ganhar VP.</li>
+      </ul>
+      <a href="{{ url_for('tutorial.gameplay', seed=42) }}" class="button is-primary is-large">
+        <i class="bi bi-play-fill"></i> Iniciar Tutorial
+      </a>
+    </div>
+
+    <div class="box">
+      <h3 class="title is-4"><i class="bi bi-book"></i> Regras Básicas</h3>
+      <div class="content">
+        <h5>🎯 Objetivo</h5>
+        <p>Acumule pontos de vitória (VP) suficientes para vencer. O VP necessário depende do Renome total do seu deck (geralmente 20 ou 30).</p>
+
+        <h5>🔄 Fases do Turno</h5>
+        <ol>
+          <li><strong>Redraw:</strong> Compre cartas de combate e sept.</li>
+          <li><strong>Regeneration:</strong> Seus personagens se curam.</li>
+          <li><strong>Resource:</strong> Jogue territórios, aliados, equipamentos, etc.</li>
+          <li><strong>Umbra:</strong> Personagens podem entrar na Umbra (mundo espiritual).</li>
+          <li><strong>Moot:</strong> Vote em Juntas (resoluções que afetam todos os jogadores).</li>
+          <li><strong>Combate:</strong> Personagens lutam entre si ou nos Hunting Grounds.</li>
+        </ol>
+
+        <h5>⚔️ Combate</h5>
+        <p>Personagens declaram ações (strike, dodge, block, etc.) e revelam simultaneamente. O personagem com maior Renome age primeiro (alpha). Dano é aplicado e personagens mortos vão para a Victory Pile.</p>
+
+        <h5>🏆 Vitória</h5>
+        <p>Um jogador vence quando atinge o VP necessário (igual ao Renome total do deck). Se um jogador perder todos os seus Characters, é eliminado.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

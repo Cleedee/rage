@@ -8,8 +8,12 @@ class Config(object):
 
 class ProductionConfig(Config): ...
 
+class TestingConfig(Config):
+    TESTING = True
+
 
 configs = {
     "default": Config,
     "production": ProductionConfig,
+    "testing": TestingConfig,
 }
