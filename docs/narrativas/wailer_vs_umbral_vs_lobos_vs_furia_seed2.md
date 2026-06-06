@@ -43,7 +43,7 @@ Barnaby ataca o Hunting Grounds — +1 VP.
 
 ### A Resistência Inútil
 
-Umbral Wardens tenta reagir. **Fade-To-Black** (62) elimina Fangs-Through-Eye. **Rainpuddle** (231) e **Shadow-Weaver** (1662) derrubam o Wailer.
+Umbral Wardens tenta reagir. **Fade-To-Black** (62) elimina Fangs-Through-Eye. **Rainpuddle** (231) e **Shadow-Weaver** (1662) derrubam o Wailer. Tim Rowantree morre — mas só uma vez; os ataques seguintes contra ele são desperdiçados (o motor agora bloqueia kills múltiplas no mesmo alvo já morto).
 
 Mas é tarde demais.
 
@@ -73,11 +73,11 @@ Umbral Wardens contra-ataca — Fade-To-Black, Rainpuddle, Shadow-Weaver e Tim e
 
 Big Fisher, o último guerreiro de Fúria e Sabedoria, declara ataque alpha. Ele é a última esperança.
 
-**Fangs-Through-Eye** (524) ataca Big Fisher... e **o elimina.**
+**Fangs-Through-Eye** (524) ataca Big Fisher... e **o elimina.** Renown 10 = +10 VP para Wailer.
 
-**Barnaby** também ataca Big Fisher... **e elimina de novo.**
+**Barnaby** também declara ataque contra Fisher, mas o motor bloqueia — Big Fisher já está morto, o ataque é desperdiçado.
 
-Big Fisher morre duas vezes no mesmo ataque.
+524 salta para 23 VP e vence.
 
 > **🏆 Jogador 4 (Deck 524) VENCEU! (23/20 VP)**
 
