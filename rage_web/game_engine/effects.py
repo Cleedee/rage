@@ -1357,7 +1357,7 @@ class ResolvedorEfeitos:
         if isinstance(alvo, CardInstance):
             alvo.restricoes.append('cancelado')
             # Move alvo pro descarte do dono
-            dono_alvo = self._find_owner(alvo)
+            dono_alvo = self._find_player(alvo)
             if dono_alvo:
                 alvo.zone = Zone.DISCARD_COMBAT
                 dono_alvo.discard_combat.append(alvo)
@@ -1391,7 +1391,7 @@ class ResolvedorEfeitos:
 
         # Aplica dano baseado na Rage da origem
         dano_base = origem.effective_rage
-        alvo_dono = self._find_owner(alvo)
+        alvo_dono = self._find_player(alvo)
 
         if alvo_dono:
             from rage_web.game_engine.combat_queue import apply_damage
