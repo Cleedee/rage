@@ -200,7 +200,6 @@ CHARACTER_TYPES = {
 
 COMBAT_TYPES = {
     'Combat Action', 'Combat Event',
-    'Equipment', 'Equipment - Fetish - Bane Fetish',
 }
 
 
