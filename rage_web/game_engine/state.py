@@ -1239,6 +1239,56 @@ class GameState:
                 f'{card.name}: regenera, nao pode alpha 2x consecutivo,'
                 f' pode usar gifts Shadow Lords, Metis e BSD')
 
+        # ── Umbral Wardens ──
+
+        elif card.card_id == 247:  # Sees-through-Stars
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='sees_through_stars_gauntlet'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode usar Gauntlet de qualquer Caern')
+
+        elif card.card_id == 62:  # Fade-To-Black
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='fade_to_black_gnosis_bonus'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: +2 Gnosis para step sideways/combat')
+
+        elif card.card_id == 337:  # Tim Rowantree
+            # Verifica se o pack do jogador tem um Caern
+            has_caern = any(
+                c.card_type == 'Caern'
+                for c in owner.pack_home + owner.hunting_grounds + owner.umbra
+            )
+            if has_caern:
+                card.rage += 2
+                card.health += 1
+                self.add_log(
+                    f'{card.name}: +2 Rage +1 Saude (Caern no pack)')
+
+        elif card.card_id == 231:  # Rainpuddle
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='rainpuddle_umbra_attacks'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: ataques afetam qualquer coisa na Umbra')
+
+        elif card.card_id == 1662:  # Shadow-Weaver
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='shadow_weaver_caern'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: Ananasi agem como Gauntlet 1 Caern')
+
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
         self.death_triggers.append(trigger)

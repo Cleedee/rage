@@ -1,0 +1,21 @@
+{
+  "id": "card_247",
+  "nome": "Sees-through-Stars",
+  "tipo": "Character - Gaia",
+  "modos": [],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 247,
+    "passiva": true,
+    "texto_original": "Sees-through-Stars can use the Gauntlet of any caern in play to step sideways.",
+    "keywords": "Garou - Silent Striders - Philodox - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 7,
+    "health": 4,
+    "renown": 7,
+    "requires": "",
+    "expansion": "TheUmbra",
+    "precisa_revisao": false
+  }
+}

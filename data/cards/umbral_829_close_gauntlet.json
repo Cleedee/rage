@@ -1,0 +1,31 @@
+{
+  "id": "card_829",
+  "nome": "Close Gauntlet",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Fecha o Gauntlet. Personagens na Umbra ficam presos ate o fim do turno",
+      "efeitos": [
+        {
+          "tipo": "impedir_retirada",
+          "condicao_alvo": "qualquer_criatura",
+          "quantidade": 0,
+          "params": {
+            "apenas_na_umbra": true,
+            "duracao": "fim_do_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 829,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "card_919",
+  "nome": "Umbral Wave",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Onda umbral. Todos personagens na Umbra sofrem dano de Gnosis",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "todos_na_umbra",
+          "quantidade": 0,
+          "params": {
+            "dano_baseado_em": "dono_gnosis",
+            "afeta_ambos_lados": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 919,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

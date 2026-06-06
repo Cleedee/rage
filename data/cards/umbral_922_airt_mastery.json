@@ -1,0 +1,31 @@
+{
+  "id": "card_922",
+  "nome": "Airt Mastery",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Controla movimento via Airt. Personagens nao podem sair da Umbra",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "nao_pode_sair_umbra": true,
+            "duracao": "ate_proximo_moot"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 922,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

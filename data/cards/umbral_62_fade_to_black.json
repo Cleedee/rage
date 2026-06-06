@@ -1,0 +1,21 @@
+{
+  "id": "card_62",
+  "nome": "Fade-To-Black",
+  "tipo": "Character - Gaia",
+  "modos": [],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 62,
+    "passiva": true,
+    "texto_original": "Fade-to-Black is a prodigy with all things Umbral. She is considered +2 Gnosis for the purpose of stepping sideways or using combat cards with a Gnosis requirement. Rivalry: Red Talons.",
+    "keywords": "Garou - Glass Walkers - Ragabash - Metis - Gaia - Female",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 6,
+    "health": 5,
+    "renown": 5,
+    "requires": "",
+    "expansion": "TheUmbra",
+    "precisa_revisao": false
+  }
+}

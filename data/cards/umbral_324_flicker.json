@@ -1,0 +1,31 @@
+{
+  "id": "card_324",
+  "nome": "Flicker",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Apenas na Umbra. Dodga todos ataques este round",
+      "efeitos": [
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "dodge_efeito": "ignorar_ataques_round",
+            "apenas_umbra": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 324,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

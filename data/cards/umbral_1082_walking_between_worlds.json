@@ -1,0 +1,31 @@
+{
+  "id": "card_1082",
+  "nome": "Walking between Worlds",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Criatura pode entrar/sair da Umbra livremente ate fim do turno",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "livre_transito_umbra": true,
+            "duracao": "fim_do_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 1082,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

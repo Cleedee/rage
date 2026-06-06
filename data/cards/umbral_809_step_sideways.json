@@ -1,0 +1,32 @@
+{
+  "id": "card_809",
+  "nome": "Step Sideways",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Step sideways para Umbra antes dos alfas",
+      "efeitos": [
+        {
+          "tipo": "remover_do_combate",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "destino": "umbra",
+            "antes_dos_alfas": true
+          }
+        }
+      ],
+      "condicao_uso": "antes_dos_alfas"
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 809,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

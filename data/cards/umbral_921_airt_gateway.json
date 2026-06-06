@@ -1,0 +1,30 @@
+{
+  "id": "card_921",
+  "nome": "Airt Gateway",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Teleporta personagem para a Umbra ou vice-versa",
+      "efeitos": [
+        {
+          "tipo": "mover_para",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "destino": "umbra"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 921,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

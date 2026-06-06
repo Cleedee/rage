@@ -1,0 +1,30 @@
+{
+  "id": "card_908",
+  "nome": "Spiritual Revelation",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Revelacao espiritual. Compre cartas igual ao numero de Caerns no jogo",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "quantidade": 0,
+          "params": {
+            "por_caern_em_jogo": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 908,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

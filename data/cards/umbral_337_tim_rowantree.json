@@ -1,0 +1,21 @@
+{
+  "id": "card_337",
+  "nome": "Tim Rowantree",
+  "tipo": "Character - Gaia",
+  "modos": [],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 337,
+    "passiva": true,
+    "texto_original": "If Tim's pack gets a caern, Tim gains +2 Rage and +1 Health.",
+    "keywords": "Garou - Children of Gaia - Ahroun - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 2,
+    "health": 3,
+    "renown": 3,
+    "requires": "",
+    "expansion": "TheUmbra",
+    "precisa_revisao": false
+  }
+}

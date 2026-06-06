@@ -1,0 +1,31 @@
+{
+  "id": "card_788",
+  "nome": "Fast Shift",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Entra na Umbra imediatamente (ignora Gauntlet)",
+      "efeitos": [
+        {
+          "tipo": "remover_do_combate",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "destino": "umbra",
+            "ignora_gauntlet": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 788,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}

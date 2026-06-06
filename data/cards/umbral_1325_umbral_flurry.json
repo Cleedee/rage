@@ -1,0 +1,32 @@
+{
+  "id": "card_1325",
+  "nome": "Umbral Flurry",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Apenas na Umbra. Dano = Gnosis do atacante",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "apenas_umbra": true,
+            "dano_baseado_em": "gnosis_da_criatura",
+            "minimo_dano": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "deck": "umbral_wardens",
+    "card_id": 1325,
+    "expansion": "TheUmbra",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "renown": 0,
+    "precisa_revisao": false
+  }
+}
