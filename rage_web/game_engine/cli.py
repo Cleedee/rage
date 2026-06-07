@@ -965,6 +965,20 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
         for c in p.pack_home:
             g.register_card_passives(c, p)
 
+    # Processa efeitos de setup (equipar_inicial, etc)
+    from rage_web.game_engine.effects import ResolvedorEfeitos, EfeitoTipo
+    for p in g.players:
+        for c in p.pack_home:
+            modelo_key = f'card_{c.card_id}'
+            from rage_web.game_engine.effects import CARTAS_EXEMPLO
+            modelo = CARTAS_EXEMPLO.get(modelo_key)
+            if modelo and modelo.modos:
+                for modo in modelo.modos:
+                    for efeito in modo.efeitos:
+                        if efeito.tipo == EfeitoTipo.EQUIPAR_INICIAL:
+                            resolvedor = ResolvedorEfeitos(g)
+                            resolvedor.aplicar_efeito(efeito, c, p)
+
     for p in g.players:
         p.draw_combat(p.hand_size_combat)
         if p.deck_sept:

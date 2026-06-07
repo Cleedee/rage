@@ -19,18 +19,14 @@
     }
   ],
   "_metadata": {
-    "deck": "umbral_wardens",
+    "fonte": "manual",
     "card_id": 1662,
-    "passiva": true,
     "texto_original": "Ananasi in your pack can step sideways as if Shadow-Weaver was a Gauntlet 1 Caern. This ability crosses the Gauntlet.",
     "keywords": "Ananasi - Arachnid - Wyrm - Gaia",
     "damage": "",
     "rage": 1,
     "gnosis": 2,
     "health": 1,
-    "renown": 2,
-    "requires": "",
-    "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "requires": ""
   }
 }

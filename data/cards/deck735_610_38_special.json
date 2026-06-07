@@ -1,28 +1,32 @@
 {
   "id": "card_610",
   "nome": ".38 Special",
-  "tipo": "Equipment",
+  "tipo": "Equipment - Non-Fetish - Weapon - Firearm",
   "modos": [
     {
-      "descricao": "Equipar (Gn0)",
+      "descricao": "Firearm: permite combat cards Rg3 ou menos em Homid form",
       "efeitos": [
         {
           "tipo": "dano",
-          "condicao_alvo": "criatura_inimiga",
-          "quantidade": 1
+          "condicao_alvo": "self",
+          "params": {
+            "descricao": "Firearm - Homid only - Rg3 ou menos",
+            "restricao_forma": "Homid",
+            "max_rage_acoes": 3
+          }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 610,
-    "texto_original": "Weapon. Firearm. Only usable by creatures in Homid form. This Firearm allows this creature to play combat cards of Rage 3 or less. .38 Special does not count as a Weapon for purposes of determining how many weapons a creature may have equipped. You may ha",
+    "texto_original": "Weapon. Firearm. Only usable by creatures in Homid form. This Firearm allows this creature to play combat cards of Rage 3 or less. .38 Special does not count as a Weapon for purposes of determining how many weapons a creature may have equipped.",
     "keywords": "Non-Fetish - Weapon - Firearm",
-    "damage": "",
+    "damage": "2",
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": "(Homid Form)"
+    "requires": ""
   }
 }

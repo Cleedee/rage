@@ -24,6 +24,7 @@ Exemplo de carta neste formato:
 
 from __future__ import annotations
 
+import copy
 import json
 import os
 import random
@@ -81,6 +82,17 @@ class EfeitoTipo(str, Enum):
     OLHAR_TOPO_DECK = 'olhar_topo_deck'  # Olhar topo do deck do oponente
     DESCARTAR_MAO_COMBATE = 'descartar_mao_combate'  # Oponente descarta toda mao de combate
     REGISTRAR_TRIGGER_COMBATE = 'registrar_trigger_combate'  # Registrar trigger de combate (ex: Tzinzie)
+    # Efeitos de setup / passivos
+    EQUIPAR_INICIAL = 'equipar_inicial'  # Comeca o jogo com equipamento (Bannion)
+    FILTRAR_REDRAW = 'filtrar_redraw'  # Fim do Redraw: descarta + compra (Buggerhead)
+    COMPRAR_QUANDO_ATACADO = 'comprar_quando_atacado'  # Compra quando atacado (Mother Larissa)
+    REMOVER_DO_DESCARTE = 'remover_do_descarte'  # Remove carta do descarte (Quari Filth)
+    BUSCAR_COPIAS = 'buscar_copias'  # Busca copias do deck e joga (Mosquito Swarm)
+    AUTO_PACK_ATTACK = 'auto_pack_attack'  # Auto pack attack/defend (Mosquito Swarm)
+    ACAO_EXTRA_POR_RODADA = 'acao_extra_por_rodada'  # Ação extra de combate por rodada (Devilwhip)
+    IMUNE_COMBATE_RAGE = 'imune_combate_rage'  # Imune a combat actions de certo Rage (Dhul Fiqar)
+    MODIFICAR_ATRIBUTO_PASSIVO = 'modificar_atributo_passivo'  # Buff passivo persistente (John)
+    MODIFICAR_GAUNTLET = 'modificar_gauntlet'  # Modifica o Gauntlet (Shadow-Weaver)
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
     MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
@@ -254,6 +266,16 @@ class ResolvedorEfeitos:
     EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
     EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
     EfeitoTipo.REMOVER_DO_JOGO: self._resolver_remover_do_jogo,
+            EfeitoTipo.EQUIPAR_INICIAL: self._resolver_equipar_inicial,
+            EfeitoTipo.FILTRAR_REDRAW: self._resolver_filtrar_redraw,
+            EfeitoTipo.COMPRAR_QUANDO_ATACADO: self._resolver_comprar_quando_atacado,
+            EfeitoTipo.REMOVER_DO_DESCARTE: self._resolver_remover_do_descarte,
+            EfeitoTipo.BUSCAR_COPIAS: self._resolver_buscar_copias,
+            EfeitoTipo.AUTO_PACK_ATTACK: self._resolver_auto_pack_attack,
+            EfeitoTipo.ACAO_EXTRA_POR_RODADA: self._resolver_acao_extra_por_rodada,
+            EfeitoTipo.IMUNE_COMBATE_RAGE: self._resolver_imune_combate_rage,
+            EfeitoTipo.MODIFICAR_ATRIBUTO_PASSIVO: self._resolver_modificar_atributo_passivo,
+            EfeitoTipo.MODIFICAR_GAUNTLET: self._resolver_modificar_gauntlet,
             # Efeitos de Moot
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
             EfeitoTipo.MOOT_GANHAR_VP: self._resolver_moot_ganhar_vp,
@@ -273,6 +295,15 @@ class ResolvedorEfeitos:
         condicao = efeito.condicao or efeito.alvo
         if not condicao:
             return jogador  # Default: proprio jogador
+
+        # Normaliza atalhos
+        mapa_aliases = {
+            'jogador': 'jogador_aliado',
+            'inimigo': 'criatura_inimiga',
+            'aliado': 'criatura_aliada',
+            'self': 'self',
+        }
+        condicao = mapa_aliases.get(condicao, condicao)
 
         oponentes = self._get_oponentes(jogador)
 
@@ -374,6 +405,12 @@ class ResolvedorEfeitos:
             'acao': lambda: 'acao',  # Alvo generico para cancelar_acao
             'packmates': lambda: [c for c in jogador.pack_home
                                   if str(c.card_id) != str(origem.card_id)],
+            'combat_descarte': lambda: self._escolher_carta_descarte(jogador),
+            'combat_descarte_inimigo': lambda: self._escolher_carta_descarte(
+                self._escolher_jogador(self._get_oponentes(jogador))
+            ) if self._get_oponentes(jogador) else None,
+            'deck_sept_proprio': lambda: jogador.deck_sept,
+            'deck_combate_proprio': lambda: jogador.deck_combate,
             # Aliases/abreviacoes (compatibilidade com JSONs simplificados)
             'inimigo': lambda: self._escolher_criatura(
                 _criaturas_inimigas()
@@ -407,6 +444,14 @@ class ResolvedorEfeitos:
         if not criaturas:
             return None
         return self.rng.choice(criaturas)
+
+    def _escolher_carta_descarte(self, jogador: Optional[PlayerState]
+                                 ) -> Optional[dict]:
+        """Escolhe uma carta aleatoria do descarte de combate."""
+        if not jogador or not jogador.discard_combat:
+            return None
+        carta = self.rng.choice(jogador.discard_combat)
+        return {'jogador': jogador, 'carta': carta, 'indice': jogador.discard_combat.index(carta)}
 
     def _get_oponentes(self, jogador: PlayerState) -> list[PlayerState]:
         """Retorna lista de todos os jogadores que nao sao o atual.
@@ -1589,6 +1634,400 @@ class ResolvedorEfeitos:
         return True
 
     # -------------------------------------------------------------------
+    # Resolvedores de Setup / Passivos / Trigger
+    # -------------------------------------------------------------------
+
+    def _resolver_equipar_inicial(self, efeito: Efeito,
+                                    origem: CardInstance,
+                                    jogador: PlayerState, alvo) -> bool:
+        """Equipa uma carta no inicio do jogo (Grandfather Bannion).
+
+        Remove copias do equipamento do sept deck e anexa aos
+        personagens.
+        params:
+        - 'equipamento_nome': nome do equipamento
+        - 'equipamento_id': card_id do equipamento
+        - 'qtd': quantidade por personagem (padrao 1)
+        """
+        params = efeito.params or {}
+        equip_nome = params.get('equipamento_nome', '.38 Special')
+        equip_id_str = params.get('equipamento_id', '610')
+        equip_id = int(equip_id_str) if equip_id_str else 610
+
+        # Busca o equipamento no sept deck
+        equip_encontrados = []
+        restantes = []
+        for carta in jogador.deck_sept:
+            if carta.card_id == equip_id:
+                equip_encontrados.append(carta)
+            else:
+                restantes.append(carta)
+
+        if not equip_encontrados:
+            self.game.add_log(
+                f'{origem.name}: equipamento "{equip_nome}" (id={equip_id}) '
+                f'nao encontrado no sept deck ({len(jogador.deck_sept)} cards)'
+            )
+            return False
+
+        jogador.deck_sept = restantes
+
+        # Equipa em todos os personagens (1 equipamento cada)
+        num_personagens = len(jogador.pack_home)
+        idx = 0
+        for c in jogador.pack_home:
+            if idx < len(equip_encontrados):
+                eq = equip_encontrados[idx]
+                c.attached_equipment.append(eq)
+                idx += 1
+                self.game.add_log(
+                    f'  {c.name} equipado com {eq.name}'
+                )
+
+        self.game.add_log(
+            f'{origem.name}: equipou {idx}x {equip_nome} na pack ({num_personagens} chars)'
+        )
+        return idx > 0
+
+    def _resolver_filtrar_redraw(self, efeito: Efeito,
+                                  origem: CardInstance,
+                                  jogador: PlayerState, alvo) -> bool:
+        """Filtro opcional no Redraw: descarta e compra 1 sept card.
+
+        Usado por Buggerhead: permite descartar 1 sept card da mao
+        e comprar 1 do sept deck, uma vez por turno.
+        """
+        params = efeito.params or {}
+        qtd = params.get('quantidade', 1)
+        zona = params.get('zona', 'deck_sept')
+        usado_key = f'{origem.card_id}_usou_filtro_turno'
+
+        # Verifica se ja usou no turno
+        turno_atual = self.game.turn_number
+        if getattr(jogador, usado_key, 0) >= turno_atual:
+            return False
+
+        # Nao pode filtrar se mao estiver vazia
+        mao = jogador.hand
+        if len(mao) < qtd:
+            return False
+
+        # Descarta N cartas
+        descartadas = 0
+        for _ in range(qtd):
+            if mao:
+                carta = mao.pop(0)
+                jogador.discard_sept.append(carta)
+                descartadas += 1
+
+        # Compra N cartas
+        deck = jogador.deck_sept if zona == 'deck_sept' else jogador.deck_combate
+        compradas = 0
+        for _ in range(qtd):
+            if deck:
+                carta = deck.pop(0)
+                jogador.hand.append(carta)
+                compradas += 1
+
+        # Marca uso
+        setattr(jogador, usado_key, turno_atual)
+
+        self.game.add_log(
+            f'{origem.name}: filtrou {descartadas}/{compradas} cartas (turno {turno_atual})'
+        )
+        return descartadas > 0 and compradas > 0
+
+    def _resolver_comprar_quando_atacado(self, efeito: Efeito,
+                                          origem: CardInstance,
+                                          jogador: PlayerState, alvo) -> bool:
+        """Compra combat cards quando este personagem e alvo de ataque.
+
+        Usado por Mother Larissa.
+        """
+        params = efeito.params or {}
+        qtd = params.get('quantidade', 2)
+        usado_key = f'{origem.card_id}_comprou_ataque_turno'
+        turno_atual = self.game.turn_number
+
+        # So ativa se alvo for o proprio personagem
+        if alvo is not origem:
+            return False
+
+        # Verifica se ja usou no turno
+        if getattr(jogador, usado_key, 0) >= turno_atual:
+            return False
+
+        # Compra combat cards
+        deck = jogador.deck_combate
+        compradas = 0
+        for _ in range(qtd):
+            if deck:
+                carta = deck.pop(0)
+                jogador.hand_combate.append(carta)
+                compradas += 1
+
+        setattr(jogador, usado_key, turno_atual)
+
+        self.game.add_log(
+            f'{origem.name}: comprou {compradas} combat cards (alvo de ataque)'
+        )
+        return compradas > 0
+
+    def _resolver_remover_do_descarte(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState, alvo) -> bool:
+        """Remove uma carta do descarte de combate.
+
+        Usado por Quari Filth: durante Resource Phase, remove
+        um combat card do descarte do jogo.
+        """
+        if not isinstance(alvo, dict):
+            return False
+
+        jogador_alvo = alvo.get('jogador')
+        carta = alvo.get('carta')
+        indice = alvo.get('indice')
+
+        if not jogador_alvo or not carta or indice is None:
+            return False
+
+        if 0 <= indice < len(jogador_alvo.discard_combat):
+            removida = jogador_alvo.discard_combat.pop(indice)
+            self.game.add_log(
+                f'{origem.name}: removeu {removida.name} do descarte de {jogador_alvo.name}'
+            )
+            return True
+
+        return False
+
+    def _resolver_buscar_copias(self, efeito: Efeito,
+                                 origem: CardInstance,
+                                 jogador: PlayerState, alvo) -> bool:
+        """Busca copias desta carta no deck e as joga.
+
+        Usado por Mosquito Swarm: busca todas as copias no sept deck
+        e as coloca em jogo.
+        """
+        params = efeito.params or {}
+        carta_id = params.get('carta_id') or str(getattr(origem, 'card_id', ''))
+        nome_carta = params.get('nome') or getattr(origem, 'name', '')
+
+        if not carta_id and not nome_carta:
+            return False
+
+        # Busca no sept deck
+        encontradas = []
+        restantes = []
+        for carta in jogador.deck_sept:
+            cid = str(getattr(carta, 'card_id', ''))
+            cname = getattr(carta, 'name', '')
+            if (carta_id and cid == carta_id) or (nome_carta and nome_carta.lower() in cname.lower()):
+                encontradas.append(carta)
+            else:
+                restantes.append(carta)
+
+        if not encontradas:
+            self.game.add_log(
+                f'{origem.name}: nenhuma copia encontrada no sept deck'
+            )
+            return False
+
+        jogador.deck_sept = restantes
+
+        # Poe em jogo (pack_home para aliados)
+        for carta in encontradas:
+            carta.zone = Zone.PACK_HOME
+            jogador.pack_home.append(carta)
+
+        self.game.add_log(
+            f'{origem.name}: buscou e jogou {len(encontradas)} copias do sept deck'
+        )
+        return True
+
+    def _resolver_auto_pack_attack(self, efeito: Efeito,
+                                    origem: CardInstance,
+                                    jogador: PlayerState, alvo) -> bool:
+        """Registra auto pack attack/defend para esta carta.
+
+        Usado por Mosquito Swarm: pode automaticamente pack attack
+        e defend com outras copias.
+        """
+        # Inicializa dicionario de triggers se nao existir
+        if not hasattr(self.game, '_auto_pack_triggers'):
+            self.game._auto_pack_triggers = {}
+        if not isinstance(getattr(self.game, '_auto_pack_triggers', None), dict):
+            self.game._auto_pack_triggers = {}
+
+        trigger_id = f'auto_pack_{origem.card_uid}_{origem.card_id}'
+        self.game._auto_pack_triggers[trigger_id] = {
+            'card_uid': origem.card_uid,
+            'card_id': str(getattr(origem, 'card_id', '')),
+            'player_id': jogador.id,
+        }
+
+        self.game.add_log(f'{origem.name}: registrado auto pack attack/defend')
+        return True
+
+    def _resolver_acao_extra_por_rodada(self, efeito: Efeito,
+                                         origem: CardInstance,
+                                         jogador: PlayerState, alvo) -> bool:
+        """Permite uma acao de combate extra por rodada.
+
+        Usado por Devilwhip (Rg2 ou menos) e Improvised Weapon (2 danos).
+        params:
+        - 'max_rage': rage maximo da acao extra
+        - 'qtd_acoes': numero de acoes extras
+        - 'unblockable': bool
+        """
+        params = efeito.params or {}
+        max_rage = params.get('max_rage', 2)
+        qtd = params.get('qtd_acoes', 1)
+        usado_key = f'{origem.card_uid}_acao_extra_rodada'
+
+        # Marca disponibilidade no personagem equipado
+        rodada_atual = getattr(self.game, 'combat_round', 0)
+        if getattr(origem, usado_key, -1) >= rodada_atual:
+            return False
+
+        setattr(origem, usado_key, rodada_atual)
+        setattr(origem, 'acoes_extras_disponiveis',
+                getattr(origem, 'acoes_extras_disponiveis', 0) + qtd)
+        setattr(origem, 'acoes_extras_max_rage', max_rage)
+
+        self.game.add_log(
+            f'{origem.name}: +{qtd} acao(es) extra(s) (Rg<={max_rage})'
+        )
+        return True
+
+    def _resolver_imune_combate_rage(self, efeito: Efeito,
+                                      origem: CardInstance,
+                                      jogador: PlayerState, alvo) -> bool:
+        """Adiciona imunidade a combat actions de certo Rage.
+
+        Usado por Dhul Fiqar: imune a Rg1 ou menos.
+        params:
+        - 'max_rage': rage maximo para imunidade
+        """
+        params = efeito.params or {}
+        max_rage = params.get('max_rage', 1)
+
+        # Adiciona modifier de reducao de dano
+        modifier_id = f'imune_rg{max_rage}_{origem.card_uid}'
+        modifier = GameModifier(
+            modifier_id=modifier_id,
+            attribute='damage_reduction',
+            value=999,  # Imune
+            condition=f'combat_action_rage<={max_rage}',
+            duration='permanente_ate_cancelar',
+            source=origem.name,
+        )
+        # So adiciona se ainda nao tem
+        ja_existe = False
+        for m in jogador.modifiers:
+            if m.modifier_id == modifier_id:
+                ja_existe = True
+                break
+        if not ja_existe:
+            jogador.modifiers.append(modifier)
+
+        # Checa condicao de bônus por tribo
+        if params.get('bonus_tribo'):
+            tribo = params.get('bonus_tribo', '').lower()
+            raca = getattr(origem, 'keyword', '')
+            if tribo and tribo in raca.lower():
+                modifier_bonus = GameModifier(
+                    modifier_id=f'{modifier_id}_bonus_rage',
+                    attribute='rage',
+                    value=params.get('bonus_rage', 1),
+                    duration='permanente_ate_cancelar',
+                    source=f'{origem.name}: {tribo}',
+                )
+                jogador.modifiers.append(modifier_bonus)
+                self.game.add_log(
+                    f'{origem.name}: +{params.get("bonus_rage", 1)} Rage '
+                    f'({tribo})'
+                )
+
+        self.game.add_log(
+            f'{origem.name}: imune a combat actions Rg<={max_rage}'
+        )
+        return True
+
+    def _resolver_modificar_atributo_passivo(self, efeito: Efeito,
+                                              origem: CardInstance,
+                                              jogador: PlayerState,
+                                              alvo) -> bool:
+        """Adiciona buff passivo persistente.
+
+        Usado por John Hidden-Moon: packmates +1 Rage em pack attacks.
+        params:
+        - 'atributos': lista de atributos
+        - 'valor': valor do bonus
+        - 'condicao': condicao para ativar ('pack_attack', etc)
+        - 'alvos': 'packmates' (padrao) ou 'self'
+        """
+        params = efeito.params or {}
+        atributos = params.get('atributos', ['rage'])
+        valor = params.get('valor', 1)
+        condicao = params.get('condicao', 'pack_attack')
+        alvos = params.get('alvos', 'packmates')
+        duracao = 'permanente_ate_cancelar'
+
+        modifier_id = f'passivo_{condicao}_{origem.card_uid}'
+
+        # Verifica se ja existe
+        for m in jogador.modifiers:
+            if m.modifier_id == modifier_id:
+                return True
+
+        modifier = GameModifier(
+            modifier_id=modifier_id,
+            attribute=','.join(atributos),
+            value=valor,
+            condition=condicao,
+            duration=duracao,
+            source=f'{origem.name}: {params.get("descricao", "buff passivo")}',
+        )
+        jogador.modifiers.append(modifier)
+
+        self.game.add_log(
+            f'{origem.name}: buff passivo {atributos}+{valor} ({condicao})'
+        )
+        return True
+
+    def _resolver_modificar_gauntlet(self, efeito: Efeito,
+                                      origem: CardInstance,
+                                      jogador: PlayerState, alvo) -> bool:
+        """Modifica o valor do Gauntlet.
+
+        Usado por Shadow-Weaver: pack step sideways como se
+        fosse Gauntlet 1 Caern.
+        """
+        params = efeito.params or {}
+        valor = params.get('valor', 1)
+        duracao = params.get('duracao', 'permanente_ate_cancelar')
+
+        modifier_id = f'gauntlet_{origem.card_uid}'
+
+        for m in jogador.modifiers:
+            if m.modifier_id == modifier_id:
+                return True
+
+        modifier = GameModifier(
+            modifier_id=modifier_id,
+            attribute='gauntlet',
+            value=valor,
+            duration=duracao,
+            source=origem.name,
+        )
+        jogador.modifiers.append(modifier)
+
+        self.game.add_log(
+            f'{origem.name}: Gauntlet ajustado para {valor}'
+        )
+        return True
+
+    # -------------------------------------------------------------------
     # Resolvedores de Efeitos de Moot (Juntas)
     # -------------------------------------------------------------------
 
@@ -1966,9 +2405,17 @@ def _efeito_from_json(e: dict) -> Efeito:
         'tipo', 'condicao_alvo', 'alvo', 'quantidade', 'duracao',
         'se_sucesso', 'se_fracasso', 'condicao_estado',
     }
-    # Campos extras viram params
-    params = {k: v for k, v in e.items() if k not in campos_conhecidos
-              and k != 'tipo'}
+    # Se o JSON ja tem um campo 'params', usa ele diretamente
+    # E campos extras de primeiro nivel tambem vao para params
+    params_json = e.get('params', {}) or {}
+    if isinstance(params_json, dict):
+        params = dict(params_json)
+    else:
+        params = {}
+    # Campos extras de primeiro nivel viram params
+    for k, v in e.items():
+        if k not in campos_conhecidos and k not in ('tipo', 'params'):
+            params[k] = v
     return Efeito(
         tipo=e['tipo'],
         condicao=e.get('condicao_alvo'),

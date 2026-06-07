@@ -10,14 +10,14 @@
           "tipo": "restringir",
           "condicao_alvo": "jogador",
           "params": {
-            "descricao": "personagem_rg1_gn6_h2"
+            "descricao": "personagem_rg1_gn6_h2_bone_gnawer"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 19,
     "texto_original": "Crick has gained notoriety for battling the Wyrm in the Amazon jungle.",
     "keywords": "Garou - Bone Gnawer - Philodox - Lupus - Gaia - Male",

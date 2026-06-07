@@ -7,18 +7,30 @@
       "descricao": "Personagem: Rg2 Gn9 H3 (Ren8)",
       "efeitos": [
         {
-          "tipo": "comprar",
+          "tipo": "restringir",
           "condicao_alvo": "jogador",
-          "quantidade": 1,
           "params": {
-            "zona": "deck_combate"
+            "descricao": "personagem_rg2_gn9_h3"
+          }
+        }
+      ]
+    },
+    {
+      "descricao": "Compra 2 combat cards quando atacada",
+      "efeitos": [
+        {
+          "tipo": "comprar_quando_atacado",
+          "condicao_alvo": "self",
+          "params": {
+            "quantidade": 2,
+            "descricao": "Compra 2 combat cards extras quando atacada"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 195,
     "texto_original": "Larissa is a resourceful old biddy.  You may draw 2 extra combat cards whenever she is the target of an attack.  Discard or redraw to your normal combat hand size after combat.",
     "keywords": "Garou - Bone Gnawer - Theurge - Homid - Gaia - Female",

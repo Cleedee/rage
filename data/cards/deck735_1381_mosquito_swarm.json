@@ -4,20 +4,34 @@
   "tipo": "Ally",
   "modos": [
     {
-      "descricao": "Aliado (H3)",
+      "descricao": "Busca copias no sept deck",
       "efeitos": [
         {
-          "tipo": "mover_para",
+          "tipo": "buscar_copias",
           "condicao_alvo": "jogador",
           "params": {
-            "descricao": "buscar_no_deck"
+            "carta_id": "1381",
+            "nome": "Mosquito Swarm",
+            "descricao": "Busca todas as copias de Mosquito Swarm no sept deck e as joga"
+          }
+        }
+      ]
+    },
+    {
+      "descricao": "Auto pack attack/defend",
+      "efeitos": [
+        {
+          "tipo": "auto_pack_attack",
+          "condicao_alvo": "self",
+          "params": {
+            "descricao": "Pode pack attack e defend automaticamente com outras copias"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 1381,
     "texto_original": "Spirit.  Animal. When you play Mosquito Swarm you may search your deck for all copies of Mosquito Swarm and play them.  Whenever this Ally enters combat it may automatically pack attack and defend with other Mosquito Swarms in your pack.  Draw a combat ca",
     "keywords": "Spirit - Animal",

@@ -4,7 +4,7 @@
   "tipo": "Character - Rogue",
   "modos": [
     {
-      "descricao": "Remove combat card do descarte do oponente",
+      "descricao": "Remove combat card do descarte",
       "efeitos": [
         {
           "tipo": "remover_do_descarte",

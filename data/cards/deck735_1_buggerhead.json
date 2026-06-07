@@ -4,20 +4,22 @@
   "tipo": "Character - Gaia",
   "modos": [
     {
-      "descricao": "Personagem: Rg2 Gn6 H3 (Ren6)",
+      "descricao": "Filtro de Redraw: descarta 1 e compra 1 sept card",
       "efeitos": [
         {
-          "tipo": "restringir",
+          "tipo": "filtrar_redraw",
           "condicao_alvo": "jogador",
           "params": {
-            "descricao": "personagem_rg2_gn6_h3"
+            "quantidade": 1,
+            "zona": "deck_sept",
+            "descricao": "No fim do Redraw, descarte 1 sept card e compre 1"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 1,
     "texto_original": "While in play, Buggerhead allows you to discard and redraw any 1 sept card at the end of your normal Redraw Phase.",
     "keywords": "Garou - Bone Gnawer - Ragabash - Lupus - Gaia - Male",

@@ -4,20 +4,22 @@
   "tipo": "Character - Gaia",
   "modos": [
     {
-      "descricao": "Personagem: Rg4 Gn7 H5 (Ren8)",
+      "descricao": "Personagem: Rg4 Gn7 H5 (Ren8) - Kailindo - Frenesi restrito",
       "efeitos": [
         {
           "tipo": "restringir",
           "condicao_alvo": "jogador",
           "params": {
-            "descricao": "personagem_rg4_gn7_h5"
+            "descricao": "personagem_rg4_gn7_h5_kailindo",
+            "restricao": "frenzy_lunar_eclipse_only",
+            "exceto": ["ahroun_gifts_during_eclipse"]
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 154,
     "texto_original": "Kailindo. John was born under an eclipsed Full Moon. He may only frenzy during a Lunar Eclipse, and he may still use his Ahroun Gifts during the Lunar Eclipse.",
     "keywords": "Garou - Wendigo - Ahroun - Homid - Gaia - Kailindo - Male",

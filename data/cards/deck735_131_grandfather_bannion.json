@@ -4,20 +4,23 @@
   "tipo": "Character - Gaia",
   "modos": [
     {
-      "descricao": "Personagem: Rg3 Gn4 H4 (Ren9)",
+      "descricao": "Setup: todos comecam com .38 Special",
       "efeitos": [
         {
-          "tipo": "restringir",
+          "tipo": "equipar_inicial",
           "condicao_alvo": "jogador",
           "params": {
-            "descricao": "personagem_rg3_gn4_h4"
+            "equipamento_nome": ".38 Special",
+            "equipamento_id": "610",
+            "qtd": 1,
+            "descricao": "Personagens comecam o jogo equipados com .38 Special"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 131,
     "texto_original": "Members of Bannion's pack may begin the game equipped with .38 Special,",
     "keywords": "Garou - Bone Gnawer - Ahroun - Homid - Gaia - Male",

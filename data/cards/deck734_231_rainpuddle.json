@@ -18,18 +18,14 @@
     }
   ],
   "_metadata": {
-    "deck": "umbral_wardens",
+    "fonte": "manual",
     "card_id": 231,
-    "passiva": true,
     "texto_original": "Rainpuddle's attacks can affect anything in the Umbra.",
     "keywords": "Garou - Stargazers - Theurge - Lupus - Gaia - Female",
     "damage": "",
     "rage": 1,
     "gnosis": 4,
     "health": 1,
-    "renown": 2,
-    "requires": "",
-    "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "requires": ""
   }
 }
