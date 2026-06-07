@@ -237,45 +237,35 @@ def run_match(seed: int = 42, max_turns: int = 30,
         if action and not action.startswith('wait'):
             # Tenta extrair nome da carta do ultimo log do jogo
             nome_carta = ''
-            ultimo_log = game.log[-1] if game.log else ''
-            if ultimo_log and 'jogou' in ultimo_log:
-                # "[BOT] Jogador jogou NomeDaCarta" ou "[T1 ...] Jogador jogou NomeDaCarta"
-                partes = ultimo_log.split('jogou ')
-                if len(partes) > 1:
-                    nome_carta = partes[1].strip()
-            elif ultimo_log and 'usou' in ultimo_log:
-                partes = ultimo_log.split('usou ')
-                if len(partes) > 1:
-                    nome_carta = partes[1].replace(' (', ' (').strip()
+            from rage_web.game_engine.action_descriptions import describe_action
+            descricao = describe_action(action, game)
 
             if action.startswith('combat'):
-                print(f'  {color}{cp.name}: ⚔️  {action}{reset}')
+                print(f'  {color}{cp.name}: ⚔️  {descricao}{reset}')
             elif action.startswith('play_'):
-                label = nome_carta or action.replace('play_', '')
-                print(f'  {color}{cp.name}: 🃏 Jogou {label}{reset}')
+                print(f'  {color}{cp.name}: 🃏 {descricao}{reset}')
             elif action.startswith('use_'):
-                label = nome_carta or action
-                print(f'  {color}{cp.name}: 🎴 Usou {label}{reset}')
+                print(f'  {color}{cp.name}: 🎴 {descricao}{reset}')
             elif action.startswith('attack_') or action.startswith('eliminate_'):
-                print(f'  {color}{cp.name}: ⚔️  {action}{reset}')
+                print(f'  {color}{cp.name}: ⚔️  {descricao}{reset}')
             elif action.startswith('declare_'):
-                print(f'  {color}{cp.name}: 🗣️  {action}{reset}')
+                print(f'  {color}{cp.name}: 🗣️  {descricao}{reset}')
             elif action.startswith('feint_'):
-                print(f'  {color}{cp.name}: 🎭 {action}{reset}')
+                print(f'  {color}{cp.name}: 🎭 {descricao}{reset}')
             elif action.startswith('umbra_'):
-                print(f'  {color}{cp.name}: 🌙 {action}{reset}')
+                print(f'  {color}{cp.name}: 🌙 {descricao}{reset}')
             elif action.startswith('alpha_'):
-                print(f'  {color}{cp.name}: 👑 {action}{reset}')
+                print(f'  {color}{cp.name}: 👑 {descricao}{reset}')
             elif action.startswith('redraw_'):
-                print(f'  {color}{cp.name}: 🔄 {action}{reset}')
+                print(f'  {color}{cp.name}: 🔄 {descricao}{reset}')
             elif action.startswith('moot_'):
-                print(f'  {color}{cp.name}: 🗳️ {action}{reset}')
+                print(f'  {color}{cp.name}: 🗳️ {descricao}{reset}')
             elif action == 'reveal':
-                print(f'  {color}{cp.name}: 👁️  REVELAR{reset}')
+                print(f'  {color}{cp.name}: 👁️  {descricao}{reset}')
             elif action in ('end_combat', 'combat_end'):
-                print(f'  {color}{cp.name}: 🏁 FIM COMBATE{reset}')
+                print(f'  {color}{cp.name}: 🏁 {descricao}{reset}')
             elif action == 'combat_wait':
-                print(f'  {color}{cp.name}: ⏳ AGUARDANDO{reset}')
+                print(f'  {color}{cp.name}: ⏳ {descricao}{reset}')
             elif action == 'draw':
                 print(f'  {color}{cp.name}: 📥 COMPRAR{reset}')
             elif action.startswith('pass'):

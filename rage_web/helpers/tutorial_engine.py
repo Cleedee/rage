@@ -316,23 +316,15 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
 
         # Capturar ação para o snapshot atual
         if action and not action.startswith('wait'):
-            nome_carta = ''
-            ultimo_log = game.log[-1] if game.log else ''
-            if ultimo_log and 'jogou' in ultimo_log:
-                partes = ultimo_log.split('jogou ')
-                if len(partes) > 1:
-                    nome_carta = partes[1].strip()
-            elif ultimo_log and 'usou' in ultimo_log:
-                partes = ultimo_log.split('usou ')
-                if len(partes) > 1:
-                    nome_carta = partes[1].replace(' (', ' (').strip()
+            from rage_web.game_engine.action_descriptions import describe_action
+            descricao = describe_action(action, game)
 
             acao_formatada = {
                 'jogador': cp.name,
                 'jogador_id': cp.id,
                 'acao': action,
+                'descricao': descricao,
                 'tipo': _classificar_acao(action),
-                'carta': nome_carta,
             }
 
             # Adicionar ao snapshot do turno atual

@@ -261,7 +261,7 @@
         <div class="mt-1">
           {% for acao in fase.acoes %}
           <span class="acao-badge {{ acao.tipo }}">{{ acao.tipo|upper }}</span>
-          <span style="font-size: 0.85rem;">{{ acao.jogador }}: {{ acao.acao }}</span>
+          <span style="font-size: 0.85rem;">{{ acao.jogador }}: {{ acao.descricao or acao.acao }}</span>
           <br>
           {% endfor %}
         </div>
