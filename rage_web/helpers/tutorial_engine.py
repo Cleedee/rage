@@ -205,11 +205,24 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5,
     for idx, p in enumerate(game.players):
         cor = JOGADOR_CORES.get(idx, {'nome': 'Cinza', 'classe': '', 'emoji': '⚪'})
         num_chars = len([c for c in p.pack_home if 'Character' in (c.card_type or '')])
+        # Buscar nome do deck no banco
+        deck_nome = f'Deck {deck_ids[idx]}' if idx < len(deck_ids) else 'Deck desconhecido'
+        try:
+            from rage_web.models.deck import Deck
+            from rage_web import create_app
+            app = create_app('default')
+            with app.app_context():
+                d = Deck.query.get(deck_ids[idx]) if idx < len(deck_ids) else None
+                if d:
+                    deck_nome = d.name
+        except Exception:
+            pass
         jogadores_info.append({
             'id': p.id,
             'nome': p.name,
             'cor': cor,
             'deck_id': deck_ids[idx] if idx < len(deck_ids) else 0,
+            'deck_nome': deck_nome,
             'num_personagens': num_chars,
             'renome_level': p.renown_level,
         })
