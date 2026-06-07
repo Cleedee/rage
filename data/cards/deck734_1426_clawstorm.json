@@ -1,0 +1,38 @@
+{
+  "id": "card_1426",
+  "nome": "Clawstorm",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 2,
+          "params": {
+            "zona": "deck_combate"
+          }
+        },
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "duracao": "proximo_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1426,
+    "texto_original": "You may not use this Gift with a Firearm. Play between rounds of combat. Draw 2 combat cards. You may play up to 3 combat actions next round. You may not bluff for the rest of the combat.  Discard this Gift after use.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Bastet"
+  }
+}

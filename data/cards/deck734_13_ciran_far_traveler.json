@@ -1,0 +1,30 @@
+{
+  "id": "card_13",
+  "nome": "Ciran Far-Traveler",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg4 Gn6 H5 (Ren10)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg4_gn6_h5"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 13,
+    "texto_original": "Kailindo. Ciran is a member of the Zephyr camp of the Stargazers and has mastered Kailindo. He will never use a Kailindo Combat Action during a frenzy.",
+    "keywords": "Garou - Stargazers - Philodox - Homid - Gaia - Kailindo - Male",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 6,
+    "health": 5,
+    "requires": ""
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "card_1527",
+  "nome": "Sudden Impediment",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "speed": "fast"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1527,
+    "texto_original": "Fast Striking. Sudden Impediment blocks up to 8 damage from a single attack.",
+    "keywords": "Block - Fast Striking",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "card_639",
+  "nome": "Dhul Fiqar",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipar (Gn3)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 639,
+    "texto_original": "Unique. Weapon. The user cannot be damaged by Rage 1 or less combat actions. If a Silent Striders equips Dhul Fiqar, he gains +1 Rage.",
+    "keywords": "Gaia Fetish - Weapon",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "requires": ""
+  }
+}

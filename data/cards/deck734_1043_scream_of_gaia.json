@@ -1,0 +1,30 @@
+{
+  "id": "card_1043",
+  "nome": "Scream of Gaia",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Usar Gift (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "duracao": "proximo_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1043,
+    "texto_original": "The Gift user screams at his opponents, knocking them back with the force of his shout. No damage is done, but all opponents in combat with the user who have less Gnosis than the user may not play Combat Actions during the next round of combat. Discard th",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": "Get of Fenris - Red Talons"
+  }
+}

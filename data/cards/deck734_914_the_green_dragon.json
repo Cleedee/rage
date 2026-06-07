@@ -1,0 +1,31 @@
+{
+  "id": "card_914",
+  "nome": "The Green Dragon",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_sept"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 914,
+    "texto_original": "This pack's alpha does aggravated damage and is +2 Rage. Your pack members can ignore form restrictions on combat cards. Your packmembers cannot withdraw or be forced to withdraw from combat. Discard this Totem if its pack ever contains a Metis. If Zhyzha",
+    "keywords": "Pack Totem",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Beast-of-War"
+  }
+}

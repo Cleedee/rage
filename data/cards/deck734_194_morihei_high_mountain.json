@@ -1,0 +1,30 @@
+{
+  "id": "card_194",
+  "nome": "Morihei High-Mountain",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg3 Gn9 H3 (Ren8)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg3_gn9_h3"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 194,
+    "texto_original": "Kailindo.",
+    "keywords": "Garou - Stargazers - Galliard - Homid - Gaia - Kailindo - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 9,
+    "health": 3,
+    "requires": ""
+  }
+}

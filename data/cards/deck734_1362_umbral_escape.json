@@ -1,0 +1,30 @@
+{
+  "id": "card_1362",
+  "nome": "Umbral Escape",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "speed": "fast"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1362,
+    "texto_original": "Fast Striking. This creature steps sideways into the Umbra, even if it a creature type that could not normally step sideways. It returns from the Umbra at the start of the next turn. If you play Umbral Escape for a member of your pack, remove Umbral Escap",
+    "keywords": "Fast Striking",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "requires": ""
+  }
+}

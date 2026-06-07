@@ -1,0 +1,32 @@
+{
+  "id": "card_638",
+  "nome": "Devilwhip",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipar (Gn5)",
+      "efeitos": [
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_aliada"
+        },
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 638,
+    "texto_original": "Weapon. This gory fetish is made from the tentacle of a Bane. The user may play an additional damage-dealing combat action of Rage 2 or less per round. A Bane may play actions up to Rage 3. The extra combat action played in this manner may not be blocked.",
+    "keywords": "Bane Fetish - Weapon",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0,
+    "requires": ""
+  }
+}

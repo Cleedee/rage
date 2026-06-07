@@ -1,0 +1,30 @@
+{
+  "id": "card_154",
+  "nome": "John Hidden-Moon",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg4 Gn7 H5 (Ren8)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg4_gn7_h5"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 154,
+    "texto_original": "Kailindo. John was born under an eclipsed Full Moon. He may only frenzy during a Lunar Eclipse, and he may still use his Ahroun Gifts during the Lunar Eclipse.",
+    "keywords": "Garou - Wendigo - Ahroun - Homid - Gaia - Kailindo - Male",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 7,
+    "health": 5,
+    "requires": ""
+  }
+}
