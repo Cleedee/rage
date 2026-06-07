@@ -1,0 +1,30 @@
+{
+  "id": "card_1738",
+  "nome": "Steel Wall",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ação de Combate",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "speed": "fast"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1738,
+    "texto_original": "Fast Striking. Block 4 damage. Bonus - Klaive: You may play an extra Combat Action next round.",
+    "keywords": "Fast Striking",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "(Klaive)"
+  }
+}
