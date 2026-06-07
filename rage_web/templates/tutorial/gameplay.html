@@ -7,115 +7,128 @@
     margin: 0 auto;
   }
   .turno-header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
     color: #fff;
     padding: 1rem 1.5rem;
     border-radius: 8px 8px 0 0;
     margin-top: 1.5rem;
+    border-bottom: 3px solid #e8a838;
   }
   .turno-header h3 {
-    color: #e8a838;
+    color: #f1c40f;
     margin: 0;
+    font-weight: 700;
   }
   .fase-card {
-    border-left: 4px solid #3298dc;
+    border-left: 5px solid #3298dc;
     margin-bottom: 1rem;
     background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-  .fase-card.combate { border-left-color: #f14668; }
-  .fase-card.moot { border-left-color: #9b59b6; }
+  .fase-card.combate { border-left-color: #c0392b; }
+  .fase-card.moot { border-left-color: #8e44ad; }
   .fase-card.umbra { border-left-color: #2c3e50; }
-  .fase-card.resource { border-left-color: #27ae60; }
-  .fase-card.redraw { border-left-color: #3498db; }
-  .fase-card.regeneration { border-left-color: #e67e22; }
+  .fase-card.resource { border-left-color: #1e8449; }
+  .fase-card.redraw { border-left-color: #2980b9; }
+  .fase-card.regeneration { border-left-color: #d35400; }
 
   .narrativa-box {
-    background: #f8f9fa;
-    border-left: 3px solid #e8a838;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.75rem;
+    background: #fef9e7;
+    border-left: 4px solid #e8a838;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
     font-style: italic;
-    color: #4a4a4a;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
   .evento-especial {
     background: #fff3cd;
-    border: 1px solid #ffc107;
+    border: 2px solid #f39c12;
     border-radius: 4px;
-    padding: 0.5rem 0.75rem;
+    padding: 0.6rem 0.85rem;
     margin: 0.5rem 0;
-    font-weight: 600;
+    font-weight: 700;
+    color: #7d6608;
+    font-size: 0.9rem;
   }
   .evento-especial.eliminacao {
-    background: #f8d7da;
-    border-color: #dc3545;
+    background: #f5b7b1;
+    border-color: #c0392b;
+    color: #641e16;
   }
   .jogador-card {
     border-radius: 6px;
     padding: 0.75rem;
     margin-bottom: 0.5rem;
   }
-  .jogador-card.j1 { background: #e8f4fd; border: 1px solid #3298dc; }
-  .jogador-card.j2 { background: #fff8e6; border: 1px solid #f0ad4e; }
-  .jogador-card.j3 { background: #f0e6ff; border: 1px solid #9b59b6; }
+  .jogador-card.j1 { background: #fff; border: 2px solid #3298dc; }
+  .jogador-card.j2 { background: #fff; border: 2px solid #f0ad4e; }
+  .jogador-card.j3 { background: #fff; border: 2px solid #9b59b6; }
   .jogador-card.eliminado { opacity: 0.5; background: #f5f5f5; border-color: #ccc; }
 
   .vp-bar {
-    height: 8px;
-    border-radius: 4px;
-    background: #e9ecef;
+    height: 10px;
+    border-radius: 5px;
+    background: #ddd;
     overflow: hidden;
-    margin-top: 0.25rem;
+    margin-top: 0.3rem;
   }
   .vp-bar-fill {
     height: 100%;
-    border-radius: 4px;
+    border-radius: 5px;
     transition: width 0.3s;
   }
-  .vp-bar-fill.j1 { background: #3298dc; }
-  .vp-bar-fill.j2 { background: #f0ad4e; }
-  .vp-bar-fill.j3 { background: #9b59b6; }
+  .vp-bar-fill.j1 { background: #2980b9; }
+  .vp-bar-fill.j2 { background: #e67e22; }
+  .vp-bar-fill.j3 { background: #8e44ad; }
 
   .acao-badge {
     display: inline-block;
-    padding: 0.15rem 0.5rem;
-    border-radius: 3px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: 600;
-    margin-right: 0.25rem;
+    font-weight: 700;
+    margin-right: 0.3rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
-  .acao-badge.moot { background: #9b59b6; color: #fff; }
-  .acao-badge.combate { background: #f14668; color: #fff; }
-  .acao-badge.umbra { background: #2c3e50; color: #fff; }
-  .acao-badge.resource { background: #27ae60; color: #fff; }
-  .acao-badge.redraw { background: #3498db; color: #fff; }
-  .acao-badge.pass { background: #95a5a6; color: #fff; }
+  .acao-badge.moot { background: #8e44ad; }
+  .acao-badge.combate { background: #c0392b; }
+  .acao-badge.umbra { background: #2c3e50; }
+  .acao-badge.resource { background: #1e8449; }
+  .acao-badge.redraw { background: #2980b9; }
+  .acao-badge.pass { background: #7f8c8d; }
+  .acao-badge.outro { background: #555; }
 
   .regra-tag {
     display: inline-block;
-    padding: 0.2rem 0.6rem;
+    padding: 0.25rem 0.7rem;
     border-radius: 12px;
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
     margin: 0.15rem;
+    color: #fff;
   }
-  .regra-tag.moot { background: #e8daef; color: #7d3c98; }
-  .regra-tag.combate { background: #fadbd8; color: #c0392b; }
-  .regra-tag.umbra { background: #d5dbdb; color: #2c3e50; }
-  .regra-tag.resource { background: #d5f5e3; color: #1e8449; }
-  .regra-tag.vp { background: #fdebd0; color: #d68910; }
-  .regra-tag.eliminacao { background: #f5b7b1; color: #922b21; }
+  .regra-tag.moot { background: #9b59b6; }
+  .regra-tag.combate { background: #e74c3c; }
+  .regra-tag.umbra { background: #2c3e50; }
+  .regra-tag.resource { background: #27ae60; }
+  .regra-tag.vp { background: #e67e22; }
+  .regra-tag.eliminacao { background: #c0392b; }
 
   .resumo-final {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
     color: #fff;
     padding: 1.5rem;
     border-radius: 8px;
     margin-top: 2rem;
+    border: 2px solid #e8a838;
   }
   .resumo-final .vencedor {
-    color: #e8a838;
-    font-size: 1.3rem;
+    color: #f1c40f;
+    font-size: 1.4rem;
     font-weight: 700;
   }
 </style>
@@ -134,9 +147,19 @@
     </p>
     <div class="tags">
       {% for j in jogadores %}
-      <span class="tag is-medium {{ j.cor.classe }} is-light">
-        {{ j.cor.emoji }} {{ j.deck_nome }} — {{ j.num_personagens }} personagem(ns), Renome {{ j.renome_level }}
-      </span>
+        {% if loop.index == 1 %}
+        <span class="tag is-medium" style="background: #3298dc; color: #fff;">
+          🔵 {{ j.deck_nome }} — {{ j.num_personagens }} personagem(ns), Renome {{ j.renome_level }}
+        </span>
+        {% elif loop.index == 2 %}
+        <span class="tag is-medium" style="background: #f0ad4e; color: #fff;">
+          🟡 {{ j.deck_nome }} — {{ j.num_personagens }} personagem(ns), Renome {{ j.renome_level }}
+        </span>
+        {% else %}
+        <span class="tag is-medium" style="background: #9b59b6; color: #fff;">
+          🟣 {{ j.deck_nome }} — {{ j.num_personagens }} personagem(ns), Renome {{ j.renome_level }}
+        </span>
+        {% endif %}
       {% endfor %}
     </div>
   </div>
