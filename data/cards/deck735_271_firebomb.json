@@ -1,0 +1,27 @@
+{
+  "id": "card_271",
+  "nome": "Firebomb",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipar (Gn0)",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 271,
+    "texto_original": "The bearer of the Firebomb may, as her alpha action, plant the bomb on any Territory in play. Any member of the pack who controls the Territory may defuse the bomb, but will suffer 3 damage doing so. If the Firebomb has not been defused by the end of the",
+    "keywords": "Non-Fetish",
+    "damage": "3",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

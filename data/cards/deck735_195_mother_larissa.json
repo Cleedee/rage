@@ -1,0 +1,31 @@
+{
+  "id": "card_195",
+  "nome": "Mother Larissa",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg2 Gn9 H3 (Ren8)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 195,
+    "texto_original": "Larissa is a resourceful old biddy.  You may draw 2 extra combat cards whenever she is the target of an attack.  Discard or redraw to your normal combat hand size after combat.",
+    "keywords": "Garou - Bone Gnawer - Theurge - Homid - Gaia - Female",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 9,
+    "health": 3,
+    "requires": ""
+  }
+}

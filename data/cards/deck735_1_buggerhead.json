@@ -1,0 +1,30 @@
+{
+  "id": "card_1",
+  "nome": "Buggerhead",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg2 Gn6 H3 (Ren6)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg2_gn6_h3"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1,
+    "texto_original": "While in play, Buggerhead allows you to discard and redraw any 1 sept card at the end of your normal Redraw Phase.",
+    "keywords": "Garou - Bone Gnawer - Ragabash - Lupus - Gaia - Male",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 6,
+    "health": 3,
+    "requires": ""
+  }
+}

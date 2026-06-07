@@ -1,0 +1,30 @@
+{
+  "id": "card_1381",
+  "nome": "Mosquito Swarm",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Aliado (H3)",
+      "efeitos": [
+        {
+          "tipo": "mover_para",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "buscar_no_deck"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 1381,
+    "texto_original": "Spirit.  Animal. When you play Mosquito Swarm you may search your deck for all copies of Mosquito Swarm and play them.  Whenever this Ally enters combat it may automatically pack attack and defend with other Mosquito Swarms in your pack.  Draw a combat ca",
+    "keywords": "Spirit - Animal",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 4,
+    "health": 3,
+    "requires": "Wendigo - Bubasti - Hellcat"
+  }
+}

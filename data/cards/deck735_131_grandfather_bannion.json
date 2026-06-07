@@ -1,0 +1,30 @@
+{
+  "id": "card_131",
+  "nome": "Grandfather Bannion",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg3 Gn4 H4 (Ren9)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg3_gn4_h4"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 131,
+    "texto_original": "Members of Bannion's pack may begin the game equipped with .38 Special,",
+    "keywords": "Garou - Bone Gnawer - Ahroun - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 4,
+    "health": 4,
+    "requires": ""
+  }
+}
