@@ -9,6 +9,7 @@ from rage_web.game_engine.state import GameState, Zone
 from rage_web.game_engine.match import build_game_from_decks_n
 from rage_web.game_engine.bot.priority_bot import PriorityBot
 from rage_web.game_engine.combat_queue import verificar_vitoria, _tem_character
+from rage_web.game_engine.action_descriptions import describe_action
 
 
 @dataclass
@@ -47,7 +48,6 @@ JOGADOR_CORES = {
     2: {'nome': 'Roxo', 'classe': 'is-link', 'emoji': '🟣'},
 }
 
-# Narrativas por fase (perspectiva do J1)
 NARRATIVAS = {
     'redraw': [
         "Sua mão se enche de cartas. É hora de se preparar para o que vem pela frente.",
@@ -188,15 +188,11 @@ def _gerar_narrativa(fase: str, turno: int) -> str:
     return random.choice(opcoes)
 
 
-def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_win: int | None = None) -> TutorialData:
-    """Executa uma partida de tutorial capturando todos os estados do jogo.
-
-    Usa uma abordagem de captura passiva: o jogo roda normalmente e
-    capturamos snapshots do board em cada mudança de fase/turno.
-    """
+def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5,
+                 vp_to_win: int | None = None) -> TutorialData:
+    """Executa uma partida de tutorial capturando todos os estados do jogo."""
     game = build_game_from_decks_n(*deck_ids, seed=seed)
 
-    # Override de VP para vencer (se informado)
     if vp_to_win is not None:
         for p in game.players:
             p.renown_level = vp_to_win
@@ -205,7 +201,6 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
     for idx, p in enumerate(game.players):
         bots[p.id] = PriorityBot(game, p.id, difficulty='hard')
 
-    # Info dos jogadores
     jogadores_info = []
     for idx, p in enumerate(game.players):
         cor = JOGADOR_CORES.get(idx, {'nome': 'Cinza', 'classe': '', 'emoji': '⚪'})
@@ -219,65 +214,55 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
             'renome_level': p.renown_level,
         })
 
-    # Estado anterior para detectar eventos
     prev_board = None
     regras_demonstradas = set()
 
-    # Snapshots organizados por turno
-    turnos_snapshots = []
-    turno_atual = []
-    ultimo_turno = 0
-    ultima_fase = None
-
-    # Cores para output
-    colors = ['\033[1;36m', '\033[1;33m', '\033[1;35m',
-              '\033[1;32m', '\033[1;31m', '\033[1;34m']
-    reset = '\033[0m'
+    # Estrutura: turnos[turno_idx][fase_idx] = PhaseSnapshot
+    turnos_snapshots = []  # lista de turnos, cada turno é lista de fases
+    turno_atual_fases = []  # fases do turno atual
+    fase_atual_acoes = []  # ações da fase atual
+    fase_atual_raw = []  # ações raw da fase atual
 
     max_steps = max_turns * 50
     step = 0
-    action_count = 0
-    stale_steps = 0
     last_turn = game.turn_number
     last_phase = game.phase
 
     while step < max_steps:
-        # Detectar mudança de turno/fase para capturar snapshot
-        if game.turn_number != last_turn or game.phase != last_phase:
-            # Salvar snapshot da fase anterior
-            if ultima_fase is not None and turno_atual:
+        # Detectar mudança de fase
+        if game.phase != last_phase or game.turn_number != last_turn:
+            # Salvar snapshot da fase que acabou
+            if fase_atual_acoes or True:  # Salvar mesmo sem ações
                 board = _capturar_board(game)
                 eventos = _detectar_eventos(game, prev_board)
                 prev_board = copy.deepcopy(board)
 
-                # Registrar regras demonstradas
-                for acao_info in turno_atual[-1].get('acoes_raw', []):
-                    tipo = _classificar_acao(acao_info.get('acao', ''))
+                for acao_raw in fase_atual_raw:
+                    tipo = _classificar_acao(acao_raw)
                     if tipo != 'outro' and tipo != 'pass':
                         regras_demonstradas.add(tipo)
-                    if 'moot' in acao_info.get('acao', ''):
-                        regras_demonstradas.add('moot')
-                    if 'eliminate' in acao_info.get('acao', '') or 'attack' in acao_info.get('acao', ''):
-                        regras_demonstradas.add('combate')
 
                 snapshot = PhaseSnapshot(
                     turno=last_turn,
-                    fase=ultima_fase,
-                    descricao_fase=FASE_DESCRICOES.get(ultima_fase, ultima_fase),
+                    fase=last_phase,
+                    descricao_fase=FASE_DESCRICOES.get(last_phase, last_phase),
                     board_state=board,
-                    acoes=turno_atual[-1].get('acoes_formatadas', []),
-                    narrativa=_gerar_narrativa(ultima_fase, last_turn),
+                    acoes=list(fase_atual_acoes),  # cópia
+                    narrativa=_gerar_narrativa(last_phase, last_turn),
                     eventos_especiais=eventos,
                 )
-                turnos_snapshots.append(snapshot)
+                turno_atual_fases.append(snapshot)
 
-            # Novo turno?
-            if game.turn_number != last_turn and turno_atual:
-                pass  # Turno anterior já foi salvo
+            # Se mudou de turno, salvar turno anterior
+            if game.turn_number != last_turn and turno_atual_fases:
+                turnos_snapshots.append(turno_atual_fases)
+                turno_atual_fases = []
 
+            # Reset para nova fase
+            fase_atual_acoes = []
+            fase_atual_raw = []
             last_turn = game.turn_number
             last_phase = game.phase
-            action_count = 0
 
         # Alpha actions no combate
         if game.phase == 'combat' and game.combat.alpha_order:
@@ -299,26 +284,11 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
             cp = game.current_player
 
         bot = bots[cp.id]
-        idx = game.players.index(cp)
-        color = colors[idx % len(colors)]
-
         action = bot.decide()
-        action_count += 1
 
-        # Detectar progresso
-        if game.turn_number != last_turn or game.phase != last_phase:
-            stale_steps = 0
-        else:
-            stale_steps += 1
-
-        if stale_steps > 200:
-            break
-
-        # Capturar ação para o snapshot atual
+        # Capturar ação para a fase atual
         if action and not action.startswith('wait'):
-            from rage_web.game_engine.action_descriptions import describe_action
             descricao = describe_action(action, game)
-
             acao_formatada = {
                 'jogador': cp.name,
                 'jogador_id': cp.id,
@@ -326,21 +296,8 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
                 'descricao': descricao,
                 'tipo': _classificar_acao(action),
             }
-
-            # Adicionar ao snapshot do turno atual
-            if turno_atual:
-                turno_atual[-1]['acoes_raw'].append({'acao': action})
-                turno_atual[-1]['acoes_formatadas'].append(acao_formatada)
-
-        # Verificar fim do turno (combat -> redraw)
-        if game.phase != last_phase:
-            ultima_fase = last_phase
-            # Iniciar novo snapshot de fase
-            turno_atual.append({
-                'fase': game.phase,
-                'acoes_raw': [],
-                'acoes_formatadas': [],
-            })
+            fase_atual_acoes.append(acao_formatada)
+            fase_atual_raw.append(action)
 
         # Verificar condições de fim
         if game.turn_number > max_turns:
@@ -349,7 +306,7 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
         # Verificar vitória
         for p in game.players:
             if p.victory_points >= p.renown_level:
-                # Salvar último snapshot
+                # Salvar última fase
                 board = _capturar_board(game)
                 eventos = _detectar_eventos(game, prev_board)
                 snapshot = PhaseSnapshot(
@@ -357,11 +314,12 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
                     fase=game.phase,
                     descricao_fase=FASE_DESCRICOES.get(game.phase, game.phase),
                     board_state=board,
-                    acoes=[],
+                    acoes=list(fase_atual_acoes),
                     narrativa=f"🏆 {p.name} atingiu {p.victory_points} VP e venceu!",
                     eventos_especiais=eventos + [f"🏆 {p.name} VENCEU!"],
                 )
-                turnos_snapshots.append(snapshot)
+                turno_atual_fases.append(snapshot)
+                turnos_snapshots.append(turno_atual_fases)
                 break
 
         # Regra 2.3: eliminação
@@ -374,19 +332,9 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
 
         step += 1
 
-    # Organizar snapshots por turno
-    turnos_organizados = []
-    turno_atual_snapshots = []
-    turno_num = 1
-    for snap in turnos_snapshots:
-        if snap.turno > turno_num:
-            if turno_atual_snapshots:
-                turnos_organizados.append(turno_atual_snapshots)
-            turno_atual_snapshots = []
-            turno_num = snap.turno
-        turno_atual_snapshots.append(snap)
-    if turno_atual_snapshots:
-        turnos_organizados.append(turno_atual_snapshots)
+    # Salvar último turno se não foi salvo
+    if turno_atual_fases:
+        turnos_snapshots.append(turno_atual_fases)
 
     # Resumo final
     vencedor = None
@@ -402,7 +350,7 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
     resumo = {
         'vencedor': vencedor.name if vencedor else 'Empate',
         'vencedor_id': vencedor.id if vencedor else None,
-        'turnos_jogados': len(turnos_organizados),
+        'turnos_jogados': len(turnos_snapshots),
         'jogadores': [
             {
                 'nome': p.name,
@@ -415,7 +363,7 @@ def run_tutorial(deck_ids: list[int], seed: int = 42, max_turns: int = 5, vp_to_
 
     return TutorialData(
         jogadores=jogadores_info,
-        turnos=turnos_organizados,
+        turnos=turnos_snapshots,
         resumo_final=resumo,
         regras_demonstradas=sorted(regras_demonstradas),
     )
