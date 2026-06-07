@@ -1,0 +1,30 @@
+{
+  "id": "card_267",
+  "nome": "Susan Anthony",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg2 Gn5 H2 (Ren4)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg2_gn5_h2"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 267,
+    "texto_original": "While Susan is in your pack, you may start the game with one Kinfolk Ally in play.",
+    "keywords": "Garou - Black Fury - Philodox - Homid - Gaia - Female",
+    "damage": "",
+    "rage": 2,
+    "gnosis": 5,
+    "health": 2,
+    "requires": ""
+  }
+}

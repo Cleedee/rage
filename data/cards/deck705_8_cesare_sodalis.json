@@ -1,0 +1,30 @@
+{
+  "id": "card_8",
+  "nome": "Cesare Sodalis",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn3 H1 (Ren3)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg1_gn3_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 8,
+    "texto_original": "Cesare has been a friend to many mages during the course of his travels. He is not affected by any Gifts used by mages.",
+    "keywords": "Garou - Silent Striders - Ragabash - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 3,
+    "health": 1,
+    "requires": ""
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "card_808",
+  "nome": "Stand like a Fool",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Ação",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "duracao": "proximo_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 808,
+    "texto_original": "A Ragabash can play this card on any opponent she is facing in combat. For the next round the opponent cannot play any Combat Actions. If the opponent survives to the following round, she immediately enters Frenzy.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Ragabash"
+  }
+}

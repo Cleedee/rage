@@ -144,6 +144,10 @@
              href="{{ url_for('decks.export_deck', id=deck.id, fmt='xml') }}" download>
             <i class="bi bi-code"></i> Exportar XML
           </a>
+          <a class="button is-success is-light"
+             href="{{ url_for('decks.export_deck', id=deck.id, fmt='discord') }}" download>
+            <i class="bi bi-discord"></i> Exportar Discord
+          </a>
           <a class="button is-danger is-light"
              href="{{ url_for('decks.delete_deck', id=deck.id) }}"
              onclick="return confirm('Excluir este deck?')">

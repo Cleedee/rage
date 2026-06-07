@@ -1,0 +1,27 @@
+{
+  "id": "card_520",
+  "nome": "Pentex Refinery",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo (H15)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 520,
+    "texto_original": "A Pentex Refinery has set up shop in the area, infesting the region with Wyrm taint.  Until razed, the refinery prevents any shapechanger (Garou or otherwise) from regenerating, although Gifts like Mother's Touch still function as normal.",
+    "keywords": "Human - Pentex",
+    "damage": "",
+    "rage": 4,
+    "gnosis": 6,
+    "health": 15,
+    "requires": ""
+  }
+}

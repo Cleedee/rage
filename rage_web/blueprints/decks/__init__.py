@@ -339,6 +339,8 @@ def export_deck(id):
 
     if fmt == 'xml':
         return _export_xml(deck, grupos_por_tipo)
+    elif fmt == 'discord':
+        return _export_discord(deck, cards, grupos_por_tipo)
     else:
         return _export_text(deck, cards, grupos_por_tipo)
 
@@ -408,6 +410,112 @@ def _export_text(deck, cards, grupos_por_tipo):
     return current_app.response_class(
         text,
         mimetype='text/plain',
+        headers={'Content-Disposition': f'attachment; filename={nome_arquivo}'}
+    )
+
+
+def _export_discord(deck, cards, grupos_por_tipo):
+    """Exporta deck em formato Markdown otimizado para Discord.
+
+    Usa code blocks para formatação fixa, emojis para categorias,
+    e layout compacto que funciona bem no Discord.
+    """
+    ORDEM_TIPOS = [
+        ('Character', '👤', 'Personagens'),
+        ('Ally', '🤝', 'Aliados'),
+        ('Enemy', '👹', 'Inimigos'),
+        ('Victim', '🎯', 'Vítimas'),
+        ('Gift', '✨', 'Gifts'),
+        ('Equipment', '⚔️', 'Equipamentos'),
+        ('Caern', '🏔️', 'Caerns'),
+        ('Territory', '🗺️', 'Territórios'),
+        ('Quest', '📜', 'Quests'),
+        ('Rite', '🔥', 'Ritos'),
+        ('Event', '🌟', 'Eventos'),
+        ('Action', '⚡', 'Ações'),
+        ('Moot', '🗳️', 'Juntas'),
+        ('Board Meeting', '🏛️', 'Reuniões de Conselho'),
+        ('Combat Action', '🗡️', 'Ações de Combate'),
+        ('Combat Event', '💥', 'Eventos de Combate'),
+        ('Battlefield', '🏟️', 'Campos de Batalha'),
+        ('Past Life', '🔮', 'Vidas Passadas'),
+        ('Realm', '🌌', 'Reinos'),
+    ]
+
+    lines = []
+
+    # Cabeçalho
+    lines.append(f'# {deck.name or "Deck sem nome"}')
+    if deck.description:
+        lines.append(f'*{deck.description}*')
+    lines.append('')
+
+    # Stats do deck
+    total_chars = sum(e['quantity'] for e in cards if 'Character' in (e['card'].tipo or ''))
+    total_combat = sum(e['quantity'] for e in cards if 'combat' in (e['card'].tipo or '').lower())
+    total_sept = sum(e['quantity'] for e in cards if 'combat' not in (e['card'].tipo or '').lower() and 'Character' not in (e['card'].tipo or ''))
+    total_cards = sum(e['quantity'] for e in cards)
+
+    lines.append(f'**📊 Stats:** {total_cards} cartas | 👤 {total_chars} personagens | 🗡️ {total_combat} combate | 📦 {total_sept} sept')
+    lines.append('')
+    lines.append('---')
+    lines.append('')
+
+    # Cartas por tipo
+    for tipo_raw, emoji, tipo_label in ORDEM_TIPOS:
+        grupo = grupos_por_tipo.get(tipo_raw, [])
+        if not grupo:
+            continue
+
+        lines.append(f'**{emoji} {tipo_label} ({len(grupo)} tipos, {sum(e["quantity"] for e in grupo)} cartas)**')
+        lines.append('')
+
+        for entry in sorted(grupo, key=lambda x: x['card'].name):
+            card = entry['card']
+            qty = entry['quantity']
+            stats = _card_stats_short(card)
+
+            # Formatar nome com stats
+            nome = card.name
+            if stats:
+                nome += f' *({stats})*'
+
+            # Quantidade
+            if qty > 1:
+                lines.append(f'`{qty}x` {nome}')
+            else:
+                lines.append(f'• {nome}')
+
+        lines.append('')
+
+    # Tipos remanescentes
+    tipos_cobertos = {t[0] for t in ORDEM_TIPOS}
+    for tipo in sorted(grupos_por_tipo):
+        if tipo not in tipos_cobertos:
+            grupo = grupos_por_tipo[tipo]
+            lines.append(f'**📦 {tipo} ({len(grupo)} tipos)**')
+            lines.append('')
+            for entry in sorted(grupo, key=lambda x: x['card'].name):
+                card = entry['card']
+                qty = entry['quantity']
+                stats = _card_stats_short(card)
+                nome = card.name
+                if stats:
+                    nome += f' *({stats})*'
+                if qty > 1:
+                    lines.append(f'`{qty}x` {nome}')
+                else:
+                    lines.append(f'• {nome}')
+            lines.append('')
+
+    lines.append('---')
+    lines.append(f'*Exportado do Rage CCG Web*')
+
+    text = '\n'.join(lines)
+    nome_arquivo = f'{deck.name or "deck"}_discord.md'
+    return current_app.response_class(
+        text,
+        mimetype='text/markdown',
         headers={'Content-Disposition': f'attachment; filename={nome_arquivo}'}
     )
 

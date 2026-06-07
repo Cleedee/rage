@@ -1,0 +1,30 @@
+{
+  "id": "card_71",
+  "nome": "Frenar",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn1 H1 (Ren1)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg1_gn1_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 71,
+    "texto_original": "Eager to prove himself, Frenar can switch places with his pack alpha if that alpha is attacked.",
+    "keywords": "Bastet - Balam - Feline - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 1,
+    "health": 1,
+    "requires": ""
+  }
+}

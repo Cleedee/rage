@@ -1,0 +1,30 @@
+{
+  "id": "card_209",
+  "nome": "Passer",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn3 H2 (Ren1)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg1_gn3_h2"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 209,
+    "texto_original": "Passer has just begun serving his tribe as a scout against the Wyrm.  He is worth zero Renown for victory points.",
+    "keywords": "Garou - Silent Striders - Theurge - Metis - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 3,
+    "health": 2,
+    "requires": ""
+  }
+}

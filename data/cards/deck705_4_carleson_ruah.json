@@ -1,0 +1,30 @@
+{
+  "id": "card_4",
+  "nome": "Carleson Ruah",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn4 H1 (Ren4)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg1_gn4_h1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 4,
+    "texto_original": "Carleson can interrupt another alpha's action to allows his pack's alpha to act first, as long as Carleson's alpha attacks a Wyrm creature.",
+    "keywords": "Garou - Shadow Lords - Ragabash - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 4,
+    "health": 1,
+    "requires": ""
+  }
+}

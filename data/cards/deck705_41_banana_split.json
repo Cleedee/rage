@@ -1,0 +1,30 @@
+{
+  "id": "card_41",
+  "nome": "Banana Split",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg3 Gn1 H3 (Ren2)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "jogador",
+          "params": {
+            "descricao": "personagem_rg3_gn1_h3"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 41,
+    "texto_original": "Once per game after a round's combat cards have been played, Banana Split can cancel both his card and one opponent's card by interrupting with a bad joke.",
+    "keywords": "Garou - Bone Gnawer - Ahroun - Metis - Gaia - Male",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 1,
+    "health": 3,
+    "requires": ""
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "card_218",
+  "nome": "Wyldstorm",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Evento",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_sept"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 218,
+    "texto_original": "Each player selects his highest Renown character, discarding any Gifts or Equipment it may have. These characters are then shuffled together and randomly distributed to all players. For the remainder of the game, each character is part of a new pack. Char",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": ""
+  }
+}

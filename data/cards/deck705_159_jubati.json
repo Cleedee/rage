@@ -1,0 +1,31 @@
+{
+  "id": "card_159",
+  "nome": "Jubati",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn3 H1 (Ren3)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1,
+          "params": {
+            "zona": "deck_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "auto_json",
+    "card_id": 159,
+    "texto_original": "When battling Pentex enemies, Jubati can draw 1 extra combat card.",
+    "keywords": "Garou - Uktena - Ragabash - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 3,
+    "health": 1,
+    "requires": ""
+  }
+}
