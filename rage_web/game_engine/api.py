@@ -286,6 +286,16 @@ def api_use_card(game_id: str):
     if not card.modelo_id:
         return jsonify({'error': f'Carta {card.name} nao tem modelo de efeitos.'}), 400
 
+    # Verifica requisitos de Gift (Rage FOO Rule)
+    if card.card_type == 'Gift':
+        from rage_web.game_engine.rules import pode_usar_gift
+        if not pode_usar_gift(cp, card):
+            return jsonify({
+                'error': f'Nao pode usar {card.name}: '
+                         f'nenhum personagem atende os requisitos'
+                         f' ("{card.requires}")'
+            }), 400
+
     from rage_web.game_engine.effects import CARTAS_EXEMPLO, aplicar_carta
     modelo = CARTAS_EXEMPLO.get(card.modelo_id)
     if not modelo:

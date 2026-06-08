@@ -793,8 +793,17 @@ class PriorityBot:
         Regras (2.2.4/2.2.5):
         - Rage: personagem destapped com Rage >= custo.
         - Gnosis: personagem destapped com Gnosis >= custo.
+
+        Para Gifts (Rage FOO Rule): tambem verifica se algum
+        personagem atende os requisitos de keyword do Gift.
         """
-        from rage_web.game_engine.rules import parse_custo_rage
+        from rage_web.game_engine.rules import parse_custo_rage, pode_usar_gift
+
+        # Se for Gift, verifica requisitos de keyword
+        if card.card_type == 'Gift':
+            if not pode_usar_gift(self.player, card):
+                return False
+
         # Rage
         custo_rage = parse_custo_rage(card.damage)
         if custo_rage is not None and custo_rage > 0:

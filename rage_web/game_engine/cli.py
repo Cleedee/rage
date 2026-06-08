@@ -493,6 +493,15 @@ class RageCLI(cmd.Cmd):
             print(f'Carta {card.name} nao tem modelo de efeitos.')
             return
 
+        # Verifica requisitos de Gift (Rage FOO Rule)
+        if card.card_type == 'Gift':
+            from rage_web.game_engine.rules import pode_usar_gift
+            if not pode_usar_gift(cp, card):
+                print(f'  Nao pode usar {card.name}: '
+                      f'nenhum personagem atende os requisitos'
+                      f' ("{card.requires}")')
+                return
+
         from rage_web.game_engine.anunciador import anunciar_e_resolver
 
         # Remove da mao e anuncia

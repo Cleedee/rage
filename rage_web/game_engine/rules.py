@@ -290,29 +290,102 @@ def pode_recrutar_ally(player: 'PlayerState',
     opcoes = [p.strip() for p in requires.split(' - ')]
 
     # Para cada personagem, verifica se atende ALGUMA opcao
+    from rage_web.game_engine.state import Zone
+    for char in characters:
+        char_text = _info_char(char)
+        char_gnosis = char.gnosis
+        if _char_atende_requisitos(char_text, char_gnosis, opcoes,
+                                    player, char):
+            return True
+
+    return False
+
+
+def _char_atende_requisitos(char_text: str, char_gnosis: int,
+                              opcoes: list[str],
+                              player: 'PlayerState' = None,
+                              char: 'CardInstance' = None) -> bool:
+    """Verifica se um personagem atende a lista de opcoes.
+
+    Args:
+        char_text: Texto completo do personagem (_info_char).
+        char_gnosis: Gnosis atual do personagem.
+        opcoes: Lista de opcoes separadas por " - " (OR).
+        player: Estado do jogador (para casos especiais).
+        char: CardInstance do personagem (para zona/quests).
+
+    Returns:
+        True se o personagem atende ALGUMA opcao.
+    """
+    if char is not None and player is not None:
+        from rage_web.game_engine.state import Zone
+        # Verifica caso especial: 'Character in the Umbra'
+        if any('character in the umbra' in o.lower() for o in opcoes):
+            if char.zone == Zone.UMBRA:
+                return True
+        # Verifica caso especial: 'Character with Quest'
+        if any('character with quest' in o.lower() for o in opcoes):
+            if any(q for q in player.quests
+                   if q.target_card_uid == id(char)):
+                return True
+
+    return any(_opcao_matches_char(o, char_text, char_gnosis)
+               for o in opcoes)
+
+
+def pode_usar_gift(player: 'PlayerState',
+                    gift_card: 'CardInstance') -> bool:
+    """Verifica se o jogador pode usar um Gift.
+
+    Regra (Rage FOO Rule + secao Gifts do Quickstart):
+    Para usar um Gift, uma criatura deve:
+    1. Ter Gnosis >= Gnosis do Gift (custo).
+    2. Atender um dos requisitos de keyword do Gift.
+
+    Args:
+        player: Estado do jogador.
+        gift_card: A carta Gift a ser usada.
+
+    Returns:
+        True se o jogador pode usar o Gift.
+    """
+    requires = (gift_card.requires or '').strip()
+
+    # Coleta personagens do jogador
+    characters = [c for c in player.pack_home
+                  if 'Character' in (c.card_type or '')]
+    # Allies tambem podem usar Gifts (Rage FOO Rule)
+    for c in player.pack_home:
+        if 'Ally' in (c.card_type or '') and c not in characters:
+            characters.append(c)
+
+    if not characters:
+        return False
+
+    if not requires:
+        # Sem requisito de keyword: apenas check de Gnosis
+        gnosis_req = gift_card.gnosis or 0
+        return any(c.gnosis >= gnosis_req for c in characters)
+
+    # Parseia requisitos (formato " - " = OR)
+    opcoes = [p.strip() for p in requires.split(' - ')]
+
+    from rage_web.game_engine.state import Zone
     for char in characters:
         char_text = _info_char(char)
         char_gnosis = char.gnosis
 
-        # Verifica caso especial: 'Character in the Umbra'
-        algum_umbra = any(
-            'character in the umbra' in o.lower() for o in opcoes)
-        if algum_umbra and char.zone == Zone.UMBRA:
-            return True
+        # Verifica se o personagem atende ALGUMA opcao
+        if not _char_atende_requisitos(char_text, char_gnosis, opcoes,
+                                        player, char):
+            continue
 
-        # Verifica caso especial: 'Character with Quest'
-        algum_quest = any(
-            'character with quest' in o.lower() for o in opcoes)
-        if algum_quest and any(
-            q for q in player.quests
-            if q.target_card_uid == id(char)
-        ):
-            return True
+        # Verifica Gnosis
+        if char.gnosis < (gift_card.gnosis or 0):
+            continue
 
-        # Verifica opcoes normais
-        if any(_opcao_matches_char(o, char_text, char_gnosis)
-               for o in opcoes):
-            return True
+        # Se passou de tudo, pode usar
+        return True
 
     return False
 
