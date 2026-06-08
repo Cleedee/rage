@@ -412,6 +412,79 @@ def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     return None
 
 
+def _simplificar_req_caern(req: str) -> str:
+    """Simplifica um requisito de Caern para busca.
+
+    Trata plural/singular e prefixos como 'Any'.
+    Ex: 'Bone Gnawers' -> 'bone gnawer'
+        'Any Wyrm character' -> 'wyrm'
+        'Fianna - Uktena' -> 'fianna' ou 'uktena'
+        '(Ship)' -> 'ship'
+    """
+    texto = req.lower().strip()
+
+    # Remove parenteses
+    if texto.startswith('(') and texto.endswith(')'):
+        texto = texto[1:-1].strip()
+
+    # Remove prefixo 'any '
+    if texto.startswith('any '):
+        # Remove 'any' e pega primeira palavra chave
+        words = texto[4:].strip().split()
+        if words:
+            return words[0]
+
+    # Remove sufixos comuns
+    words = texto.split()
+    if words and words[-1] in ('character', 'form', 'creature'):
+        words = words[:-1]
+    if words:
+        texto = ' '.join(words)
+
+    # Remove 's' final para tratar plural
+    if texto.endswith('s') and not texto.endswith('ss'):
+        texto = texto[:-1]
+
+    return texto
+
+
+def pode_jogar_caern(play: 'PlayerState',
+                      caern_card: 'CardInstance') -> bool:
+    """Verifica se o jogador pode jogar um Caern.
+
+    Regras:
+    - Apenas um Caern por pack.
+    - Requer personagem que atenda o requisito (requires).
+    - Caern pode ser descartado se quiser trocar.
+
+    Returns:
+        True se pode jogar.
+    """
+    # 1. So pode ter um Caern (ignora o proprio card sendo checado)
+    for c in play.pack_home + play.hunting_grounds:
+        if c.card_type == 'Caern' and id(c) != id(caern_card):
+            return False
+
+    # 2. Verifica requisito de personagem
+    req = (caern_card.requires or '').strip()
+    if not req:
+        return True  # Sem requisito, pode jogar
+
+    # Split por ' - ' para opcoes OR
+    # Mas cuidado: requisitos complexos como 'Black Fury - Silent Strider - Bubasti'
+    # sao opcoes mutuamente exclusivas, ou seja, BASTA UM
+    opcoes = [p.strip() for p in req.split(' - ')]
+
+    for char in play.pack_home:
+        char_text = f'{char.name} {char.card_type} {char.keywords}'.lower()
+        for opcao in opcoes:
+            req_simplificado = _simplificar_req_caern(opcao)
+            if req_simplificado and req_simplificado in char_text:
+                return True
+
+    return False
+
+
 def pode_step_sideways(personagem: 'CardInstance',
                        caern: Optional['CardInstance'] = None,
                        gauntlet: int = GAUNTLET_DEFAULT) -> bool:

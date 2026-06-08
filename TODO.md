@@ -96,6 +96,26 @@
 - [ ] **Allies não jogam Actions/Past Lives/Rites/Totems/pack resources** — Engine não filtra por card type (baixo impacto)
 - [ ] **Allies não podem ser descartados voluntariamente** — Sem mecânica de descarte voluntário
 
+## ⚔️ Regras de Equipment (Equipamentos)
+
+### Implementado ✅
+- [x] **Fetish (Gaia only) vs Bane Fetish (Wyrm only) alignment** — `_validar_restricoes_equipamento()` em effects.py
+- [x] **Gnosis requirement** — Criatura precisa Gnosis >= gnosis do Fetish/Bane Fetish
+- [x] **Keyword requirements (Rage FOO Rule)** — `requires` validado contra keywords da criatura
+- [x] **Form restrictions** — `(Homid Form)`, `(Crinos form)`, `(Not Animal form)`, `(Garou)`, etc.
+- [x] **Weapon limit (1 per creature)** — Bloqueia segunda arma
+- [x] **Armor limit (1 per creature)** — Bloqueia segunda armadura
+- [x] **Equipment com equipar effect** — Bot usa `_usar_carta_efeito()` → `_resolver_equipar()`
+- [x] **Equipment sem equipar effect** — Bot usa `_play_card()` → `_equip_card_to_pack()`
+- [x] **Built-in equipment (Bannion etc.)** — `_resolver_equipar_inicial()`
+- [x] **Equipment discarded on death** — `descartar_anexos()` em `_processar_morte()`
+
+### ❌ Pendente
+- [ ] **Trade entre pack members** — Trocar equipamentos durante Resource phase (baixo impacto)
+- [ ] **Equipment em Prey** — Equipment não pode ser jogado/trocado para Presas (médio impacto)
+- [ ] **JSON models para Equipment sem efeito** — Apenas 38/439 têm modelos JSON (alto impacto, muito trabalho)
+- [ ] **Ativação de equipamentos com efeito** — Equipment como Animal Mummy (destruir sept card) não tem botão de ativação
+
 ## 🎁 Regras de Gifts
 
 ### Implementado ✅

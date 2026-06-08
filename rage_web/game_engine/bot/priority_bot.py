@@ -823,6 +823,12 @@ class PriorityBot:
             if not pode_usar_gift(self.player, card):
                 return False
 
+        # Caern: verificacoes especiais
+        if card.card_type == 'Caern':
+            from rage_web.game_engine.rules import pode_jogar_caern
+            if not pode_jogar_caern(self.player, card):
+                return False
+
         # Rage
         custo_rage = parse_custo_rage(card.damage)
         if custo_rage is not None and custo_rage > 0:
@@ -830,8 +836,9 @@ class PriorityBot:
                           for c in self.player.pack_home)
             if not tem_rage:
                 return False
-        # Gnosis
-        if card.gnosis and card.gnosis > 0:
+        # Gnosis (apenas para equipamentos Fetish, nao Caern)
+        # Caern.gnosis = Gauntlet rating, nao custo
+        if card.card_type != 'Caern' and card.gnosis and card.gnosis > 0:
             tem_gnosis = any(not c.is_tapped and c.gnosis >= card.gnosis
                             for c in self.player.pack_home)
             if not tem_gnosis:
