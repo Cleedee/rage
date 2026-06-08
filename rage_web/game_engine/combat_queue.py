@@ -575,6 +575,9 @@ def start_combat(game: GameState, attackers: list[str],
     # Tzinzie (1348): trigger de inicio de combate
     _check_tzinzie_trigger(game)
 
+    # Caern of the Unwashed Child (586): oponentes perdem 2 Rage ou Gnosis
+    _check_caern_unwashed_child(game)
+
     return True
 
 
@@ -1384,6 +1387,22 @@ def end_combat(game: GameState) -> bool:
     # Reverte formas Crinos para Breed
     _reverter_para_breed(game)
 
+    # Restaura debuff do Caern of the Unwashed Child
+    if 'unwashed_child_debuff' in game.combat_triggers:
+        debuff = game.combat_triggers.pop('unwashed_child_debuff')
+        for chave, dados in debuff.items():
+            # Encontra a criatura e restaura
+            for p in game.players:
+                if p.id == dados['player_id']:
+                    for c in p.pack_home + p.umbra + p.hunting_grounds:
+                        if c.card_id == dados['card_id']:
+                            setattr(c, dados['atributo'],
+                                    dados['valor_original'])
+                            game.add_log(
+                                f'[Caern] {c.name}: {dados["atributo"]} '
+                                f'restaurado para {dados["valor_original"]}')
+                            break
+
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')
     return True
@@ -1439,6 +1458,72 @@ def _check_hyenas_escape(game: GameState):
                 if cid in game.combat.declarations:
                     del game.combat.declarations[cid]
                 break
+
+
+def _check_caern_unwashed_child(game: GameState):
+    """Caern of the Unwashed Child (586): oponentes perdem 2 Rage/Gnosis
+
+    "Opponents facing your pack lose either 2 Gnosis or 2 Rage for
+     the duration of the combat (caern holder chooses which)."
+
+    Aplica o debuff aos personagens do atacante se o defensor
+    tiver este Caern. Armazena valores originais em combat_triggers
+    para restauracao em end_combat.
+    """
+    if not game.has_modifier('caern_unwashed_child'):
+        return
+
+    # Encontra quem tem o Caern (o defensor)
+    dono_caern = None
+    for p in game.players:
+        for mod in game.game_modifiers:
+            if mod.modifier == 'caern_unwashed_child':
+                # Verifica se o dono do card_uid pertence a este jogador
+                for c in p.pack_home + p.hunting_grounds:
+                    if id(c) == mod.card_uid:
+                        dono_caern = p
+                        break
+                if dono_caern:
+                    break
+        if dono_caern:
+            break
+
+    if not dono_caern:
+        return
+
+    # Oponentes sao os que NAO sao o dono do Caern
+    oponentes = [p for p in game.players if p.id != dono_caern.id]
+    if not oponentes:
+        return
+
+    # Escolhe qual atributo reduzir: Rage (padrao para bot)
+    # Regra: caern holder chooses. Para bot, escolhe Rage.
+    atributo = 'rage'
+
+    # Aplica o debuff a todos os personagens dos oponentes
+    reducao = 2
+    for op in oponentes:
+        for c in op.pack_home:
+            if c.card_id == 0 or c.card_id == -1:
+                continue  # Pula cartas temporarias
+            valor_original = getattr(c, atributo, 0)
+            if valor_original <= 1:
+                continue  # Nao pode reduzir abaixo de 1
+            novo_valor = max(1, valor_original - reducao)
+            setattr(c, atributo, novo_valor)
+            # Salva original para restaurar depois
+            if 'unwashed_child_debuff' not in game.combat_triggers:
+                game.combat_triggers['unwashed_child_debuff'] = {}
+            chave = f'{op.id}_{c.card_id}'
+            game.combat_triggers['unwashed_child_debuff'][chave] = {
+                'player_id': op.id,
+                'card_id': c.card_id,
+                'atributo': atributo,
+                'valor_original': valor_original,
+            }
+            game.add_log(
+                f'[Caern] {c.name} perdeu {reducao} {atributo} '
+                f'({valor_original} -> {novo_valor})')
 
 
 def get_declaration_summary(game: GameState) -> dict:

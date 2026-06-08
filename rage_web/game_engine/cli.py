@@ -973,7 +973,7 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                     uid += 1
         return cards
 
-    sept_types = {'Event', 'Action', 'Territory', 'Quest',
+    sept_types = {'Event', 'Action', 'Territory', 'Caern', 'Quest',
                   'Battlefield', 'Rite', 'Moot', 'Board Meeting',
                   'Gift', 'Ally', 'Ally - Victim', 'Ally - Enemy', 'Ally - Caern',
                   'Victim', 'Enemy',

@@ -1121,6 +1121,15 @@ class GameState:
             self.add_log(
                 f'{card.name}: pack pode atacar Enemies no HG por VP')
 
+        elif card.card_id == 586:  # Caern of the Unwashed Child
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='caern_unwashed_child',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: oponentes perdem 2 Rage/Gnosis em combate')
+
         elif card.card_id == 780:  # Termite Mounds
             modifier = GameModifier(
                 card_uid=id(card),
