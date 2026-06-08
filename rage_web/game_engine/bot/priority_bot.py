@@ -182,10 +182,29 @@ class PriorityBot:
             if (eh_ally
                 or ct in ('Equipment', 'Territory', 'Caern')
                 or ct == 'Equipment - Fetish - Bane Fetish'):
-                if self._pode_pagar_custos(card):
-                    self._play_card(i)
-                    self._cards_played_this_turn += 1
-                    return f'play_{card.card_type.lower()}_{card.card_id}'
+                if not self._pode_pagar_custos(card):
+                    continue
+                # Equipment com modelo_id E efeito equipar deve ser
+                # equipado via efeito, nao apenas jogado no pack_home.
+                # Equipment com modelo_id sem equipar (ex: Gooshy Gooze
+                # que aplica modificador diretamente) usa play normal.
+                if 'equipment' in ct.lower() and card.modelo_id:
+                    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        tem_equipar = any(
+                            e.tipo == 'equipar'
+                            for modo in modelo.modos
+                            for e in modo.efeitos
+                        )
+                        if tem_equipar:
+                            modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                            self._cards_played_this_turn += 1
+                            return self._usar_carta_efeito(i, modo_idx, card)
+                # Equipment sem modelo_id, sem equipar, Territory, Caern, Ally: play normal
+                self._play_card(i)
+                self._cards_played_this_turn += 1
+                return f'play_{card.card_type.lower()}_{card.card_id}'
 
         # 4. Tenta jogar efeitos de Gifts/Events/Actions
         for i, card in enumerate(me.hand):
