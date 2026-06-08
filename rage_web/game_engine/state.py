@@ -195,11 +195,18 @@ def descartar_anexos(card: CardInstance, dono: PlayerState):
 
     Regra (6.4.2): quando uma criatura morre, descarte todas as
     cartas (exceto Past Lives) anexadas a ela.
+    Inclui damage cards e equipamentos.
     """
+    # Descarta damage cards (regra 6.4)
     for anexo in card.attached_damage:
         anexo.zone = Zone.DISCARD_COMBAT
         dono.discard_combat.append(anexo)
     card.attached_damage.clear()
+    # Descarta equipamentos anexados (regra 6.4.2)
+    for eq in card.attached_equipment:
+        eq.zone = Zone.DISCARD_COMBAT
+        dono.discard_combat.append(eq)
+    card.attached_equipment.clear()
 
 
 @dataclass

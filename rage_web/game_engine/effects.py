@@ -491,6 +491,16 @@ class ResolvedorEfeitos:
             # Verifica flip para Crinos
             from rage_web.game_engine.combat_queue import _flipar_para_crinos
             _flipar_para_crinos(self.game, alvo)
+            # Processa morte (fora de combate)
+            if alvo.health_current <= 0:
+                from rage_web.game_engine.combat_queue import _processar_morte
+                dono_origem = None
+                for p in self.game.players:
+                    if p.id == jogador.id:
+                        dono_origem = p
+                        break
+                _processar_morte(self.game, alvo, origem,
+                                 dono_origem, em_combate=False)
             self.game.add_log(
                 f'{alvo.name} sofreu {qtd} de dano '
                 f'({alvo.health_current}/{alvo.health})'

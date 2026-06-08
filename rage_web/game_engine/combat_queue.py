@@ -17,6 +17,32 @@ from rage_web.game_engine.rules import COMBAT_STEPS
 ACOES_DEFENSIVAS = {'block', 'dodge'}
 
 
+def _eh_pack_gaia(dono: Optional[PlayerState]) -> bool:
+    """Verifica se o dono e um pack Gaia.
+    Heuristica: personagens com 'Gaia' no tipo.
+    """
+    if not dono:
+        return False
+    for c in dono.pack_home + dono.hunting_grounds + dono.umbra:
+        ct = (c.card_type or '').lower()
+        if 'character' in ct and 'gaia' in ct:
+            return True
+    return False
+
+
+def _eh_pack_wyrm(dono: Optional[PlayerState]) -> bool:
+    """Verifica se o dono e um pack Wyrm.
+    Heuristica: personagens com 'Wyrm' no tipo.
+    """
+    if not dono:
+        return False
+    for c in dono.pack_home + dono.hunting_grounds + dono.umbra:
+        ct = (c.card_type or '').lower()
+        if 'character' in ct and 'wyrm' in ct:
+            return True
+    return False
+
+
 def _flipar_para_crinos(game: GameState, card: CardInstance) -> bool:
     """Flip para forma Crinos quando dano atinge threshold.
 
@@ -78,7 +104,98 @@ def _flipar_para_crinos(game: GameState, card: CardInstance) -> bool:
         f'H={card.health_morph} G={card.gnosis_morph})'
     )
     return True
-    
+
+
+def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
+                      dono_origem: Optional[PlayerState],
+                      em_combate: bool = False) -> bool:
+    """Processa a morte de uma criatura.
+
+    Regra (6.4.2):
+    - Se morreu em combate: descarta anexos e vai pro Victory Pile
+      do oponente.
+    - Se morreu fora de combate ou por Presa: descarta anexos.
+      Non-character -> descartado. Character -> removido do jogo.
+    - Se morreu em combate mas foi morto por Presa (Victim/Enemy):
+      descarta anexos e vai pro Victory Pile de ninguem (ou descarta).
+
+    Args:
+        game: Estado da partida.
+        alvo: A criatura que morreu.
+        origem: A criatura que causou o dano.
+        dono_origem: Dono da origem (pode ser None se sem dono).
+        em_combate: Se True, a morte ocorreu durante um combate.
+
+    Returns:
+        True se a criatura foi processada como morta.
+    """
+    if alvo.health_current > 0:
+        return False
+
+    dono_alvo = _find_owner(game, alvo)
+
+    # Descarta anexos (damage cards + equipamentos)
+    if dono_alvo:
+        descartar_anexos(alvo, dono_alvo)
+    else:
+        # Sem dono (HG global): descarta anexos sem dono
+        for anexo in list(alvo.attached_damage):
+            anexo.zone = Zone.OUT_OF_PLAY
+        alvo.attached_damage.clear()
+        for eq in list(alvo.attached_equipment):
+            eq.zone = Zone.OUT_OF_PLAY
+        alvo.attached_equipment.clear()
+
+    # Verifica se foi morto por uma Presa (Victim/Enemy)
+    ct_origem = (origem.card_type or '').lower() if origem else ''
+    morto_por_presa = any(t in ct_origem for t in ['victim', 'enemy'])
+
+    if em_combate and not morto_por_presa and dono_origem:
+        # Morte em combate: vai pro Victory Pile do oponente
+        vp = alvo.renown if alvo.renown > 0 else 1
+        ct_alvo = (alvo.card_type or '').lower()
+        eh_gaia = _eh_pack_gaia(dono_origem)
+        eh_wyrm = _eh_pack_wyrm(dono_origem)
+        if eh_gaia and 'victim' in ct_alvo:
+            vp = 0
+        elif eh_wyrm and 'enemy' in ct_alvo:
+            vp = 0
+        if vp > 0:
+            dono_origem.victory_points += vp
+        alvo.zone = Zone.VICTORY_PILE
+        _remove_creature(game, alvo)
+        dono_origem.victory_pile.append(alvo)
+        if vp > 0:
+            game.add_log(
+                f'  {alvo.name} foi destruido! '
+                f'{dono_origem.name} ganhou {vp} VP '
+                f'(total: {dono_origem.victory_points})'
+            )
+        else:
+            game.add_log(
+                f'  {alvo.name} foi destruido! '
+                f'{dono_origem.name} ganhou 0 VP'
+            )
+        # Death triggers
+        game.check_death_triggers(alvo, origem, dono_origem)
+        game.check_kill_bonuses(alvo, dono_origem)
+    else:
+        # Morte fora de combate ou por Presa
+        if 'Character' in (alvo.card_type or '') or 'Ally' in (alvo.card_type or ''):
+            # Character/Ally: removido do jogo (nao vai pra VP de ninguem)
+            alvo.zone = Zone.REMOVED
+            _remove_creature(game, alvo)
+            game.add_log(f'  {alvo.name} foi destruido e removido do jogo!')
+        else:
+            # Non-character: descartado
+            alvo.zone = Zone.DISCARD_COMBAT
+            _remove_creature(game, alvo)
+            if dono_alvo:
+                dono_alvo.discard_combat.append(alvo)
+            game.add_log(f'  {alvo.name} foi destruido e descartado!')
+
+    return True
+
 
 COMBAT_ACTIONS = {
     'strike',           # Ataque basico
@@ -485,7 +602,7 @@ def _eh_combatente_valido(game: GameState, card_id: str) -> bool:
         return True  # Hunting Grounds e alvo valido (compatibilidade)
     card = _find_card(game, card_id)
     if card is None:
-        return True  # Carta nao encontrada — assume valida (leniente)
+        return True  # Carta nao encontrada - assume valida (leniente)
     ct = (card.card_type or '').lower()
     TIPOS_COMBATENTES = {'character', 'ally', 'enemy', 'victim',
                           'battlefield'}
@@ -685,11 +802,16 @@ def _find_player(game: GameState, player_id: str) -> Optional[PlayerState]:
 
 def _remove_creature(game: GameState, card: CardInstance):
     """Remove uma criatura de sua zona atual."""
+    # Tenta remover das zonas dos jogadores
     for p in game.players:
         for zone_list in (p.pack_home, p.hunting_grounds, p.umbra):
             if card in zone_list:
                 zone_list.remove(card)
                 return
+    # Tenta remover do Hunting Grounds global
+    if card in game.hunting_grounds_cards:
+        game.hunting_grounds_cards.remove(card)
+        return
 
 
 def _retirar_do_combate(game: GameState, criatura: CardInstance) -> bool:
@@ -760,30 +882,6 @@ def resolve_combat(game: GameState) -> bool:
     game.combat.step = 'resolve'
     game.add_log('━ Resolvendo combate...')
 
-    def _eh_pack_gaia(dono) -> bool:
-        """Verifica se o dono e um pack Gaia.
-        Heuristica: personagens com 'Gaia' no tipo.
-        """
-        if not dono:
-            return False
-        for c in dono.pack_home + dono.hunting_grounds + dono.umbra:
-            ct = (c.card_type or '').lower()
-            if 'character' in ct and 'gaia' in ct:
-                return True
-        return False
-
-    def _eh_pack_wyrm(dono) -> bool:
-        """Verifica se o dono e um pack Wyrm.
-        Heuristica: personagens com 'Wyrm' no tipo.
-        """
-        if not dono:
-            return False
-        for c in dono.pack_home + dono.hunting_grounds + dono.umbra:
-            ct = (c.card_type or '').lower()
-            if 'character' in ct and 'wyrm' in ct:
-                return True
-        return False
-
     def _processar_ataque(origem_id: str, alvo_id: str):
         """Processa um ataque de origem contra alvo."""
         if alvo_id == 'hg':
@@ -843,7 +941,7 @@ def resolve_combat(game: GameState) -> bool:
                 f'(restricao de Submission Hold)'
             )
             pode_esquivar = False
-            # Trata como se nao tivesse bloqueado — o dano sera aplicado
+            # Trata como se nao tivesse bloqueado - o dano sera aplicado
             # Continua para a aplicacao de dano abaixo
 
         # Alvo pode bloquear/esquivar (a menos que seja unblockable)
@@ -886,7 +984,7 @@ def resolve_combat(game: GameState) -> bool:
                             f'  Head Butt bloqueado, mas {origem_card.name} '
                             f'e Mokole (sem dano de volta)'
                         )
-                # Nao retorna — continua para aplicar dano reduzido
+                # Nao retorna - continua para aplicar dano reduzido
 
         if is_unblockable and acao_alvo in ('block', 'dodge'):
             game.add_log(
@@ -1012,53 +1110,21 @@ def resolve_combat(game: GameState) -> bool:
         if alvo_card.health_current <= 0:
             _flipar_para_crinos(game, alvo_card)
 
-        # Morte
+        # Morte (usa _processar_morte para logica unificada)
         if alvo_card.health_current <= 0:
-            dono_alvo = _find_owner(game, alvo_card)
-            # Descarta cartas anexadas (regra 6.4.2)
-            if dono_alvo:
-                descartar_anexos(alvo_card, dono_alvo)
-            vp = alvo_card.renown if alvo_card.renown > 0 else 1
-            # Regra 6.4.3: Gaia ganha 0 VP por Victim, Wyrm ganha 0 VP por Enemy
-            ct_alvo = (alvo_card.card_type or '').lower()
-            eh_gaia = _eh_pack_gaia(dono_origem)
-            eh_wyrm = _eh_pack_wyrm(dono_origem)
-            if eh_gaia and 'victim' in ct_alvo:
-                vp = 0
-                game.add_log(f'  {alvo_card.name} (Victim) foi destruido! '
-                             f'{dono_origem.name} (Gaia) ganhou 0 VP')
-            elif eh_wyrm and 'enemy' in ct_alvo:
-                vp = 0
-                game.add_log(f'  {alvo_card.name} (Enemy) foi destruido! '
-                             f'{dono_origem.name} (Wyrm) ganhou 0 VP')
-            if dono_origem:
-                dono_origem.victory_points += vp
-                alvo_card.zone = Zone.VICTORY_PILE
-                _remove_creature(game, alvo_card)
-                dono_origem.victory_pile.append(alvo_card)
-                if vp > 0:
-                    game.add_log(f'  {alvo_card.name} foi destruido! '
-                                 f'{dono_origem.name} ganhou {vp} VP '
-                                 f'(total: {dono_origem.victory_points})')
+            _processar_morte(game, alvo_card, origem_card,
+                             dono_origem, em_combate=True)
 
-                # Death triggers (ex: Dream Hunter)
-                game.check_death_triggers(
-                    alvo_card, origem_card, dono_origem
-                )
-
-                # Kill bonuses (Questor, The Pit, Chronicle)
-                game.check_kill_bonuses(alvo_card, dono_origem)
-
-                # Marca dano em quests (se alvo era alvo de quest, reseta)
-                for p in game.players:
-                    for q in p.quests:
-                        if q.target_card_uid == id(alvo_card) and not q.completed:
-                            # Alvo tomou dano fatal -> quest falhou
-                            q.completed = True
-                            game.add_log(
-                                f'  Quest falhou: {alvo_card.name} '
-                                f'(alvo da quest) foi destruido'
-                            )
+            # Marca dano em quests (se alvo era alvo de quest, reseta)
+            for p in game.players:
+                for q in p.quests:
+                    if q.target_card_uid == id(alvo_card) and not q.completed:
+                        # Alvo tomou dano fatal -> quest falhou
+                        q.completed = True
+                        game.add_log(
+                            f'  Quest falhou: {alvo_card.name} '
+                            f'(alvo da quest) foi destruido'
+                        )
 
     # Processa atacantes contra defensores (match por indice)
     for i, a_id in enumerate(game.combat.attackers):
@@ -1180,7 +1246,7 @@ def _eliminar_jogador(game: GameState, player: PlayerState) -> None:
     player.pack_home.clear()
 
     # 2. Cartas fora do Pack Home permanecem em jogo (Hunting Grounds, Umbra)
-    # Nao fazemos nada aqui — elas ja estao nas listas corretas
+    # Nao fazemos nada aqui - elas ja estao nas listas corretas
 
     # 3. Marcar jogador como eliminado (nao pode jogar sept cards)
     player.eliminado = True
