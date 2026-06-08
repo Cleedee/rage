@@ -578,7 +578,13 @@ class PriorityBot:
 
         Declara acoes para TODOS os combatentes (incluindo oponentes)
         para simplificar o ciclo sem necessidade de alternancia.
+
+        Regra (4.4.2): qualquer jogador exceto o atacante pode declarar
+        acoes de combate por uma Presa (Victim/Enemy/Battlefield) no HG.
         """
+        from rage_web.game_engine.combat_queue import _find_card, \
+            _eh_prey_no_hg, _eh_atacante_da_presa
+
         g = self.game
 
         if g.combat.step == 'declare':
@@ -587,17 +593,48 @@ class PriorityBot:
             for cid in all_cids:
                 if cid in g.combat.declarations:
                     continue
-                # Encontra a criatura em qualquer jogador
+
+                # Busca a carta em TODAS as zonas (incluindo HG)
+                card = _find_card(g, cid)
+                if card:
+                    # Se for uma Presa e o bot for o atacante,
+                    # nao pode declarar por ela (regra 4.4.2).
+                    # A auto-declaracao em reveal_all() cuida do default.
+                    if _eh_prey_no_hg(g, cid):
+                        if _eh_atacante_da_presa(g, cid, self.player_id):
+                            # Bot atacante: nao pode jogar pela presa
+                            continue
+                    action = self._choose_combat_action(card, card.owner_id)
+                    declare_action(g, cid, action)
+                    return f'declare_{cid}_{action}'
+
+                # Fallback: busca em pack_home (comportamento antigo)
                 for p in g.players:
                     for c in p.pack_home:
                         if str(c.card_id) == cid:
                             action = self._choose_combat_action(c, c.owner_id)
                             declare_action(g, cid, action)
                             return f'declare_{cid}_{action}'
-            # Todos ja declararam
-            if g.combat.all_declared(get_combatants(g)):
+
+            # Se sobram apenas Presas que o bot (como atacante) nao pode
+            # declarar, verifica se reveal_all() pode auto-declara-las.
+            # Se sim, prossegue; se nao, retorna wait.
+            combatants = get_combatants(g)
+            if g.combat.all_declared(combatants):
                 reveal_all(g)
                 return 'reveal'
+
+            # Verifica se as unicas nao declaradas sao Presas
+            # que serao auto-declaradas por reveal_all()
+            pendentes = [c for c in combatants
+                         if c not in g.combat.declarations]
+            if pendentes and all(
+                _eh_prey_no_hg(g, c) for c in pendentes
+            ):
+                # reveal_all() vai auto-declara-las como block
+                reveal_all(g)
+                return 'reveal'
+
             return 'combat_wait'
 
         elif g.combat.step == 'reveal':
@@ -710,15 +747,30 @@ class PriorityBot:
 
     def _decide_combat_random(self) -> str:
         """Acoes aleatorias em combate (modo facil)."""
+        from rage_web.game_engine.combat_queue import _find_card, \
+            _eh_prey_no_hg, _eh_atacante_da_presa
+
         g = self.game
         combatants = get_combatants(g)
 
         if g.combat.step == 'declare':
             for cid in combatants:
                 if cid not in g.combat.declarations:
+                    # Se for Presa e o bot for o atacante, pula
+                    if _eh_prey_no_hg(g, cid):
+                        if _eh_atacante_da_presa(g, cid, self.player_id):
+                            continue
                     action = random.choice(list(COMBAT_ACTIONS))
                     declare_action(g, cid, action)
                     return f'declare_{cid}_{action}'
+            # Se sobram apenas Presas que serao auto-declaradas
+            pendentes = [c for c in combatants
+                         if c not in g.combat.declarations]
+            if pendentes and all(
+                _eh_prey_no_hg(g, c) for c in pendentes
+            ):
+                reveal_all(g)
+                return 'reveal'
             if g.combat.all_declared(combatants):
                 reveal_all(g)
 

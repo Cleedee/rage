@@ -137,18 +137,27 @@ class TestRageCLI:
         assert not cli.game.combat.is_active
 
     def test_feint_cycle(self, cli):
-        """Usa FEINT para trocar acao."""
+        """Usa FEINT para trocar acao.
+
+        Ataca um personagem do oponente (nao HG) para que ambos
+        os lados declarem manualmente e o ultimo a declarar possa
+        usar Feint.
+        """
         cp = cli.game.current_player
         atk = cp.pack_home[0]
         atk_id = str(atk.card_id)
+        # Oponente: P2, primeiro personagem (Storm Howler, card_id 502)
+        opp_char_id = '502'
 
-        cli.onecmd(f'ATTACK {atk_id}')
+        cli.onecmd(f'ATTACK {atk_id} {opp_char_id}')
         cli.onecmd(f'DECLARE {atk_id} strike')
+        # Defensor declara depois -> ultimo a declarar, pode Feint
+        cli.onecmd(f'DECLARE {opp_char_id} block')
         cli.onecmd('REVEAL')
 
-        # Feint
-        cli.onecmd(f'FEINT {atk_id} block')
-        assert cli.game.combat.declarations.get(atk_id) == 'block'
+        # Feint com o defensor (ultimo a declarar)
+        cli.onecmd(f'FEINT {opp_char_id} dodge')
+        assert cli.game.combat.declarations.get(opp_char_id) == 'dodge'
 
     def test_pass_advances_player(self, cli):
         """PASS avanca para o proximo jogador."""

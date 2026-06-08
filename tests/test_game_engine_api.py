@@ -181,20 +181,34 @@ class TestGameAPI:
         assert not resp.get_json()['state']['combat']['is_active']
 
     def test_feint_cycle(self, client, game_id):
-        """Usa Feint via API."""
+        """Usa Feint via API.
+
+        Ataca um personagem do oponente (nao HG) para que ambos
+        os lados declarem manualmente e o ultimo a declarar possa
+        usar Feint.
+        """
+        from rage_web.game_engine.api import _games
+        game = _games.get(game_id)
+        # Oponente: P2, primeiro personagem (Storm Howler, card_id 502)
+        opp_char_id = '502'
+
         state = client.get(f'/api/game/{game_id}').get_json()['state']
         atk = state['players'][0]['pack_home'][0]
         atk_id = str(atk['card_id'])
 
         client.post(f'/api/game/{game_id}/attack',
-                    json={'attacker_id': atk_id})
+                    json={'attacker_id': atk_id,
+                          'defender_id': opp_char_id})
         client.post(f'/api/game/{game_id}/declare',
                     json={'card_id': atk_id, 'action': 'strike'})
+        client.post(f'/api/game/{game_id}/declare',
+                    json={'card_id': opp_char_id, 'action': 'block'})
         client.post(f'/api/game/{game_id}/reveal')
 
-        # Feint
+        # Feint com o defensor (ultimo a declarar)
         resp = client.post(f'/api/game/{game_id}/feint',
-                           json={'card_id': atk_id, 'new_action': 'block'})
+                           json={'card_id': opp_char_id,
+                                 'new_action': 'dodge'})
         assert resp.status_code == 200
 
     def test_pass_turn(self, client, game_id):

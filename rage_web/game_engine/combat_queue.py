@@ -572,13 +572,6 @@ def start_combat(game: GameState, attackers: list[str],
     )
 
     # Prey no HG se defende automaticamente (Block)
-    for dfd in defenders:
-        if dfd != 'hg' and _eh_prey_no_hg(game, dfd):
-            card = _find_card(game, dfd)
-            if card:
-                declare_action(game, dfd, 'block', acoes_extra=['block'])
-                game.add_log(f'  {card.name} (Presa) defende-se automaticamente')
-
     # Tzinzie (1348): trigger de inicio de combate
     _check_tzinzie_trigger(game)
 
@@ -623,6 +616,24 @@ def _eh_prey_no_hg(game: GameState, card_id: str) -> bool:
             return True
     if card in game.hunting_grounds_cards:
         return True
+    return False
+
+
+def _eh_atacante_da_presa(game: GameState, prey_card_id: str,
+                           player_id: str) -> bool:
+    """Verifica se o jogador e o atacante de uma presa no combate atual.
+
+    Os pares sao indexados: atacantes[i] vs defensores[i].
+    Se o atacante do par pertence a player_id, retorna True.
+    """
+    for i, dfd in enumerate(game.combat.defenders):
+        if dfd == prey_card_id:
+            if i < len(game.combat.attackers):
+                a_id = game.combat.attackers[i]
+                card = _find_card(game, a_id)
+                if card and card.owner_id == player_id:
+                    return True
+    return False
     return False
 
 
@@ -738,6 +749,20 @@ def reveal_all(game: GameState) -> bool:
         return False
     if game.combat.step != 'declare':
         return False
+
+    # Antes de revelar, auto-declara 'block' para presas que ainda
+    # nao receberam declaracao de nenhum jogador.
+    # Regra: qualquer jogador exceto o atacante pode declarar por uma presa.
+    # Se ninguem o fez, a presa bloqueia por padrao.
+    for dfd in game.combat.defenders:
+        if dfd != 'hg' and _eh_prey_no_hg(game, dfd):
+            if dfd not in game.combat.declarations:
+                card = _find_card(game, dfd)
+                if card:
+                    declare_action(game, dfd, 'block', acoes_extra=['block'])
+                    game.add_log(
+                        f'  {card.name} (Presa) defende-se automaticamente'
+                    )
 
     combatants = get_combatants(game)
     if not game.combat.all_declared(combatants):
