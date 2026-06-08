@@ -8,6 +8,14 @@ from rage_web.game_engine.cli import RageCLI, create_sample_game
 @pytest.fixture
 def cli():
     game = create_sample_game(seed=42)
+    # Adiciona alvo no HG para testes de combate
+    from rage_web.game_engine.state import Zone, CardInstance
+    vitima = CardInstance(
+        card_id=9999, name='Victim Test', card_type='Victim',
+        zone=Zone.HUNTING_GROUNDS, owner_id='global',
+        controller_id='global', health=3, health_current=3,
+    )
+    game.hunting_grounds_cards.append(vitima)
     return RageCLI(game=game)
 
 

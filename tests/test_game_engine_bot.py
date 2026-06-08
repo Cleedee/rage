@@ -133,6 +133,14 @@ class TestPriorityBot:
     def test_decide_combat(self, game):
         """Bot age em combate."""
         bot = PriorityBot(game, 'p1')
+        # Adiciona alvo no HG para o combate ser valido
+        from rage_web.game_engine.state import Zone, CardInstance
+        vitima = CardInstance(
+            card_id=9999, name='Victim Test', card_type='Victim',
+            zone=Zone.HUNTING_GROUNDS, owner_id='global',
+            controller_id='global', health=3, health_current=3,
+        )
+        game.hunting_grounds_cards.append(vitima)
         # Inicia combate manualmente
         from rage_web.game_engine.combat_queue import start_combat
         atk = game.players[0].pack_home[0]

@@ -497,12 +497,14 @@ class PriorityBot:
                         f'{alvo.name}')
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
 
-        # 3. Ataca Hunting Grounds (padrao)
-        start_combat(self.game, [meu_alpha_id], ['hg'])
-        alpha_card.is_tapped = True
-        self.game.add_log(
-            f'[BOT] Alpha {alpha_card.name} atacou Hunting Grounds')
-        return f'alpha_attack_hg_{meu_alpha_id}'
+        # 3. Ataca Hunting Grounds (se houver alvos)
+        if self._tem_alvos_no_hg():
+            start_combat(self.game, [meu_alpha_id], ['hg'])
+            alpha_card.is_tapped = True
+            self.game.add_log(
+                f'[BOT] Alpha {alpha_card.name} atacou Hunting Grounds')
+            return f'alpha_attack_hg_{meu_alpha_id}'
+        return None
 
     def _decide_easy(self) -> str:
         """Modo facil: acoes aleatorias."""
@@ -528,7 +530,7 @@ class PriorityBot:
             self._play_card(idx)
             return f'play_{idx}'
         elif choice == 'attack':
-            if self.player.pack_home:
+            if self.player.pack_home and self._tem_alvos_no_hg():
                 atk = random.choice(self.player.pack_home)
                 self._attack(str(atk.card_id), 'hg')
                 return f'attack_{atk.card_id}'
@@ -746,6 +748,26 @@ class PriorityBot:
         ct = (card.card_type or '').lower()
         return 'character' in ct or 'ally' in ct
 
+    def _tem_alvos_no_hg(self) -> bool:
+        """Verifica se ha alvos validos no Hunting Grounds.
+
+        Regra: so e possivel atacar Hunting Grounds quando ha
+        cartas do tipo Victim, Enemy ou Battlefield la.
+        Verifica tanto o HG global quanto o HG de cada jogador.
+        """
+        # HG global (vítimas/desafios da partida)
+        for c in self.game.hunting_grounds_cards:
+            ct = (c.card_type or '').lower()
+            if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+                return True
+        # HG de cada jogador
+        for p in self.game.players:
+            for c in p.hunting_grounds:
+                ct = (c.card_type or '').lower()
+                if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+                    return True
+        return False
+
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
 
@@ -956,10 +978,12 @@ class PriorityBot:
                         return (f'eliminate_{atacante.card_id}'
                                 f'_vs_{alvo.card_id}')
 
-        # Se nao ha alvos, ataca Hunting Grounds
-        best = max(available, key=lambda c: c.rage)
-        self._attack(str(best.card_id), 'hg')
-        return f'attack_hg_{best.card_id}'
+        # Se nao ha alvos em pack_home, tenta Hunting Grounds
+        if self._tem_alvos_no_hg():
+            best = max(available, key=lambda c: c.rage)
+            self._attack(str(best.card_id), 'hg')
+            return f'attack_hg_{best.card_id}'
+        return None
 
     # ------------------------------------------------------------------
     # Utilitarios

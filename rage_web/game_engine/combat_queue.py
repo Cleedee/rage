@@ -356,6 +356,27 @@ def start_combat(game: GameState, attackers: list[str],
             game.add_log(f'Combate cancelado: {dfd} nao e um combatente valido')
             return False
 
+    # Verifica se ataque ao HG tem alvos validos
+    if 'hg' in defenders:
+        tem_alvos = False
+        for c in game.hunting_grounds_cards:
+            ct = (c.card_type or '').lower()
+            if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+                tem_alvos = True
+                break
+        if not tem_alvos:
+            for p in game.players:
+                for c in p.hunting_grounds:
+                    ct = (c.card_type or '').lower()
+                    if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+                        tem_alvos = True
+                        break
+                if tem_alvos:
+                    break
+        if not tem_alvos:
+            game.add_log('Combate cancelado: nenhum alvo no Hunting Grounds')
+            return False
+
     # Verifica Gauntlet
     for atk in attackers:
         for dfd in defenders:

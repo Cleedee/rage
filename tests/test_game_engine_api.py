@@ -16,7 +16,21 @@ def game_id(client):
     resp = client.post('/api/game/new', json={'seed': 42})
     assert resp.status_code == 201
     data = resp.get_json()
-    return data['game_id']
+    game_id = data['game_id']
+
+    # Adiciona um alvo no HG para testes de combate
+    from rage_web.game_engine.state import Zone, CardInstance
+    from rage_web.game_engine.api import _games
+    game = _games.get(game_id)
+    if game:
+        vitima = CardInstance(
+            card_id=9999, name='Victim Test', card_type='Victim',
+            zone=Zone.HUNTING_GROUNDS, owner_id='global',
+            controller_id='global', health=3, health_current=3,
+        )
+        game.hunting_grounds_cards.append(vitima)
+
+    return game_id
 
 
 class TestGameAPI:
