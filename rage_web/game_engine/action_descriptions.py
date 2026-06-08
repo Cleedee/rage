@@ -111,8 +111,25 @@ def describe_action(acao: str, game=None) -> str:
 
 
 def _find_card_name(acao: str, game=None) -> Optional[str]:
-    """Tenta extrair o nome da carta da acao ou do log do jogo."""
-    # Tentar extrair do log do jogo
+    """Tenta extrair o nome da carta da acao ou do log do jogo.
+
+    Prioridade:
+    1. Extrair card_id da action string e buscar nas zonas do jogo
+       (mais preciso, evita nomes de cartas errados de entradas
+       de log nao relacionadas).
+    2. Fallback: ultima entrada 'jogou'/'usou' do log.
+    """
+    # 1. Tentar extrair ID da carta da acao (mais preciso)
+    card_id = _extract_card_id(acao)
+    if card_id and game:
+        for p in game.players:
+            for zone in (p.pack_home, p.hand, p.discard_combat, p.discard_sept,
+                         p.hunting_grounds, p.umbra):
+                for c in zone:
+                    if c.card_id == card_id:
+                        return c.name
+
+    # 2. Fallback: extrair do log do jogo
     if game and game.log:
         for log_entry in reversed(game.log):
             if 'jogou ' in log_entry:
@@ -127,16 +144,6 @@ def _find_card_name(acao: str, game=None) -> Optional[str]:
                     if ' (' in nome:
                         nome = nome[:nome.index(' (')]
                     return nome
-
-    # Tentar extrair ID da carta da acao
-    card_id = _extract_card_id(acao)
-    if card_id and game:
-        for p in game.players:
-            for zone in (p.pack_home, p.hand, p.discard_combat, p.discard_sept,
-                         p.hunting_grounds, p.umbra):
-                for c in zone:
-                    if c.card_id == card_id:
-                        return c.name
 
     return None
 
