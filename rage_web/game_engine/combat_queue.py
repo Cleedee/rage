@@ -346,6 +346,16 @@ def start_combat(game: GameState, attackers: list[str],
                 c.restricoes = [r for r in c.restricoes
                                 if r not in RESTRICOES_COMBATE]
 
+    # Verifica se atacantes e defensores sao combatentes validos
+    for atk in attackers:
+        if atk != 'hg' and not _eh_combatente_valido(game, atk):
+            game.add_log(f'Combate cancelado: {atk} nao e um combatente valido')
+            return False
+    for dfd in defenders:
+        if dfd != 'hg' and not _eh_combatente_valido(game, dfd):
+            game.add_log(f'Combate cancelado: {dfd} nao e um combatente valido')
+            return False
+
     # Verifica Gauntlet
     for atk in attackers:
         for dfd in defenders:
@@ -373,6 +383,30 @@ def start_combat(game: GameState, attackers: list[str],
     return True
 
 
+def _eh_combatente_valido(game: GameState, card_id: str) -> bool:
+    """Verifica se um card_id corresponde a um combatente valido.
+
+    Regra: apenas cartas com capacidade de combate podem atacar
+    ou ser alvo de ataques:
+    - Character, Ally: podem atacar e ser atacados
+    - Enemy, Victim, Battlefield: podem ser atacados (no HG)
+    - Equipment, Gift, Event, Action, etc.: NAO sao combatentes
+
+    Se a carta nao for encontrada em nenhuma zona (ex: acabou de
+    ser jogada ou e um ID de teste), retorna True (comportamento
+    leniente para compatibilidade).
+    """
+    if card_id == 'hg':
+        return True  # Hunting Grounds e alvo valido
+    card = _find_card(game, card_id)
+    if card is None:
+        return True  # Carta nao encontrada — assume valida (leniente)
+    ct = (card.card_type or '').lower()
+    TIPOS_COMBATENTES = {'character', 'ally', 'enemy', 'victim',
+                          'battlefield'}
+    return any(t in ct for t in TIPOS_COMBATENTES)
+
+
 def get_combatants(game: GameState) -> list[str]:
     """Retorna lista de IDs de todas as criaturas no combate.
 
@@ -382,7 +416,8 @@ def get_combatants(game: GameState) -> list[str]:
     result = []
     for cid in game.combat.attackers + game.combat.defenders:
         if cid != 'hg':
-            result.append(cid)
+            if _eh_combatente_valido(game, cid):
+                result.append(cid)
     return result
 
 

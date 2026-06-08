@@ -78,6 +78,11 @@ class PriorityBot:
 
         g = self.game
 
+        # Se o jogador foi eliminado, passa automaticamente
+        if getattr(self.player, 'eliminado', False):
+            self._pass_turn()
+            return 'pass_eliminated'
+
         # Se esta em combate, age no combate
         if g.combat.is_active:
             return self._decide_combat()
@@ -421,6 +426,7 @@ class PriorityBot:
 
         Com N jogadores, prioriza alphas de oponentes
         com mais VP (alianca implicita contra o lider).
+        So podem ser alpha Characters e Allies.
         """
         me = self.player
         opponents = self._get_opponents()
@@ -435,6 +441,8 @@ class PriorityBot:
                 break
 
         if not alpha_card or alpha_card.is_tapped:
+            return None
+        if not self._pode_atacar(alpha_card):
             return None
 
         from rage_web.game_engine.combat_queue import start_combat
@@ -729,6 +737,15 @@ class PriorityBot:
 
         return None
 
+    def _pode_atacar(self, card: CardInstance) -> bool:
+        """Verifica se uma carta pode atacar/combater.
+
+        Regra: apenas Characters e Allies podem entrar em combate.
+        Equipment, Gift, Event, Action, Territory, Caern, etc. nao.
+        """
+        ct = (card.card_type or '').lower()
+        return 'character' in ct or 'ally' in ct
+
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
 
@@ -742,7 +759,8 @@ class PriorityBot:
         if not me.pack_home:
             return None
 
-        available = [c for c in me.pack_home if not c.is_tapped]
+        available = [c for c in me.pack_home if not c.is_tapped
+                     and self._pode_atacar(c)]
         if not available:
             return None
 
@@ -905,12 +923,14 @@ class PriorityBot:
 
         Com N jogadores, ataca criaturas do lider em VP primeiro.
         Se nao ha alvos, ataca Hunting Grounds.
+        So podem atacar Characters e Allies.
         """
         me = self.player
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
 
-        available = [c for c in me.pack_home if not c.is_tapped]
+        available = [c for c in me.pack_home if not c.is_tapped
+                     and self._pode_atacar(c)]
         if not available:
             return None
 

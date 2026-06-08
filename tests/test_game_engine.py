@@ -207,7 +207,7 @@ class TestCombatState:
 
 class TestCombatQueue:
     def test_start_combat(self, game, creature1, creature2):
-        c1_id, c2_id = 'c1', 'c2'
+        c1_id, c2_id = str(creature1.card_id), str(creature2.card_id)
         game.players[0].pack_home.append(creature1)
         game.players[1].pack_home.append(creature2)
 
@@ -217,13 +217,18 @@ class TestCombatQueue:
         assert c1_id in game.combat.attackers
         assert c2_id in game.combat.defenders
 
-    def test_start_combat_already_active(self, game):
-        start_combat(game, ['c1'], ['c2'])
-        assert not start_combat(game, ['c3'], ['c4'])
+    def test_start_combat_already_active(self, game, creature1, creature2):
+        c1_id, c2_id = str(creature1.card_id), str(creature2.card_id)
+        game.players[0].pack_home.append(creature1)
+        game.players[1].pack_home.append(creature2)
+        start_combat(game, [c1_id], [c2_id])
+        assert not start_combat(game, ['999'], ['888'])
 
-    def test_declare_full_cycle(self, game):
+    def test_declare_full_cycle(self, game, creature1, creature2):
         """Ciclo completo: declarar, revelar, resolver, encerrar."""
-        c1, c2 = 'c1', 'c2'
+        c1, c2 = str(creature1.card_id), str(creature2.card_id)
+        game.players[0].pack_home.append(creature1)
+        game.players[1].pack_home.append(creature2)
         start_combat(game, [c1], [c2])
 
         # Declaracoes
