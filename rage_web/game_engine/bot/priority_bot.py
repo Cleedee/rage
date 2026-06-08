@@ -1233,6 +1233,50 @@ class PriorityBot:
                 self.game.add_log(
                     f'[BOT] {self.player.name} jogou {card.name}')
                 self.game.register_card_passives(card, self.player)
+                # Equipment: tenta equipar a uma criatura do pack
+                if 'equipment' in (card.card_type or '').lower():
+                    self._equip_card_to_pack(card)
+
+    def _equip_card_to_pack(self, card):
+        """Tenta equipar um Equipment a uma criatura do pack.
+
+        Usa as mesmas regras de _validar_restricoes_equipamento
+        para escolher o melhor alvo.
+        """
+        from rage_web.game_engine.state import Zone
+        candidates = [
+            c for c in self.player.pack_home
+            if c.card_id != card.card_id
+            and hasattr(c, 'attached_equipment')
+        ]
+        if not candidates:
+            return
+
+        # Importa validador de equipamento
+        from rage_web.game_engine.effects import ResolvedorEfeitos
+        resolvedor = ResolvedorEfeitos(self.game)
+
+        # Testa cada candidato em ordem: mais forte primeiro
+        def priority(c):
+            return (c.rage, c.gnosis, c.health)
+        candidates.sort(key=priority, reverse=True)
+
+        for alvo in candidates:
+            if resolvedor._validar_restricoes_equipamento(card, alvo):
+                # Equipa! Remove do pack_home, anexa ao alvo
+                if card in self.player.pack_home:
+                    self.player.pack_home.remove(card)
+                card.zone = Zone.OUT_OF_PLAY
+                alvo.attached_equipment.append(card)
+                self.game.add_log(
+                    f'[BOT] {self.player.name} equipou '
+                    f'{card.name} em {alvo.name}')
+                return
+
+        # Se nao achou alvo valido, deixa no pack_home mesmo
+        self.game.add_log(
+            f'[BOT] {self.player.name} nao achou alvo para '
+            f'{card.name}, deixou no pack')
 
     def _attack(self, attacker_id: str, defender_id: str):
         """Inicia combate e tapa a criatura atacante."""
