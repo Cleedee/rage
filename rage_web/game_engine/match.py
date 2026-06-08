@@ -187,6 +187,7 @@ def run_match(seed: int = 42, max_turns: int = 30,
     stale_steps = 0
     last_turn = game.turn_number
     last_phase = game.phase
+    last_log_len = 0  # rastreia quantas entradas do game.log ja mostramos
     max_steps = max_steps_override if max_steps_override else max_turns * 50
     if max_steps_override:
         print(f'  (max-steps: {max_steps})')
@@ -273,6 +274,73 @@ def run_match(seed: int = 42, max_turns: int = 30,
                     fase_alvo = action.replace('pass_', '').upper() if action != 'pass' else ''
                     label = f'⏭️  PASSAR {fase_alvo}' if fase_alvo else '⏭️  PASSAR'
                     print(f'  {color}{cp.name}: {label}{reset}')
+
+        # ── Mostra novas entradas do game.log (resultados: dano, morte, VP) ──
+        # Mostra apenas entradas de RESULTADO, pulando acoes ja exibidas
+        while last_log_len < len(game.log):
+            entry = game.log[last_log_len]
+            last_log_len += 1
+            entry_stripped = entry.strip()
+            # Remove prefixo de turno/fase (ex: '[T1 REDRAW]') para analise
+            entry_body = entry_stripped
+            if entry_body.startswith('[') and '] ' in entry_body:
+                entry_body = entry_body.split('] ', 1)[1]
+            # --- Entradas que SAO acoes (já exibidas) ---
+            if entry_body.startswith('[BOT]'):
+                continue
+            if ' passou' in entry_body or entry_body.startswith('Todos passaram'):
+                continue
+            if ' selecionou ' in entry_body and ' como alpha' in entry_body:
+                continue
+            if 'comprou ' in entry_body and 'carta' in entry_body:
+                continue
+            if 'pagou' in entry_body and ('Rage' in entry_body or 'Gnosis' in entry_body):
+                continue
+            if 'usou ' in entry_body and ('(' in entry_body or ')' in entry_body):
+                continue
+            if ' jogou ' in entry_body:
+                continue
+            if entry_body.startswith('(') and entry_body.endswith(')'):
+                continue
+            # Entrada vazia ou separador
+            if not entry_body or entry_body.startswith('━'):
+                continue
+            # --- Mostra entradas de RESULTADO ---
+            if 'foi destruido' in entry_body or 'foi eliminado' in entry_body:
+                print(f'    💀 {entry_stripped}')
+            elif 'causou' in entry_body and 'dano' in entry_body:
+                print(f'    💥 {entry_stripped}')
+            elif 'atacou Hunting Grounds' in entry_body:
+                print(f'    🎯 {entry_stripped}')
+            elif 'sofreu' in entry_body and 'dano' in entry_body:
+                print(f'    💥 {entry_stripped}')
+            elif 'VP' in entry_body:
+                print(f'    🏆 {entry_stripped}')
+            elif 'regenerou' in entry_body:
+                print(f'    💚 {entry_stripped}')
+            elif 'Quest' in entry_body or 'quest' in entry_body:
+                print(f'    📜 {entry_stripped}')
+            elif entry_body.startswith('('):
+                print(f'    📝 {entry_stripped}')
+            elif 'anulou' in entry_body:
+                print(f'    🛡️  {entry_stripped}')
+            elif 'Gauntlet' in entry_body:
+                print(f'    🌐 {entry_stripped}')
+            elif 'passiva' in entry_body.lower() or 'registrado' in entry_body:
+                continue
+            elif 'rage' in entry_body.lower() or 'gnosis' in entry_body.lower():
+                if '+' in entry_body or '-' in entry_body:
+                    print(f'    📊 {entry_stripped}')
+            elif 'Feint' in entry_body:
+                continue  # ja exibido como 🎭
+            elif 'Acoes reveladas' in entry_body:
+                continue  # ja exibido como 👁️
+            elif 'Resolvendo combate' in entry_body:
+                continue
+            else:
+                # Só mostra se parecer relevante
+                if any(kw in entry_body for kw in ['regenera', 'imune', 'ataque', 'dano', 'cura', 'morte']):
+                    print(f'    📋 {entry_stripped}')
 
         # A cada 4 acoes (fora de combate), mostra o tabuleiro
         if action_count % 4 == 0 and not game.combat.is_active and delay:
