@@ -1079,13 +1079,118 @@ class ResolvedorEfeitos:
         """
         kw = (equipamento.keywords or '').lower()
         alvo_kw = (alvo.keywords or '').lower()
+        alvo_ct = (alvo.card_type or '').lower()
+        alvo_name = (alvo.name or '').lower()
+        alvo_text = f'{alvo_name} {alvo_ct} {alvo_kw}'
 
-        # Assegai e similares: requer Homid ou Crinos
-        if 'weapon' in kw and 'assegai' in equipamento.name.lower():
-            if 'homid' not in alvo_kw and 'crinos' not in alvo_kw:
+        # ── 1. Fetish / Bane Fetish alignment restriction ──
+        # Fetish: apenas Gaia podem equipar
+        # Bane Fetish: apenas Wyrm podem equipar
+        # (alguns cards sao ambos - 'Fetish - Bane Fetish' - podem ambos)
+        # Nota: 'Non-Fetish' contem 'Fetish' mas NAO e Fetish
+        eh_non_fetish = 'non-fetish' in kw
+        eh_fetish = not eh_non_fetish and ('gaia fetish' in kw
+                    or ('fetish' in kw and 'bane fetish' not in kw))
+        eh_bane_fetish = not eh_non_fetish and 'bane fetish' in kw
+        eh_ambos = not eh_non_fetish and 'gaia fetish' in kw and 'bane fetish' in kw
+
+        if not eh_ambos and not eh_non_fetish:
+            # Gaia Fetish: alvo deve ser Gaia
+            if eh_fetish and 'gaia' not in alvo_text:
                 self.game.add_log(
-                    f'{equipamento.name} so pode ser usado em forma '
-                    f'Homid ou Crinos ({alvo.name}: {alvo.keywords})'
+                    f'{equipamento.name} e Fetish (Gaia), mas '
+                    f'{alvo.name} nao e Gaia'
+                )
+                return False
+            # Bane Fetish: alvo deve ser Wyrm
+            if eh_bane_fetish and 'wyrm' not in alvo_text:
+                self.game.add_log(
+                    f'{equipamento.name} e Bane Fetish (Wyrm), mas '
+                    f'{alvo.name} nao e Wyrm'
+                )
+                return False
+
+        # ── 2. Gnosis requirement for Fetish/Bane Fetish ──
+        gnosis_req = equipamento.gnosis or 0
+        if gnosis_req > 0 and alvo.gnosis < gnosis_req:
+            self.game.add_log(
+                f'{equipamento.name} requer Gnosis {gnosis_req}, mas '
+                f'{alvo.name} tem Gnosis {alvo.gnosis}'
+            )
+            return False
+
+        # ── 3. Keyword requirement validation (requires field) ──
+        requires = (equipamento.requires or '').strip()
+        if requires:
+            # Ignora formatos especiais que nao sao keywords
+            # Ex: 'Gnosis 2' (ja validado acima), '(Crinos form)' (validado abaixo)
+            req_lower = requires.lower()
+
+            # Se comeca com '(' e termina com ')', e formato especial (nao keyword)
+            if not (req_lower.startswith('(') and req_lower.endswith(')')):
+                # E uma keyword normal - verifica Rage FOO Rule
+                opcoes = [p.strip() for p in requires.split(' - ')]
+                from rage_web.game_engine.rules import _opcao_matches_char
+                from rage_web.game_engine.state import Zone
+                if not any(_opcao_matches_char(o, alvo_text, alvo.gnosis)
+                           for o in opcoes):
+                    self.game.add_log(
+                        f'{equipamento.name} requer "{requires}", mas '
+                        f'{alvo.name} nao atende '
+                        f'(keywords: {alvo.keywords})'
+                    )
+                    return False
+
+        # ── 4. Form restrictions (parentheses format) ──
+        # Formatos:
+        #   '(Homid Form)'  → keyword 'Homid' deve estar presente
+        #   '(Crinos form)' → keyword 'Crinos' deve estar presente
+        #   '(Not Animal form)' → keyword 'Animal' nao deve estar presente
+        #   '(Garou)'       → keyword 'Garou' deve estar presente
+        #   '(Silent Strider)' → texto 'silent strider' deve estar presente
+        if requires:
+            req_lower = requires.lower()
+            if req_lower.startswith('(') and req_lower.endswith(')'):
+                req_clean = req_lower.strip('()').strip()
+
+                # Verifica se e 'Not X form' (negacao)
+                if req_clean.startswith('not '):
+                    # Extrai a keyword apos 'Not ' e antes de ' form' (se houver)
+                    forma_text = req_clean[4:].strip()
+                    if forma_text.endswith(' form'):
+                        forma_text = forma_text[:-5].strip()
+                    if forma_text in alvo_text:
+                        self.game.add_log(
+                            f'{equipamento.name} requer que nao esteja '
+                            f'em forma {forma_text}, mas '
+                            f'{alvo.name} esta'
+                        )
+                        return False
+                else:
+                    # Forma positiva: extrai keyword antes de ' form' (se houver)
+                    forma_text = req_clean
+                    if forma_text.endswith(' form'):
+                        forma_text = forma_text[:-5].strip()
+                    if forma_text not in alvo_text:
+                        self.game.add_log(
+                            f'{equipamento.name} requer "{req_clean}", '
+                            f'mas {alvo.name} nao atende'
+                        )
+                        return False
+
+        # ── 5. Weapon/Armor limit (1 each) ──
+        eh_weapon = 'weapon' in kw
+        eh_armor = 'armor' in kw
+        for eq in alvo.attached_equipment:
+            eq_kw = (eq.keywords or '').lower()
+            if eh_weapon and 'weapon' in eq_kw:
+                self.game.add_log(
+                    f'{alvo.name} ja tem uma arma ({eq.name})'
+                )
+                return False
+            if eh_armor and 'armor' in eq_kw:
+                self.game.add_log(
+                    f'{alvo.name} ja tem uma armadura ({eq.name})'
                 )
                 return False
 
