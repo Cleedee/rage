@@ -781,12 +781,22 @@ class PriorityBot:
         return 'character' in ct or 'ally' in ct
 
     def _melhor_alvo_hg(self) -> Optional[CardInstance]:
-        """Encontra o melhor alvo no Hunting Grounds.
+        """Encontra o melhor alvo no Hunting Grounds considerando alinhamento.
 
-        Retorna a carta Victim/Enemy/Battlefield com maior
-        relacao renown/health (facil de matar, muito VP).
-        Apenas o Alpha pode atacar Prey no HG (regra 6.5.1).
+        Regra 6.4.3:
+        - Gaia packs ganham 0 VP por matar Victims.
+        - Wyrm packs ganham 0 VP por matar Enemies.
+
+        Prioridades:
+        1. Presas que dao VP cheio (alinhamento correto)
+        2. Presas que dao 0 VP (ataque de negacao, se valer a pena)
+        3. Melhor relacao renown/health dentro de cada grupo
+
+        Returns:
+            A melhor carta para atacar, ou None se nenhuma viavel.
         """
+        from rage_web.game_engine.combat_queue import _eh_pack_gaia, _eh_pack_wyrm
+
         TIPOS_HG = {'victim', 'enemy', 'battlefield'}
         candidatos = []
         # HG global
@@ -802,10 +812,40 @@ class PriorityBot:
                     candidatos.append(c)
         if not candidatos:
             return None
-        # Melhor relacao renown/health (VP rapido)
-        candidatos.sort(key=lambda c: (c.renown or 1) / max(c.health_current, 1),
-                        reverse=True)
-        return candidatos[0]
+
+        # Verifica alinhamento do pack
+        eh_gaia = _eh_pack_gaia(self.player)
+        eh_wyrm = _eh_pack_wyrm(self.player)
+
+        def _vp_real(c: CardInstance) -> int:
+            """Calcula VP real que esta presa renderia."""
+            ct = (c.card_type or '').lower()
+            vp_base = c.renown if c.renown > 0 else 1
+            if eh_gaia and 'victim' in ct:
+                return 0
+            if eh_wyrm and 'enemy' in ct:
+                return 0
+            return vp_base
+
+        def _chave_ordenacao(c: CardInstance) -> tuple:
+            """Chave de ordenacao: (vp>0?, eficiencia_vp, renown)."""
+            vp = _vp_real(c)
+            eficiencia = vp / max(c.health_current, 1)
+            return (vp > 0, eficiencia, c.renown or 0)
+
+        # Ordena: primeiro as que dao VP, depois por eficiencia
+        candidatos.sort(key=_chave_ordenacao, reverse=True)
+
+        melhor = candidatos[0]
+        vp_melhor = _vp_real(melhor)
+
+        if vp_melhor == 0:
+            self.game.add_log(
+                f'[BOT] {self.player.name}: so ha alvos que dao 0 VP '
+                f'no HG ({melhor.name})'
+            )
+
+        return melhor
 
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.

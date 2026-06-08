@@ -59,6 +59,24 @@
 - [ ] **Perfis de dificuldade** — Fácil (escolhas aleatórias), Médio (heurística), Difícil (árvore profundidade 3+)
 - [ ] **Treinamento** — Coletar dados de partidas para refinar heurísticas
 
+## 🦴 Regras de Prey (Enemies & Victims)
+
+### Implementado ✅
+- [x] **Prey no Hunting Grounds** — `zona_da_carta()` → 'hunting_grounds'
+- [x] **Não controlados por player específico** — `game.hunting_grounds_cards` (global)
+- [x] **Alpha pode atacar Prey** — `_agir_alpha()` com `_melhor_alvo_hg()`
+- [x] **Não-Alpha não ataca Prey** — `start_combat()` valida; `_pode_atacar()` restringe
+- [x] **Prey se defende (Block)** — Auto-declara block via `declare_action()`
+- [x] **Gaia→0VP por Victim, Wyrm→0VP por Enemy** — `_processar_morte()`
+- [x] **Morte por Presa → sem VP** — `_processar_morte()` `morto_por_presa`
+- [x] **Prey não frenzy/step sideways** — Regras de classe de criatura
+
+### ❌ Pendente
+- [x] **#3 Bot ignora alinhamento Gaia/Wyrm ao escolher presa** — `_melhor_alvo_hg()` não filtra presas que dão 0 VP
+- [ ] **#1 Outros jogadores podem jogar combat cards pela Presa** — Prey auto-declara block, mas ninguém mais pode agir por ela
+- [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
+- [ ] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — Priorizar VP rápido vs eliminar ameaça
+
 ## Extras
 - [ ] **Deck builder** — Drag & drop, busca enquanto constrói
 - [ ] **Compartilhar decks** — URL única para cada deck
