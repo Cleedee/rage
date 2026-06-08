@@ -184,6 +184,139 @@ def zona_da_carta(tipo: str) -> str:
     return 'pack_home'
 
 
+def _info_char(char: 'CardInstance') -> str:
+    """Retorna o texto completo de um personagem para matching."""
+    return f"{char.name or ''} {char.card_type or ''} {char.keywords or ''}".lower()
+
+
+def _extrair_gnosis_requisito(opcao: str) -> tuple:
+    """Extrai requisito de Gnosis de uma opcao, se houver.
+
+    Formato: '(Gnosis: 3) + Fianna'
+    Retorna: (gnosis_min, restante_texto) ou (0, opcao)
+    """
+    opcao = opcao.strip()
+    if opcao.startswith('(Gnosis:'):
+        partes = opcao.split(')', 1)
+        if len(partes) == 2:
+            gnosis_part = partes[0].replace('(Gnosis:', '').strip()
+            try:
+                gnosis_min = int(gnosis_part)
+                resto = partes[1].strip()
+                if resto.startswith('+'):
+                    resto = resto[1:].strip()
+                return (gnosis_min, resto)
+            except ValueError:
+                pass
+    return (0, opcao)
+
+
+def _opcao_matches_char(opcao: str, char_text: str,
+                         char_gnosis: int) -> bool:
+    """Verifica se uma opcao de requisito corresponde a um personagem.
+
+    Opcoes podem ser:
+    - 'Any': sempre OK
+    - 'Character in the Umbra': verifica zona
+    - 'Character with Quest': verifica quests
+    - '(Gnosis: N) + Keyword': Gnosis >= N AND keyword no texto
+    - 'Keyword': simplesmente verifica se keyword aparece no texto
+    """
+    opt_lower = opcao.lower().strip()
+
+    # Any: qualquer personagem serve
+    if opt_lower.startswith('any'):
+        # 'Any' sozinho ou 'Any Gaia Character' etc
+        if opt_lower == 'any':
+            return True
+        # Remove 'any ' do inicio e verifica se o resto aparece no texto
+        resto = opt_lower[4:].strip()  # Remove 'any '
+        if resto and resto in char_text:
+            return True
+        return False
+
+    # Character in the Umbra: verificado externamente
+    if 'character in the umbra' in opt_lower:
+        return 'umbra' in char_text  # Simplificado: zona #
+
+    if 'character with quest' in opt_lower:
+        return False  # Verificado externamente
+
+    # Extrai requisito de Gnosis se houver
+    gnosis_min, texto = _extrair_gnosis_requisito(opcao)
+    if gnosis_min > 0 and char_gnosis < gnosis_min:
+        return False
+
+    # Verifica se o texto do requisito aparece nos dados do personagem
+    if not texto:
+        return True
+    return texto.lower() in char_text
+
+
+def pode_recrutar_ally(player: 'PlayerState',
+                        ally_card: 'CardInstance') -> bool:
+    """Verifica se o jogador pode recrutar um Ally.
+
+    Regra (4.4.1): recrutar um Ally requer um Character que atenda
+    aos requisitos do Ally (campo `requires`).
+
+    O campo `requires` usa formato separado por " - " (OR).
+    Cada opcao pode ser:
+    - 'Any': qualquer personagem
+    - '(Gnosis: N) + Keyword': requer Gnosis >= N + keyword
+    - 'Keyword': personagem deve ter a keyword
+    - 'Character in the Umbra': personagem na Umbra
+    - 'Character with Quest': personagem com quest ativa
+
+    Args:
+        player: Estado do jogador.
+        ally_card: A carta Ally a ser recrutada.
+
+    Returns:
+        True se o jogador pode recrutar o Ally.
+    """
+    requires = (ally_card.requires or '').strip()
+    if not requires:
+        return True  # Sem requisito = sempre OK
+
+    # Coleta personagens do jogador
+    from rage_web.game_engine.state import Zone
+    characters = [c for c in player.pack_home
+                  if 'Character' in (c.card_type or '')]
+    if not characters:
+        return False  # Precisa de pelo menos 1 Character
+
+    # Requisitos sao separados por " - " (OR)
+    opcoes = [p.strip() for p in requires.split(' - ')]
+
+    # Para cada personagem, verifica se atende ALGUMA opcao
+    for char in characters:
+        char_text = _info_char(char)
+        char_gnosis = char.gnosis
+
+        # Verifica caso especial: 'Character in the Umbra'
+        algum_umbra = any(
+            'character in the umbra' in o.lower() for o in opcoes)
+        if algum_umbra and char.zone == Zone.UMBRA:
+            return True
+
+        # Verifica caso especial: 'Character with Quest'
+        algum_quest = any(
+            'character with quest' in o.lower() for o in opcoes)
+        if algum_quest and any(
+            q for q in player.quests
+            if q.target_card_uid == id(char)
+        ):
+            return True
+
+        # Verifica opcoes normais
+        if any(_opcao_matches_char(o, char_text, char_gnosis)
+               for o in opcoes):
+            return True
+
+    return False
+
+
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
 

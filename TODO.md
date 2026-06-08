@@ -73,7 +73,7 @@
 
 ### ❌ Pendente
 - [x] **#3 Bot ignora alinhamento Gaia/Wyrm ao escolher presa** — `_melhor_alvo_hg()` não filtra presas que dão 0 VP
-- [ ] **#1 Outros jogadores podem jogar combat cards pela Presa** — Prey auto-declara block, mas ninguém mais pode agir por ela
+- [x] **#1 Outros jogadores podem jogar combat cards pela Presa** — `start_combat()` não auto-declara mais; qualquer não-atacante pode declarar pela Presa via `_decide_combat()`
 - [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
 - [ ] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — Priorizar VP rápido vs eliminar ameaça
 

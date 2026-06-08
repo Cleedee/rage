@@ -232,8 +232,19 @@ def api_play(game_id: str):
     if idx < 0 or idx >= len(cp.hand):
         return jsonify({'error': f'Indice invalido. Mao tem {len(cp.hand)} cartas.'}), 400
 
-    from rage_web.game_engine.rules import zona_da_carta
-    card = cp.hand.pop(idx)
+    from rage_web.game_engine.rules import zona_da_carta, pode_recrutar_ally
+    card = cp.hand[idx]
+
+    # Verifica requisito de recrutamento para Allies (4.4.1)
+    if 'Ally' in (card.card_type or ''):
+        if not pode_recrutar_ally(cp, card):
+            return jsonify({
+                'error': f'Nao pode recrutar {card.name}: '
+                         f'nenhum personagem atende o requisito'
+                         f' ("{card.requires}")'
+            }), 400
+
+    cp.hand.pop(idx)
     zona = zona_da_carta(card.card_type or '')
     if zona == 'hunting_grounds':
         card.zone = Zone.HUNTING_GROUNDS

@@ -174,6 +174,11 @@ class PriorityBot:
         for i, card in enumerate(me.hand):
             ct = card.card_type or ''
             eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
+            if eh_ally:
+                # Verifica requisito de recrutamento (4.4.1)
+                from rage_web.game_engine.rules import pode_recrutar_ally
+                if not pode_recrutar_ally(me, card):
+                    continue  # Nao pode recrutar este Ally ainda
             if (eh_ally
                 or ct in ('Equipment', 'Territory', 'Caern')
                 or ct == 'Equipment - Fetish - Bane Fetish'):

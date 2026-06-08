@@ -438,7 +438,18 @@ class RageCLI(cmd.Cmd):
             print(f'Indice invalido. Mao tem {len(cp.hand)} cartas (0-{len(cp.hand)-1}).')
             return
 
-        card = cp.hand.pop(idx)
+        card = cp.hand[idx]
+
+        # Verifica requisito de recrutamento para Allies (4.4.1)
+        if 'Ally' in (card.card_type or ''):
+            from rage_web.game_engine.rules import pode_recrutar_ally
+            if not pode_recrutar_ally(cp, card):
+                print(f'  Nao pode recrutar {card.name}: '
+                      f'nenhum personagem atende o requisito'
+                      f' ("{card.requires}")')
+                return
+
+        cp.hand.pop(idx)
         card.zone = Zone.PACK_HOME
         card.health_current = card.health
         cp.pack_home.append(card)
