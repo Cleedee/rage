@@ -147,7 +147,12 @@ class PriorityBot:
             self._pass_turn()
             return 'pass_resource_limit'
 
-        # 1. Prioridade: jogar personagens primeiro
+        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
+        TIPOS_STUB = {'quest_check', 'combar_acao'}
+        # Cartas que vao para o Hunting Grounds (precisam ser jogadas cedo)
+        TIPOS_HG_CARD = {'Victim', 'Enemy', 'Battlefield'}
+
+        # 1. Prioridade maxima: jogar personagens
         for i, card in enumerate(me.hand):
             if card.card_type == 'Character':
                 if self._pode_pagar_custos(card):
@@ -155,13 +160,28 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return f'play_character_{card.card_id}'
 
-        # Tenta jogar efeitos de Gifts/Events/Actions (sempre, mesmo deck lento)
-        # NOTA: Moots e Board Meetings NAO sao jogados aqui — sao jogados
-        # exclusivamente na fase de Moot via _agir_moot
-        TIPOS_STUB = {'quest_check', 'combar_acao'}
-        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
+        # 2. Jogar cartas de HG (Victim/Enemy/Battlefield) — essenciais
+        #    para ter alvos no Hunting Grounds
         for i, card in enumerate(me.hand):
-            if card.modelo_id and card.card_type not in TIPOS_NAO_RECURSO:
+            if card.card_type in TIPOS_HG_CARD:
+                if self._pode_pagar_custos(card):
+                    self._play_card(i)
+                    self._cards_played_this_turn += 1
+                    return f'play_{card.card_type.lower()}_{card.card_id}'
+
+        # 3. Tenta jogar Ally, Equipment, Territory, Caern
+        for i, card in enumerate(me.hand):
+            if card.card_type in ('Ally', 'Equipment', 'Territory', 'Caern'):
+                if self._pode_pagar_custos(card):
+                    self._play_card(i)
+                    self._cards_played_this_turn += 1
+                    return f'play_{card.card_type.lower()}_{card.card_id}'
+
+        # 4. Tenta jogar efeitos de Gifts/Events/Actions
+        for i, card in enumerate(me.hand):
+            if (card.modelo_id
+                and card.card_type not in TIPOS_NAO_RECURSO
+                and card.card_type not in TIPOS_HG_CARD):
                 if self._pode_pagar_custos(card):
                     from rage_web.game_engine.effects import CARTAS_EXEMPLO
                     modelo = CARTAS_EXEMPLO.get(card.modelo_id)
@@ -174,14 +194,6 @@ class PriorityBot:
                                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
                                 self._cards_played_this_turn += 1
                                 return self._usar_carta_efeito(i, modo_idx, card)
-
-        # 3. Tenta jogar Ally, Equipment, Territory
-        for i, card in enumerate(me.hand):
-            if card.card_type in ('Ally', 'Equipment', 'Territory', 'Caern'):
-                if self._pode_pagar_custos(card):
-                    self._play_card(i)
-                    self._cards_played_this_turn += 1
-                    return f'play_{card.card_type.lower()}_{card.card_id}'
 
         self._pass_turn()
         return 'pass_resource'
@@ -755,16 +767,17 @@ class PriorityBot:
         cartas do tipo Victim, Enemy ou Battlefield la.
         Verifica tanto o HG global quanto o HG de cada jogador.
         """
+        TIPOS_HG = {'victim', 'enemy', 'battlefield'}
         # HG global (vítimas/desafios da partida)
         for c in self.game.hunting_grounds_cards:
             ct = (c.card_type or '').lower()
-            if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+            if any(t in ct for t in TIPOS_HG):
                 return True
         # HG de cada jogador
         for p in self.game.players:
             for c in p.hunting_grounds:
                 ct = (c.card_type or '').lower()
-                if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+                if any(t in ct for t in TIPOS_HG):
                     return True
         return False
 

@@ -286,6 +286,10 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 entry_body = entry_body.split('] ', 1)[1]
             # --- Entradas que SAO acoes (já exibidas) ---
             if entry_body.startswith('[BOT]'):
+                body = entry_body[5:].strip()  # Remove '[BOT] '
+                # Mostra acoes do bot que nao sao duplicadas
+                if not body.startswith(('pagou', 'passou', 'selecionou', 'comprou')):
+                    print(f'    🤖 {body}')
                 continue
             if ' passou' in entry_body or entry_body.startswith('Todos passaram'):
                 continue
