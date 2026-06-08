@@ -77,6 +77,25 @@
 - [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
 - [ ] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — Priorizar VP rápido vs eliminar ameaça
 
+## 🤝 Regras de Allies
+
+### Implementado ✅
+- [x] **Vai pro Pack Home** — `zona_da_carta('ally')` → `'pack_home'`
+- [x] **Pode lutar em combates** — `TIPOS_COMBATENTES` inclui `'ally'`
+- [x] **Pode equipar e usar Gifts** — Sem restrição por card type
+- [x] **Pode ser alpha** — `selecionar_alfa` aceita Character ou Ally
+- [x] **É membro do pack** — Afetado por Pack Totems e bônus de pack
+- [x] **Não pode Frenzy / Step Sideways** — Regras de classe de criatura
+- [x] **Regenera conforme creature class** — `_pode_regenerar` checa keywords
+- [x] **Morte fora de combate → removido do jogo** — `Zone.REMOVED`
+- [x] **Morte em combate → VP do oponente** — `_processar_morte()`
+- [x] **Recrutador morre → Ally fica** — Só removido se TODOS Characters morrerem
+- [x] **Requisito de recrutamento validado** — `pode_recrutar_ally()` em `rules.py` parseia campo `requires` e verifica personagens do jogador (Gnosis, keywords, zona)
+
+### ❌ Pendente
+- [ ] **Allies não jogam Actions/Past Lives/Rites/Totems/pack resources** — Engine não filtra por card type para Allies (baixo impacto)
+- [ ] **Allies não podem ser descartados voluntariamente** — Não há mecânica de descarte voluntário na engine
+
 ## Extras
 - [ ] **Deck builder** — Drag & drop, busca enquanto constrói
 - [ ] **Compartilhar decks** — URL única para cada deck
