@@ -31,6 +31,7 @@ from rage_web.game_engine.rules import PHASES
 def _make_sample_card(card_id: int, name: str, card_type: str,
                       owner_id: str, rng: random.Random) -> CardInstance:
     """Cria uma carta de exemplo para testes."""
+    health = rng.randint(3, 7)
     return CardInstance(
         card_id=card_id,
         name=name,
@@ -40,8 +41,8 @@ def _make_sample_card(card_id: int, name: str, card_type: str,
         controller_id=owner_id,
         rage=rng.randint(1, 5),
         gnosis=rng.randint(1, 4),
-        health=rng.randint(3, 7),
-        health_current=0,
+        health=health,
+        health_current=health,
     )
 
 
@@ -941,7 +942,7 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                         rage=card_model.rage or 0,
                         gnosis=card_model.gnosis or 0,
                         health=card_model.health or 0,
-                        health_current=0,
+                        health_current=card_model.health or 0,
                         renown=card_model.renown or 0,
                         damage=card_model.damage or '',
                         text=card_model.text or '',
@@ -954,7 +955,8 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
 
     sept_types = {'Event', 'Action', 'Territory', 'Quest',
                   'Battlefield', 'Rite', 'Moot', 'Board Meeting',
-                  'Gift', 'Ally', 'Victim', 'Enemy',
+                  'Gift', 'Ally', 'Ally - Victim', 'Ally - Enemy', 'Ally - Caern',
+                  'Victim', 'Enemy',
                   'Equipment', 'Equipment - Fetish - Bane Fetish'}
 
     players = []

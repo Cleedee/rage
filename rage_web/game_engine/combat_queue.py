@@ -772,32 +772,57 @@ def resolve_combat(game: GameState) -> bool:
         retira_se_ferido = props.get('retira_se_ferido', False)
 
         # Verifica se o alvo tem restricao de nao poder esquivar
+        pode_esquivar = True
         if acao_alvo == 'dodge' and 'nao_pode_esquivar' in alvo_card.restricoes:
             game.add_log(
                 f'  {alvo_card.name} tentou esquivar, mas nao pode! '
                 f'(restricao de Submission Hold)'
             )
+            pode_esquivar = False
             # Trata como se nao tivesse bloqueado — o dano sera aplicado
             # Continua para a aplicacao de dano abaixo
+
         # Alvo pode bloquear/esquivar (a menos que seja unblockable)
-        elif acao_alvo in ('block', 'dodge') and not is_unblockable:
-            game.add_log(f'  {alvo_card.name} {acao_alvo}ou o ataque de '
-                         f'{origem_card.name}')
-            # Head Butt: se bloqueado, vira damage card no atacante (exceto Mokole)
-            if acao_origem == 'head_butt':
-                keywords = (origem_card.keywords or '').lower()
-                if 'mokole' not in keywords:
-                    anexar_dano(origem_card, origem_card, 4, dono_dono)
-                    game.add_log(
-                        f'  Head Butt bloqueado! {origem_card.name} '
-                        f'recebe 4 de dano de volta'
-                    )
-                else:
-                    game.add_log(
-                        f'  Head Butt bloqueado, mas {origem_card.name} '
-                        f'e Mokole (sem dano de volta)'
-                    )
-            return
+        bloqueou_ou_esquivou = False
+        reducao_block = 0
+        if acao_alvo in ('block', 'dodge') and not is_unblockable:
+            if acao_alvo == 'dodge' and pode_esquivar:
+                # Dodge: dano totalmente evitado
+                game.add_log(f'  {alvo_card.name} esquivou do ataque de '
+                             f'{origem_card.name}')
+                # Head Butt: se esquivado, vira damage card no atacante
+                if acao_origem == 'head_butt':
+                    keywords = (origem_card.keywords or '').lower()
+                    if 'mokole' not in keywords:
+                        anexar_dano(origem_card, origem_card, 4, dono_dono)
+                        game.add_log(
+                            f'  Head Butt esquivado! {origem_card.name} '
+                            f'recebe 4 de dano de volta'
+                        )
+                return  # Dodge: sem dano
+            elif acao_alvo == 'block':
+                # Block: reduz dano pela Rage do defensor
+                reducao_block = alvo_card.effective_rage
+                game.add_log(
+                    f'  {alvo_card.name} bloqueou o ataque de '
+                    f'{origem_card.name} (reducao: {reducao_block})'
+                )
+                bloqueou_ou_esquivou = True
+                # Head Butt: se bloqueado, vira damage card no atacante (exceto Mokole)
+                if acao_origem == 'head_butt':
+                    keywords = (origem_card.keywords or '').lower()
+                    if 'mokole' not in keywords:
+                        anexar_dano(origem_card, origem_card, 4, dono_dono)
+                        game.add_log(
+                            f'  Head Butt bloqueado! {origem_card.name} '
+                            f'recebe 4 de dano de volta'
+                        )
+                    else:
+                        game.add_log(
+                            f'  Head Butt bloqueado, mas {origem_card.name} '
+                            f'e Mokole (sem dano de volta)'
+                        )
+                # Nao retorna — continua para aplicar dano reduzido
 
         if is_unblockable and acao_alvo in ('block', 'dodge'):
             game.add_log(
@@ -833,6 +858,21 @@ def resolve_combat(game: GameState) -> bool:
             dano = 0
         else:
             dano = max(0, origem_card.effective_rage - alvo_card.reducao_dano)
+            # Head Butt bloqueado: nao causa dano ao defensor (ja tomou bounce)
+            if bloqueou_ou_esquivou and acao_origem == 'head_butt':
+                dano = 0
+                game.add_log(
+                    f'  Head Butt foi bloqueado! {alvo_card.name} '
+                    f'toma 0 de dano (bounce de 4 no atacante)'
+                )
+            # Block reduz o dano pela Rage do defensor
+            elif bloqueou_ou_esquivou:
+                dano = max(0, dano - reducao_block)
+                if dano == 0:
+                    game.add_log(
+                        f'  {alvo_card.name} bloqueou todo o dano '
+                        f'({reducao_block} >= {origem_card.effective_rage})'
+                    )
 
         # Ironjaw (369): +1 dano se nem ela nem alvo tem arma
         if 'ironjaw_bonus' in origem_card.restricoes:

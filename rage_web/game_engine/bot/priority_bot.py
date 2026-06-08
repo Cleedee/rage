@@ -150,7 +150,8 @@ class PriorityBot:
         TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
         TIPOS_STUB = {'quest_check', 'combar_acao'}
         # Cartas que vao para o Hunting Grounds (precisam ser jogadas cedo)
-        TIPOS_HG_CARD = {'Victim', 'Enemy', 'Battlefield'}
+        # Usa zona_da_carta para detectar corretamente subtipos como 'Ally - Enemy'
+        from rage_web.game_engine.rules import zona_da_carta
 
         # 1. Prioridade maxima: jogar personagens
         for i, card in enumerate(me.hand):
@@ -160,18 +161,22 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return f'play_character_{card.card_id}'
 
-        # 2. Jogar cartas de HG (Victim/Enemy/Battlefield) — essenciais
+        # 2. Jogar cartas de HG (Victim/Enemy/Battlefield + subtipos) — essenciais
         #    para ter alvos no Hunting Grounds
         for i, card in enumerate(me.hand):
-            if card.card_type in TIPOS_HG_CARD:
+            if zona_da_carta(card.card_type or '') == 'hunting_grounds':
                 if self._pode_pagar_custos(card):
                     self._play_card(i)
                     self._cards_played_this_turn += 1
-                    return f'play_{card.card_type.lower()}_{card.card_id}'
+                    return f'play_hg_{card.card_id}'
 
-        # 3. Tenta jogar Ally, Equipment, Territory, Caern
+        # 3. Tenta jogar Ally (incluindo subtipos), Equipment, Territory, Caern
         for i, card in enumerate(me.hand):
-            if card.card_type in ('Ally', 'Equipment', 'Territory', 'Caern'):
+            ct = card.card_type or ''
+            eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
+            if (eh_ally
+                or ct in ('Equipment', 'Territory', 'Caern')
+                or ct == 'Equipment - Fetish - Bane Fetish'):
                 if self._pode_pagar_custos(card):
                     self._play_card(i)
                     self._cards_played_this_turn += 1
@@ -179,9 +184,15 @@ class PriorityBot:
 
         # 4. Tenta jogar efeitos de Gifts/Events/Actions
         for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            eh_hg = zona_da_carta(ct) == 'hunting_grounds'
+            eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
+            eh_recurso = (ct in ('Equipment', 'Territory', 'Caern',
+                                  'Equipment - Fetish - Bane Fetish')
+                          or eh_ally or eh_hg)
             if (card.modelo_id
                 and card.card_type not in TIPOS_NAO_RECURSO
-                and card.card_type not in TIPOS_HG_CARD):
+                and not eh_recurso):
                 if self._pode_pagar_custos(card):
                     from rage_web.game_engine.effects import CARTAS_EXEMPLO
                     modelo = CARTAS_EXEMPLO.get(card.modelo_id)
@@ -856,9 +867,20 @@ class PriorityBot:
                 self._play_card(i)
                 return f'play_character_{card.card_id}'
 
-        # 2. Joga Ally, Equipment, Territory, Caern
+        # 2. Joga cartas de HG (Victim/Enemy/Battlefield + subtipos)
         for i, card in enumerate(me.hand):
-            if card.card_type in ('Ally', 'Equipment', 'Territory', 'Caern'):
+            from rage_web.game_engine.rules import zona_da_carta
+            if zona_da_carta(card.card_type or '') == 'hunting_grounds':
+                self._play_card(i)
+                return f'play_hg_{card.card_id}'
+
+        # 3. Joga Ally (incluindo subtipos), Equipment, Territory, Caern
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
+            if (eh_ally
+                or ct in ('Equipment', 'Territory', 'Caern')
+                or ct == 'Equipment - Fetish - Bane Fetish'):
                 self._play_card(i)
                 return f'play_{card.card_type.lower()}_{card.card_id}'
 
