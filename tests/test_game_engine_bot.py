@@ -141,10 +141,10 @@ class TestPriorityBot:
             controller_id='global', health=3, health_current=3,
         )
         game.hunting_grounds_cards.append(vitima)
-        # Inicia combate manualmente
+        # Inicia combate manualmente contra a vitima
         from rage_web.game_engine.combat_queue import start_combat
         atk = game.players[0].pack_home[0]
-        start_combat(game, [str(atk.card_id)], ['hg'])
+        start_combat(game, [str(atk.card_id)], [str(vitima.card_id)])
 
         # Bot esta em combate, deve declarar
         action = bot.decide()

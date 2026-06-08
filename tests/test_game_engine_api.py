@@ -126,7 +126,7 @@ class TestGameAPI:
         assert 'error' in resp.get_json()
 
     def test_attack_hunting_grounds(self, client, game_id):
-        """POST /api/game/<id>/attack contra hunting grounds."""
+        """POST /api/game/<id>/attack contra prey no hunting grounds."""
         state = client.get(f'/api/game/{game_id}').get_json()['state']
         atk = state['players'][0]['pack_home'][0]
         atk_id = str(atk['card_id'])
@@ -136,6 +136,9 @@ class TestGameAPI:
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['combat']['is_active'] or data['state']['combat']['is_active']
+        # Verifica que o combate e contra um alvo especifico, nao 'hg'
+        combat = data.get('combat') or data['state']['combat']
+        assert 'hg' not in combat.get('defenders', [])
 
     def test_attack_creature(self, client, game_id):
         """POST /api/game/<id>/attack contra criatura."""

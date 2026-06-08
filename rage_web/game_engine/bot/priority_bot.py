@@ -509,12 +509,14 @@ class PriorityBot:
                         f'{alvo.name}')
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
 
-        # 3. Ataca Hunting Grounds (se houver alvos)
-        if self._tem_alvos_no_hg():
-            start_combat(self.game, [meu_alpha_id], ['hg'])
+        # 3. Ataca uma presa especifica no Hunting Grounds
+        alvo_hg = self._melhor_alvo_hg()
+        if alvo_hg:
+            start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
             alpha_card.is_tapped = True
             self.game.add_log(
-                f'[BOT] Alpha {alpha_card.name} atacou Hunting Grounds')
+                f'[BOT] Alpha {alpha_card.name} atacou '
+                f'{alvo_hg.name} no Hunting Grounds')
             return f'alpha_attack_hg_{meu_alpha_id}'
         return None
 
@@ -542,10 +544,17 @@ class PriorityBot:
             self._play_card(idx)
             return f'play_{idx}'
         elif choice == 'attack':
-            if self.player.pack_home and self._tem_alvos_no_hg():
-                atk = random.choice(self.player.pack_home)
-                self._attack(str(atk.card_id), 'hg')
-                return f'attack_{atk.card_id}'
+            # Modo facil: alpha ataca um alvo no HG se houver
+            meu_alpha_id = self.game.combat.alphas.get(self.player_id)
+            alvo_hg = self._melhor_alvo_hg()
+            if meu_alpha_id and alvo_hg:
+                start_combat(self.game, [meu_alpha_id],
+                             [str(alvo_hg.card_id)])
+                for c in self.player.pack_home:
+                    if str(c.card_id) == meu_alpha_id:
+                        c.is_tapped = True
+                        break
+                return f'attack_{meu_alpha_id}'
         elif choice == 'draw':
             self._draw()
             return 'draw'
@@ -760,26 +769,32 @@ class PriorityBot:
         ct = (card.card_type or '').lower()
         return 'character' in ct or 'ally' in ct
 
-    def _tem_alvos_no_hg(self) -> bool:
-        """Verifica se ha alvos validos no Hunting Grounds.
+    def _melhor_alvo_hg(self) -> Optional[CardInstance]:
+        """Encontra o melhor alvo no Hunting Grounds.
 
-        Regra: so e possivel atacar Hunting Grounds quando ha
-        cartas do tipo Victim, Enemy ou Battlefield la.
-        Verifica tanto o HG global quanto o HG de cada jogador.
+        Retorna a carta Victim/Enemy/Battlefield com maior
+        relacao renown/health (facil de matar, muito VP).
+        Apenas o Alpha pode atacar Prey no HG (regra 6.5.1).
         """
         TIPOS_HG = {'victim', 'enemy', 'battlefield'}
-        # HG global (vítimas/desafios da partida)
+        candidatos = []
+        # HG global
         for c in self.game.hunting_grounds_cards:
             ct = (c.card_type or '').lower()
-            if any(t in ct for t in TIPOS_HG):
-                return True
+            if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
+                candidatos.append(c)
         # HG de cada jogador
         for p in self.game.players:
             for c in p.hunting_grounds:
                 ct = (c.card_type or '').lower()
-                if any(t in ct for t in TIPOS_HG):
-                    return True
-        return False
+                if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
+                    candidatos.append(c)
+        if not candidatos:
+            return None
+        # Melhor relacao renown/health (VP rapido)
+        candidatos.sort(key=lambda c: (c.renown or 1) / max(c.health_current, 1),
+                        reverse=True)
+        return candidatos[0]
 
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
@@ -957,8 +972,8 @@ class PriorityBot:
         """Prioridade 4: Atacar.
 
         Com N jogadores, ataca criaturas do lider em VP primeiro.
-        Se nao ha alvos, ataca Hunting Grounds.
-        So podem atacar Characters e Allies.
+        Regra 6.5.1: apenas o Alpha pode iniciar ataque; ataque
+        de nao-Alpha requer card ability.
         """
         me = self.player
         opponents = self._get_opponents()
@@ -983,19 +998,12 @@ class PriorityBot:
             for alvo in ameacas:
                 atacante = self.prioritizer.best_attacker_for(alvo, available)
                 if atacante:
-                    # Deck lento: abaixa threshold — ataca mesmo sem
-                    # garantia de eliminar, so para causar dano
                     if self.prioritizer.pode_eliminar(atacante, alvo) or (
                             lento and atacante.rage >= alvo.rage * 0.5):
                         self._attack(str(atacante.card_id), str(alvo.card_id))
                         return (f'eliminate_{atacante.card_id}'
                                 f'_vs_{alvo.card_id}')
 
-        # Se nao ha alvos em pack_home, tenta Hunting Grounds
-        if self._tem_alvos_no_hg():
-            best = max(available, key=lambda c: c.rage)
-            self._attack(str(best.card_id), 'hg')
-            return f'attack_hg_{best.card_id}'
         return None
 
     # ------------------------------------------------------------------
@@ -1065,6 +1073,7 @@ class PriorityBot:
             zona = zona_da_carta(card.card_type or '')
             if zona == 'hunting_grounds':
                 card.zone = Zone.HUNTING_GROUNDS
+                card.health_current = card.health
                 self.player.hunting_grounds.append(card)
                 self.game.add_log(
                     f'[BOT] {self.player.name} jogou {card.name} '

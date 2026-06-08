@@ -356,26 +356,18 @@ def start_combat(game: GameState, attackers: list[str],
             game.add_log(f'Combate cancelado: {dfd} nao e um combatente valido')
             return False
 
-    # Verifica se ataque ao HG tem alvos validos
-    if 'hg' in defenders:
-        tem_alvos = False
-        for c in game.hunting_grounds_cards:
-            ct = (c.card_type or '').lower()
-            if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
-                tem_alvos = True
-                break
-        if not tem_alvos:
-            for p in game.players:
-                for c in p.hunting_grounds:
-                    ct = (c.card_type or '').lower()
-                    if any(t in ct for t in ('victim', 'enemy', 'battlefield')):
-                        tem_alvos = True
-                        break
-                if tem_alvos:
-                    break
-        if not tem_alvos:
-            game.add_log('Combate cancelado: nenhum alvo no Hunting Grounds')
-            return False
+    # Verifica se ataque a Prey no HG tem alvo valido
+    for dfd in defenders:
+        if dfd not in ('hg',) and _eh_prey_no_hg(game, dfd):
+            break  # Alvo valido
+    else:
+        for dfd in defenders:
+            if dfd != 'hg' and _find_card(game, dfd):
+                break  # Alvo valido (outra criatura)
+        else:
+            if 'hg' in defenders:
+                game.add_log('Combate cancelado: ataque HG requer alvo especifico')
+                return False
 
     # Verifica Gauntlet
     for atk in attackers:
@@ -398,6 +390,14 @@ def start_combat(game: GameState, attackers: list[str],
         f'{len(defenders)} defensor(es)'
     )
 
+    # Prey no HG se defende automaticamente (Block)
+    for dfd in defenders:
+        if dfd != 'hg' and _eh_prey_no_hg(game, dfd):
+            card = _find_card(game, dfd)
+            if card:
+                declare_action(game, dfd, 'block', acoes_extra=['block'])
+                game.add_log(f'  {card.name} (Presa) defende-se automaticamente')
+
     # Tzinzie (1348): trigger de inicio de combate
     _check_tzinzie_trigger(game)
 
@@ -418,7 +418,7 @@ def _eh_combatente_valido(game: GameState, card_id: str) -> bool:
     leniente para compatibilidade).
     """
     if card_id == 'hg':
-        return True  # Hunting Grounds e alvo valido
+        return True  # Hunting Grounds e alvo valido (compatibilidade)
     card = _find_card(game, card_id)
     if card is None:
         return True  # Carta nao encontrada — assume valida (leniente)
@@ -426,6 +426,23 @@ def _eh_combatente_valido(game: GameState, card_id: str) -> bool:
     TIPOS_COMBATENTES = {'character', 'ally', 'enemy', 'victim',
                           'battlefield'}
     return any(t in ct for t in TIPOS_COMBATENTES)
+
+
+def _eh_prey_no_hg(game: GameState, card_id: str) -> bool:
+    """Verifica se card_id corresponde a uma presa no Hunting Grounds."""
+    card = _find_card(game, card_id)
+    if card is None:
+        return False
+    ct = (card.card_type or '').lower()
+    if not any(t in ct for t in ('victim', 'enemy', 'battlefield')):
+        return False
+    # Verifica se a carta esta em alguma zona de HG
+    for p in game.players:
+        if card in p.hunting_grounds:
+            return True
+    if card in game.hunting_grounds_cards:
+        return True
+    return False
 
 
 def get_combatants(game: GameState) -> list[str]:
@@ -578,7 +595,8 @@ def reveal_all(game: GameState) -> bool:
 
 
 def _find_card(game: GameState, card_id: str) -> Optional[CardInstance]:
-    """Encontra uma carta pelo ID em qualquer zona de qualquer jogador."""
+    """Encontra uma carta pelo ID em qualquer zona de qualquer jogador
+    ou no Hunting Grounds global."""
     for p in game.players:
         for zone_list in (p.pack_home, p.hunting_grounds, p.umbra,
                           p.hand, p.discard_combat, p.discard_sept,
@@ -586,6 +604,10 @@ def _find_card(game: GameState, card_id: str) -> Optional[CardInstance]:
             for c in zone_list:
                 if str(c.card_id) == card_id:
                     return c
+    # Procura no HG global
+    for c in game.hunting_grounds_cards:
+        if str(c.card_id) == card_id:
+            return c
     return None
 
 
@@ -674,9 +696,34 @@ def resolve_combat(game: GameState) -> bool:
     game.combat.step = 'resolve'
     game.add_log('━ Resolvendo combate...')
 
+    def _eh_pack_gaia(dono) -> bool:
+        """Verifica se o dono e um pack Gaia.
+        Heuristica: personagens com 'Gaia' no tipo.
+        """
+        if not dono:
+            return False
+        for c in dono.pack_home + dono.hunting_grounds + dono.umbra:
+            ct = (c.card_type or '').lower()
+            if 'character' in ct and 'gaia' in ct:
+                return True
+        return False
+
+    def _eh_pack_wyrm(dono) -> bool:
+        """Verifica se o dono e um pack Wyrm.
+        Heuristica: personagens com 'Wyrm' no tipo.
+        """
+        if not dono:
+            return False
+        for c in dono.pack_home + dono.hunting_grounds + dono.umbra:
+            ct = (c.card_type or '').lower()
+            if 'character' in ct and 'wyrm' in ct:
+                return True
+        return False
+
     def _processar_ataque(origem_id: str, alvo_id: str):
         """Processa um ataque de origem contra alvo."""
         if alvo_id == 'hg':
+            # Compatibilidade: HG generico (fallback)
             origem = _find_card(game, origem_id)
             if origem:
                 dono = _find_owner(game, origem)
@@ -864,14 +911,27 @@ def resolve_combat(game: GameState) -> bool:
             if dono_alvo:
                 descartar_anexos(alvo_card, dono_alvo)
             vp = alvo_card.renown if alvo_card.renown > 0 else 1
+            # Regra 6.4.3: Gaia ganha 0 VP por Victim, Wyrm ganha 0 VP por Enemy
+            ct_alvo = (alvo_card.card_type or '').lower()
+            eh_gaia = _eh_pack_gaia(dono_origem)
+            eh_wyrm = _eh_pack_wyrm(dono_origem)
+            if eh_gaia and 'victim' in ct_alvo:
+                vp = 0
+                game.add_log(f'  {alvo_card.name} (Victim) foi destruido! '
+                             f'{dono_origem.name} (Gaia) ganhou 0 VP')
+            elif eh_wyrm and 'enemy' in ct_alvo:
+                vp = 0
+                game.add_log(f'  {alvo_card.name} (Enemy) foi destruido! '
+                             f'{dono_origem.name} (Wyrm) ganhou 0 VP')
             if dono_origem:
                 dono_origem.victory_points += vp
                 alvo_card.zone = Zone.VICTORY_PILE
                 _remove_creature(game, alvo_card)
                 dono_origem.victory_pile.append(alvo_card)
-                game.add_log(f'  {alvo_card.name} foi destruido! '
-                             f'{dono_origem.name} ganhou {vp} VP '
-                             f'(total: {dono_origem.victory_points})')
+                if vp > 0:
+                    game.add_log(f'  {alvo_card.name} foi destruido! '
+                                 f'{dono_origem.name} ganhou {vp} VP '
+                                 f'(total: {dono_origem.victory_points})')
 
                 # Death triggers (ex: Dream Hunter)
                 game.check_death_triggers(

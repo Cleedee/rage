@@ -84,14 +84,19 @@ class TestRageCLI:
         assert len(cp.pack_home) == before
 
     def test_attack_hunting_grounds(self, cli):
-        """ATTACK sem defensor ataca hunting grounds."""
+        """ATTACK sem defensor ataca prey no hunting grounds."""
         cp = cli.game.current_player
         atk = cp.pack_home[0]
         atk_id = str(atk.card_id)
         cli.onecmd(f'ATTACK {atk_id}')
         assert cli.game.combat.is_active
         assert atk_id in cli.game.combat.attackers
-        assert 'hg' in cli.game.combat.defenders
+        # Agora ataca uma presa especifica, nao 'hg'
+        assert 'hg' not in cli.game.combat.defenders
+        assert len(cli.game.combat.defenders) == 1
+        # O defensor deve ser a vitima de teste adicionada no fixture
+        vitima_id = cli.game.combat.defenders[0]
+        assert vitima_id.isdigit()
 
     def test_attack_creature(self, cli):
         """ATTACK com defensor ataca outra criatura."""

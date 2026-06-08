@@ -595,7 +595,15 @@ class RageCLI(cmd.Cmd):
                 return
             defensores = [def_id]
         else:
-            defensores = ['hg']
+            # Resolve 'hg' para a melhor presa no Hunting Grounds
+            alvo_hg = self._melhor_alvo_hg()
+            if alvo_hg:
+                defensores = [str(alvo_hg.card_id)]
+                def_id = str(alvo_hg.card_id)
+                print(f'  Atacando {alvo_hg.name} no Hunting Grounds...')
+            else:
+                print('  Nenhum alvo no Hunting Grounds.')
+                return
 
         if start_combat(g, [atk_id], defensores):
             print(f'  Combate iniciado: {atacante.name} ataca {def_id}!')
@@ -837,6 +845,26 @@ class RageCLI(cmd.Cmd):
             if str(c.card_id) == target_id:
                 return c
         return None
+
+    def _melhor_alvo_hg(self):
+        """Encontra o melhor alvo Victim/Enemy/Battlefield no Hunting Grounds."""
+        game = self.game
+        TIPOS_HG = {'victim', 'enemy', 'battlefield'}
+        candidatos = []
+        for c in game.hunting_grounds_cards:
+            ct = (c.card_type or '').lower()
+            if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
+                candidatos.append(c)
+        for p in game.players:
+            for c in p.hunting_grounds:
+                ct = (c.card_type or '').lower()
+                if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
+                    candidatos.append(c)
+        if not candidatos:
+            return None
+        candidatos.sort(key=lambda c: (c.renown or 1) / max(c.health_current, 1),
+                        reverse=True)
+        return candidatos[0]
 
 
 def main():

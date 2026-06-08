@@ -343,7 +343,15 @@ def api_attack(game_id: str):
         # Permite ID de criatura em combate
         pass
 
-    defensores = [defender_id] if defender_id != 'hg' else ['hg']
+    # Resolve 'hg' para uma presa especifica no Hunting Grounds
+    if defender_id == 'hg':
+        alvo_hg = _melhor_alvo_hg(game)
+        if alvo_hg:
+            defensores = [str(alvo_hg.card_id)]
+        else:
+            return jsonify({'error': 'Nenhum alvo no Hunting Grounds'}), 400
+    else:
+        defensores = [defender_id]
 
     if not start_combat(game, [attacker_id], defensores):
         return jsonify({'error': 'Nao foi possivel iniciar combate (ja existe um ativo?).'}), 409
@@ -508,3 +516,23 @@ def _find_card_in_player(card_id_str: str, player) -> object | None:
         if str(c.card_id) == card_id_str:
             return c
     return None
+
+
+def _melhor_alvo_hg(game) -> object | None:
+    """Encontra o melhor alvo Victim/Enemy/Battlefield no Hunting Grounds."""
+    TIPOS_HG = {'victim', 'enemy', 'battlefield'}
+    candidatos = []
+    for c in game.hunting_grounds_cards:
+        ct = (c.card_type or '').lower()
+        if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
+            candidatos.append(c)
+    for p in game.players:
+        for c in p.hunting_grounds:
+            ct = (c.card_type or '').lower()
+            if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
+                candidatos.append(c)
+    if not candidatos:
+        return None
+    candidatos.sort(key=lambda c: (c.renown or 1) / max(c.health_current, 1),
+                    reverse=True)
+    return candidatos[0]
