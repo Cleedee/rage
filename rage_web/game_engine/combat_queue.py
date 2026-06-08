@@ -16,6 +16,70 @@ from rage_web.game_engine.rules import COMBAT_STEPS
 # Acoes defensivas (block/dodge e similares)
 ACOES_DEFENSIVAS = {'block', 'dodge'}
 
+
+def _flipar_para_crinos(game: GameState, card: CardInstance) -> bool:
+    """Flip para forma Crinos quando dano atinge threshold.
+
+    Regra (14-ritos-moots.md):
+    Se um personagem em Breed form toma dano e o dano total
+    acumulado >= Rage OU >= Health da forma breed, ele flipa
+    para a forma Crinos/Battle (a menos que impedido).
+    Soh morre se o dano >= Crinos-form Health.
+
+    Args:
+        game: Estado da partida.
+        card: A criatura.
+
+    Returns:
+        True se flipou para Crinos.
+    """
+    # So flipa se tiver morph values diferentes dos breed e
+    # ja nao estiver em Crinos
+    if card.is_crinos:
+        return False
+    if card.health_morph <= 0 and card.rage_morph <= 0:
+        return False
+    # Impedido de mudar de forma?
+    if 'nao_pode_mudar_forma' in card.restricoes:
+        return False
+    # Verifica se os valores morph sao diferentes dos breed
+    if (card.health_morph == card.health
+        and card.rage_morph == card.rage
+        and card.gnosis_morph == card.gnosis):
+        return False  # Mesma forma (ex: Metis)
+
+    # Calcula dano total acumulado
+    dano_total = card.health - card.health_current
+    if dano_total <= 0:
+        return False
+
+    # Threshold: menor entre Rage e Health da forma breed
+    threshold = min(card.rage, card.health)
+    if threshold <= 0:
+        return False
+    if dano_total < threshold:
+        return False
+
+    # Flip!
+    card.is_crinos = True
+    card.restricoes.append('rage_breed')
+    card.restricoes.append('health_breed')
+    card.restricoes.append('gnosis_breed')
+
+    # Recalcula health_current: dano total eh o mesmo,
+    # mas o pool de vida agora e health_morph
+    if card.health_morph > 0:
+        novo_health = max(0, card.health_morph - dano_total)
+        card.health_current = novo_health
+
+    game.add_log(
+        f'  🔄 {card.name} flipou para forma Crinos! '
+        f'(dano={dano_total}, R={card.rage_morph} '
+        f'H={card.health_morph} G={card.gnosis_morph})'
+    )
+    return True
+    
+
 COMBAT_ACTIONS = {
     'strike',           # Ataque basico
     'block',            # Defesa
@@ -944,6 +1008,10 @@ def resolve_combat(game: GameState) -> bool:
                     f'nao podera esquivar na proxima rodada.'
                 )
 
+        # Tenta flipar para Crinos antes de morrer (regra 14-ritos-moots)
+        if alvo_card.health_current <= 0:
+            _flipar_para_crinos(game, alvo_card)
+
         # Morte
         if alvo_card.health_current <= 0:
             dono_alvo = _find_owner(game, alvo_card)
@@ -1180,6 +1248,40 @@ def lone_wolf_circles_dodge(game: GameState, lone_card_id: str,
     return True
 
 
+def _reverter_para_breed(game: GameState):
+    """Reverte todas as criaturas para forma Breed ao final do combate.
+
+    Regra: apos o combate, criaturas em Crinos voltam a
+    forma Breed. Apenas se aplica a criaturas que tenham
+    morph values diferentes dos breed (ou seja, que fliparam).
+    """
+    for p in game.players:
+        for c in p.pack_home + p.hunting_grounds + p.umbra:
+            if c.is_crinos and c.health_morph != c.health:
+                # Volta para forma breed
+                c.is_crinos = False
+                # Remove restricoes breed
+                for r in ['rage_breed', 'health_breed', 'gnosis_breed']:
+                    if r in c.restricoes:
+                        c.restricoes.remove(r)
+                health_antes = c.health_current
+                # Recalcula health_current: mesmo dano total,
+                # mas pool agora e breed health
+                dano_total = c.health_morph - health_antes
+                c.health_current = max(0, c.health - dano_total)
+                game.add_log(
+                    f'  ↩️ {c.name} voltou a forma Breed '
+                    f'(H {health_antes}/{c.health_morph} -> '
+                    f'{c.health_current}/{c.health})'
+                )
+                # Se morreu ao voltar (dano > breed health)
+                if c.health_current <= 0:
+                    game.add_log(
+                        f'  {c.name} nao resistiu a volta a forma Breed!'
+                    )
+                    _eliminar_jogador(game, p) if not p.eliminado else None
+
+
 def end_combat(game: GameState) -> bool:
     """Encerra o combate e reseta o estado."""
     if not game.combat.is_active:
@@ -1187,6 +1289,9 @@ def end_combat(game: GameState) -> bool:
 
     if game.combat.step != 'end':
         resolve_combat(game)
+
+    # Reverte formas Crinos para Breed
+    _reverter_para_breed(game)
 
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')

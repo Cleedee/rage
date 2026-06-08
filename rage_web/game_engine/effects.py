@@ -488,6 +488,9 @@ class ResolvedorEfeitos:
         qtd = efeito.quantidade or 2
         if isinstance(alvo, CardInstance):
             anexar_dano(alvo, origem, qtd, jogador.id)
+            # Verifica flip para Crinos
+            from rage_web.game_engine.combat_queue import _flipar_para_crinos
+            _flipar_para_crinos(self.game, alvo)
             self.game.add_log(
                 f'{alvo.name} sofreu {qtd} de dano '
                 f'({alvo.health_current}/{alvo.health})'
