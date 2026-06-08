@@ -69,8 +69,7 @@ def print_board(game: GameState):
         print(f'  {p.name:20s} 🃏{hand:2d} 📚C{deck_c:2d} S{deck_s:2d} '
               f'🏆{p.victory_points}')
         print(f'  {" "*20} 🏠 {pack}')
-        if p.hunting_grounds:
-            print(f'  {" "*20} 🎯 {hg_local}')
+        print(f'  {" "*20} 🎯 {hg_local}')
     # Global Hunting Grounds
     hg_global = getattr(game, 'hunting_grounds_cards', [])
     if hg_global:
