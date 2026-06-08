@@ -116,6 +116,34 @@
 - [ ] **JSON models para Equipment sem efeito** — Apenas 38/439 têm modelos JSON (alto impacto, muito trabalho)
 - [ ] **Ativação de equipamentos com efeito** — Equipment como Animal Mummy (destruir sept card) não tem botão de ativação
 
+## 🌙 Regras de Caerns e Umbra
+
+### Implementado ✅
+- [x] **Caerns jogados na Resource phase** — Bot reconhece `ct == 'Caern'`
+- [x] **Caerns vão para Pack Home** — `_play_card()` → `pack_home`
+- [x] **Existência em ambos os lados do Gauntlet** — `_lado()` retorna 0 (ambos) para Caern/Territory/Spirit
+- [x] **Caern permite step sideways** — `encontrar_caern()` → `pode_step_sideways()`
+- [x] **Umbra Phase** — FSM tem fase 'umbra'
+- [x] **Bot Umbra actions** — `_agir_umbra()` com step in/out
+- [x] **Zona Umbra** — `Zone.UMBRA`, `PlayerState.umbra`
+- [x] **Gauntlet interaction** — `_mesmo_lado_gauntlet()` checa cross-Umbra
+- [x] **Spirits são ambos os lados** — 'Spirit' em keywords = zona 0
+- [x] **Step sideways/back** — `step_sideways()`, `step_back()` em PlayerState
+- [x] **Limit 1 Caern per pack** — `pode_jogar_caern()` valida
+- [x] **Caern requires validation** — `pode_jogar_caern()` usa `_simplificar_req_caern()`
+- [x] **Territories jogados na Resource phase** — Mesmo fluxo que Caerns
+
+### ❌ Pendente
+- [ ] **Caern/Territory special abilities** — Apenas 10/46 Caerns e 11/61 Territories têm JSON; maioria depende de `register_card_passives()` hardcoded
+- [ ] **Discard Caern para trocar** — Regra permite descartar Caern existente e jogar outro (médio impacto)
+- [ ] **Territory pode ser atacado/destruído** — Quickstart menciona "Attack a Territory" (médio impacto)
+- [ ] **Realm requer Umbra** — Character precisa estar na Umbra para jogar Realm (baixo impacto)
+- [ ] **Cross-Gauntlet combat details** — Regras de substituição de combatentes entre mundos (baixo impacto)
+- [ ] **Umbra combat targeting** — Criaturas na Umbra só podem atacar outras na Umbra (parcialmente implementado em `_lado()`)
+- [ ] **Territory effects cruzam Gauntlet** — Global effects vs action effects (parcial)
+
+## 🎁 Regras de Gifts
+
 ## 🎁 Regras de Gifts
 
 ### Implementado ✅
