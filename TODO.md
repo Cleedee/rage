@@ -86,15 +86,34 @@
 - [x] **Pode ser alpha** — `selecionar_alfa` aceita Character ou Ally
 - [x] **É membro do pack** — Afetado por Pack Totems e bônus de pack
 - [x] **Não pode Frenzy / Step Sideways** — Regras de classe de criatura
-- [x] **Regenera conforme creature class** — `_pode_regenerar` checa keywords
+- [x] **Regen conforme creature class** — `_pode_regenerar` checa keywords
 - [x] **Morte fora de combate → removido do jogo** — `Zone.REMOVED`
 - [x] **Morte em combate → VP do oponente** — `_processar_morte()`
 - [x] **Recrutador morre → Ally fica** — Só removido se TODOS Characters morrerem
-- [x] **Requisito de recrutamento validado** — `pode_recrutar_ally()` em `rules.py` parseia campo `requires` e verifica personagens do jogador (Gnosis, keywords, zona)
+- [x] **Requisito de recrutamento validado** — `pode_recrutar_ally()` em `rules.py` parseia campo `requires` (Gnosis, keywords, zona)
 
 ### ❌ Pendente
-- [ ] **Allies não jogam Actions/Past Lives/Rites/Totems/pack resources** — Engine não filtra por card type para Allies (baixo impacto)
-- [ ] **Allies não podem ser descartados voluntariamente** — Não há mecânica de descarte voluntário na engine
+- [ ] **Allies não jogam Actions/Past Lives/Rites/Totems/pack resources** — Engine não filtra por card type (baixo impacto)
+- [ ] **Allies não podem ser descartados voluntariamente** — Sem mecânica de descarte voluntário
+
+## 🎁 Regras de Gifts
+
+### Implementado ✅
+- [x] **Gnosis requirement** — Criatura precisa Gnosis >= Gnosis do Gift (`_pode_pagar_custos`)
+- [x] **Rage cost** — Alguns Gifts custam Rage via campo `damage` (`parse_custo_rage`)
+- [x] **Keyword requirement (Rage FOO Rule)** — `pode_usar_gift()` em `rules.py` valida campo `requires` contra keywords da criatura
+- [x] **Integração bot** — `_pode_pagar_custos()` bloqueia Gifts sem criatura qualificada
+- [x] **Integração CLI** — `do_ANUNCIAR()` valida antes de anunciar
+- [x] **Integração API** — `api_use_card()` retorna 400 para Gift inválido
+- [x] **Efeitos temporários** — `modificar_atributo` com duração `end_of_combat`/`end_of_turn`/`permanente`
+- [x] **Gifts de combate** — Usados durante Combat phase via `_agir_combate()`
+- [x] **Gifts não-combate** — Usados durante Resource phase via `_agir_recurso()`
+- [x] **Cancelamento** — `anunciador.anular()` com chain de cancelamento
+
+### ❌ Pendente
+- [ ] **Gift timing validation** — Gifts com "play at start of combat" só jogáveis nesse momento (médio impacto)
+- [ ] **"Opponent" text = combat only** — Gifts mencionando "opponent" restritos ao combate (médio impacto)
+- [ ] **Permanent Gifts permanecem em jogo** — Gifts com `duracao: permanente` não são descartados (baixo impacto)
 
 ## Extras
 - [ ] **Deck builder** — Drag & drop, busca enquanto constrói
