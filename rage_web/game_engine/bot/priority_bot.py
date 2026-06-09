@@ -572,24 +572,31 @@ class PriorityBot:
             if action:
                 g.combat.current_alpha_index += 1
                 return action
+            # Alpha nao pode agir (sem alvos, etc) — avanca o index
+            # para evitar loop infinito no match.py
+            g.combat.current_alpha_index += 1
 
         # ── RESTO DO COMBATE (cartas, eliminar, atacar) ──
-        # Heuristica: max 3 cartas por turno
-        if self._cards_played_this_turn >= 3:
+        # Acoes de ataque/eliminar sempre sao permitidas (sem limite).
+        # So jogar cartas da mao tem limite de 3 por turno.
+
+        # Se deck lento, inverte prioridades: atacar > sobreviver
+        if lento:
+            # Lento: eliminar > atacar > sobreviver
             action = self._try_eliminate_threat()
             if action:
                 return action
             action = self._try_attack()
             if action:
                 return action
-            self._pass_turn()
-            return 'pass_combat_limit'
 
-        # Se deck lento, inverte prioridades: atacar > sobreviver
-        # (nao adianta proteger criaturas se nunca ganha VP)
-        if lento:
-            # Lento: eliminar > atacar > sobreviver
-            # Tenta usar cartas de combate primeiro
+        # 1. SOBREVIVER
+        action = self._try_survive()
+        if action:
+            return action
+
+        # 2. Usar cartas de efeito de COMBATE (limite 3)
+        if self._cards_played_this_turn < 3:
             for i, card in enumerate(me.hand):
                 if card.modelo_id and card.card_type in (
                         'Combat Action', 'Combat Event', 'Action'):
@@ -598,57 +605,73 @@ class PriorityBot:
                         self._cards_played_this_turn += 1
                         return self._usar_carta_efeito(i, modo_idx, card)
 
+        # 3. Outros efeitos (limite 3)
+        if self._cards_played_this_turn < 3:
+            action = self._try_develop_board()
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+
+        # 3.5 GIFTS PARA PRESA (se nao for o atacante)
+        if self._cards_played_this_turn < 3:
+            action = self._try_prey_gift()
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+
+        # 4. ELIMINAR AMEACA (sempre permitido)
+        if not lento:
             action = self._try_eliminate_threat()
             if action:
                 return action
+
+            # 5. ATACAR (sempre permitido)
             action = self._try_attack()
             if action:
                 return action
-            # Pula sobreviver em deck lento — agressivo
-            action = self._try_survive()
-            if action:
-                return action
-            self._pass_turn()
-            return 'pass_combat'
 
-        # ── NORMAL (hard) ──
-        # 1. SOBREVIVER
-        action = self._try_survive()
-        if action:
-            return action
+        # Tenta cartas genéricas se ainda nao passou
+        if self._cards_played_this_turn < 3:
+            for i, card in enumerate(me.hand):
+                ct = card.card_type or ''
+                eh_recurso = ct in ('Character', 'Equipment', 'Territory',
+                                    'Caern')
+                if (card.modelo_id
+                    and ct not in ('Combat Action', 'Combat Event',
+                                   'Combat Action', 'Moot',
+                                   'Board Meeting')
+                    and not eh_recurso):
+                    if self._pode_pagar_custos(card):
+                        from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                        modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                        if modelo and modelo.modos:
+                            modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                            self._cards_played_this_turn += 1
+                            return self._usar_carta_efeito(i, modo_idx, card)
 
-        # 2. Usar cartas de efeito de COMBATE
-        for i, card in enumerate(me.hand):
-            if card.modelo_id and card.card_type in (
-                    'Combat Action', 'Combat Event', 'Action'):
-                modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                if self._pode_pagar_custos(card):
-                    self._cards_played_this_turn += 1
-                    return self._usar_carta_efeito(i, modo_idx, card)
+        # 6. Passa
+        self._pass_turn()
+        return 'pass_combat'
 
-        # 3. Outros efeitos
-        action = self._try_develop_board()
-        if action:
-            self._cards_played_this_turn += 1
-            return action
-
-        # 3.5 GIFTS PARA PRESA (se nao for o atacante)
-        action = self._try_prey_gift()
-        if action:
-            self._cards_played_this_turn += 1
-            return action
-
-        # 4. ELIMINAR AMEACA
+    def _agir_combat_fallback(self) -> str:
+        """Fallback quando alpha ja avancou — so ataca/passa."""
         action = self._try_eliminate_threat()
         if action:
             return action
-
-        # 5. ATACAR
         action = self._try_attack()
         if action:
             return action
+        self._pass_turn()
+        return 'pass_combat'
 
-        # 6. Passa
+    def _agir_combat_fallback(self) -> str:
+        """Fallback quando alpha ja avancou — so ataca/passa."""
+        action = self._try_eliminate_threat()
+        if action:
+            return action
+        action = self._try_attack()
+        if action:
+            return action
         self._pass_turn()
         return 'pass_combat'
 
