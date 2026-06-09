@@ -894,8 +894,39 @@ class GameState:
                             p.deck_sept.append(carta)
                             self.add_log(f'{p.name} shufflou {carta.name} do discard para o deck')
 
+            # Se alguma quest removida era Past Life, restaura hand size
+            for q in completas:
+                card_quest = self._find_card_by_uid(q.quest_card_uid)
+                if card_quest:
+                    ct = (card_quest.card_type or '').lower()
+                    if 'past life' in ct or ct == 'past life':
+                        # Remove o card do pack_home (quest encerrou)
+                        if card_quest in p.pack_home:
+                            p.pack_home.remove(card_quest)
+                            card_quest.zone = Zone.DISCARD_SEPT
+                            p.discard_sept.append(card_quest)
+                        self._recalcular_past_life_hand_size(p)
+
             # Remove quests completas/falhas
             p.quests = [q for q in p.quests if q not in completas]
+
+    def _recalcular_past_life_hand_size(self, p: PlayerState):
+        """Recalcula sept hand size baseado em Past Lives ativas.
+
+        Regra: sept hand reduzido em 1 para cada Past Life em jogo.
+        """
+        # Conta Past Lives em jogo (pack_home)
+        qtd = sum(1 for c in p.pack_home
+                  if c.card_type
+                  and ('past life' in c.card_type.lower()
+                       or c.card_type.lower() == 'past life'))
+        # Base = 5, reduz por Past Life
+        novo_size = max(1, 5 - qtd)
+        if p.hand_size_sept != novo_size:
+            self.add_log(
+                f'[Past Life] sept hand size: '
+                f'{p.hand_size_sept} -> {novo_size}')
+            p.hand_size_sept = novo_size
 
     def _check_victim_attacks(self):
         """Executa ataques automaticos de Victimas no Hunting Grounds.

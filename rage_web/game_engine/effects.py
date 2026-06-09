@@ -1437,6 +1437,11 @@ class ResolvedorEfeitos:
             origem.zone = Zone.PACK_HOME
             jogador.pack_home.append(origem)
 
+        # Past Life: recalcula sept hand size (reduz em 1 por Past Life)
+        ct_origem = (origem.card_type or '').lower()
+        if 'past life' in ct_origem or ct_origem == 'past life':
+            self.game._recalcular_past_life_hand_size(jogador)
+
         self.game.add_log(
             f'{jogador.name} iniciou quest {origem.name} '
             f'em {alvo.name} ({quantidade} turnos sem dano)'
