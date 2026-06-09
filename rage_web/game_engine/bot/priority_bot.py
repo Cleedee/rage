@@ -392,14 +392,16 @@ class PriorityBot:
 
         # Prioridade: voltar da Umbra se tiver guerreiro util
         if self.player.umbra:
-            # Tenta trazer o alpha primeiro (maior Renome)
+            # Tenta trazer o alpha primeiro (maior poder de combate = rage*health)
             candidatos_alpha = [
                 c for c in self.player.pack_home
                 if 'Character' in (c.card_type or '') or 'Ally' in (c.card_type or '')
             ]
             possivel_alpha_id = None
             if candidatos_alpha:
-                possivel_alpha = max(candidatos_alpha, key=lambda c: c.renown)
+                # Poder de combate: rage * health (melhor indicador que renown)
+                possivel_alpha = max(candidatos_alpha,
+                                     key=lambda c: c.effective_rage * c.effective_health)
                 possivel_alpha_id = str(possivel_alpha.card_id)
 
             # Traz o possivel alpha da Umbra se estiver la
@@ -423,14 +425,16 @@ class PriorityBot:
 
         # Entrar na Umbra
         if podem_ir:
-            # Tenta nao enviar o alpha (maior Renome) para Umbra
+            # Tenta nao enviar o melhor combatente (rage*health) para Umbra
             candidatos_alpha = [
                 c for c in self.player.pack_home
                 if 'Character' in (c.card_type or '') or 'Ally' in (c.card_type or '')
             ]
             possivel_alpha_id = None
             if candidatos_alpha:
-                possivel_alpha = max(candidatos_alpha, key=lambda c: c.renown)
+                # Usa power rating (rage * health) como indicador de quem fica
+                possivel_alpha = max(candidatos_alpha,
+                                     key=lambda c: c.effective_rage * c.effective_health)
                 possivel_alpha_id = str(possivel_alpha.card_id)
 
             if possivel_alpha_id:
@@ -445,6 +449,7 @@ class PriorityBot:
                 personagem = max(personagens_sem_alpha,
                                  key=lambda c: c.gnosis)
             else:
+                # So tem o melhor combatente e ele pode ir — deixa ir
                 personagem = max(podem_ir, key=lambda c: c.gnosis)
 
             self.player.step_sideways(personagem)
