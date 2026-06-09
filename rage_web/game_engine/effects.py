@@ -2530,8 +2530,14 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
         elif 'combat action' in ct or 'combat event' in ct:
             card_origem.zone = Zone.DISCARD_COMBAT
             jogador.discard_combat.append(card_origem)
+        elif 'event' in ct:
+            # Events permanecem em jogo (nao sao descartados)
+            # Regra: Duration Variable, Cannot be discarded voluntarily
+            card_origem.zone = Zone.PACK_HOME
+            jogador.pack_home.append(card_origem)
+            game.add_log(f'{card_origem.name}: Evento em jogo')
         elif 'equipment' not in ct:
-            # Gift, Event, Action, Quest: descarte de sept
+            # Action, Quest: descarte de sept
             card_origem.zone = Zone.DISCARD_SEPT
             jogador.discard_sept.append(card_origem)
         # Equipment: fica equipado (resolvido por _resolver_equipar)

@@ -233,6 +233,15 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
 
+        # 4.5 Joga Eventos (permanecem em jogo, efeitos globais)
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            if ct == 'Event' and card.modelo_id:
+                if self._pode_pagar_custos(card):
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    self._cards_played_this_turn += 1
+                    return self._usar_carta_efeito(i, modo_idx, card)
+
         # 5. Tenta jogar efeitos de Gifts/Events/Actions
         for i, card in enumerate(me.hand):
             ct = card.card_type or ''

@@ -201,6 +201,18 @@
 - [ ] **Rites com timing específico** — Ex: "play after this character killed a Victim"
 - [ ] **Rites que attach em criatura** — Permanecem na criatura até removidos por efeito
 
+## 🔄 Pendente (Eventos / Events)
+
+- [x] **Event cards são jogados pelo bot** — Step 4.5 em `_agir_recurso()`, prioridade alta
+- [x] **Events permanecem em jogo** — `aplicar_carta()` coloca em PACK_HOME (nao descarta)
+- [x] **Events cruzam Gauntlet** — Já implementado via `zona_da_carta()`
+- [x] **31 Event cards com modelo JSON** — Efeitos implementados (comprar, modificar_atributo, destruir, etc.)
+- [x] **62/142 Event cards usados em decks** — Cobertura alta
+- [ ] **"Playing Event is not an action"** — Eventos nao sao impedidos por restricoes de acao
+- [ ] **Lunar Phases restritos ao Redraw** — Timing especifico para cartas de Fase Lunar
+- [ ] **Lunar Phase substitui anterior** — Apenas 1 fase lunar ativa por vez
+- [ ] **Pack Totems com keyword requirement** — Totens exigem personagem com keyword especifica
+
 ## 🔄 Pendente (Moot / Juntas)
 
 - [x] **MootState** — Estrutura de votacao com sim/nao, aprovacao, resolucao
