@@ -157,7 +157,7 @@
 ## 🔄 Pendente (Prey)
 
 - [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
-- [ ] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — Priorizar VP rápido vs eliminar ameaça
+- [x] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — `_deve_atacar_presa_estrategicamente()` avalia VP gap, força do alpha, eficiência da Presa
 
 ## 🔄 Pendente (Allies)
 

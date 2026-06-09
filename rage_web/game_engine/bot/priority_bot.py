@@ -566,6 +566,21 @@ class PriorityBot:
 
         from rage_web.game_engine.combat_queue import start_combat
 
+        # Avalia se estrategicamente e melhor atacar Presa agora
+        alvo_hg = self._melhor_alvo_hg()
+        deve_atacar_presa = self._deve_atacar_presa_estrategicamente(
+            alpha_card, alvo_hg)
+
+        if deve_atacar_presa and alvo_hg:
+            # Ataca Presa direto (pula inimigos)
+            start_combat(self.game, [meu_alpha_id],
+                         [str(alvo_hg.card_id)])
+            alpha_card.is_tapped = True
+            self.game.add_log(
+                f'[BOT] Alpha {alpha_card.name} atacou '
+                f'{alvo_hg.name} no Hunting Grounds (estrategico)')
+            return f'alpha_attack_hg_{meu_alpha_id}'
+
         # 1. Tenta atacar alpha inimigo (prioriza lider em VP)
         alphas_inimigos = []
         for pid, cid in self.game.combat.alphas.items():
@@ -616,8 +631,7 @@ class PriorityBot:
                         f'{alvo.name}')
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
 
-        # 3. Ataca uma presa especifica no Hunting Grounds
-        alvo_hg = self._melhor_alvo_hg()
+        # 3. Fallback: ataca Presa no Hunting Grounds
         if alvo_hg:
             start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
             alpha_card.is_tapped = True
@@ -1010,6 +1024,80 @@ class PriorityBot:
             )
 
         return melhor
+
+    def _deve_atacar_presa_estrategicamente(
+            self, alpha_card: CardInstance,
+            alvo_hg: Optional[CardInstance]) -> bool:
+        """Decide se e estrategicamente melhor atacar Presa agora.
+
+        A estrategia considera:
+        1. Dificuldade: se o alpha e fraco, atacar inimigo e arriscado
+        2. VP urgency: se esta muito atras em VP, precisa de pontos
+        3. Eficiencia da Presa: VP por health vale a pena?
+        4. Deck lento: precisa de VP rapido
+        5. Nenhum alvo inimigo viavel
+
+        Returns:
+            True se atacar Presa e melhor que atacar inimigo.
+        """
+        if not alvo_hg:
+            return False
+
+        me = self.player
+        lento = self._is_slow_deck()
+
+        # 1. Nenhum inimigo viavel: ataca Presa
+        opponents = self._get_opponents()
+        tem_inimigo_viavel = any(
+            c.health_current > 0
+            for opp in opponents
+            for c in opp.pack_home
+        )
+        if not tem_inimigo_viavel:
+            return True
+
+        # 2. Deck lento sempre prioriza Presa (precisa de VP)
+        if lento:
+            return True
+
+        # 3. Alpha esta muito fraco para atacar inimigos
+        alpha_rage = alpha_card.rage
+        max_enemy_health = max(
+            (c.health for opp in opponents
+             for c in opp.pack_home if c.health_current > 0),
+            default=0
+        )
+        if alpha_rage < max_enemy_health * 0.5:
+            return True
+
+        # 4. Verifica VP gap
+        max_vp_inimigo = max(
+            (p.victory_points for p in opponents),
+            default=0
+        )
+        vp_gap = max_vp_inimigo - me.victory_points
+        # Se atrasado por mais de 5 VP, precisa de pontos
+        if vp_gap >= 5:
+            return True
+
+        # 5. Presa oferece VP alto e e facil de matar
+        from rage_web.game_engine.combat_queue import (_eh_pack_gaia,
+                                                        _eh_pack_wyrm)
+        eh_gaia = _eh_pack_gaia(me)
+        eh_wyrm = _eh_pack_wyrm(me)
+        ct = (alvo_hg.card_type or '').lower()
+        vp_presa = alvo_hg.renown if alvo_hg.renown > 0 else 1
+        if eh_gaia and 'victim' in ct:
+            vp_presa = 0
+        if eh_wyrm and 'enemy' in ct:
+            vp_presa = 0
+
+        # Presa com VP >= 3 que pode ser morta em 1 golpe
+        if vp_presa >= 3 and alpha_rage >= alvo_hg.health_current:
+            return True
+
+        # 6. Cenario normal: tenta matar inimigo primeiro
+        return False
 
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
