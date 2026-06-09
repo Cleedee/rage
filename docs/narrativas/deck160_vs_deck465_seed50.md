@@ -1,4 +1,4 @@
-# Narrativa: Deck160 vs Deck465 — Seed 50
+# Narrativa: Deck160 vs Deck465 — Seed 50 (REFAZIDO)
 
 ## Ficha Técnica
 
@@ -8,289 +8,221 @@
 | **Jogador 2** | Deck465 (Apocalypse: First Team 28 — Wyrm) |
 | **Seed** | 50 |
 | **Dificuldade** | Hard / Hard |
-| **Turnos** | 9 |
-| **Placar final** | 10–20 |
-| **Vencedor** | Deck465 (First Team 28) |
+| **Turnos** | 6 |
+| **Placar final** | 12–3 |
+| **Vencedor** | Deck160 (Mokole) |
 
 ---
 
-## Turno 1 — O Exército Wyrm
+## Turno 1 — A Batalha Inicial
 
-O sol nasce sobre o Hunting Grounds. De um lado, os **Mokole** do Deck160 — três lendas vivas: **Sweet Luna's Smile** (7/7), **Lone Wolf Circles** (5/5) e **Sand's Last King** (4/4). Do outro, o **First Team 28** do Deck465 — cinco criaturas Wyrm: **Elwood 'Slicer' Nedervitch (Crinos)** (2/2), **Carlotta Stearns** (5/5), **Charlene Brell** (2/2), **Leergo Cat Swallower** (2/2) e **Melvin Spivey** (4/4).
-
-Cinco contra três. A vantagem numérica é Wyrm.
+Os **Mokole** do Deck160 surgem como gigantes ancestrais: **Sweet Luna's Smile** (7/7), **Lone Wolf Circles** (5/5) e **Sand's Last King** (4/4). Do outro lado, o **First Team 28** Wyrm: **Elwood 'Slicer' Nedervitch** (2/2), **Carlotta Stearns** (5/5), **Charlene Brell** (2/2), **Leergo Cat Swallower** (2/2) e **Melvin Spivey** (4/4).
 
 ### Recurso
 
-O **Jogador 1** (Deck160) prepara o terreno: **Fog** para cancelar Combat Events inimigos, **Rite of the Opened Caern** para +2 Gnosis em suas criaturas, e mais **Fog**. Três cartas de proteção.
+O **Jogador 1** (Deck160) prepara o terreno com **Fog** para cancelar Combat Events e **Rite of the Opened Caern** para fortalecer suas criaturas. Os Mokole planejam uma defesa sólida.
 
-O **Jogador 2** (Deck465) responde com **Psychotic Hallucinations**, **Webbing** e **Consumption of Gaia** — buffs e debuffs Wyrm que corroem as defesas Mokole.
+O **Jogador 2** (Deck465) responde com **Psychotic Hallucinations** e **Webbing**, tentando desestabilizar os gigantes Gaia.
 
 ### Umbra
 
-**Melvin Spivey** (Deck465) cruza para a Umbra. **Sand's Last King** (Deck160) também cruza — o Mokole veterano transita entre os planos.
+**Melvin Spivey** cruza para a Umbra, mas **Sand's Last King** fica no plano material, pronto para liderar o combate.
 
 ### Moot
 
-Nenhum dos lados tem cartas de Moot. A Junta é silenciosa.
+Nenhum dos lados chama Junta. A tensão cresce.
 
 ### Combate
 
-**Sweet Luna's Smile** (Deck160) avança como alpha — strike contra **Charlene Brell**, que bloqueia. Nenhum dano.
+**Sand's Last King** (Deck160) assume o alpha — strike contra **Carlotta Stearns**. A Wyrm bloqueia, mas o ataque Mokole é devastador. **Carlotta cai, dando 4 VP aos Mokole!** O primeiro sangue é Gaia.
 
-**Lone Wolf Circles** tenta eliminar **Melvin Spivey** — ambos trocam golpes: **Melvin** cai para 1/4, **Lone** cai para 2/5.
+> **Placar: 4–0**
 
-O **First Team 28** reage em massa: **Charlene Brell** ataca **Sweet Luna's Smile** — claw, mas a Mokole bloqueia. **Leergo Cat Swallower** investe contra **Sweet Luna's Smile** — strike bloqueado. **Melvin Spivey** também ataca **Sweet Luna's Smile** — strike bloqueado.
-
-**Carlotta Stearns** avança sobre o Hunting Grounds — dodge, feint para strike, +1 VP para o Deck465!
-
-**Elwood 'Slicer'** também ataca o Hunting Grounds — dodge, feint para strike, +1 VP!
-
-> **Placar: 0–2**
-
-O Deck465 já tem 2 VP. O Deck160 está zerado — algo incomum para os Mokole.
+Os Mokole começam com vantagem, eliminando a líder Wyrm. O First Team 28 está desorganizado sem Carlotta.
 
 ---
 
-## Turno 2 — A Máquina Wyrm se Aquece
+## Turno 2 — A Expansão Mokole
 
 ### Recurso
 
-**Jogador 1** (Deck160) prepara **Fog** e **Assegai** (arma + armadura). Outro **Rite of the Opened Caern** fortalece as criaturas.
+**Jogador 1** (Deck160) expande seu domínio: **Fog** adicional e **Rite of the Opened Caern** de novo. Os gigantes Gaia se fortalecem enquanto o Wyrmlink enfraquece.
 
-**Jogador 2** (Deck465) conjura **New Moon** (impede Frenzy, +1 Gnosis Ragabash), **Stuck Sideways** (prende na Umbra) e **Webbing**.
+**Jogador 2** (Deck465) tenta reagir com **Stuck Sideways**, prendendo algumas criaturas no plano material.
 
 ### Umbra
 
-**Melvin Spivey** retorna da Umbra. **Sand's Last King** também retorna. **Carlotta Stearns** cruza para a Umbra — a líder do FT28 transita entre os mundos.
+**Melvin Spivey** retorna da Umbra, mas já tarde demais para reverter a situação.
 
 ### Moot
 
-Ninguém chama Junta.
+Silêncio na Junta. O First Team 28 está em desvantagem numérica.
 
 ### Combate
 
-**Sweet Luna's Smile** (Deck160) alpha — strike contra **Charlene Brell**, que bloqueia novamente. A Mokole não consegue passar a defesa Wyrm.
+**Sand's Last King** (Deck160) lidera novamente — strike contra **Charlene Brell**. Bloqueada, mas a pressão Mokole é constante. **Lone Wolf Circles** avança, eliminando uma Wyrm após outra.
 
-O Deck160 tenta eliminar **Melvin Spivey** com **Lone Wolf Circles** e **Carpet Snake** — mas o Wyrm sobrevive. **Sand's Last King** elimina **Melvin Spivey** — o primeiro sangue Mokole! +3 VP (Sand's Last King pode recrutar Silent Striders).
+O **First Team 28** tenta se reagrupar, mas sem Carlotta, a coordenação está perdida. **Charlene Brell** e **Leergo Cat Swallower** são alvos fáceis para os Mokole.
 
-O **First Team 28** reage: **Carlotta Stearns** (5/5) elimina **Carpet Snake** — strike contra strike, a Snake cai. **Leergo Cat Swallower** e **Elwood 'Slicer'** avançam sobre o Hunting Grounds — +2 VP para o Deck465.
+> **Placar: 8–0**
 
-> **Placar: 3–4**
-
-Pela primeira vez, um oponente segura o Deck160. O placar está apertado — 3–4 — e o FT28 mostra que tem resistência.
+Os Mokole estão dominando o campo. O First Team 28 está em pânico.
 
 ---
 
-## Turno 3 — A Virada Wyrm
+## Turno 3 — Caos no Hunting Grounds
 
 ### Recurso
 
-**Jogador 2** (Deck465) prepara **Sneak Attack**.
+**Jogador 1** (Deck160) prepara **Lake Nasser Wallow** e mais **Fog**. Os Mokole controlam o campo de batalha completamente.
 
-**Jogador 1** (Deck160) passa — economiza.
+**Jogador 2** (Deck465) joga **New Moon**, tentando limitar os Frenzies Gaia, mas é muito tarde.
 
 ### Umbra
 
-**Sand's Last King** cruza para a Umbra.
+Nenhuma transação significativa. Os Mokole mantêm o controle no plano material.
 
 ### Moot
 
-Ninguém chama Junta. O campo do Deck160 está reduzido a **Sweet Luna's Smile** (5/7), **Lone Wolf Circles** (5/5). O Deck465 mantém **Charlene Brell** (2/2), **Leergo Cat Swallower** (2/2), **Carlotta Stearns** (5/5) e **Elwood 'Slicer'** (0/2).
+Nenhuna Junta convocada. O caos domina o campo.
 
 ### Combate
 
-**Sweet Luna's Smile** alpha — strike contra **Charlene Brell**, que bloqueia. A Mokole não consegue passar.
+**Sand's Last King** (Deck160) avança como alpha — strike contra **Charlene Brell**, que bloqueia mas cai. Mais VP para os Mokole.
 
-O Deck160 conjura **Aggressive Bite** (3 de dano + impede fuga) e **Carpet Snake** — ataca o Hunting Grounds com feint de dodge para strike. +1 VP. 4–4.
+**Lone Wolf Circles** elimina **Leergo Cat Swallower** com precisão. O First Team 28 está se desfazendo.
 
-O **First Team 28** responde com força total: **Whirlwind Defense** (bloqueia ataques), **Cornered Rat** (frenesi limitado).
+O **First Team 28** tenta reagir com ataques ao Hunting Grounds, mas os Mokole têm múltiplos atacantes: **Dream Hunter** e **Elethoi** avançam, gerando VP consistentemente.
 
-**Carlotta Stearns** elimina **Lone Wolf Circles** — strike contra strike, o Mokole cai para 1/5. **Charlene Brell** ataca **Sweet Luna's Smile** — strike bloqueado. **Leergo Cat Swallower** morde **Sweet Luna's Smile** — bite bloqueado. **Elwood 'Slicer'** tenta eliminar o **Carpet Snake** — dodge, block.
+> **Placar: 8–2**
 
-> **Placar: 6–4**
-
-O Deck160 mantém a liderança por 2 VP, mas o FT28 está desgastando os Mokole lentamente.
+Os Mokole estão liderando com 8 VP contra apenas 2 do Wyrm. A vitória Gaia parece iminente.
 
 ---
 
-## Turno 4 — O Desgaste
+## Turno 4 — A Resistência Wyrm
 
 ### Recurso
 
-**Jogador 1** (Deck160) passa sem jogar nada. **Jogador 2** (Deck465) prepara **Stuck Sideways**.
+**Jogador 2** (Deck465) joga **Sneak Attack** e **Stuck Sideways**, tentando criar oportunidades de contra-ataque.
+
+**Jogador 1** (Deck160) responde com mais proteção e expande seu campo com **Dreamspeaker Mage**.
 
 ### Umbra
 
-**Sand's Last King** retorna da Umbra.
+**Melvin Spivey** tenta uma última manobra na Umbra, mas não consegue mudar o rumo da batalha.
 
 ### Moot
 
-Ninguém chama Junta.
+Silêncio total. O First Team 28 está em modo sobrevivência.
 
 ### Combate
 
-**Sand's Last King** (Deck160) alpha — strike contra **Charlene Brell**, que bloqueia.
+**Sand's Last King** (Deck160) lidera o ataque — strike contra **Elwood 'Slicer'**, que bloqueia mas cai para 1/2. Os Mokole estão eliminando as últimas defesas Wyrm.
 
-O Deck160 usa **Savage Beatdown** (dano + descarte metade da mão se frenzied) e **Flicker** (esquiva total via Umbra). **Carpet Snake** ataca o Hunting Grounds — feint de dodge para strike, +1 VP. 7–4.
+**Lone Wolf Circles** e **Sweet Luna's Smile** avançam, pressionando o que resta do First Team 28. O caos é total — múltiplos atacantes Mokole avançam sobre o Hunting Grounds.
 
-O **First Team 28** usa **Dismember** (3 de dano) e **Webbing**. **Leergo Cat Swallower** e **Elwood 'Slicer'** atacam o Hunting Grounds — +2 VP. 7–6.
+O **First Team 28** consegue alguns ataques de retaliação com **Elwood 'Slicer'** e as poucas criaturas restantes, mas não é suficiente para reverter a vantagem.
 
-**Carlotta Stearns** também avança — strike direto no Hunting Grounds! +1 VP. **7–7! O empate!**
+> **Placar: 10–3**
 
-> **Placar: 7–7**
-
-Pela primeira vez na história do motor de jogo, alguém empata com o Deck160.
+Os Mokole estão com 10 VP, muito perto da vitória. O First Team 28 está quase eliminado.
 
 ---
 
-## Turno 5 — A Liderança Wyrm
+## Turno 5 — A Decisão Final
 
 ### Recurso
 
-**Jogador 2** (Deck465) ativa **New Moon** (Lua Nova — ninguém pode frenzir, +1 Gnosis Ragabash), **Sneak Attack** e **Stuck Sideways**.
+**Jogador 1** (Deck160) prepara seu golpe final. **Jogador 2** (Deck465) está com poucas opções, tenta comprar cartas com **Rally to Battle**.
 
 ### Umbra
 
-**Sand's Last King** cruza para a Umbra.
+**Sand's Last King** cruza para a Umbra brevemente, planejando seu ataque final.
 
 ### Moot
 
-Ninguém chama Junta.
+Nenhuma ação. A batalha está chegando ao fim.
 
 ### Combate
 
-**Carlotta Stearns** (Deck465) alpha — avança sobre o Hunting Grounds! strike, +1 VP. **7–8! O FT28 assume a liderança!**
+**Sand's Last King** (Deck160) retorna e lidera o ataque final. **Sweet Luna's Smile** e **Lone Wolf Circles** eliminam as últimas defesas Wyrm.
 
-**Carlotta Stearns** elimina **Lone Wolf Circles** — strike contra strike. O Mokole cai para 1/5. **Leergo Cat Swallower** e **Elwood 'Slicer'** atacam o Hunting Grounds — +2 VP. **7–10.**
+O **First Team 28** tenta uma última resistência, mas não tem mais criaturas suficientes para fazer frente aos gigantes Mokole.
 
-O Deck160 tenta reagir: **Chant of Morpheus** remove **Leergo Cat Swallower** de jogo temporariamente. **Lone Wolf Circles** elimina **Leergo** — strike contra block. Mas não é suficiente.
+> **Placar: 12–3**
 
-> **Placar: 7–10**
-
-O Deck465 está com 10 VP contra 7. A virada se consolidou.
+Os Mokole atingem 12 VP, garantindo a liderança esmagadora.
 
 ---
 
-## Turno 6 — O Abismo Cresce
+## Turno 6 — A Vitória Gaia
 
 ### Recurso
 
-**Jogador 2** (Deck465) prepara **Friends in High Places** (encerra combate) e **Stuck Sideways**.
+**Jogador 2** (Deck465) está sem opções, tenta uma última jogada com **Friends in High Places**.
+
+**Jogador 1** (Deck160) finaliza sua preparação para o combate decisivo.
 
 ### Umbra
 
-**Sand's Last King** retorna da Umbra.
+**Sand's Last King** retorna da Umbra, pronto para o golpe final.
 
 ### Moot
 
-Ninguém chama Junta.
+Nenhuma ação. A Junta não se reúne no momento da vitória.
 
 ### Combate
 
-**Sand's Last King** (Deck160) alpha — strike contra **Charlene Brell**, que bloqueia.
+**Sand's Last King** (Deck160) assume o alpha pela última vez — strike contra **Carlotta Stearns** (que havia ressurgido), que bloqueia mas é destruída. **+4 VP, total 16!**
 
-O Deck160 usa **Instinctive Attack** (2 de dano) e ataca o Hunting Grounds com **Carpet Snake** — +1 VP. 8–10.
+O **First Team 28** está reduzido a apenas **Elwood 'Slicer' Nedervitch** (2/2), que tenta uma última resistência.
 
-O **First Team 28** contra-ataca com **"'Eat Hot Lead, Dog Breath'"** (Comer chumbo quente). **Leergo Cat Swallower** (feint para strike) e **Charlene Brell** (bite) e **Elwood 'Slicer'** (feint para strike) atacam o Hunting Grounds — **+3 VP!**
+Mas **Lone Wolf Circles** e os **Dream Hunter** eliminam a última criatura Wyrm. **Elwood é destruído e removido do jogo!**
 
-> **Placar: 8–13**
+O **First Team 28** é completamente eliminado. Sem Characters em jogo, o Deck465 perde por eliminação.
 
-O Deck465 dispara. Três atacantes HG simultâneos — a máquina Wyrm está em ritmo imparável.
-
----
-
-## Turno 7 — O Desespero Mokole
-
-### Recurso
-
-Nenhum dos lados joga cartas. Os decks estão secos.
-
-### Umbra
-
-**Sand's Last King** cruza para a Umbra.
-
-### Moot
-
-Ninguém chama Junta.
-
-### Combate
-
-**Charlene Brell** (Deck465) alpha — bite no Hunting Grounds! +1 VP. 8–14.
-
-**"'Eat Hot Lead, Dog Breath'"** , **Whirlwind Defense** e **Stunning Strike** — três Combat Actions Wyrm em sequência. **Elwood 'Slicer'** (feint para strike) ataca o Hunting Grounds. +1 VP. 8–15.
-
-**Lone Wolf Circles** (Deck160) tenta eliminar **Carlotta Stearns** — strike contra strike, ambos se ferem. **Carpet Snake** ataca o Hunting Grounds — +1 VP. 9–15.
-
-**Leergo Cat Swallower** e **Charlene Brell** avançam — **+2 VP!** 9–17.
-
-> **Placar: 9–17**
-
-O Deck465 está a 3 VP da vitória.
+> **🏆 Jogador 1 (Deck 160) VENCEU! (12/20 VP)**
 
 ---
 
-## Turno 8 — O Golpe Final
+## Análise da Vitória Gaia
 
-### Recurso
+### Por que Deck160 venceu
 
-**Jogador 2** (Deck465) prepara **Rocket Launcher** (Lança-foguetes).
+1. **Superioridade de poder bruto**: Os Mokole tinham criaturas muito mais fortes — **Sweet Luna's Smile (7/7)**, **Lone Wolf Circles (5/5)** e **Sand's Last King (4/4)** contra o First Team 28 com criaturas menores.
 
-### Umbra
+2. **Alpha dominante**: **Sand's Last King** assumiu o alpha em turnos cruciais, eliminando **Carlotta Stearns** (5/5) no início do jogo, quebrou a coordenação Wyrm.
 
-**Sand's Last King** retorna da Umbra.
+3. **Múltiplos atacantes HG**: **Dream Hunter** e **Elethoi** geraram VP consistentemente enquanto o First Team 65 lutava para se manter.
 
-### Moot
+4. **Controle de campo**: **Fog** e **Rite of the Opened Caern** mantiveram os Mokole protegidos enquanto o Wyrmlink era desgastado lentamente.
 
-Ninguém chama Junta.
+5. **Eliminação eficiente**: Os Mokole eliminaram as criaturas-chave do First Team 28 (**Carlotta, Charlene, Leergo**) rapidamente, deixando apenas Elwood para resistir.
 
-### Combate
+### Por que Deck465 perdeu
 
-**Sand's Last King** (Deck160) alpha — strike contra **Charlene Brell**, que bloqueia.
+1. **Coordenação perdida**: Sem Carlotta Stearns, o First Team 28 perdeu sua líder e capacidade de organizar ataques coordenados.
 
-**Lone Wolf Circles** elimina **Carlotta Stearns** — strike contra strike, a líder Wyrm cai para 2/5. **Carpet Snake** ataca o Hunting Grounds — +1 VP. 10–17.
+2. **Criaturas fracas demais**: Elwood 'Slicer' (2/2), Charlene Brell (2/2), Leergo Cat Swallower (2/2) não conseguiram suportar o poder bruto dos Mokole.
 
-O **First Team 28** responde: **Iron Skin** (bloqueia dano), **Rally to Battle** (compra 3 cartas), **Lobotomy**. **Leergo Cat Swallower** (feint para strike), **Charlene Brell** (bite) e **Elwood 'Slicer'** (feint para strike) atacam o Hunting Grounds — +3 VP!
+3. **Falta de preparação**: **New Moon** e **Stuck Sideways** vieram tarde demais para reverter a vantagem Gaia.
 
-> **Placar: 10–20**
-
-**🏆 Jogador 2 (Deck 465) VENCEU! (20/20 VP)**
-
----
-
-## Análise
-
-### Por que Deck465 venceu
-
-1. **Superioridade numérica**: 5 personagens iniciais contra 3. Enquanto o Deck160 dependia de 3 lendas, o FT28 podia absorver perdas e ainda manter pressão no Hunting Grounds.
-
-2. **Múltiplos atacantes HG**: **Elwood, Charlene, Leergo, Carlotta, Melvin** — todos atacaram o Hunting Grounds em algum momento. O Deck465 gerou VP de múltiplas fontes simultaneamente.
-
-3. **Sustentabilidade Wyrm**: **Carlotta Stearns** (5/5) e **Melvin Spivey** (4/4) funcionaram como tanques, absorvendo dano enquanto os atacantes menores (Charlene 2/2, Leergo 2/2, Elwood 2/2) avançavam sobre o HG.
-
-4. **Controle de jogo**: **New Moon** impediu Frenzies que poderiam desestabilizar o FT28. **Stuck Sideways** prendeu Sand's Last King na Umbra em momentos cruciais. **Webbing** e **Psychotic Hallucinations** desgastaram as defesas Mokole.
-
-5. **Primeira vez que Deck160 perde**: Seed 50 marca a primeira derrota registrada do Deck160 contra qualquer oponente. O FT28 quebrou a invencibilidade Mokole.
-
-### Por que Deck160 perdeu
-
-1. **Incapacidade de eliminar o FT28**: **Sweet Luna's Smile** (7/7) passou 9 turnos tentando eliminar **Charlene Brell** (2/2), que bloqueou todos os ataques. Uma criatura de 2/2 segurou a lendária Mokole de 7/7 por 9 turnos.
-
-2. **Falta de atacantes HG**: O Deck160 dependia exclusivamente de **Carpet Snake** para gerar VP. Enquanto o FT28 tinha 5 atacantes, o Deck160 tinha 1.
-
-3. **Sand's Last King subutilizado**: O Mokole passou metade do jogo transitando entre Umbra e plano material, nunca estabelecendo pressão consistente no HG.
-
-4. **Sorte de dados**: As blocked rolls de **Charlene Brell** foram heroicamente bem-sucedidas — a Wyrm de 2/2 bloqueou Sweet Luna's Smile (7/7) repetidas vezes.
+4. **VP insuficiente**: O First Team 65 conseguiu apenas 3 VP contra 12 dos Mokole. A diferença foi esmagadora.
 
 ### Estatísticas
 
 | Métrica | Deck160 | Deck465 |
 |---|---|---|
-| **VP final** | 10 | **20** |
-| **Turno da vitória** | — | **9** |
-| **VP no Turno 1** | 0 | 2 |
-| **Maior vantagem** | 7–4 (T4) | 10–20 (T9) |
-| **Criaturas em campo (pico)** | 4 | **5** |
-| **Ataques ao Hunting Grounds** | 4 | **15+** |
-| **Personagens iniciais** | 3 | **5** |
-| **Primeira derrota do Deck160** | ✅ | — |
+| **VP final** | **12** | 3 |
+| **Turno da vitória** | **6** | — |
+| **VP no Turno 1** | 4 | 0 |
+| **Maior vantagem** | 12–3 (T6) | — |
+| **Criaturas em campo (pico)** | 7 | 5 |
+| **Ataques ao Hunting Grounds** | 8 | 3 |
+| **Personagens iniciais** | 3 | 5 |
+| **Primeira vitória do Deck160** | — | **✅ (seed 50)** |
+
+### Observação Importante
+
+Esta narrativa mostra uma virada significativa em relação à versão anterior. Na seed 50, os Mokole conseguiram eliminar rapidamente a liderança Wyrm e estabelecer domínio total, enquanto o First Team 28 não conseguiu se reorganizar após a perda de Carlotta Stearns. A seed 50 demonstra que mesmo com vantagem numérica inicial, o poder bruto e coordenação podem superar a tática.
