@@ -812,6 +812,9 @@ class GameState:
                 # Nao avanca fase, partida terminou
                 return
 
+            # Executa efeitos de fim de turno (Mage of Celestial Chorus)
+            self._check_end_of_turn_effects()
+
             # Fim do turno -> expirar efeitos + volta ao inicio
             logs_exp = self.expirar_pendencias('redraw')
             for l in logs_exp:
@@ -841,6 +844,8 @@ class GameState:
             self.current_player_index = 0
             for p in self.players:
                 p.reset_pass()
+            # Aplica efeitos de Fase Lunar (ex: Full Moon -> Unlucky Lune)
+            self._check_lunar_phase_effects()
             # Redraw de sept no inicio do turno
             # Regra (2.2.2): primeiro turno ja comprou mao inicial
             # nos turnos seguintes: pode descartar + compra ate encher
@@ -958,87 +963,210 @@ class GameState:
                 f'{p.hand_size_sept} -> {novo_size}')
             p.hand_size_sept = novo_size
 
+    def _coletar_todas_vitimas_hg(self) -> list:
+        """Coleta todas as presas do Hunting Grounds (global + players).
+
+        Returns:
+            Lista de (CardInstance, owner_id) de todas as presas vivas no HG.
+        """
+        result = []
+        # HG global
+        for c in self.hunting_grounds_cards:
+            if ('Victim' in (c.card_type or '')
+                    or 'Enemy' in (c.card_type or '')):
+                if c.health_current > 0:
+                    result.append((c, c.owner_id))
+        # HG de cada jogador
+        for p in self.players:
+            for c in p.hunting_grounds:
+                if ('Victim' in (c.card_type or '')
+                        or 'Enemy' in (c.card_type or '')):
+                    if c.health_current > 0:
+                        result.append((c, p.id))
+        return result
+
+    def _coletar_todos_personagens(self) -> list:
+        """Coleta todos os personagens (Character + Ally) de todos os jogadores.
+
+        Returns:
+            Lista de (CardInstance, PlayerState).
+        """
+        todos = []
+        for p in self.players:
+            for lista in (p.pack_home, p.umbra):
+                for c in lista:
+                    if ('Character' in (c.card_type or '')
+                            or 'Ally' in (c.card_type or '')):
+                        if c.health_current > 0:
+                            todos.append((c, p))
+        return todos
+
     def _check_victim_attacks(self):
-        """Executa ataques automaticos de Victimas no Hunting Grounds.
+        """Executa ataques automaticos de Presas (Victim/Enemy) no Hunting Grounds.
 
         Chamado ao fim do Combat phase, antes da verificacao de vitoria.
-        Cada vitima ataca o personagem mais vulneravel/conveniente.
+        Cada presa ataca conforme sua habilidade especial.
         """
         from rage_web.game_engine.state import anexar_dano
+        from rage_web.game_engine.combat_queue import _remove_creature
 
-        vitimas = [c for c in self.hunting_grounds_cards
-                   if c.card_type and 'Victim' in c.card_type
-                   and c.health_current > 0]
-
+        vitimas = self._coletar_todas_vitimas_hg()
         if not vitimas:
             return
 
-        # Coleta personagens de todos os jogadores
-        todos_personagens = []
-        for p in self.players:
-            todos_personagens.extend(
-                (c, p) for c in p.pack_home
-                if 'Character' in (c.card_type or '')
-                or 'Ally' in (c.card_type or '')
-            )
-
+        todos_personagens = self._coletar_todos_personagens()
         if not todos_personagens:
             return
 
-        for vitima in vitimas:
+        for vitima, dono_vitima_id in vitimas:
             alvo = None
             dono_alvo = None
+            dano_base = max(1, vitima.effective_rage)
+            agravado = False
 
-            # 535 - Renegade Werewolf Hunter: ataca BSD com maior Renome
+            # --- 535 - Renegade Werewolf Hunter: ataca maior Renome BSD/Wyrm ---
             if vitima.card_id == 535:
-                bsd_candidates = [
+                candidates = [
                     (c, p) for c, p in todos_personagens
-                    if 'Black Spiral Dancer' in (c.keywords or '')
-                    or 'Wyrm' in (c.keywords or '')
+                    if ('Black Spiral Dancer' in (c.keywords or '')
+                        or 'Wyrm' in (c.keywords or ''))
                 ]
-                if not bsd_candidates:
-                    continue
-                bsd_candidates.sort(key=lambda x: x[0].renown, reverse=True)
-                alvo, dono_alvo = bsd_candidates[0]
+                if candidates:
+                    candidates.sort(key=lambda x: x[0].renown, reverse=True)
+                    alvo, dono_alvo = candidates[0]
+                    agravado = True
 
-            # 565 - Vigilante: ataca quem matou vitima de menor Renome
+            # --- 565 - Vigilante: ataca quem matou a vitima de menor Renome ---
             elif vitima.card_id == 565:
-                if not todos_personagens:
-                    continue
-                # Escolhe aleatoriamente entre os personagens
-                idx = self.rng.randint(0, len(todos_personagens) - 1) if self.rng else 0
-                alvo, dono_alvo = todos_personagens[idx]
+                lowest = getattr(self, '_lowest_renown_victim_killed', None)
+                if lowest:
+                    killer_uid = lowest.get('killer_uid')
+                    for c, p in todos_personagens:
+                        if id(c) == killer_uid:
+                            alvo, dono_alvo = c, p
+                            self.add_log(
+                                f'🔎 {vitima.name} mirou em '
+                                f'{c.name} (matou {lowest.get("killer_name", "?")})'
+                            )
+                            break
+                if alvo is None:
+                    # Fallback: ataca personagem com maior Renome
+                    todos_personagens.sort(key=lambda x: x[0].renown, reverse=True)
+                    alvo, dono_alvo = todos_personagens[0]
 
-            # 568 - Wild Animals: ataca maior Rage Wyrm
+            # --- 568 - Wild Animals: ataca maior Rage Wyrm ---
             elif vitima.card_id == 568:
-                wyrm_candidates = [
+                candidates = [
                     (c, p) for c, p in todos_personagens
                     if 'Wyrm' in (c.keywords or '')
                 ]
-                if not wyrm_candidates:
-                    continue
-                wyrm_candidates.sort(key=lambda x: x[0].effective_rage, reverse=True)
-                alvo, dono_alvo = wyrm_candidates[0]
+                if candidates:
+                    candidates.sort(key=lambda x: x[0].effective_rage, reverse=True)
+                    alvo, dono_alvo = candidates[0]
+
+            # --- 503 - Mage of the Celestial Chorus: remove no fim do turno ---
+            elif vitima.card_id == 503:
+                continue
+
+            # --- Outras presas sem auto-ataque ---
+            else:
+                continue
 
             if alvo and dono_alvo:
-                dano = max(1, vitima.effective_rage)
-                agravado = (vitima.card_id == 535)  # Werewolf Hunter does aggravated
                 self.add_log(
                     f'⚔️ {vitima.name} atacou {alvo.name} '
-                    f'com {dano} de dano{" agravado" if agravado else ""}!'
+                    f'com {dano_base} de dano{" agravado" if agravado else ""}!'
                 )
-                anexar_dano(alvo, vitima, dano, dono_alvo.id,
+                anexar_dano(alvo, vitima, dano_base, dono_alvo.id,
                             is_aggravated=agravado)
 
-                # Se alvo morreu, vai pro Victory Pile de ninguem (desaparece)
                 if alvo.health_current <= 0:
-                    from rage_web.game_engine.combat_queue import _remove_creature
                     _remove_creature(self, alvo)
                     alvo.zone = Zone.DISCARD_COMBAT
                     dono_alvo.discard_combat.append(alvo)
                     self.add_log(
                         f'💀 {alvo.name} foi morto por {vitima.name}!'
                     )
+
+    def registrar_kill_vitima(self, killer_card_uid: int):
+        """Registra quem matou a vitima de menor Renome (para Vigilante)."""
+        self._ultimo_killer_vitima = killer_card_uid
+
+    def _check_end_of_turn_effects(self):
+        """Executa efeitos de fim de turno.
+
+        - Mage of the Celestial Chorus (503): remove lowest Renown victim.
+        """
+        from rage_web.game_engine.combat_queue import _remove_creature
+
+        # Procura Mage of the Celestial Chorus em qualquer HG
+        mages = []
+        for c, _ in self._coletar_todas_vitimas_hg():
+            if c.card_id == 503 and c.health_current > 0:
+                mages.append(c)
+
+        if not mages:
+            return
+
+        for mage in mages:
+            # Encontra a vitima de menor Renome (excluindo a Mage)
+            vitimas = self._coletar_todas_vitimas_hg()
+            vitimas_fora_mage = [
+                (c, dono) for c, dono in vitimas
+                if c.card_id != 503 and c.health_current > 0
+            ]
+            if not vitimas_fora_mage:
+                continue
+
+            # Menor Renome (desempate: menor health)
+            vitimas_fora_mage.sort(key=lambda x: (x[0].renown, x[0].health_current))
+            vitima_removida, _ = vitimas_fora_mage[0]
+
+            # Remove do HG
+            for p in self.players:
+                if vitima_removida in p.hunting_grounds:
+                    p.hunting_grounds.remove(vitima_removida)
+                    break
+            if vitima_removida in self.hunting_grounds_cards:
+                self.hunting_grounds_cards.remove(vitima_removida)
+
+            vitima_removida.zone = Zone.REMOVED
+            self.add_log(
+                f'🧙 {mage.name} removeu {vitima_removida.name} '
+                f'(renown {vitima_removida.renown}) do Hunting Grounds!'
+            )
+
+    def _check_lunar_phase_effects(self):
+        """Aplica efeitos de Fase Lunar ativa.
+
+        - Full Moon: Unlucky Lune (558) ganha Rage 6.
+        """
+        if not self.lunar_phase:
+            return
+
+        nome_lua = (self.lunar_phase.nome or '').lower()
+
+        if 'full moon' not in nome_lua and 'lua cheia' not in nome_lua:
+            return
+
+        # Full Moon: Unlucky Lune ganha Rage 6
+        for c, _ in self._coletar_todas_vitimas_hg():
+            if c.card_id == 558:  # Unlucky Lune
+                if c.rage != 6:
+                    c.rage = 6
+                    self.add_log(
+                        f'{c.name}: Rage = 6 (Full Moon)'
+                    )
+        # Personagens em jogo
+        for p in self.players:
+            for c in p.pack_home + p.umbra + p.hunting_grounds:
+                if c.card_id == 558:
+                    if c.rage != 6:
+                        c.rage = 6
+                        self.add_log(
+                            f'{c.name}: Rage = 6 (Full Moon)'
+                        )
+
 
     def register_card_passives(self, card: CardInstance, owner: PlayerState):
         """Registra efeitos passivos especiais de cartas sem efeitos
@@ -1480,6 +1608,44 @@ class GameState:
             self.game_modifiers.append(modifier)
             self.add_log(
                 f'{card.name}: Ananasi agem como Gauntlet 1 Caern')
+
+        # ── Presas com habilidades especiais (triggers de fim de combate/turno) ──
+
+        elif card.card_id == 568:  # Wild Animals
+            # Ataca maior Rage Wyrm no fim de cada Combat Phase
+            # (processado em _check_victim_attacks)
+            self.add_log(
+                f'{card.name}: atacara maior Rage Wyrm no fim do combate')
+
+        elif card.card_id == 565:  # Vigilante
+            # Ataca quem matou a vitima de menor Renome
+            # (processado em _check_victim_attacks)
+            self.add_log(
+                f'{card.name}: atacara quem matou a vitima mais fraca')
+
+        elif card.card_id == 503:  # Mage of the Celestial Chorus
+            # Remove menor Renome victim no fim do turno
+            # (processado em _check_end_of_turn_effects)
+            # Tambem pode usar ANY Gifts (registrado como modifier)
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_use_any_gift'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode usar ANY Gifts, '
+                f'remove menor Renome victim no fim do turno')
+
+        elif card.card_id == 558:  # Unlucky Lune
+            # Pode usar Auspice Gifts + Full Moon = Rage 6
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_use_auspice_gifts'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode usar Auspice Gifts, '
+                f'Rage 6 com Full Moon')
 
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""

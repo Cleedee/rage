@@ -365,9 +365,29 @@ def pode_usar_gift(player: 'PlayerState',
     for c in player.pack_home:
         if 'Ally' in (c.card_type or '') and c not in characters:
             characters.append(c)
+    # Victims/Enemies no HG tambem podem usar Gifts (Via FOO Rule)
+    for c in player.hunting_grounds:
+        if ('Victim' in (c.card_type or '')
+                or 'Enemy' in (c.card_type or '')) and c not in characters:
+            characters.append(c)
 
     if not characters:
         return False
+
+    # Verifica se algum personagem tem habilidade especial de Gifts
+    # (Mage of Celestial Chorus = ANY Gifts, Unlucky Lune = Auspice Gifts)
+    for char in characters:
+        char_text = _info_char(char).lower()
+        # ANY Gifts: pode usar qualquer gift
+        if 'mage of the celestial chorus' in char_text:
+            if char.gnosis >= (gift_card.gnosis or 0):
+                return True
+        # Auspice Gifts: pode usar gifts com "Auspice" no requisito
+        if 'unlucky lune' in char_text:
+            req_lower = (gift_card.requires or '').lower()
+            if 'auspice' in req_lower:
+                if char.gnosis >= (gift_card.gnosis or 0):
+                    return True
 
     if not requires:
         # Sem requisito de keyword: apenas check de Gnosis

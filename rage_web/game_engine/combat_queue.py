@@ -182,6 +182,19 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         # Death triggers
         game.check_death_triggers(alvo, origem, dono_origem)
         game.check_kill_bonuses(alvo, dono_origem)
+        # Tracking para Vigilante (565): registra quem matou a vitima
+        # de menor Renome
+        ct_alvo = (alvo.card_type or '').lower()
+        if 'victim' in ct_alvo or 'enemy' in ct_alvo:
+            if dono_origem and origem:
+                # Verifica se esta e a vitima de menor Renome morta ate agora
+                lowest = getattr(game, '_lowest_renown_victim_killed', None)
+                if lowest is None or alvo.renown < lowest['renown']:
+                    game._lowest_renown_victim_killed = {
+                        'renown': alvo.renown,
+                        'killer_uid': id(origem),
+                        'killer_name': origem.name,
+                    }
     else:
         # Morte fora de combate ou por Presa
         if 'Character' in (alvo.card_type or '') or 'Ally' in (alvo.card_type or ''):
@@ -602,6 +615,8 @@ def start_combat(game: GameState, attackers: list[str],
 
     # Preserva alphas do estado de combate anterior
     alphas_anteriores = dict(game.combat.alphas) if game.combat else {}
+    # Reseta tracking de vitimas para Vigilante
+    game._lowest_renown_victim_killed = None
     game.combat = CombatState(
         is_active=True,
         step='declare',
@@ -1516,6 +1531,9 @@ def end_combat(game: GameState) -> bool:
                                 f'[Caern] {c.name}: {dados["atributo"]} '
                                 f'restaurado para {dados["valor_original"]}')
                             break
+
+    # Executa ataques automaticos de presas no HG
+    game._check_victim_attacks()
 
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')

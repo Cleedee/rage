@@ -130,6 +130,7 @@
 
 - [ ] **Exportar deck** — Download em formato texto ou .dek
 - [ ] **Filtros avançados** — Por renown, damage, atributos min/max
+- [ ] **Exportação de Deck para Discord** — Texto em inglês, Personagens antes dos demais tipos de cartas
 
 ## 🔄 Pendente (Qualidade)
 
@@ -156,8 +157,25 @@
 
 ## 🔄 Pendente (Prey)
 
-- [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
+- [x] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `pode_usar_gift()` inclui Victims/Enemies do HG como personagens válidos
 - [x] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — `_deve_atacar_presa_estrategicamente()` avalia VP gap, força do alpha, eficiência da Presa
+
+## ✅ Concluído (Sistema de Triggers de Presas)
+
+- [x] **Wild Animals (#568) auto-ataque** — Ataca maior Rage Wyrm no fim do combate
+- [x] **Vigilante (#565) auto-ataque** — Ataca quem matou a vítima de menor Renome
+- [x] **Mage of the Celestial Chorus (#503) remoção** — Remove menor Renome victim no fim do turno
+- [x] **Mage of the Celestial Chorus ANY Gifts** — Pode usar qualquer Gift (via `_info_char` text matching)
+- [x] **Unlucky Lune (#558) Auspice Gifts** — pode usar Gifts com requisito 'Auspice'
+- [x] **Unlucky Lune Full Moon Rage 6** — Rage aumenta para 6 com Full Moon ativa
+- [x] **_coletar_todas_vitimas_hg()** — Coleta presas do HG global + HG de cada jogador
+- [x] **_coletar_todos_personagens()** — Coleta personagens de pack_home + umbra
+- [x] **_check_victim_attacks() expandido** — Verifica HG global + jogadores, todas as presas com auto-ataque
+- [x] **_check_end_of_turn_effects()** — Efeitos de fim de turno (Mage removal)
+- [x] **_check_lunar_phase_effects()** — Efeitos de Fase Lunar (Unlucky Lune)
+- [x] **registrar_kill_vitima()** — Tracking de kills para Vigilante
+- [x] **15 novos testes** — TestPreyTriggerSystem com cobertura completa
+- [x] **291 testes passando** — 276 anteriores + 15 novos
 
 ## 🔄 Pendente (Allies)
 

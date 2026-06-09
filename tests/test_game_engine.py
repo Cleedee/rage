@@ -2507,6 +2507,289 @@ class TestVictimAutoAttack:
         assert fraco not in p2.pack_home
 
 
+class TestPreyTriggerSystem:
+    """Testes do sistema de triggers de presas (fim de combate/turno)."""
+
+    def test_wild_animals_ataca_wyrm_em_pack_home(self):
+        """Wild Animals ataca Wyrm no pack home (nao so HG global)."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        animals = CardInstance(card_id=568, name='Wild Animals',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='p1', controller_id='p1',
+                              rage=6, health=4, health_current=4)
+        p1.hunting_grounds.append(animals)
+        wyrm = CardInstance(card_id=18, name='Count Vladimir',
+                           card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                           owner_id='p2', controller_id='p2',
+                           rage=5, health=6, health_current=6,
+                           keywords='Vampire - Eater-of-Souls - Wyrm')
+        p2.pack_home.append(wyrm)
+        game._check_victim_attacks()
+        assert wyrm.health_current < 6
+
+    def test_wild_animals_ignora_se_sem_wyrm(self):
+        """Wild Animals nao ataca se nao ha Wyrm."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        animals = CardInstance(card_id=568, name='Wild Animals',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='p1', controller_id='p1',
+                              rage=6, health=4, health_current=4)
+        p1.hunting_grounds.append(animals)
+        gaia = CardInstance(card_id=46, name='Blood-on-the-Wind',
+                           card_type='Character - Gaia', zone=Zone.PACK_HOME,
+                           owner_id='p2', controller_id='p2',
+                           rage=3, health=4, health_current=4)
+        p2.pack_home.append(gaia)
+        game._check_victim_attacks()
+        assert gaia.health_current == 4  # Intocado
+
+    def test_wild_animals_prefere_maior_rage(self):
+        """Wild Animals ataca o Wyrm com maior Rage."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        animals = CardInstance(card_id=568, name='Wild Animals',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='p1', controller_id='p1',
+                              rage=6, health=4, health_current=4)
+        p1.hunting_grounds.append(animals)
+        wyrm1 = CardInstance(card_id=18, name='Vladimir',
+                            card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                            owner_id='p2', controller_id='p2',
+                            rage=5, health=6, health_current=6,
+                            keywords='Wyrm')
+        wyrm2 = CardInstance(card_id=29, name='Allonzo',
+                            card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                            owner_id='p2', controller_id='p2',
+                            rage=7, health=7, health_current=7,
+                            keywords='Wyrm')
+        p2.pack_home.extend([wyrm1, wyrm2])
+        game._check_victim_attacks()
+        assert wyrm2.health_current < 7  # Allonzo (rage 7) foi atacado
+        assert wyrm1.health_current == 6  # Vladimir intocado
+
+    def test_vigilante_ataca_killer_de_vitima(self):
+        """Vigilante ataca quem matou a vitima de menor Renome."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        vigilante = CardInstance(card_id=565, name='Vigilante',
+                                card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                                owner_id='p1', controller_id='p1',
+                                rage=3, health=5, health_current=5)
+        p1.hunting_grounds.append(vigilante)
+        killer = CardInstance(card_id=18, name='Vladimir',
+                             card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                             owner_id='p2', controller_id='p2',
+                             rage=5, health=6, health_current=6,
+                             keywords='Wyrm')
+        p2.pack_home.append(killer)
+        # Simula que Vladimir matou a vitima de menor Renome
+        killer_card = CardInstance(card_id=999, name='FakeKiller',
+                                   card_type='Character', zone=Zone.PACK_HOME,
+                                   owner_id='p2', controller_id='p2')
+        game.registrar_kill_vitima(id(killer_card))
+        game._check_victim_attacks()
+        assert killer.health_current < 6
+
+    def test_vigilante_fallback_sem_killer_registrado(self):
+        """Vigilante ataca maior Renome se nao ha killer registrado."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        vigilante = CardInstance(card_id=565, name='Vigilante',
+                                card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                                owner_id='p1', controller_id='p1',
+                                rage=3, health=5, health_current=5)
+        p1.hunting_grounds.append(vigilante)
+        char = CardInstance(card_id=18, name='Vladimir',
+                           card_type='Character - Wyrm', zone=Zone.PACK_HOME,
+                           owner_id='p2', controller_id='p2',
+                           rage=5, health=6, health_current=6)
+        p2.pack_home.append(char)
+        # Sem killer registrado
+        game._check_victim_attacks()
+        assert char.health_current < 6  # Atacado (fallback)
+
+    def test_mage_remove_lowest_renown_victim(self):
+        """Mage of Celestial Chorus remove menor Renome victim no fim do turno."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        mage = CardInstance(card_id=503, name='Mage of the Celestial Chorus',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           rage=7, health=7, health_current=7, renown=8)
+        weak_victim = CardInstance(card_id=565, name='Vigilante',
+                                  card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                                  owner_id='p1', controller_id='p1',
+                                  rage=3, health=5, health_current=5, renown=5)
+        strong_victim = CardInstance(card_id=535, name='Werewolf Hunter',
+                                    card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                                    owner_id='p1', controller_id='p1',
+                                    rage=7, health=4, health_current=4, renown=8)
+        p1.hunting_grounds.extend([mage, weak_victim, strong_victim])
+        game._check_end_of_turn_effects()
+        assert weak_victim.zone == Zone.REMOVED  # Menor Renome removido
+        assert strong_victim.health_current == 4  # Ainda vivo
+        assert mage.health_current == 7  # Mage intacta
+
+    def test_mage_nao_remove_se_unica_vitima(self):
+        """Mage nao remove se e a unica vitima no HG."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        mage = CardInstance(card_id=503, name='Mage of the Celestial Chorus',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           rage=7, health=7, health_current=7, renown=8)
+        p1.hunting_grounds.append(mage)
+        game._check_end_of_turn_effects()
+        assert mage.health_current == 7  # Nada acontece
+
+    def test_unlucky_lune_rage_6_com_full_moon(self):
+        """Unlucky Lune ganha Rage 6 com Full Moon ativa."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        lune = CardInstance(card_id=558, name='Unlucky Lune',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           rage=3, health=4, health_current=4, renown=6)
+        p1.hunting_grounds.append(lune)
+        game.definir_lunar_phase('p1', 'Full Moon', card_id=891)
+        game._check_lunar_phase_effects()
+        assert lune.rage == 6
+
+    def test_unlucky_lune_sem_full_moon(self):
+        """Unlucky Lune mantem Rage original sem Full Moon."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        lune = CardInstance(card_id=558, name='Unlucky Lune',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           rage=3, health=4, health_current=4, renown=6)
+        p1.hunting_grounds.append(lune)
+        game.definir_lunar_phase('p1', 'New Moon', card_id=890)
+        game._check_lunar_phase_effects()
+        assert lune.rage == 3  # Nao muda
+
+    def test_coletar_vitimas_hg_global_e_players(self):
+        """_coletar_todas_vitimas_hg retorna vitimas de todas as fontes."""
+        p1 = PlayerState(id='p1', name='J1')
+        p2 = PlayerState(id='p2', name='J2')
+        game = GameState(players=[p1, p2])
+        v1 = CardInstance(card_id=568, name='Wild Animals',
+                         card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                         owner_id='', controller_id='',
+                         health=4, health_current=4)
+        v2 = CardInstance(card_id=565, name='Vigilante',
+                         card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                         owner_id='p1', controller_id='p1',
+                         health=5, health_current=5)
+        game.hunting_grounds_cards.append(v1)
+        p1.hunting_grounds.append(v2)
+        vitimas = game._coletar_todas_vitimas_hg()
+        assert len(vitimas) == 2
+        card_ids = [c.card_id for c, _ in vitimas]
+        assert 568 in card_ids
+        assert 565 in card_ids
+
+    def test_coletar_personagens_pack_e_umbra(self):
+        """_coletar_todos_personagens inclui pack_home e umbra."""
+        p1 = PlayerState(id='p1', name='J1')
+        game = GameState(players=[p1])
+        c1 = CardInstance(card_id=18, name='Vladimir',
+                         card_type='Character', zone=Zone.PACK_HOME,
+                         owner_id='p1', controller_id='p1',
+                         health=6, health_current=6)
+        c2 = CardInstance(card_id=29, name='Allonzo',
+                         card_type='Character', zone=Zone.UMBRA,
+                         owner_id='p1', controller_id='p1',
+                         health=7, health_current=7)
+        p1.pack_home.append(c1)
+        p1.umbra.append(c2)
+        personagens = game._coletar_todos_personagens()
+        assert len(personagens) == 2
+
+    # -- Testes de Gift access especial (ANY Gifts / Auspice Gifts) --
+
+    def test_mage_celestial_chorus_pode_usar_qualquer_gift(self):
+        """Mage of Celestial Chorus no HG permite usar ANY Gift."""
+        from rage_web.game_engine.rules import pode_usar_gift
+        p1 = PlayerState(id='p1', name='J1')
+        # Mage of Celestial Chorus como Victim no HG
+        mage = CardInstance(card_id=503, name='Mage of the Celestial Chorus',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=7,
+                           text='The mage can use ANY Gifts.')
+        p1.hunting_grounds.append(mage)
+        # Gift com requisito que normalmente ninguem atende
+        gift = CardInstance(card_id=999, name='Generic Gift',
+                           card_type='Gift', zone=Zone.HAND,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=3,
+                           requires='Eater-of-Souls - Vampire')
+        p1.hand.append(gift)
+        assert pode_usar_gift(p1, gift) is True
+
+    def test_mage_celestial_chorus_respeita_gnosis(self):
+        """Mage of Celestial Chorus nao pode usar Gift com Gnosis > sua Gnosis."""
+        from rage_web.game_engine.rules import pode_usar_gift
+        p1 = PlayerState(id='p1', name='J1')
+        mage = CardInstance(card_id=503, name='Mage of the Celestial Chorus',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=3,
+                           text='The mage can use ANY Gifts.')
+        p1.hunting_grounds.append(mage)
+        gift = CardInstance(card_id=999, name='Expensive Gift',
+                           card_type='Gift', zone=Zone.HAND,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=5)
+        p1.hand.append(gift)
+        assert pode_usar_gift(p1, gift) is False
+
+    def test_unlucky_lune_pode_usar_auspice_gifts(self):
+        """Unlucky Lune pode usar Gifts com requisito 'Auspice'."""
+        from rage_web.game_engine.rules import pode_usar_gift
+        p1 = PlayerState(id='p1', name='J1')
+        lune = CardInstance(card_id=558, name='Unlucky Lune',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=4,
+                           text='A Lune can use any Auspice Gifts.')
+        p1.hunting_grounds.append(lune)
+        gift = CardInstance(card_id=999, name='Gift Auspice',
+                           card_type='Gift', zone=Zone.HAND,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=4,
+                           requires='Auspice - Galliard')
+        p1.hand.append(gift)
+        assert pode_usar_gift(p1, gift) is True
+
+    def test_unlucky_lune_nao_pode_usar_gift_nao_auspice(self):
+        """Unlucky Lune nao pode usar Gift sem 'Auspice' no requisito."""
+        from rage_web.game_engine.rules import pode_usar_gift
+        p1 = PlayerState(id='p1', name='J1')
+        lune = CardInstance(card_id=558, name='Unlucky Lune',
+                           card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=4,
+                           text='A Lune can use any Auspice Gifts.')
+        p1.hunting_grounds.append(lune)
+        gift = CardInstance(card_id=999, name='Gift Pentex',
+                           card_type='Gift', zone=Zone.HAND,
+                           owner_id='p1', controller_id='p1',
+                           gnosis=3,
+                           requires='Pentex')
+        p1.hand.append(gift)
+        # Sem match de keyword normal (Spirit nao esta em Pentex)
+        assert pode_usar_gift(p1, gift) is False
+
+
 class TestWhipOfTheWicked:
     """Testes da Whip of the Wicked (720)."""
 
