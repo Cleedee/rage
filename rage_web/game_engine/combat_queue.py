@@ -1084,8 +1084,33 @@ def resolve_combat(game: GameState) -> bool:
         if alvo_card.reducao_dano > 0 and not skin_blocks:
             game.add_log(f'  {alvo_card.name} reduziu {alvo_card.reducao_dano} '
                          f'de dano (equipamento)')
+        # Trinity Hive Caern (599): BSD causam dano agravado
+        trinity_aggravated = False
+        if not war_knife_aggravated:
+            if game.has_modifier('trinity_hive_caern'):
+                dono_origem = _find_owner(game, origem_card)
+                if dono_origem:
+                    # Verifica se o dono do atacante tem o Caern
+                    tem_caern = any(
+                        mod.modifier == 'trinity_hive_caern'
+                        for mod in game.game_modifiers
+                        if any(
+                            id(c) == mod.card_uid
+                            for c in dono_origem.pack_home
+                            + dono_origem.hunting_grounds
+                        )
+                    )
+                    if tem_caern:
+                        kw = (origem_card.keywords or '').lower()
+                        if 'black spiral dancer' in kw:
+                            trinity_aggravated = True
+                            game.add_log(
+                                f'  Trinity Hive: {origem_card.name} '
+                                f'causa dano agravado!')
+
         anexar_dano(alvo_card, origem_card, dano, dono_dono,
-                    is_aggravated=war_knife_aggravated)
+                    is_aggravated=(war_knife_aggravated
+                                   or trinity_aggravated))
         game.add_log(f'  {origem_card.name} causou {dano} de dano a '
                      f'{alvo_card.name} '
                      f'({alvo_card.health_current}/{alvo_card.health})')

@@ -423,11 +423,31 @@ class PlayerState:
             Lista de logs.
         """
         logs = []
+
+        # Trinity Hive Caern: BSD regeneram apenas na Umbra
+        # (verifica se o pack deste jogador tem o Caern)
+        trinity_hive_ativa = any(
+            caern.card_id == 599
+            for caern in self.pack_home + self.hunting_grounds
+        )
+
         for c in self.pack_home:
             if not self._pode_regenerar(c):
                 continue
             if not c.attached_damage:
                 continue
+            # Trinity Hive: BSD so regeneram na Umbra
+            if trinity_hive_ativa:
+                if 'black spiral dancer' in (c.keywords or '').lower():
+                    if c.zone != Zone.UMBRA:
+                        logs.append(
+                            f'{c.name} (BSD) so regenera na Umbra '
+                            f'(Trinity Hive)')
+                        continue
+                    # BSD na Umbra: pode regenerar agravado
+                    if 'pode_regenerar_agravado' not in c.restricoes:
+                        c.restricoes.append('pode_regenerar_agravado')
+
             # Filtra damage cards: so pode regenerar nao-agravadas,
             # a menos que a criatura tenha 'pode_regenerar_agravado'
             pode_agravado = 'pode_regenerar_agravado' in c.restricoes
@@ -1129,6 +1149,16 @@ class GameState:
             self.game_modifiers.append(modifier)
             self.add_log(
                 f'{card.name}: oponentes perdem 2 Rage/Gnosis em combate')
+
+        elif card.card_id == 599:  # Trinity Hive Caern
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='trinity_hive_caern',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: BSD causam dano agravado. '
+                f'Regeneram apenas na Umbra.')
 
         elif card.card_id == 780:  # Termite Mounds
             modifier = GameModifier(
