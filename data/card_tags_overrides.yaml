@@ -1,0 +1,98 @@
+# Overrides manuais de tags para cartas do Rage CCG
+#
+# Use para adicionar tags que a extração automática não captura,
+# ou para remover tags incorretas.
+#
+# Formato:
+# <card_id>:
+#   tags: ["tag1", "tag2"]     # Tags a adicionar
+#   remove: ["tag3"]           # Tags a remover (opcional)
+
+# ═══════════════════════════════════════════════════════════════
+# Presas com habilidades especiais
+# ═══════════════════════════════════════════════════════════════
+
+503:  # Mage of the Celestial Chorus
+  tags: ["high-value-prey", "gift-enabler"]
+
+568:  # Wild Animals
+  tags: ["gaia-friendly"]
+
+565:  # Vigilante
+  tags: ["gaia-friendly"]
+
+558:  # Unlucky Lune
+  tags: ["gaia-friendly"]
+
+535:  # Renegade Werewolf Hunter
+  tags: ["anti-bsd", "wyrm-counter"]
+
+451:  # Angus, the White Howler
+  tags: ["ally-potential", "gift-user", "high-value-prey"]
+
+# ═══════════════════════════════════════════════════════════════
+# Personagens com sinergias especiais
+# ═══════════════════════════════════════════════════════════════
+
+18:   # Count Vladimir Rustovitch
+  tags: ["alpha-candidate", "regenerator"]
+
+29:   # Allonzo Montoya
+  tags: ["alpha-candidate", "regenerator", "no-alpha-consecutive"]
+
+191:  # Modi Votishal
+  tags: ["alpha-candidate", "tank"]
+
+67:   # Fek
+  tags: ["defiler", "bane-user"]
+
+# ═══════════════════════════════════════════════════════════════
+# Equipamentos notáveis
+# ═══════════════════════════════════════════════════════════════
+
+697:  # Skin of the Hellbound
+  tags: ["damage-immune", "wyrm-equipment"]
+
+720:  # Whip of the Wicked
+  tags: ["high-gnosis-requirement"]
+
+630:  # Chronicle of the Black Labyrinth
+  tags: ["wyrm-vp-bonus"]
+
+# ═══════════════════════════════════════════════════════════════
+# Caerns
+# ═══════════════════════════════════════════════════════════════
+
+586:  # Caern of the Unwashed Child
+  tags: ["combat-debuff"]
+
+599:  # Trinity Hive Caern
+  tags: ["bsd-synergy", "umbra-regen"]
+
+597:  # Sky River Caern
+  tags: ["alpha-protection"]
+
+582:  # Caern of the Crescent Moon
+  tags: ["moot-bonus", "alpha-restriction"]
+
+584:  # Caern of the Snow Leopard
+  tags: ["resurrection", "umbra-synergy"]
+
+# ═══════════════════════════════════════════════════════════════
+# Eventos / Fases Lunares
+# ═══════════════════════════════════════════════════════════════
+
+885:  # Mass Pollution
+  tags: ["wyrm-buff", "gaia-debuff"]
+
+840:  # Eater-of-Souls
+  tags: ["pentex-requirement"]
+
+890:  # New Moon
+  tags: ["lunar-phase"]
+
+891:  # Full Moon (assumindo ID 891)
+  tags: ["lunar-phase", "full-moon"]
+
+884:  # Lunar Eclipse
+  tags: ["lunar-phase", "eclipse"]

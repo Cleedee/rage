@@ -26,7 +26,7 @@ def find_all_cards():
     return db.session.scalars(stmt).all()
 
 def search_cards(query: str = '', tipo: str = '', expansion: str = '',
-                 limit: int = 100, offset: int = 0) -> list[Card]:
+                 tags: str = '', limit: int = 100, offset: int = 0) -> list[Card]:
     """Busca cartas com filtros opcionais."""
     q = Card.query
     if query:
@@ -35,9 +35,16 @@ def search_cards(query: str = '', tipo: str = '', expansion: str = '',
         q = q.filter(Card.tipo == tipo)
     if expansion:
         q = q.filter(Card.expansion == expansion)
+    if tags:
+        # Suporta múltiplas tags separadas por vírgula (AND logic)
+        for tag in tags.split(','):
+            tag = tag.strip()
+            if tag:
+                q = q.filter(Card.tags.ilike(f'%{tag}%'))
     return q.order_by(Card.name).offset(offset).limit(limit).all()
 
-def count_cards(query: str = '', tipo: str = '', expansion: str = '') -> int:
+def count_cards(query: str = '', tipo: str = '', expansion: str = '',
+                tags: str = '') -> int:
     """Conta cartas com filtros."""
     q = Card.query
     if query:
@@ -46,7 +53,24 @@ def count_cards(query: str = '', tipo: str = '', expansion: str = '') -> int:
         q = q.filter(Card.tipo == tipo)
     if expansion:
         q = q.filter(Card.expansion == expansion)
+    if tags:
+        for tag in tags.split(','):
+            tag = tag.strip()
+            if tag:
+                q = q.filter(Card.tags.ilike(f'%{tag}%'))
     return q.count()
+
+def get_all_tags() -> list[str]:
+    """Retorna lista de todas as tags únicas usadas."""
+    from sqlalchemy import func
+    result = db.session.query(Card.tags).filter(Card.tags != '').distinct().all()
+    tags = set()
+    for (tags_str,) in result:
+        for t in tags_str.split(','):
+            t = t.strip()
+            if t:
+                tags.add(t)
+    return sorted(tags)
 
 def save_card(card: Card):
     db.session.add(card)

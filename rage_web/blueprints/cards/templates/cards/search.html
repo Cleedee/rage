@@ -86,6 +86,40 @@
     color: #999;
     margin-top: 0.4rem;
   }
+  .card-item .card-tags {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    margin-top: 0.4rem;
+  }
+  .card-item .card-tags .tag {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #e8f4fd;
+    color: #1a6b8a;
+  }
+  .card-item .card-tags .tag.highlight {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .tag-filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+  }
+  .tag-filter-list .tag {
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tag-filter-list .tag:hover {
+    opacity: 0.8;
+  }
+  .tag-filter-list .tag.is-active {
+    background: #485fc7;
+    color: #fff;
+  }
   .card-item .card-actions {
     margin-top: 0.5rem;
     display: flex;
@@ -149,7 +183,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Filtro por Tags -->
+    <div class="field mt-2">
+      <label class="label is-small mb-1">Tags</label>
+      <div class="tag-filter-list">
+        {% for tag in all_tags[:30] %}
+        <span class="tag is-small {% if tag in filtro_tags.split(',') %}is-active{% endif %}"
+              onclick="toggleTag('{{ tag }}')">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="tags" id="tags-input" value="{{ filtro_tags }}">
+    </div>
   </form>
+  <script>
+    function toggleTag(tag) {
+      const input = document.getElementById('tags-input');
+      const form = document.getElementById('search-form');
+      let tags = input.value ? input.value.split(',').map(t => t.trim()).filter(t => t) : [];
+      const idx = tags.indexOf(tag);
+      if (idx >= 0) {
+        tags.splice(idx, 1);
+      } else {
+        tags.push(tag);
+      }
+      input.value = tags.join(',');
+      form.submit();
+    }
+  </script>
 </div>
 
 <!-- Resultados -->
@@ -189,6 +250,17 @@
 
       {% if card.text %}
       <div class="card-text">{{ card.text }}</div>
+      {% endif %}
+
+      {% if card.tags %}
+      <div class="card-tags">
+        {% for tag in card.tags.split(',')[:5] %}
+        <span class="tag {% if tag.strip() in filtro_tags.split(',') %}highlight{% endif %}">{{ tag.strip() }}</span>
+        {% endfor %}
+        {% if card.tags.split(',')|length > 5 %}
+        <span class="tag">+{{ card.tags.split(',')|length - 5 }}</span>
+        {% endif %}
+      </div>
       {% endif %}
 
       <div class="card-expansion">{{ card.expansion }}</div>

@@ -225,16 +225,19 @@ def search():
     query = request.args.get('q', '')
     tipo = request.args.get('tipo', '')
     expansion = request.args.get('expansion', '')
+    tags = request.args.get('tags', '')
     form = CardForm()
 
     cards = rep.search_cards(query=query, tipo=tipo, expansion=expansion,
-                             limit=200)
+                             tags=tags, limit=200)
     tipos = rep.get_tipos()
     expansoes = rep.get_expansions()
+    all_tags = rep.get_all_tags()
 
     return render_template('cards/search.html',
                            cards=cards, form=form,
-                           tipos=tipos, expansoes=expansoes,
+                           tipos=tipos, expansoes=expansoes, all_tags=all_tags,
                            filtro_query=query,
                            filtro_tipo=tipo,
-                           filtro_expansion=expansion)
+                           filtro_expansion=expansion,
+                           filtro_tags=tags)

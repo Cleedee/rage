@@ -37,6 +37,7 @@ class Card(db.Model):
     text: Mapped[str] = mapped_column(default='')
     errata: Mapped[str] = mapped_column(default='')
     fan_image: Mapped[Optional[str]] = mapped_column(default='', nullable=True)
+    tags: Mapped[str] = mapped_column(default='')
 
     # Relacionamento muitos-para-muitos com Deck
     decks: Mapped[list['Deck']] = relationship(
