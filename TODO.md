@@ -238,6 +238,22 @@
 - [ ] **Moot cards sem modelo JSON** — 69/74 cartas sem efeitos implementados (baixo impacto, so 7 em decks)
 - [ ] **Board Meeting sem modelo JSON** — Nenhum Board Meeting tem JSON model (baixo impacto)
 
+## 🔄 Pendente (Battlefields)
+
+- [x] **Card type Battlefield reconhecido** — CARD_TYPES, zona_da_carta() para HG
+- [x] **Vai para Hunting Grounds** —_play_card() em `priority_bot.py`
+- [x] **Pode ser atacado como alpha action** — TIPOS_HG, start_combat()
+- [x] **Auto-define block** — _eh_prey_no_hg() trata como presa
+- [x] **Cannot be discarded voluntarily** — Protegido como Event
+- [ ] **Engaging Renown limit** — Cada Battlefield limita renown dos combatentes
+- [ ] **Defesa por outro alpha** — Qualquer alpha pode defender
+- [ ] **Self-defending** — Battlefield tem stats proprios (Rage/Gnosis/Health)
+- [ ] **Regras especiais por carta** — "Draw N cards", "No weapons", "1/2 Rage", "Umbral"
+- [ ] **VP na derrota** — Battlefield derrotado vai pro Victory Pile
+- [ ] **Unique restriction** — "Only 1 per game" em varios Battlefields
+- [ ] **19/20 sem JSON model** — Apenas #1258 Grrash Tak'Hyrrr tem modelo
+- [ ] **Apenas 1 Battlefield em decks** — Baixissimo impacto (1 em 20)
+
 ## 🧪 Testes
 
 - [x] **271 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
