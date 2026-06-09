@@ -132,6 +132,9 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
     if alvo.health_current > 0:
         return False
 
+    # Salva zona original antes de processar morte
+    zona_original_death = alvo.zone
+
     dono_alvo = _find_owner(game, alvo)
 
     # Descarta anexos (damage cards + equipamentos)
@@ -194,7 +197,18 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
                 dono_alvo.discard_combat.append(alvo)
             game.add_log(f'  {alvo.name} foi destruido e descartado!')
 
+    # Caern of the Snow Leopard (584): personagem morto na Umbra
+    # pode ser ressuscitado sacrificando o Caern
+    if dono_alvo and alvo.zone in (Zone.REMOVED, Zone.VICTORY_PILE):
+        _check_caern_snow_leopard(game, alvo, dono_alvo,
+                                   zona_original=zona_original_death)
+
     return True
+
+    game.add_log(
+        f'[Caern] Leopardo da Neve: {alvo.name} ressuscitado '
+        f'com vida cheia!'
+    )
 
 
 COMBAT_ACTIONS = {
@@ -1605,6 +1619,66 @@ def _check_sky_river_caern(game: GameState):
         game.combat.attackers.clear()
         game.combat.is_active = False
         game.add_log('Combat cancelado (Sky River Caern)')
+
+
+def _check_caern_snow_leopard(game: GameState, alvo: CardInstance,
+                               dono: PlayerState,
+                               zona_original: Optional[str] = None):
+    """Caern of the Snow Leopard (584): personagem morto na Umbra
+    pode ser ressuscitado sacrificando o Caern.
+
+    Quando um personagem e morto na Umbra, o dono pode descartar
+    este Caern para trazer o personagem de volta com vida cheia
+    para o mundo fisico (pack_home).
+
+    Args:
+        game: Estado da partida.
+        alvo: Personagem que morreu.
+        dono: Dono do personagem.
+        zona_original: Zona do personagem antes de morrer.
+    """
+    # So funciona para Character/Ally morto na Umbra
+    if 'Character' not in (alvo.card_type or '') and 'Ally' not in (alvo.card_type or ''):
+        return
+    if zona_original != Zone.UMBRA:
+        return
+
+    # Verifica se o dono tem Caern of the Snow Leopard em jogo
+    caern = None
+    for c in dono.pack_home + dono.hunting_grounds:
+        if c.card_id == 584:
+            caern = c
+            break
+    if not caern:
+        return
+
+    # Ressuscita!
+    # Remove da zona de morte
+    _remove_creature(game, alvo)
+    if alvo in dono.victory_pile:
+        dono.victory_pile.remove(alvo)
+
+    # Move de volta ao pack_home com vida cheia
+    alvo.zone = Zone.PACK_HOME
+    alvo.zone_original = Zone.PACK_HOME
+    alvo.health_current = alvo.health
+    alvo.is_tapped = True  # Chega tapped (exausto)
+    alvo.attached_damage.clear()
+    alvo.attached_equipment.clear()
+    dono.pack_home.append(alvo)
+
+    # Descarta o Caern
+    caern.zone = Zone.DISCARD_SEPT
+    if caern in dono.pack_home:
+        dono.pack_home.remove(caern)
+    else:
+        dono.hunting_grounds.remove(caern)
+    dono.discard_sept.append(caern)
+
+    game.add_log(
+        f'[Caern] Leopardo da Neve: {alvo.name} ressuscitado '
+        f'da Umbra com vida cheia!'
+    )
 
 
 def get_declaration_summary(game: GameState) -> dict:

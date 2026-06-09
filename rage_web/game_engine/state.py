@@ -1214,6 +1214,34 @@ class GameState:
             self.add_log(
                 f'{card.name}: pode dobrar Renown no Moot')
 
+        elif card.card_id == 584:  # Caern of the Snow Leopard
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='snow_leopard_caern',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: personagem morto na Umbra '
+                f'pode ser ressuscitado')
+
+        elif card.card_id == 590:  # Council for Universal Trade
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='council_universal_trade',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: Gauntlet nunca acima de 6 ou abaixo de 4')
+
+        elif card.card_id == 600:  # The Wheel of Ptah
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='wheel_of_ptah_caern',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: controlador escolhe Moon Bridges')
+
         elif card.card_id == 780:  # Termite Mounds
             modifier = GameModifier(
                 card_uid=id(card),
