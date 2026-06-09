@@ -493,10 +493,22 @@ class RageCLI(cmd.Cmd):
             print(f'Carta {card.name} nao tem modelo de efeitos.')
             return
 
-        # Verifica requisitos de Gift (Rage FOO Rule)
+        # Verifica requisitos de Gift (Rage FOO Rule + timing)
         if card.card_type == 'Gift':
             from rage_web.game_engine.rules import (pode_usar_gift,
-                                                      pode_usar_gift_para_presa)
+                                                      pode_usar_gift_para_presa,
+                                                      validar_timing_gift,
+                                                      validar_opponent_gift)
+            # Valida timing
+            if not validar_timing_gift(card, g.phase):
+                print(f'  {card.name}: nao pode ser usado na fase "{g.phase}" '
+                      f'(restricao de timing)')
+                return
+            # Valida 'opponent' = combat only
+            if not validar_opponent_gift(card, g.phase):
+                print(f'  {card.name}: usa "opponent" e so pode ser usado '
+                      f'durante combate')
+                return
             pode_normal = pode_usar_gift(cp, card)
             pode_presa = False
             # Durante combate, verifica se ha Presa que pode usar o Gift
@@ -505,9 +517,7 @@ class RageCLI(cmd.Cmd):
                     if c.health_current > 0:
                         ct = (c.card_type or '').lower()
                         if 'victim' in ct or 'enemy' in ct:
-                            # Verifica se esta presa esta sendo atacada
                             if str(c.card_id) in g.combat.defenders:
-                                # So pode se NAO for o atacante
                                 eh_atacante = g.combat.prey_attackers.get(cp.id, False)
                                 if not eh_atacante:
                                     if pode_usar_gift_para_presa(c, card):

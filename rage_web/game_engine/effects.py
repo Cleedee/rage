@@ -2515,7 +2515,19 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
     # nao foi movida por um efeito, ex: equipar)
     if card_origem and card_origem.zone == Zone.HAND:
         ct = (modelo.tipo or '').lower()
-        if 'combat action' in ct or 'combat event' in ct:
+
+        # Permanent Gifts permanecem em jogo
+        if 'gift' in ct:
+            from rage_web.game_engine.rules import gift_eh_permanente
+            if gift_eh_permanente(card_origem):
+                card_origem.zone = Zone.PACK_HOME
+                jogador.pack_home.append(card_origem)
+                game.add_log(f'{card_origem.name}: Gift permanente em jogo')
+            else:
+                # Gift temporario: descarta
+                card_origem.zone = Zone.DISCARD_SEPT
+                jogador.discard_sept.append(card_origem)
+        elif 'combat action' in ct or 'combat event' in ct:
             card_origem.zone = Zone.DISCARD_COMBAT
             jogador.discard_combat.append(card_origem)
         elif 'equipment' not in ct:

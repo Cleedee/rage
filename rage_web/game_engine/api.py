@@ -289,7 +289,21 @@ def api_use_card(game_id: str):
     # Verifica requisitos de Gift (Rage FOO Rule)
     if card.card_type == 'Gift':
         from rage_web.game_engine.rules import (pode_usar_gift,
-                                                  pode_usar_gift_para_presa)
+                                                  pode_usar_gift_para_presa,
+                                                  validar_timing_gift,
+                                                  validar_opponent_gift)
+        # Valida timing
+        if not validar_timing_gift(card, game.phase):
+            return jsonify({
+                'error': f'{card.name}: nao pode ser usado na fase '
+                         f'"{game.phase}" (restricao de timing)'
+            }), 400
+        # Valida 'opponent' = combat only
+        if not validar_opponent_gift(card, game.phase):
+            return jsonify({
+                'error': f'{card.name}: usa "opponent" e so pode ser '
+                         f'usado durante combate'
+            }), 400
         pode_normal = pode_usar_gift(cp, card)
         pode_presa = False
         # Durante combate, verifica se ha Presa que pode usar o Gift

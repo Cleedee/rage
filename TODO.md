@@ -183,9 +183,9 @@
 
 ## 🔄 Pendente (Gifts)
 
-- [ ] **Gift timing validation** — Gifts com "play at start of combat" só jogáveis nesse momento (médio impacto)
-- [ ] **"Opponent" text = combat only** — Gifts mencionando "opponent" restritos ao combate (médio impacto)
-- [ ] **Permanent Gifts permanecem em jogo** — Gifts com `duracao: permanente` não são descartados (baixo impacto)
+- [x] **Gift timing validation** — `validar_timing_gift()` checa "play at start of combat", "Combat Restricted", "May not be used during combat"
+- [x] **"Opponent" text = combat only** — `validar_opponent_gift()`: gifts mencionando "opponent" só em combate
+- [x] **Permanent Gifts permanecem em jogo** — `gift_eh_permanente()` mantém card em pack_home ao invés de descarte
 - [ ] **Prey Gift payment (#2)** — Outros jogadores pagam Gifts pela Presa em combate (médio impacto)
 
 ## 🧪 Testes

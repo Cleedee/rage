@@ -449,6 +449,97 @@ def pode_usar_gift_para_presa(prey_card: 'CardInstance',
                for o in opcoes)
 
 
+def validar_timing_gift(gift_card: 'CardInstance', game_phase: str) -> bool:
+    """Valida se o Gift pode ser usado na fase atual do jogo.
+
+    Regra: Gifts podem ser jogados a qualquer momento, a menos que
+    o texto da carta especifique uma restricao de timing.
+
+    Args:
+        gift_card: A carta Gift.
+        game_phase: Fase atual do jogo.
+
+    Returns:
+        True se pode ser usado na fase atual.
+    """
+    text = (gift_card.text or '').lower()
+    em_combate = (game_phase == 'combat')
+
+    # 'May not be used during combat' -> so fora de combate
+    if 'may not be used during combat' in text or 'cannot be used during combat' in text:
+        return not em_combate
+
+    # 'Play at the beginning/start of combat' -> so em combate
+    if ('play at the beginning of combat' in text
+        or 'play at the start of combat' in text):
+        return em_combate
+
+    # 'Combat Restricted' -> so durante combate
+    if 'combat restricted' in text:
+        return em_combate
+
+    # 'Play during the Withdrawal step' -> so durante combate
+    if 'play during the withdrawal' in text:
+        return em_combate
+
+    # Sem restricao explicita: pode em qualquer fase
+    return True
+
+
+def validar_opponent_gift(gift_card: 'CardInstance', game_phase: str) -> bool:
+    """Valida se Gift mencionando 'opponent' so pode ser usado em combate.
+
+    Regra (Quickstart): 'Gifts that can only be used in combat will
+    either say so, or say they are used on an "opponent". You only
+    have an "opponent" during combat.'
+
+    Args:
+        gift_card: A carta Gift.
+        game_phase: Fase atual do jogo.
+
+    Returns:
+        True se pode ser usado.
+    """
+    text = (gift_card.text or '').lower()
+    em_combate = (game_phase == 'combat')
+
+    # So verifica se menciona 'opponent'
+    if 'opponent' not in text:
+        return True
+
+    # Se ja tem restricao explicita de timing, respeita ela
+    if ('play at the beginning of combat' in text
+        or 'play at the start of combat' in text):
+        return em_combate
+    if 'combat restricted' in text:
+        return em_combate
+    if ('may not be used during combat' in text
+        or 'cannot be used during combat' in text):
+        return not em_combate
+
+    # Menciona opponent sem outra restricao explicita: so em combate
+    if not em_combate:
+        return False
+
+    return True
+
+
+def gift_eh_permanente(gift_card: 'CardInstance') -> bool:
+    """Verifica se um Gift e permanente (permanece em jogo apos usar).
+
+    Regra: Gifts que dizem 'permanent' no texto nao sao descartados
+    apos o uso. Ficam em jogo como marcadores.
+
+    Args:
+        gift_card: A carta Gift.
+
+    Returns:
+        True se o Gift e permanente.
+    """
+    text = (gift_card.text or '').lower()
+    return 'permanent' in text
+
+
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
 

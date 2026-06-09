@@ -902,10 +902,19 @@ class PriorityBot:
         Para Gifts (Rage FOO Rule): tambem verifica se algum
         personagem atende os requisitos de keyword do Gift.
         """
-        from rage_web.game_engine.rules import parse_custo_rage, pode_usar_gift
+        from rage_web.game_engine.rules import (parse_custo_rage, pode_usar_gift,
+                                                   validar_timing_gift,
+                                                   validar_opponent_gift)
 
-        # Se for Gift, verifica requisitos de keyword
+        # Se for Gift, verifica requisitos de keyword + timing
         if card.card_type == 'Gift':
+            # Valida timing
+            if not validar_timing_gift(card, self.game.phase):
+                return False
+            # Valida 'opponent' = combat only
+            if not validar_opponent_gift(card, self.game.phase):
+                return False
+            # Valida requisitos de keyword (Rage FOO Rule)
             if not pode_usar_gift(self.player, card):
                 return False
 
