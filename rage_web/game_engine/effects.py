@@ -1412,6 +1412,14 @@ class ResolvedorEfeitos:
                 f'{origem.name}: quest so pode ser jogada em membros do pack')
             return False
 
+        # Valida: Prey (Victim/Enemy) nao pode fazer Quests
+        ct_alvo = (alvo.card_type or '').lower()
+        if 'victim' in ct_alvo or 'enemy' in ct_alvo:
+            self.game.add_log(
+                f'{origem.name}: Presa ({alvo.card_type}) '
+                f'nao pode fazer Quests')
+            return False
+
         # Cria quest state no jogador
         quest = QuestState(
             quest_card_uid=id(origem),
