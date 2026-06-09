@@ -1387,7 +1387,7 @@ class ResolvedorEfeitos:
         - 'vp': VP concedido ao completar (2)
         - 'acao': acao ao completar ('shuffle_card_discard_to_deck')
         """
-        from rage_web.game_engine.state import QuestState
+        from rage_web.game_engine.state import QuestState, Zone
 
         quantidade = max(1, int(efeito.params.get('quantidade', 2)))
         condicao = efeito.params.get('condicao', 'sem_dano_por_2_turnos')
@@ -1397,6 +1397,19 @@ class ResolvedorEfeitos:
         # Alvo: o proprio personagem alvo (passado via efeito)
         if not alvo or not hasattr(alvo, 'card_id'):
             self.game.add_log(f'{origem.name}: alvo invalido para quest')
+            return False
+
+        # Valida: so pode uma quest por personagem
+        for q in jogador.quests:
+            if q.target_card_uid == id(alvo):
+                self.game.add_log(
+                    f'{alvo.name} ja tem uma quest ativa!')
+                return False
+
+        # Valida: alvo deve ser do proprio pack
+        if alvo not in jogador.pack_home and alvo not in jogador.umbra:
+            self.game.add_log(
+                f'{origem.name}: quest so pode ser jogada em membros do pack')
             return False
 
         # Cria quest state no jogador
@@ -1409,6 +1422,13 @@ class ResolvedorEfeitos:
             reward_acao=acao
         )
         jogador.quests.append(quest)
+
+        # Mantem a carta de quest em jogo (pack_home) como marcador
+        # enquanto a quest estiver ativa
+        if origem.zone == Zone.HAND:
+            origem.zone = Zone.PACK_HOME
+            jogador.pack_home.append(origem)
+
         self.game.add_log(
             f'{jogador.name} iniciou quest {origem.name} '
             f'em {alvo.name} ({quantidade} turnos sem dano)'
@@ -2507,6 +2527,7 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
         modos.append(Modo(
             descricao=m['descricao'],
             efeitos=efeitos,
+            condicao_uso=m.get('condicao_uso'),
         ))
     return ModeloCarta(
         id=dados['id'],

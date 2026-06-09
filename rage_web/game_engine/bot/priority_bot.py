@@ -148,7 +148,7 @@ class PriorityBot:
             return 'pass_resource_limit'
 
         TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
-        TIPOS_STUB = {'quest_check', 'combar_acao'}
+        TIPOS_STUB = {'combar_acao'}
         # Cartas que vao para o Hunting Grounds (precisam ser jogadas cedo)
         # Usa zona_da_carta para detectar corretamente subtipos como 'Ally - Enemy'
         from rage_web.game_engine.rules import zona_da_carta
@@ -206,7 +206,16 @@ class PriorityBot:
                 self._cards_played_this_turn += 1
                 return f'play_{card.card_type.lower()}_{card.card_id}'
 
-        # 4. Tenta jogar efeitos de Gifts/Events/Actions
+        # 4. Joga Quest / Past Life
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            if ct in ('Quest', 'Past Life'):
+                if card.modelo_id and self._pode_pagar_custos(card):
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    self._cards_played_this_turn += 1
+                    return self._usar_carta_efeito(i, modo_idx, card)
+
+        # 5. Tenta jogar efeitos de Gifts/Events/Actions
         for i, card in enumerate(me.hand):
             ct = card.card_type or ''
             eh_hg = zona_da_carta(ct) == 'hunting_grounds'
@@ -1073,8 +1082,16 @@ class PriorityBot:
                 self._play_card(i)
                 return f'play_{card.card_type.lower()}_{card.card_id}'
 
-        # 3. Efeitos nao-stub
-        TIPOS_STUB = {'quest_check', 'combar_acao'}
+        # 4. Joga Quest / Past Life
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            if ct in ('Quest', 'Past Life'):
+                if card.modelo_id and self._pode_pagar_custos(card):
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    return self._usar_carta_efeito(i, modo_idx, card)
+
+        # 5. Efeitos nao-stub
+        TIPOS_STUB = {'combar_acao'}
         for i, card in enumerate(me.hand):
             if card.modelo_id and self._pode_pagar_custos(card):
                 from rage_web.game_engine.effects import CARTAS_EXEMPLO
