@@ -286,11 +286,19 @@ class PriorityBot:
 
         # Verifica se tem cartas de sept que podem ser descartadas
         # (sem modelo_id = sem efeito definido = carta inutil)
+        # Events/Totems nao sao descartados mesmo sem modelo_id
+        # (Regra: 'Cannot be discarded voluntarily from play')
         sept_indices = []
+        TOTEM_IDS_LOCAL = {214, 215, 817, 818, 821, 824, 826, 830, 836, 838,
+                           850, 852, 855, 867, 868, 872, 877, 880, 892, 895,
+                           897, 900, 909, 912, 914, 918, 920, 1633}
+        LUNAR_IDS = {834, 854, 865, 869, 884, 890, 897}
+        CARTAS_PERMANENTES = TOTEM_IDS_LOCAL | LUNAR_IDS
         for i, c in enumerate(me.hand):
             eh_sept = c.card_type not in ('Combat Action', 'Combat Event', '')
             sem_efeito = not c.modelo_id
-            if eh_sept and sem_efeito:
+            eh_permanente = c.card_id in CARTAS_PERMANENTES
+            if eh_sept and sem_efeito and not eh_permanente:
                 sept_indices.append(i)
 
         # Se mao de sept esta cheia e tem cartas sem efeito, descarta

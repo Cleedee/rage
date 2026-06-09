@@ -669,6 +669,58 @@ def validar_lunar_phase(card_id: int, game_phase: str) -> bool:
     return False
 
 
+def carta_eh_evento_permanente(card: 'CardInstance',
+                                 em_jogo_only: bool = True) -> bool:
+    """Verifica se uma carta e um Evento que nao pode ser descartado
+    voluntariamente.
+
+    Regra (Quickstart + 4.5):
+    - Events affect both sides of the Gauntlet.
+    - Cannot be discarded voluntarily from play.
+    - Duration: Variable
+
+    Args:
+        card: A carta para verificar.
+        em_jogo_only: Se True, so retorna True se a carta estiver
+                      em jogo (nao na mao).
+
+    Returns:
+        True se e um Evento permanente.
+    """
+    if not card:
+        return False
+    from rage_web.game_engine.state import Zone
+    if em_jogo_only:
+        if card.zone not in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS,
+                              Zone.UMBRA):
+            return False
+    ct = (card.card_type or '').lower()
+    if 'event' in ct:
+        return True
+    # Totems sao Events, mas verifica explicitamente
+    from rage_web.game_engine.rules import TOTEM_IDS
+    if card.card_id in TOTEM_IDS:
+        return True
+    # Lunar Phases
+    LUNAR_CARDS = {834, 854, 865, 869, 884, 890, 897}
+    if card.card_id in LUNAR_CARDS:
+        return True
+    return False
+
+
+def impedir_descarte_voluntario(cards: list['CardInstance']) -> list['CardInstance']:
+    """Filtra uma lista de cartas removendo Events que nao podem
+    ser descartados voluntariamente.
+
+    Args:
+        cards: Lista de cartas candidatas a descarte.
+
+    Returns:
+        Lista filtrada (so cartas descartaveis).
+    """
+    return [c for c in cards if not carta_eh_evento_permanente(c)]
+
+
 # IDs de cartas Totem conhecidas
 TOTEM_IDS = {214, 215, 817, 818, 821, 824, 826, 830, 836, 838,
              850, 852, 855, 867, 868, 872, 877, 880, 892, 895,

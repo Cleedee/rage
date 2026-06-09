@@ -217,6 +217,8 @@
 - [x] **Limite de 1 Pack Totem por pack** — Personal Totems nao contam
 - [x] **Integracao bot** — `_pode_pagar_custos()` valida Totems antes de jogar
 - [x] **Integracao CLI** — `do_PLAY()` valida Totems
+- [x] **Cannot be discarded voluntarily** — `carta_eh_evento_permanente()` + `impedir_descarte_voluntario()`
+- [x] **Bot nao descarta Events/Totems** — Redraw phase protege cartas permanentes
 - [ ] **Personal Totems** — Personagens com Personal Totem perdem bonus do Pack Totem
 
 ## 🔄 Pendente (Moot / Juntas)
