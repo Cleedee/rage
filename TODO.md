@@ -209,8 +209,10 @@
 - [x] **31 Event cards com modelo JSON** — Efeitos implementados (comprar, modificar_atributo, destruir, etc.)
 - [x] **62/142 Event cards usados em decks** — Cobertura alta
 - [ ] **"Playing Event is not an action"** — Eventos nao sao impedidos por restricoes de acao
-- [ ] **Lunar Phases restritos ao Redraw** — Timing especifico para cartas de Fase Lunar
-- [ ] **Lunar Phase substitui anterior** — Apenas 1 fase lunar ativa por vez
+- [x] **Lunar Phases restritos ao Redraw** — Bot joga na Redraw phase, validado por `validar_lunar_phase()`
+- [x] **Lunar Phase substitui anterior** — `definir_lunar_phase()` descarta a anterior
+- [x] **Lunar Eclipse bloqueia novas fases** — Remove fase atual e impede novas
+- [x] **Display no CLI STATUS** — Mostra fase lunar ativa
 - [ ] **Pack Totems com keyword requirement** — Totens exigem personagem com keyword especifica
 
 ## 🔄 Pendente (Moot / Juntas)

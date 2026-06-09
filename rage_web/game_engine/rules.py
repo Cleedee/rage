@@ -636,6 +636,39 @@ def validar_timing_rite(rite_card: 'CardInstance', game_phase: str) -> bool:
     return True
 
 
+LUNAR_PHASE_IDS = {834, 854, 865, 869, 884, 890, 897}
+
+def definir_lunar_phase_ids():
+    """Retorna o set de IDs de cartas de Fase Lunar."""
+    return LUNAR_PHASE_IDS
+
+
+def validar_lunar_phase(card_id: int, game_phase: str) -> bool:
+    """Valida se uma Fase Lunar pode ser jogada na fase atual.
+
+    Regra (Quickstart + 4.5.2.C):
+    - Lunar Phases only at the beginning of a turn (Redraw phase)
+    - Or to cancel/supersede previous one
+
+    Args:
+        card_id: ID da carta.
+        game_phase: Fase atual do jogo.
+
+    Returns:
+        True se pode ser jogada.
+    """
+    if card_id not in LUNAR_PHASE_IDS:
+        return False  # Nao e uma Lunar Phase
+
+    # So pode jogar durante Redraw phase (inicio do turno)
+    if game_phase == 'redraw':
+        return True
+
+    # Exception: se ja tem uma fase ativa, pode substituir
+    # (implementado na logica do bot via game.lunar_phase)
+    return False
+
+
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
 

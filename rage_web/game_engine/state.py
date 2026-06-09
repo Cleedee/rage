@@ -655,6 +655,20 @@ class MootState:
 
 
 @dataclass
+class LunarPhaseState:
+    """Estado de uma Fase Lunar ativa."""
+    card_id: int = 0  # ID da carta Lunar Phase (ex: 890 = New Moon)
+    nome: str = ''
+    dono_id: str = ''  # Jogador que jogou
+    modelo_id: str = ''  # ID do modelo de carta
+    card_uid: int = 0  # Python id() da instancia
+
+    def efeito_global(self) -> str:
+        """Descricao do efeito global desta fase lunar."""
+        return f'{self.nome}'
+
+
+@dataclass
 class GameState:
     """Estado completo de uma partida."""
     id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
@@ -675,6 +689,9 @@ class GameState:
 
     # Estado de Moot (Juntas)
     moot_atual: Optional['MootState'] = None
+
+    # Fase Lunar ativa (None = nenhuma)
+    lunar_phase: Optional['LunarPhaseState'] = None
 
     # Efeitos temporarios pendentes de expiracao
     pendencias: list[PendenciaEfeito] = field(default_factory=list)
@@ -1567,6 +1584,61 @@ class GameState:
                 if card is None:
                     m.ativo = False
         return False
+
+    # ------------------------------------------------------------------
+    # Fases Lunares
+    # ------------------------------------------------------------------
+
+    def definir_lunar_phase(self, jogador_id: str, nome: str,
+                             card_id: int = 0,
+                             modelo_id: str = '',
+                             card_uid: int = 0) -> bool:
+        """Define a fase lunar ativa.
+
+        Regra (Quickstart + 4.5.2.C):
+        - Lunar Phases podem ser jogadas no inicio de qualquer turno
+          (Redraw phase) ou para substituir a fase atual.
+        - Apenas 1 fase lunar ativa por vez.
+        - Fase anterior e descartada.
+
+        Args:
+            jogador_id: ID do jogador que jogou.
+            nome: Nome da fase lunar.
+            card_id: ID da carta Lunar Phase.
+            modelo_id: ID do modelo de carta.
+            card_uid: Python id() da instancia.
+
+        Returns:
+            True se foi definida.
+        """
+        descartada = ''
+        if self.lunar_phase:
+            descartada = self.lunar_phase.nome
+        self.lunar_phase = LunarPhaseState(
+            card_id=card_id,
+            nome=nome,
+            dono_id=jogador_id,
+            modelo_id=modelo_id,
+            card_uid=card_uid,
+        )
+        if descartada:
+            self.add_log(f'Fase Lunar {descartada} substituida por {nome}')
+        else:
+            self.add_log(f'Fase Lunar {nome} ativada')
+        return True
+
+    def remover_lunar_phase(self) -> Optional[str]:
+        """Remove a fase lunar ativa (ex: Lunar Eclipse).
+
+        Returns:
+            Nome da fase removida, ou None se nao havia.
+        """
+        if not self.lunar_phase:
+            return None
+        nome = self.lunar_phase.nome
+        self.lunar_phase = None
+        self.add_log(f'Fase Lunar {nome} removida')
+        return nome
 
     def chamar_moot(self, jogador_id: str, nome: str = 'Moot',
                      is_board_meeting: bool = False,

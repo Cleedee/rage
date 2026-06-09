@@ -306,6 +306,63 @@ class PriorityBot:
                     f'[BOT] {me.name} comprou {len(drawn)} carta(s) de sept')
             return f'redraw_descarte_{len(descartadas)}'
 
+        # Tenta jogar uma Fase Lunar (se tiver na mao)
+        # Regra: Lunar Phases podem ser jogadas no inicio de qualquer turno
+        LUNAR_CARDS = {834, 854, 865, 869, 884, 890, 897}
+        for i, card in enumerate(me.hand):
+            if card.card_id in LUNAR_CARDS:
+                # Verifica se Lunar Eclipse esta ativo (bloqueia novas fases)
+                if (self.game.lunar_phase
+                    and self.game.lunar_phase.card_id == 884):
+                    # Lunar Eclipse bloqueia novas Lunar Phases
+                    break
+                if card.card_id == 884 and self.game.lunar_phase:
+                    # Lunar Eclipse remove a fase atual
+                    removida = self.game.remover_lunar_phase()
+                    self.game.add_log(
+                        f'[BOT] {me.name} jogou Lunar Eclipse, '
+                        f'removendo {removida}')
+                elif card.card_id == 884 and not self.game.lunar_phase:
+                    # Nenhuma fase para remover, descarta
+                    card.zone = Zone.DISCARD_SEPT
+                    me.discard_sept.append(me.hand.pop(i))
+                    self.game.add_log(
+                        f'[BOT] {me.name} jogou Lunar Eclipse '
+                        f'(sem fase para remover)')
+                    return 'redraw_lunar_eclipse'
+
+                if card.card_id == 897:
+                    # Phoebe: busca qualquer Lunar Phase
+                    self._play_card(i)
+                    self.game.add_log(
+                        f'[BOT] {me.name} jogou Phoebe (busca Lunar Phase)')
+                    return 'redraw_phoebe'
+
+                # Lunar Phase normal: substitui a atual
+                modelo_id = card.modelo_id or ''
+                self.game.definir_lunar_phase(
+                    jogador_id=self.player_id,
+                    nome=card.name,
+                    card_id=card.card_id,
+                    modelo_id=modelo_id,
+                    card_uid=id(card),
+                )
+                # Move a carta para PACK_HOME como marcador ativo
+                card.zone = Zone.PACK_HOME
+                me.pack_home.append(me.hand.pop(i))
+                # Aplica efeitos do modelo JSON se existir
+                if modelo_id:
+                    from rage_web.game_engine.effects import (CARTAS_EXEMPLO,
+                                                                aplicar_carta)
+                    modelo = CARTAS_EXEMPLO.get(modelo_id)
+                    if modelo:
+                        modo_idx = self._escolher_melhor_modo(modelo_id)
+                        aplicar_carta(self.game, modelo, self.player_id,
+                                      modo_idx=modo_idx, card_origem=card)
+                self.game.add_log(
+                    f'[BOT] {me.name} jogou Fase Lunar {card.name}')
+                return f'redraw_lunar_{card.card_id}'
+
         self._pass_turn()
         return 'pass_redraw'
 

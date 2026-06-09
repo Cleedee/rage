@@ -313,6 +313,13 @@ class RageCLI(cmd.Cmd):
                   f'({"Board" if g.moot_atual.is_board_meeting else "Moot"})')
             print(f'│   SIM: {g.moot_atual.votos_sim}  NAO: {g.moot_atual.votos_nao}')
 
+        # ── Fase Lunar ──
+        if g.lunar_phase:
+            print()
+            print('┌─ 🌙 Fase Lunar ──────────────────────────────┐')
+            print(f'│   {g.lunar_phase.nome} (por {g.lunar_phase.dono_id})')
+            print(f'├────────────────────────────────────────────────┤')
+
         # ── Hunting Grounds global ──
         print()
         print('┌─ Hunting Grounds (Global) ─────────────────────┐')
