@@ -739,6 +739,15 @@ class GameState:
                 # Nao fazemos auto-step aqui; o bot decide em _agir_umbra
                 pass
 
+            elif self.phase == 'moot':
+                # Transicao para Moot: sem acao automatica
+                pass
+
+            # Limpeza ao final do Combat phase (volta ao redraw)
+            if nova_fase == 'redraw' and self.phase == 'combat' and False:
+                # (cleanup feito abaixo)
+                pass
+
             elif self.phase == 'combat':
                 # Redraw de combate ao entrar no Combat phase
                 for p in self.players:
@@ -754,9 +763,16 @@ class GameState:
                 from rage_web.game_engine.combat_queue import selecionar_alfa, calcular_ordem_alfa
                 for p in self.players:
                     # Escolhe o personagem com maior Renome como alpha
+                    # Exclui quem tem 'nao_pode_ser_alpha' (Caern Lua Crescente)
                     candidatos = [c for c in p.pack_home
-                                  if 'Character' in (c.card_type or '')
-                                  or 'Ally' in (c.card_type or '')]
+                                  if ('Character' in (c.card_type or '')
+                                  or 'Ally' in (c.card_type or ''))
+                                  and 'nao_pode_ser_alpha' not in c.restricoes]
+                    if not candidatos:
+                        # Se todos estao impedidos, usa qualquer um
+                        candidatos = [c for c in p.pack_home
+                                      if 'Character' in (c.card_type or '')
+                                      or 'Ally' in (c.card_type or '')]
                     if candidatos:
                         melhor = max(candidatos, key=lambda c: c.renown)
                         selecionar_alfa(self, p.id, str(melhor.card_id))
@@ -781,6 +797,26 @@ class GameState:
             logs_exp = self.expirar_pendencias('redraw')
             for l in logs_exp:
                 self.add_log(l)
+
+            # Caern of the Crescent Moon: restaura Renown e libera alpha
+            if 'crescent_moon_restore' in self.combat_triggers:
+                dados = self.combat_triggers.pop('crescent_moon_restore')
+                for p in self.players:
+                    if p.id == dados['player_id']:
+                        for c in p.pack_home + p.hunting_grounds:
+                            if c.card_id == dados['card_id']:
+                                c.renown = dados['renown_original']
+                                self.add_log(
+                                    f'{c.name}: Renown restaurado '
+                                    f'para {dados["renown_original"]} '
+                                    f'(Caern Lua Crescente)')
+                                break
+            for p in self.players:
+                for c in p.pack_home + p.hunting_grounds:
+                    if 'nao_pode_ser_alpha' in c.restricoes:
+                        c.restricoes.remove('nao_pode_ser_alpha')
+            self.combat_triggers.pop('crescent_moon_used', None)
+
             self.phase = 'redraw'
             self.turn_number += 1
             self.current_player_index = 0
@@ -1168,6 +1204,15 @@ class GameState:
             self.game_modifiers.append(modifier)
             self.add_log(
                 f'{card.name}: nao-alfas imunes a challenge/sneak attack')
+
+        elif card.card_id == 582:  # Caern of the Crescent Moon
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='crescent_moon_caern',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode dobrar Renown no Moot')
 
         elif card.card_id == 780:  # Termite Mounds
             modifier = GameModifier(

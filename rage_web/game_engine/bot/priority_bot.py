@@ -320,8 +320,16 @@ class PriorityBot:
         - Personagens tem votos = Renome.
         - Votacao em ordem de Renome.
         - Se aprovado, resolve imediatamente.
+
+        Caern of the Crescent Moon (582): pode dobrar Renown de um
+        membro do pack durante Moot. Esse membro nao pode ser alpha
+        no combate seguinte.
         """
         g = self.game
+
+        # Ativa Caern of the Crescent Moon se disponivel
+        if g.has_modifier('crescent_moon_caern'):
+            self._ativar_crescent_moon_moot()
 
         # Se tem uma Junta ativa, vota
         if g.moot_atual and not g.moot_atual.resolvido:
@@ -348,6 +356,55 @@ class PriorityBot:
 
         self._pass_turn()
         return 'pass_moot'
+
+    def _ativar_crescent_moon_moot(self):
+        """Ativa Caern of the Crescent Moon (582): dobra Renown de
+        um membro do pack durante Moot. Esse membro nao pode ser
+        alpha no combate seguinte.
+
+        Salva o Renown original em game.combat_triggers para
+        restauracao ao fim do turno.
+        """
+        me = self.player
+        # Verifica se o Caern esta no pack
+        tem_caern = any(
+            c.card_id == 582
+            for c in me.pack_home + me.hunting_grounds
+        )
+        if not tem_caern:
+            return
+
+        # Ja ativou este turno?
+        if self.game.combat_triggers.get('crescent_moon_used'):
+            return
+
+        # Escolhe o personagem com maior Renown para dobrar
+        chars = [c for c in me.pack_home if c.health_current > 0]
+        if not chars:
+            return
+
+        alvo = max(chars, key=lambda c: c.renown)
+        if alvo.renown == 0:
+            return  # Nao dobra Renown 0
+
+        renown_original = alvo.renown
+        alvo.renown *= 2
+        # Marca para nao poder ser alpha no proximo combate
+        if 'nao_pode_ser_alpha' not in alvo.restricoes:
+            alvo.restricoes.append('nao_pode_ser_alpha')
+
+        # Salva para restauracao
+        self.game.combat_triggers['crescent_moon_used'] = True
+        self.game.combat_triggers['crescent_moon_restore'] = {
+            'player_id': me.id,
+            'card_id': alvo.card_id,
+            'renown_original': renown_original,
+        }
+
+        self.game.add_log(
+            f'[Caern] Lua Crescente: Renown de {alvo.name} '
+            f'dobrado ({renown_original} -> {alvo.renown}) '
+            f'para Moot. Nao podera ser Alpha no combate.')
 
     def _agir_combate(self) -> str:
         """Age na fase de Combat: acao alfa + cartas + atacar."""
