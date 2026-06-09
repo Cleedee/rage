@@ -490,6 +490,12 @@ class PriorityBot:
             self._cards_played_this_turn += 1
             return action
 
+        # 3.5 GIFTS PARA PRESA (se nao for o atacante)
+        action = self._try_prey_gift()
+        if action:
+            self._cards_played_this_turn += 1
+            return action
+
         # 4. ELIMINAR AMEACA
         action = self._try_eliminate_threat()
         if action:
@@ -1195,6 +1201,52 @@ class PriorityBot:
         self.game.add_log(
             f'[BOT] {self.player.name} usou {card.name} ({modo.descricao})')
         return desc
+
+    def _try_prey_gift(self) -> Optional[str]:
+        """Tenta jogar Gifts para Presa em combate.
+
+        Regra: Prey pode usar Gifts que correspondam ao seu tipo
+        de criatura. Qualquer jogador exceto o atacante pode pagar
+        Gifts para a Presa. So funciona durante combate.
+        """
+        g = self.game
+        me = self.player
+
+        # So durante combate
+        if not g.combat or not g.combat.is_active:
+            return None
+
+        # Nao pode ser o atacante
+        if g.combat.prey_attackers.get(self.player_id, False):
+            return None
+
+        # Busca Gifts na mao
+        from rage_web.game_engine.rules import pode_usar_gift_para_presa
+
+        for i, card in enumerate(me.hand):
+            if card.card_type != 'Gift':
+                continue
+            if not card.modelo_id:
+                continue
+            if not self._pode_pagar_custos(card):
+                continue
+
+            # Verifica se alguma Presa atacada pode usar este Gift
+            for c in g.hunting_grounds_cards:
+                if c.health_current <= 0:
+                    continue
+                ct = (c.card_type or '').lower()
+                if 'victim' not in ct and 'enemy' not in ct:
+                    continue
+                if str(c.card_id) not in g.combat.defenders:
+                    continue
+
+                if pode_usar_gift_para_presa(c, card):
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    self._cards_played_this_turn += 1
+                    return self._usar_carta_efeito(i, modo_idx, card)
+
+        return None
 
     def _try_attack(self) -> Optional[str]:
         """Prioridade 4: Atacar.

@@ -495,10 +495,27 @@ class RageCLI(cmd.Cmd):
 
         # Verifica requisitos de Gift (Rage FOO Rule)
         if card.card_type == 'Gift':
-            from rage_web.game_engine.rules import pode_usar_gift
-            if not pode_usar_gift(cp, card):
+            from rage_web.game_engine.rules import (pode_usar_gift,
+                                                      pode_usar_gift_para_presa)
+            pode_normal = pode_usar_gift(cp, card)
+            pode_presa = False
+            # Durante combate, verifica se ha Presa que pode usar o Gift
+            if g.combat and g.combat.is_active:
+                for c in g.hunting_grounds_cards:
+                    if c.health_current > 0:
+                        ct = (c.card_type or '').lower()
+                        if 'victim' in ct or 'enemy' in ct:
+                            # Verifica se esta presa esta sendo atacada
+                            if str(c.card_id) in g.combat.defenders:
+                                # So pode se NAO for o atacante
+                                eh_atacante = g.combat.prey_attackers.get(cp.id, False)
+                                if not eh_atacante:
+                                    if pode_usar_gift_para_presa(c, card):
+                                        pode_presa = True
+                                        break
+            if not pode_normal and not pode_presa:
                 print(f'  Nao pode usar {card.name}: '
-                      f'nenhum personagem atende os requisitos'
+                      f'nenhum personagem/presa atende os requisitos'
                       f' ("{card.requires}")')
                 return
 

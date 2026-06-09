@@ -1,6 +1,6 @@
 # TODO - Rage CCG Web
 
-## ✅ Concluído
+## ✅ Concluído (Geral)
 
 - [x] **Importar cartas do LackeyCCG** — 1797 cartas importadas (3 TSVs)
 - [x] **CRUD de cartas** — Character, Equipment, Card genérico
@@ -19,49 +19,23 @@
 - [x] **Melhoria header/footer** — Navbar dark, footer 3 colunas
 - [x] **Edição de cartas** — Formulário universal com todos os campos
 
-## 🔄 Pendente
+## ✅ Concluído (Motor de Jogo)
 
-### Interface
-- [ ] **Exportar deck** — Download em formato texto ou .dek
-- [ ] **Filtros avançados** — Por renown, damage, atributos min/max
+- [x] **Motor de jogo completo** — FSM com fases: redraw, regeneration, resource, umbra, moot, combat
+- [x] **Sistema de combate** — Declaração simultânea, alpha, último a declarar, feint, resolução
+- [x] **Sistema de efeitos** — 25+ tipos de efeito (DANO, CURAR, DESTRUIR, etc.)
+- [x] **CLI de debug** — REPL com comandos STATUS, DRAW, PLAY, ATTACK, DECLARE, etc.
+- [x] **API REST** — Blueprint `/api/game` para criar partidas e executar ações
+- [x] **Simulador de partidas** — `match.py` bot vs bot com seeds determinísticas
+- [x] **Bot com IA** — `PriorityBot` com árvore de decisão (3 dificuldades)
+- [x] **Avaliador de tabuleiro** — `BoardEvaluator` com notas threat/advantage/pressure/victory
+- [x] **Sistema de anúncio** — Anunciar → responder → resolver (cancelamento incluso)
+- [x] **Mudança de forma Crinos** — Por dano (regra 14-ritos-moots)
+- [x] **Processamento de morte unificado** — Regra 6.4.2 (combate vs não-combate, Presa, equipment discard)
+- [x] **Block reduz dano pela Rage do defensor** — Regra 6.10 corrigida
 
-### Qualidade
-- [ ] **Testes** — Aumentar cobertura (decks, importação, upload)
-- [ ] **Validação** — Melhorar feedback nos formulários
-- [ ] **Rotas RESTful** — Padronizar endpoints
+## ✅ Concluído (Prey)
 
-### Infraestrutura
-- [ ] **Autenticação** — Sign up / Log in
-- [ ] **Redis** — Implementar cache ou remover docker-compose
-- [ ] **Variáveis de ambiente** — SECRET_KEY, database URL
-- [ ] **Docker** — Containerizar a aplicação
-
-## 🎮 Área de Jogo (Motor / Partidas)
-
-### Engine
-- [ ] **Motor de jogo** — Implementar regras do Rage CCG (turnos, fases, combate)
-- [ ] **Sistema de avaliação de estado** — Heurísticas para pontuar campo, mão, cemitério
-- [ ] **Árvore de decisão** — Algoritmo Minimax / Monte Carlo para sugerir jogadas
-
-### Partidas
-- [ ] **Modo solo vs Bot** — Bot com perfis de dificuldade (fácil, médio, difícil)
-- [ ] **Modo multiplayer** — Partidas PvP via WebSocket ou Server-Sent Events
-- [ ] **Matchmaking** — Sala de espera, convites, ranking
-
-### Interface
-- [ ] **Tela de jogo** — Tabuleiro com campo, mão, deck, cemitério
-- [ ] **Drag & drop** — Arrastar cartas do deck, mão para o campo
-- [ ] **Histórico de ações** — Log da partida com replay
-- [ ] **Timer / Relógio** — Controle de tempo por turno
-
-### Infra Bot
-- [ ] **Bot baseado em regras** — Estratégias simples (jogar carta mais forte, combinar tribo)
-- [ ] **Perfis de dificuldade** — Fácil (escolhas aleatórias), Médio (heurística), Difícil (árvore profundidade 3+)
-- [ ] **Treinamento** — Coletar dados de partidas para refinar heurísticas
-
-## 🦴 Regras de Prey (Enemies & Victims)
-
-### Implementado ✅
 - [x] **Prey no Hunting Grounds** — `zona_da_carta()` → 'hunting_grounds'
 - [x] **Não controlados por player específico** — `game.hunting_grounds_cards` (global)
 - [x] **Alpha pode atacar Prey** — `_agir_alpha()` com `_melhor_alvo_hg()`
@@ -70,16 +44,11 @@
 - [x] **Gaia→0VP por Victim, Wyrm→0VP por Enemy** — `_processar_morte()`
 - [x] **Morte por Presa → sem VP** — `_processar_morte()` `morto_por_presa`
 - [x] **Prey não frenzy/step sideways** — Regras de classe de criatura
-
-### ❌ Pendente
-- [x] **#3 Bot ignora alinhamento Gaia/Wyrm ao escolher presa** — `_melhor_alvo_hg()` não filtra presas que dão 0 VP
+- [x] **#3 Bot ignora alinhamento Gaia/Wyrm ao escolher presa** — `_melhor_alvo_hg()` filtra por `(vp > 0, efficiency, renown)`
 - [x] **#1 Outros jogadores podem jogar combat cards pela Presa** — `start_combat()` não auto-declara mais; qualquer não-atacante pode declarar pela Presa via `_decide_combat()`
-- [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
-- [ ] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — Priorizar VP rápido vs eliminar ameaça
 
-## 🤝 Regras de Allies
+## ✅ Concluído (Allies)
 
-### Implementado ✅
 - [x] **Vai pro Pack Home** — `zona_da_carta('ally')` → `'pack_home'`
 - [x] **Pode lutar em combates** — `TIPOS_COMBATENTES` inclui `'ally'`
 - [x] **Pode equipar e usar Gifts** — Sem restrição por card type
@@ -90,16 +59,11 @@
 - [x] **Morte fora de combate → removido do jogo** — `Zone.REMOVED`
 - [x] **Morte em combate → VP do oponente** — `_processar_morte()`
 - [x] **Recrutador morre → Ally fica** — Só removido se TODOS Characters morrerem
-- [x] **Requisito de recrutamento validado** — `pode_recrutar_ally()` em `rules.py` parseia campo `requires` (Gnosis, keywords, zona)
+- [x] **Requisito de recrutamento validado** — `pode_recrutar_ally()` parseia campo `requires` (Gnosis, keywords, zona)
 
-### ❌ Pendente
-- [ ] **Allies não jogam Actions/Past Lives/Rites/Totems/pack resources** — Engine não filtra por card type (baixo impacto)
-- [ ] **Allies não podem ser descartados voluntariamente** — Sem mecânica de descarte voluntário
+## ✅ Concluído (Equipment)
 
-## ⚔️ Regras de Equipment (Equipamentos)
-
-### Implementado ✅
-- [x] **Fetish (Gaia only) vs Bane Fetish (Wyrm only) alignment** — `_validar_restricoes_equipamento()` em effects.py
+- [x] **Fetish (Gaia only) vs Bane Fetish (Wyrm only) alignment** — `_validar_restricoes_equipamento()`
 - [x] **Gnosis requirement** — Criatura precisa Gnosis >= gnosis do Fetish/Bane Fetish
 - [x] **Keyword requirements (Rage FOO Rule)** — `requires` validado contra keywords da criatura
 - [x] **Form restrictions** — `(Homid Form)`, `(Crinos form)`, `(Not Animal form)`, `(Garou)`, etc.
@@ -110,20 +74,13 @@
 - [x] **Built-in equipment (Bannion etc.)** — `_resolver_equipar_inicial()`
 - [x] **Equipment discarded on death** — `descartar_anexos()` em `_processar_morte()`
 
-### ❌ Pendente
-- [ ] **Trade entre pack members** — Trocar equipamentos durante Resource phase (baixo impacto)
-- [ ] **Equipment em Prey** — Equipment não pode ser jogado/trocado para Presas (médio impacto)
-- [ ] **JSON models para Equipment sem efeito** — Apenas 38/439 têm modelos JSON (alto impacto, muito trabalho)
-- [ ] **Ativação de equipamentos com efeito** — Equipment como Animal Mummy (destruir sept card) não tem botão de ativação
+## ✅ Concluído (Caerns — usados em decks)
 
-## 🌙 Regras de Caerns e Umbra
-
-### Implementado ✅
 - [x] **Caerns jogados na Resource phase** — Bot reconhece `ct == 'Caern'`
 - [x] **Caerns vão para Pack Home** — `_play_card()` → `pack_home`
-- [x] **Existência em ambos os lados do Gauntlet** — `_lado()` retorna 0 (ambos) para Caern/Territory/Spirit
+- [x] **Existência em ambos os lados do Gauntlet** — `_lado()` retorna 0 (ambos)
 - [x] **Caern permite step sideways** — `encontrar_caern()` → `pode_step_sideways()`
-- [x] **Umbra Phase** — FSM tem fase 'umbra'
+- [x] **Umbra Phase** — FSM tem fase 'umbra' completa
 - [x] **Bot Umbra actions** — `_agir_umbra()` com step in/out
 - [x] **Zona Umbra** — `Zone.UMBRA`, `PlayerState.umbra`
 - [x] **Gauntlet interaction** — `_mesmo_lado_gauntlet()` checa cross-Umbra
@@ -131,25 +88,22 @@
 - [x] **Step sideways/back** — `step_sideways()`, `step_back()` em PlayerState
 - [x] **Limit 1 Caern per pack** — `pode_jogar_caern()` valida
 - [x] **Caern requires validation** — `pode_jogar_caern()` usa `_simplificar_req_caern()`
-- [x] **Territories jogados na Resource phase** — Mesmo fluxo que Caerns
+- [x] **Caern em sept deck (bugfix)** — 'Caern' adicionado a `sept_types` no CLI
+- [x] **Lake Nasser Wallow (#609)** — Rites/Gifts cruzam Gauntlet (modifier)
+- [x] **Caern of Rytthiku (#579)** — Pode atacar Enemies no HG (modifier)
+- [x] **Caern of the Unwashed Child (#586)** — -2 Rage/Gnosis em oponentes em combate
+- [x] **Trinity Hive Caern (#599)** — BSD causam dano agravado, regeneram só na Umbra
+- [x] **Sky River Caern (#597)** — Non-alphas imunes a challenge/sneak attack
+- [x] **Caern of the Crescent Moon (#582)** — Dobra Renown no Moot, impede ser alpha
+- [x] **Caern of the Snow Leopard (#584)** — Ressurreição da Umbra
+- [x] **Council for Universal Trade (#590)** — Gauntlet nunca >6 ou <4 (modifier)
+- [x] **The Wheel of Ptah (#600)** — Controla Moon Bridges (modifier)
 
-### ❌ Pendente
-- [ ] **Caern/Territory special abilities** — Apenas 10/46 Caerns e 11/61 Territories têm JSON; maioria depende de `register_card_passives()` hardcoded
-- [ ] **Discard Caern para trocar** — Regra permite descartar Caern existente e jogar outro (médio impacto)
-- [ ] **Territory pode ser atacado/destruído** — Quickstart menciona "Attack a Territory" (médio impacto)
-- [ ] **Realm requer Umbra** — Character precisa estar na Umbra para jogar Realm (baixo impacto)
-- [ ] **Cross-Gauntlet combat details** — Regras de substituição de combatentes entre mundos (baixo impacto)
-- [ ] **Umbra combat targeting** — Criaturas na Umbra só podem atacar outras na Umbra (parcialmente implementado em `_lado()`)
-- [ ] **Territory effects cruzam Gauntlet** — Global effects vs action effects (parcial)
+## ✅ Concluído (Gifts)
 
-## 🎁 Regras de Gifts
-
-## 🎁 Regras de Gifts
-
-### Implementado ✅
 - [x] **Gnosis requirement** — Criatura precisa Gnosis >= Gnosis do Gift (`_pode_pagar_custos`)
 - [x] **Rage cost** — Alguns Gifts custam Rage via campo `damage` (`parse_custo_rage`)
-- [x] **Keyword requirement (Rage FOO Rule)** — `pode_usar_gift()` em `rules.py` valida campo `requires` contra keywords da criatura
+- [x] **Keyword requirement (Rage FOO Rule)** — `pode_usar_gift()` valida campo `requires` contra keywords
 - [x] **Integração bot** — `_pode_pagar_custos()` bloqueia Gifts sem criatura qualificada
 - [x] **Integração CLI** — `do_ANUNCIAR()` valida antes de anunciar
 - [x] **Integração API** — `api_use_card()` retorna 400 para Gift inválido
@@ -158,11 +112,86 @@
 - [x] **Gifts não-combate** — Usados durante Resource phase via `_agir_recurso()`
 - [x] **Cancelamento** — `anunciador.anular()` com chain de cancelamento
 
-### ❌ Pendente
+## ✅ Concluído (Quests)
+
+- [x] **Sistema QuestState** — `QuestState` com progresso e recompensa
+- [x] **_check_quests()** — Verifica na Regeneration phase
+- [x] **_resolver_quest_check()** — Cria QuestState a partir de efeito
+- [x] **Quest falha se alvo morre** — Marcado em `_processar_morte`, `_processar_ataque` e `_resolver_destruir`
+- [x] **Gap #1 — Bot joga Quest cards** — `quest_check` removido de TIPOS_STUB, step dedicado
+- [x] **Gap #2 — Um Quest por personagem** — Validação no resolvedor
+- [x] **Gap #3 — Prey não faz Quests** — Victim/Enemy rejeitados
+- [x] **Gap #4 — Só no próprio pack** — Alvo deve estar em pack_home ou umbra
+- [x] **Gap #5 — Past Life: sept hand -1** — `_recalcular_past_life_hand_size()`
+- [x] **Gap #6 — Past Life: -3 VP na morte** — `failed_due_to_death` flag
+- [x] **Gap #7 — Past Life: Unique** — Segunda cópia do mesmo card_id rejeitada
+
+## 🔄 Pendente (Interface)
+
+- [ ] **Exportar deck** — Download em formato texto ou .dek
+- [ ] **Filtros avançados** — Por renown, damage, atributos min/max
+
+## 🔄 Pendente (Qualidade)
+
+- [ ] **Testes** — Aumentar cobertura (decks, importação, upload)
+- [ ] **Validação** — Melhorar feedback nos formulários
+- [ ] **Rotas RESTful** — Padronizar endpoints
+
+## 🔄 Pendente (Infraestrutura)
+
+- [ ] **Autenticação** — Sign up / Log in
+- [ ] **Redis** — Implementar cache ou remover docker-compose
+- [ ] **Variáveis de ambiente** — SECRET_KEY, database URL
+- [ ] **Docker** — Containerizar a aplicação
+
+## 🔄 Pendente (Motor/Partidas)
+
+- [ ] **Modo multiplayer** — Partidas PvP via WebSocket ou Server-Sent Events
+- [ ] **Matchmaking** — Sala de espera, convites, ranking
+- [ ] **Tela de jogo** — Tabuleiro com campo, mão, deck, cemitério (frontend HTML/HTMX)
+- [ ] **Drag & drop** — Arrastar cartas do deck, mão para o campo
+- [ ] **Histórico de ações** — Log da partida com replay
+- [ ] **Timer / Relógio** — Controle de tempo por turno
+- [ ] **Treinamento bot** — Coletar dados de partidas para refinar heurísticas
+
+## 🔄 Pendente (Prey)
+
+- [ ] **#2 Prey pode usar Gifts em combate (pagos por outros)** — `Anyone but the player fighting the Prey can pay Gifts for them`
+- [ ] **#4 Bot: timing estratégico — quando atacar Prey vs Alpha inimigo** — Priorizar VP rápido vs eliminar ameaça
+
+## 🔄 Pendente (Allies)
+
+- [ ] **Allies não jogam Actions/Past Lives/Rites/Totems/pack resources** — Engine não filtra por card type (baixo impacto)
+- [ ] **Allies não podem ser descartados voluntariamente** — Sem mecânica de descarte voluntário (baixo impacto)
+
+## 🔄 Pendente (Equipment)
+
+- [ ] **Trade entre pack members** — Trocar equipamentos durante Resource phase (baixo impacto)
+- [ ] **Equipment em Prey** — Equipment não pode ser jogado/trocado para Presas (médio impacto)
+- [ ] **JSON models para Equipment sem efeito** — Apenas 38/439 têm modelos JSON (alto impacto, muito trabalho)
+- [ ] **Ativação de equipamentos com efeito** — Equipment como Animal Mummy (destruir sept card) não tem botão de ativação (médio impacto)
+
+## 🔄 Pendente (Caerns/Umbra)
+
+- [ ] **Caern/Territory special abilities restantes** — 37/46 Caerns não implementados (não estão em decks cadastrados)
+- [ ] **Discard Caern para trocar** — Regra permite descartar Caern existente e jogar outro (médio impacto)
+- [ ] **Territory pode ser atacado/destruído** — Quickstart menciona "Attack a Territory" (médio impacto)
+- [ ] **Realm requer Umbra** — Character precisa estar na Umbra para jogar Realm (baixo impacto)
+- [ ] **Cross-Gauntlet combat details** — Regras de substituição de combatentes entre mundos (baixo impacto)
+- [ ] **Umbra combat targeting** — Criaturas na Umbra só podem atacar outras na Umbra (parcial)
+- [ ] **Territory effects cruzam Gauntlet** — Global effects vs action effects (parcial)
+
+## 🔄 Pendente (Gifts)
+
 - [ ] **Gift timing validation** — Gifts com "play at start of combat" só jogáveis nesse momento (médio impacto)
 - [ ] **"Opponent" text = combat only** — Gifts mencionando "opponent" restritos ao combate (médio impacto)
 - [ ] **Permanent Gifts permanecem em jogo** — Gifts com `duracao: permanente` não são descartados (baixo impacto)
+- [ ] **Prey Gift payment (#2)** — Outros jogadores pagam Gifts pela Presa em combate (médio impacto)
 
-## Extras
-- [ ] **Deck builder** — Drag & drop, busca enquanto constrói
-- [ ] **Compartilhar decks** — URL única para cada deck
+## 🧪 Testes
+
+- [x] **271 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
+- [ ] **Testes para Caern special abilities** — Verificar cada Caern implementado
+- [ ] **Testes para Gift Rage FOO Rule** — Validação de requisitos
+- [ ] **Testes para Ally recruitment** — `pode_recrutar_ally()` com diversos padrões
+- [ ] **Testes para Quests** — `_check_quests()`, Past Life penalties, Unique enforcement

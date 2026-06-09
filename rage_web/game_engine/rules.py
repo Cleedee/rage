@@ -185,8 +185,12 @@ def zona_da_carta(tipo: str) -> str:
 
 
 def _info_char(char: 'CardInstance') -> str:
-    """Retorna o texto completo de um personagem para matching."""
-    return f"{char.name or ''} {char.card_type or ''} {char.keywords or ''}".lower()
+    """Retorna o texto completo de um personagem para matching.
+
+    Inclui nome, card_type, keywords e text (para Prey cujo tipo
+    de criatura e determinado pelo texto da carta).
+    """
+    return f"{char.name or ''} {char.card_type or ''} {char.keywords or ''} {char.text or ''}".lower()
 
 
 def _extrair_gnosis_requisito(opcao: str) -> tuple:
@@ -388,6 +392,61 @@ def pode_usar_gift(player: 'PlayerState',
         return True
 
     return False
+
+
+def pode_usar_gift_para_presa(prey_card: 'CardInstance',
+                                gift_card: 'CardInstance') -> bool:
+    """Verifica se uma Presa (Victim/Enemy) pode usar um Gift.
+
+    Regra (Quickstart - Gifts + Prey):
+    - Prey pode usar Gifts que correspondam ao seu tipo de criatura.
+    - 'Anyone but the player fighting the Prey can pay Gifts for them'
+    - Prey so pode usar Gifts durante combate.
+    - O custo (Rage/Gnosis) e pago pelo jogador, nao pela Presa.
+
+    Args:
+        prey_card: A carta da Presa (Victim/Enemy).
+        gift_card: A carta Gift a ser usada.
+
+    Returns:
+        True se a Presa pode usar o Gift.
+    """
+    requires = (gift_card.requires or '').strip()
+
+    # Monta texto da presa para verificar requisitos
+    prey_text = _info_char(prey_card)
+    prey_gnosis = prey_card.gnosis or 0
+
+    if not requires:
+        # Sem requisito de keyword: qualquer criatura serve
+        # (nao check de Gnosis - o jogador paga)
+        return True
+
+    # Parseia requisitos (formato " - " = OR)
+    opcoes = [p.strip() for p in requires.split(' - ')]
+
+    # Remove qualificadores de Gnosis da requisicao
+    # (Gnosis so importa para o pagador, nao para a Presa)
+    opcoes_sem_gnosis = []
+    for op in opcoes:
+        gnosis_min, texto = _extrair_gnosis_requisito(op)
+        if texto:
+            opcoes_sem_gnosis.append(texto)
+        else:
+            opcoes_sem_gnosis.append(op if not gnosis_min else '')
+
+    # Verifica se a presa atende ALGUMA opcao (OR)
+    from rage_web.game_engine.state import Zone
+    for op_texto in opcoes_sem_gnosis:
+        if not op_texto:
+            continue
+        op_lower = op_texto.lower().strip()
+        if op_lower == 'any' or op_lower in prey_text:
+            return True
+
+    # Fallback: verifica as opcoes ORIGINAIS sem stripping de Gnosis
+    return any(_opcao_matches_char(o, prey_text, prey_gnosis)
+               for o in opcoes)
 
 
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
