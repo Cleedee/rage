@@ -1034,6 +1034,25 @@ class PriorityBot:
             if not pode_jogar_territory(self.player, card):
                 return False
 
+        # Se for Combat Event, verifica requisitos de keyword (requires)
+        ct = (card.card_type or '').lower()
+        if 'combat event' in ct or ct == 'combat event':
+            requires = (card.requires or '').strip()
+            if requires:
+                from rage_web.game_engine.rules import (
+                    _char_atende_requisitos, _info_char)
+                opcoes = [p.strip() for p in requires.split(' - ')]
+                tem_char = any(
+                    _char_atende_requisitos(
+                        _info_char(c), c.gnosis or 0, opcoes,
+                        self.player, c
+                    )
+                    for c in self.player.pack_home
+                    if 'Character' in (c.card_type or '')
+                )
+                if not tem_char:
+                    return False
+
         # Se for Rite, verifica requisitos de Renown + timing
         if card.card_type == 'Rite':
             if not validar_timing_rite(card, self.game.phase):
@@ -1626,6 +1645,15 @@ class PriorityBot:
                 self.game.register_card_passives(card, self.player)
                 return
             from rage_web.game_engine.rules import zona_da_carta
+            ct = (card.card_type or '').lower()
+            if 'combat event' in ct or ct == 'combat_event':
+                # Combat Events vao para o descarte de combate
+                card.zone = Zone.DISCARD_COMBAT
+                self.player.discard_combat.append(card)
+                self.game.add_log(
+                    f'[BOT] {self.player.name} jogou {card.name} '
+                    f'(descartado)')
+                return
             zona = zona_da_carta(card.card_type or '')
             if zona == 'hunting_grounds':
                 card.zone = Zone.HUNTING_GROUNDS

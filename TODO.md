@@ -269,9 +269,20 @@
 - [ ] **Territory special abilities via JSON** — 64/72 sem modelo (baixo impacto)
 - [ ] **"Using Territory ability is not an action"** — Pode ser usado a qualquer momento
 
+## ✅ Combat Events
+
+- [x] Card type reconhecido — CARD_TYPES, TIPOS_NAO_RECURSO, zona_da_carta()
+- [x] 15 em decks, 15 com JSON models — 100% cobertura
+- [x] Descartados apos uso — DISCARD_COMBAT em `aplicar_carta()`
+- [x] Bot joga em combate — `_agir_combate()` step 2 via `_usar_carta_efeito()`
+- [x] Keyword requirements — `_pode_pagar_custos()` valida `requires` (Ahroun, Firearm, etc.)
+- [x] `_play_card()` fallback manda para DISCARD_COMBAT em vez de PACK_HOME
+- [ ] Timing restrictions: "Play between rounds" — Complexo, baixo impacto (2 cards)
+- [ ] Frenzy keyword mechanics — Frenzy cards tem regras especificas de berserk
+
 ## 🧪 Testes
 
-- [x] **271 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
+- [x] **276 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
 - [ ] **Testes para Caern special abilities** — Verificar cada Caern implementado
 - [ ] **Testes para Gift Rage FOO Rule** — Validação de requisitos
 - [ ] **Testes para Ally recruitment** — `pode_recrutar_ally()` com diversos padrões

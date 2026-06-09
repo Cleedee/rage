@@ -167,14 +167,17 @@ def zona_da_carta(tipo: str) -> str:
     - Pack Home Ground: Character, Ally, Caern, Equipment, Gift, Rite,
       Territory, Realm, Event, Moot, Board Meeting, Quest, Past Life
     - Hunting Grounds: Enemy, Victim, Battlefield
+    - Combat Deck: Combat Action, Combat Event (usados e descartados)
     - Ambos os lados: Caern, Territory, Event
 
     Returns:
-        'pack_home' | 'hunting_grounds'
+        'pack_home' | 'hunting_grounds' | 'discard_combat'
     """
     if not tipo:
         return 'pack_home'
     t = tipo.lower().strip()
+    if 'combat_event' in t or 'combat action' in t or t in ('combat_event', 'combat_action'):
+        return 'discard_combat'
     if any(hg in t for hg in TIPOS_HUNTING_GROUNDS):
         return 'hunting_grounds'
     if t.startswith('character'):
