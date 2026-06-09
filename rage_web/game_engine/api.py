@@ -286,8 +286,21 @@ def api_use_card(game_id: str):
     if not card.modelo_id:
         return jsonify({'error': f'Carta {card.name} nao tem modelo de efeitos.'}), 400
 
+    # Verifica requisitos de Rite
+    if card.card_type == 'Rite':
+        from rage_web.game_engine.rules import (pode_usar_rite,
+                                                  validar_timing_rite)
+        if not validar_timing_rite(card, game.phase):
+            return jsonify({
+                'error': f'{card.name}: Rito nao pode ser usado durante combate'
+            }), 400
+        if not pode_usar_rite(cp, card):
+            return jsonify({
+                'error': f'{card.name}: nenhum personagem atende os requisitos'
+                         f' (Renown {card.renown})'
+            }), 400
+
     # Verifica requisitos de Gift (Rage FOO Rule)
-    if card.card_type == 'Gift':
         from rage_web.game_engine.rules import (pode_usar_gift,
                                                   pode_usar_gift_para_presa,
                                                   validar_timing_gift,

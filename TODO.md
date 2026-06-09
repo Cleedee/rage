@@ -188,6 +188,19 @@
 - [x] **Permanent Gifts permanecem em jogo** — `gift_eh_permanente()` mantém card em pack_home ao invés de descarte
 - [ ] **Prey Gift payment (#2)** — Outros jogadores pagam Gifts pela Presa em combate (médio impacto)
 
+## 🔄 Pendente (Ritos / Rites)
+
+- [x] **Bot joga Rites** — Adicionado `ct == 'Rite'` em `_agir_recurso()` e `_try_develop_board()`
+- [x] **Renown requirement** — `pode_usar_rite()` valida Renown do personagem >= Renown listado
+- [x] **Classe requirement (Garou/Fera/Cultist)** — `pode_usar_rite()` verifica keywords de classe
+- [x] **Timing (fora de combate)** — `validar_timing_rite()` bloqueia Rites durante combat phase
+- [x] **Integração CLI** — `do_ANUNCIAR()` valida timing + requisitos
+- [x] **Integração API** — `api_use_card()` retorna 400 para Rite inválido
+- [x] **Integração Bot** — `_pode_pagar_custos()` checa timing + requisitos de Rite
+- [ ] **Apenas 1 Rite card (Rite of the Opened Caern) com modelo JSON** — 57/58 sem efeitos
+- [ ] **Rites com timing específico** — Ex: "play after this character killed a Victim"
+- [ ] **Rites que attach em criatura** — Permanecem na criatura até removidos por efeito
+
 ## 🔄 Pendente (Moot / Juntas)
 
 - [x] **MootState** — Estrutura de votacao com sim/nao, aprovacao, resolucao

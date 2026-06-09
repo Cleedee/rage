@@ -493,6 +493,18 @@ class RageCLI(cmd.Cmd):
             print(f'Carta {card.name} nao tem modelo de efeitos.')
             return
 
+        # Verifica requisitos de Rite
+        if card.card_type == 'Rite':
+            from rage_web.game_engine.rules import (pode_usar_rite,
+                                                      validar_timing_rite)
+            if not validar_timing_rite(card, g.phase):
+                print(f'  {card.name}: Rito nao pode ser usado durante combate')
+                return
+            if not pode_usar_rite(cp, card):
+                print(f'  {card.name}: nenhum personagem atende os requisitos'
+                      f' (Renown {card.renown})')
+                return
+
         # Verifica requisitos de Gift (Rage FOO Rule + timing)
         if card.card_type == 'Gift':
             from rage_web.game_engine.rules import (pode_usar_gift,

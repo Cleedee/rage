@@ -206,6 +206,24 @@ class PriorityBot:
                 self._cards_played_this_turn += 1
                 return f'play_{card.card_type.lower()}_{card.card_id}'
 
+        # 3.5 Joga Rites (Renown validation, so fora de combate)
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            if ct == 'Rite':
+                from rage_web.game_engine.rules import (pode_usar_rite,
+                                                         validar_timing_rite)
+                if (validar_timing_rite(card, self.game.phase)
+                    and pode_usar_rite(me, card)
+                    and self._pode_pagar_custos(card)):
+                    if card.modelo_id:
+                        modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                        self._cards_played_this_turn += 1
+                        return self._usar_carta_efeito(i, modo_idx, card)
+                    else:
+                        self._play_card(i)
+                        self._cards_played_this_turn += 1
+                        return f'play_rite_{card.card_id}'
+
         # 4. Joga Quest / Past Life
         for i, card in enumerate(me.hand):
             ct = card.card_type or ''
@@ -907,7 +925,16 @@ class PriorityBot:
         """
         from rage_web.game_engine.rules import (parse_custo_rage, pode_usar_gift,
                                                    validar_timing_gift,
-                                                   validar_opponent_gift)
+                                                   validar_opponent_gift,
+                                                   pode_usar_rite,
+                                                   validar_timing_rite)
+
+        # Se for Rite, verifica requisitos de Renown + timing
+        if card.card_type == 'Rite':
+            if not validar_timing_rite(card, self.game.phase):
+                return False
+            if not pode_usar_rite(self.player, card):
+                return False
 
         # Se for Gift, verifica requisitos de keyword + timing
         if card.card_type == 'Gift':
@@ -1187,6 +1214,22 @@ class PriorityBot:
                 or ct == 'Equipment - Fetish - Bane Fetish'):
                 self._play_card(i)
                 return f'play_{card.card_type.lower()}_{card.card_id}'
+
+        # 3.5 Joga Rites
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            if ct == 'Rite':
+                from rage_web.game_engine.rules import (pode_usar_rite,
+                                                         validar_timing_rite)
+                if (validar_timing_rite(card, self.game.phase)
+                    and pode_usar_rite(me, card)
+                    and self._pode_pagar_custos(card)):
+                    if card.modelo_id:
+                        modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                        return self._usar_carta_efeito(i, modo_idx, card)
+                    else:
+                        self._play_card(i)
+                        return f'play_rite_{card.card_id}'
 
         # 4. Joga Quest / Past Life
         for i, card in enumerate(me.hand):

@@ -540,6 +540,102 @@ def gift_eh_permanente(gift_card: 'CardInstance') -> bool:
     return 'permanent' in text
 
 
+def pode_usar_rite(player: 'PlayerState',
+                    rite_card: 'CardInstance') -> bool:
+    """Verifica se o jogador pode usar um Rito.
+
+    Regra (Quickstart 4.5.5):
+    1. So pode ser usado por Garou, Fera e Cultists.
+    2. Requer Renown do personagem >= Renown listado no Rito.
+    3. Nao pode ser usado durante combate.
+
+    Args:
+        player: Estado do jogador.
+        rite_card: A carta Rite a ser usada.
+
+    Returns:
+        True se pode usar o Rito.
+    """
+    renown_requerido = rite_card.renown or 0
+    requires = (rite_card.requires or '').strip()
+
+    # Coleta personagens do jogador e aliados
+    characters = [c for c in player.pack_home
+                  if 'Character' in (c.card_type or '')]
+    for c in player.pack_home:
+        if 'Ally' in (c.card_type or '') and c not in characters:
+            characters.append(c)
+
+    if not characters:
+        return False
+
+    # 1. Verifica Renown minimo
+    if renown_requerido > 0:
+        renown_max = max(c.renown for c in characters)
+        if renown_max < renown_requerido:
+            return False
+
+    # 2. Verifica criatura classe: Garou, Fera ou Cultist
+    # Keywords que indicam capacidade de usar Rites
+    CLASSES_RITE = {'garou', 'fera', 'cultist', 'bastet', 'corax',
+                    'gnawer', 'mokole', 'nagas', 'ratkin', 'gurahl',
+                    'kitsune', 'hengeyokai', 'ajaba', 'ananas', 'kamay'}
+    tem_classe = any(
+        (_info_char(c).find(classe) >= 0)
+        for c in characters
+        for classe in CLASSES_RITE
+    )
+    if not tem_classe:
+        # Fallback: se tem keyword 'Garou' ou similar no texto
+        tem_garou_keyword = any(
+            'garou' in (c.keyword or '').lower()
+            or 'fera' in (c.keyword or '').lower()
+            for c in characters
+        )
+        if not tem_garou_keyword:
+            return False
+
+    # 3. Verifica requisito de keyword (requires) se presente
+    if requires:
+        opcoes = [p.strip() for p in requires.split(' - ')]
+        for char in characters:
+            char_text = _info_char(char)
+            if _char_atende_requisitos(char_text, char.gnosis or 0,
+                                        opcoes, player, char):
+                return True
+        # Se tem requisito e nenhum personagem atende: negado
+        return False
+
+    return True
+
+
+def validar_timing_rite(rite_card: 'CardInstance', game_phase: str) -> bool:
+    """Valida se o Rito pode ser usado na fase atual.
+
+    Regra: Rites cannot be played during a combat.
+
+    Args:
+        rite_card: A carta Rite.
+        game_phase: Fase atual do jogo.
+
+    Returns:
+        True se pode ser usado.
+    """
+    text = (rite_card.text or '').lower()
+    em_combate = (game_phase == 'combat')
+
+    # Nao pode durante combate
+    if em_combate:
+        return False
+
+    # Verifica timing especifico da carta
+    if 'play after' in text and 'killed' in text:
+        # Exige que o personagem tenha matado algo (validacao solta)
+        pass
+
+    return True
+
+
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
 
