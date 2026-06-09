@@ -669,6 +669,71 @@ def validar_lunar_phase(card_id: int, game_phase: str) -> bool:
     return False
 
 
+# IDs de cartas Totem conhecidas
+TOTEM_IDS = {214, 215, 817, 818, 821, 824, 826, 830, 836, 838,
+             850, 852, 855, 867, 868, 872, 877, 880, 892, 895,
+             897, 900, 909, 912, 914, 918, 920, 1633}
+
+
+def validar_totem_evento(player: 'PlayerState',
+                          event_card: 'CardInstance') -> bool:
+    """Valida requisitos para jogar um Totem.
+
+    Regra (Quickstart + 4.5.2A):
+    - Pack Totems require a keyword on a Character to bring into play.
+    - A pack may not have more than one Pack Totem at any time.
+    - Personal Totems only affect the character playing them.
+
+    Args:
+        player: Estado do jogador.
+        event_card: A carta Totem (Evento).
+
+    Returns:
+        True se pode jogar o Totem.
+    """
+    requires = (event_card.requires or '').strip()
+    text = (event_card.text or '').lower()
+
+    # Coleta personagens do jogador
+    characters = [c for c in player.pack_home
+                  if 'Character' in (c.card_type or '')]
+    # Allies tambem podem usar (se tiverem requisito)
+    for c in player.pack_home:
+        if 'Ally' in (c.card_type or '') and c not in characters:
+            characters.append(c)
+
+    if not characters:
+        return False
+
+    # 1. Verifica requisito de keyword (requires field)
+    if requires:
+        opcoes = [p.strip() for p in requires.split(' - ')]
+        tem_char = any(
+            _char_atende_requisitos(
+                _info_char(c), c.gnosis or 0, opcoes, player, c
+            )
+            for c in characters
+        )
+        if not tem_char:
+            return False
+
+    # 2. Verifica limite de 1 Pack Totem por pack
+    # Personal Totems nao contam para o limite
+    if 'personal totem' not in text:
+        # Conta Totems ativos no pack
+        totens_ativos = 0
+        for c in player.pack_home + player.hunting_grounds:
+            if c.card_id in TOTEM_IDS:
+                # Verifica se nao e Personal Totem
+                ct_text = (c.text or '').lower()
+                if 'personal totem' not in ct_text:
+                    totens_ativos += 1
+        if totens_ativos >= 1:
+            return False  # So 1 Pack Totem por pack
+
+    return True
+
+
 def encontrar_caern(jogador: 'PlayerState') -> Optional['CardInstance']:
     """Encontra um Caern no Pack Home ou Hunting Grounds do jogador.
 

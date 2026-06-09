@@ -233,7 +233,7 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
 
-        # 4.5 Joga Eventos (permanecem em jogo, efeitos globais)
+        # 4.5 Joga Eventos / Totems (permanecem em jogo, efeitos globais)
         for i, card in enumerate(me.hand):
             ct = card.card_type or ''
             if ct == 'Event' and card.modelo_id:
@@ -993,7 +993,14 @@ class PriorityBot:
                                                    validar_timing_gift,
                                                    validar_opponent_gift,
                                                    pode_usar_rite,
-                                                   validar_timing_rite)
+                                                   validar_timing_rite,
+                                                   TOTEM_IDS)
+
+        # Se for Event (Totem), verifica requisitos de keyword
+        if card.card_type == 'Event' and card.card_id in TOTEM_IDS:
+            from rage_web.game_engine.rules import validar_totem_evento
+            if not validar_totem_evento(self.player, card):
+                return False
 
         # Se for Rite, verifica requisitos de Renown + timing
         if card.card_type == 'Rite':

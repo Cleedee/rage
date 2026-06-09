@@ -213,7 +213,11 @@
 - [x] **Lunar Phase substitui anterior** — `definir_lunar_phase()` descarta a anterior
 - [x] **Lunar Eclipse bloqueia novas fases** — Remove fase atual e impede novas
 - [x] **Display no CLI STATUS** — Mostra fase lunar ativa
-- [ ] **Pack Totems com keyword requirement** — Totens exigem personagem com keyword especifica
+- [x] **Pack Totems com keyword requirement** — `validar_totem_evento()` checa `requires` contra keywords dos personagens
+- [x] **Limite de 1 Pack Totem por pack** — Personal Totems nao contam
+- [x] **Integracao bot** — `_pode_pagar_custos()` valida Totems antes de jogar
+- [x] **Integracao CLI** — `do_PLAY()` valida Totems
+- [ ] **Personal Totems** — Personagens com Personal Totem perdem bonus do Pack Totem
 
 ## 🔄 Pendente (Moot / Juntas)
 

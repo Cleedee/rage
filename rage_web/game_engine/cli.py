@@ -456,6 +456,17 @@ class RageCLI(cmd.Cmd):
                       f' ("{card.requires}")')
                 return
 
+        # Verifica requisitos para Totem Event
+        if card.card_type == 'Event':
+            from rage_web.game_engine.rules import (validar_totem_evento,
+                                                      TOTEM_IDS)
+            if card.card_id in TOTEM_IDS:
+                if not validar_totem_evento(cp, card):
+                    print(f'  Nao pode jogar Totem {card.name}: '
+                          f'requisito de keyword nao atendido'
+                          f' ("{card.requires}")')
+                    return
+
         cp.hand.pop(idx)
         card.zone = Zone.PACK_HOME
         card.health_current = card.health
