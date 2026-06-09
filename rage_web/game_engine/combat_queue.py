@@ -578,6 +578,9 @@ def start_combat(game: GameState, attackers: list[str],
     # Caern of the Unwashed Child (586): oponentes perdem 2 Rage ou Gnosis
     _check_caern_unwashed_child(game)
 
+    # Sky River Caern (597): nao-alfas imunes a challenge/sneak attack
+    _check_sky_river_caern(game)
+
     return True
 
 
@@ -1549,6 +1552,59 @@ def _check_caern_unwashed_child(game: GameState):
             game.add_log(
                 f'[Caern] {c.name} perdeu {reducao} {atributo} '
                 f'({valor_original} -> {novo_valor})')
+
+
+def _check_sky_river_caern(game: GameState):
+    """Sky River Caern (597): nao-alfas imunes a challenge/sneak attack.
+
+    Se o defensor tem Sky River Caern, verifica se o atacante
+    esta atacando um nao-alfa (que nao seja o maior Renown).
+    Se sim, bloqueia o ataque.
+    """
+    if not game.has_modifier('sky_river_caern'):
+        return
+
+    # Encontra packs que tem Sky River Caern
+    packs_protegidos = set()
+    for p in game.players:
+        for mod in game.game_modifiers:
+            if mod.modifier == 'sky_river_caern':
+                for c in p.pack_home + p.hunting_grounds:
+                    if id(c) == mod.card_uid:
+                        packs_protegidos.add(p.id)
+                        break
+
+    if not packs_protegidos:
+        return
+
+    # Verifica se algum defensor esta em pack protegido e nao e o Alpha
+    for dfd_id in list(game.combat.defenders):
+        dfd = _find_card(game, dfd_id)
+        if not dfd:
+            continue
+        if dfd.owner_id not in packs_protegidos:
+            continue
+        dono = _find_owner(game, dfd)
+        if not dono:
+            continue
+        # Alpha = maior Renown no pack
+        alfa = max(
+            [c for c in dono.pack_home if c.health_current > 0],
+            key=lambda x: x.renown,
+            default=None
+        )
+        if alfa and dfd.card_id != alfa.card_id:
+            # Nao-alfa atacado! Bloqueia
+            game.combat.defenders.remove(dfd_id)
+            game.add_log(
+                f'Sky River Caern: {dfd.name} nao pode ser atacado '
+                f'(nao e o Alpha do pack)')
+
+    # Se nao sobrou defensores, remove atacantes
+    if not game.combat.defenders:
+        game.combat.attackers.clear()
+        game.combat.is_active = False
+        game.add_log('Combat cancelado (Sky River Caern)')
 
 
 def get_declaration_summary(game: GameState) -> dict:

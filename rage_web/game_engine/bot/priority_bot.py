@@ -1139,11 +1139,39 @@ class PriorityBot:
             return None
 
         # Agrega alvos de todos os oponentes
+        # Sky River Caern: nao-alfas imunes a challenge/sneak attack
+        sky_river_packs = set()
+        for p in self.game.players:
+            if p.id != self.player_id:
+                for mod in self.game.game_modifiers:
+                    if mod.modifier == 'sky_river_caern':
+                        for c in p.pack_home + p.hunting_grounds:
+                            if id(c) == mod.card_uid:
+                                sky_river_packs.add(p.id)
+                                break
+
         todas_ameacas = []
         for opp in opponents:
-            for c in opp.pack_home:
-                if c.health_current > 0:
-                    todas_ameacas.append(c)
+            # Sky River: so pode atacar o Alpha (maior Renown)
+            if opp.id in sky_river_packs:
+                alvos_permitidos = []
+                # Alpha = maior renown ou primeiro char
+                alpha = max(
+                    [c for c in opp.pack_home if c.health_current > 0],
+                    key=lambda x: x.renown,
+                    default=None
+                )
+                if alpha:
+                    alvos_permitidos.append(alpha)
+                # Tambem pode atacar criaturas no HG (Enemy/Victim)
+                for c in self.game.hunting_grounds_cards:
+                    if c.health_current > 0:
+                        alvos_permitidos.append(c)
+                todas_ameacas.extend(alvos_permitidos)
+            else:
+                for c in opp.pack_home:
+                    if c.health_current > 0:
+                        todas_ameacas.append(c)
 
         if todas_ameacas:
             ameacas = sorted(todas_ameacas,

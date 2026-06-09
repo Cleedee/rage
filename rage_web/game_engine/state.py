@@ -1160,6 +1160,15 @@ class GameState:
                 f'{card.name}: BSD causam dano agravado. '
                 f'Regeneram apenas na Umbra.')
 
+        elif card.card_id == 597:  # Sky River Caern
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='sky_river_caern',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: nao-alfas imunes a challenge/sneak attack')
+
         elif card.card_id == 780:  # Termite Mounds
             modifier = GameModifier(
                 card_uid=id(card),
