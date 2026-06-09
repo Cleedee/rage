@@ -201,7 +201,7 @@ class PriorityBot:
                             modo_idx = self._escolher_melhor_modo(card.modelo_id)
                             self._cards_played_this_turn += 1
                             return self._usar_carta_efeito(i, modo_idx, card)
-                # Equipment sem modelo_id, sem equipar, Territory, Caern, Ally: play normal
+                # Equipment sem modelo_id, sem equipar: play normal
                 self._play_card(i)
                 self._cards_played_this_turn += 1
                 return f'play_{card.card_type.lower()}_{card.card_id}'
@@ -1008,6 +1008,17 @@ class PriorityBot:
         if card.card_type == 'Event' and card.card_id in TOTEM_IDS:
             from rage_web.game_engine.rules import validar_totem_evento
             if not validar_totem_evento(self.player, card):
+                return False
+
+        # Se for Territory/Realm, verifica requisitos de keyword + Realm rules
+        if card.card_type in ('Territory', 'Realm'):
+            from rage_web.game_engine.rules import pode_jogar_territory
+            if not pode_jogar_territory(self.player, card):
+                return False
+        elif card.card_type and ('territory' in card.card_type.lower()
+                                 or 'realm' in card.card_type.lower()):
+            from rage_web.game_engine.rules import pode_jogar_territory
+            if not pode_jogar_territory(self.player, card):
                 return False
 
         # Se for Rite, verifica requisitos de Renown + timing

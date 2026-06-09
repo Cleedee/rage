@@ -690,6 +690,60 @@ def carta_eh_evento_permanente(card: 'CardInstance',
     if not card:
         return False
     from rage_web.game_engine.state import Zone
+
+
+def pode_jogar_territory(player: 'PlayerState',
+                          territory_card: 'CardInstance') -> bool:
+    """Verifica se o jogador pode jogar um Territorio/Realm.
+
+    Regras (Quickstart + 4.3.3):
+    - Territories have keyword requirements (`requires` field).
+    - Realms require a character in the Umbra.
+    - Only 1 Realm per pack.
+
+    Args:
+        player: Estado do jogador.
+        territory_card: A carta Territory/Realm.
+
+    Returns:
+        True se pode jogar.
+    """
+    requires = (territory_card.requires or '').strip()
+    ct = (territory_card.card_type or '').lower()
+    eh_realm = 'realm' in ct
+
+    characters = [c for c in player.pack_home
+                  if 'Character' in (c.card_type or '')]
+    for c in player.pack_home:
+        if 'Ally' in (c.card_type or '') and c not in characters:
+            characters.append(c)
+
+    if not characters:
+        return False
+
+    # 1. Verifica requisito de keyword (requires)
+    if requires:
+        opcoes = [p.strip() for p in requires.split(' - ')]
+        tem_char = any(
+            _char_atende_requisitos(
+                _info_char(c), c.gnosis or 0, opcoes, player, c
+            )
+            for c in characters
+        )
+        if not tem_char:
+            return False
+
+    # 2. Realm: precisa personagem na Umbra
+    if eh_realm:
+        if not player.umbra:
+            return False
+        # So 1 Realm por pack
+        for c in player.pack_home:
+            ct2 = (c.card_type or '').lower()
+            if 'realm' in ct2:
+                return False
+
+    return True
     if em_jogo_only:
         if card.zone not in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS,
                               Zone.UMBRA):

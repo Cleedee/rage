@@ -254,6 +254,20 @@
 - [ ] **19/20 sem JSON model** — Apenas #1258 Grrash Tak'Hyrrr tem modelo
 - [ ] **Apenas 1 Battlefield em decks** — Baixissimo impacto (1 em 20)
 
+## 🔄 Pendente (Territories / Realms)
+
+- [x] **Card type Territory/Realm reconhecido** — CARD_TYPES, zona_da_carta() para pack_home
+- [x] **Vai para Pack Home** — Jogado na Resource phase
+- [x] **Bot joga Territories** — Step 3 em `_agir_recurso()` e `_try_develop_board()`
+- [x] **Keyword requirement** — `pode_jogar_territory()` valida `requires` contra personagens
+- [x] **Realm Umbra requirement** — Precisa ter personagem na Umbra
+- [x] **Limite 1 Realm por pack** — Validado em `pode_jogar_territory()`
+- [x] **8/72 Territory cards com JSON model** — Todos os usados em decks
+- [ ] **Attack/destroy mechanic** — Alpha pode atacar Territory do oponente; se alpha defensor morre, Territory destruido
+- [ ] **Realms so podem ser atacados da Umbra** — Regra de targeting
+- [ ] **Territory special abilities via JSON** — 64/72 sem modelo (baixo impacto)
+- [ ] **"Using Territory ability is not an action"** — Pode ser usado a qualquer momento
+
 ## 🧪 Testes
 
 - [x] **271 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
