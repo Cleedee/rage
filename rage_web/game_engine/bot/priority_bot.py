@@ -392,6 +392,25 @@ class PriorityBot:
 
         # Prioridade: voltar da Umbra se tiver guerreiro util
         if self.player.umbra:
+            # Tenta trazer o alpha primeiro (maior Renome)
+            candidatos_alpha = [
+                c for c in self.player.pack_home
+                if 'Character' in (c.card_type or '') or 'Ally' in (c.card_type or '')
+            ]
+            possivel_alpha_id = None
+            if candidatos_alpha:
+                possivel_alpha = max(candidatos_alpha, key=lambda c: c.renown)
+                possivel_alpha_id = str(possivel_alpha.card_id)
+
+            # Traz o possivel alpha da Umbra se estiver la
+            for c in self.player.umbra[:]:
+                if str(c.card_id) == possivel_alpha_id and c.rage >= 1:
+                    self.player.step_back(c)
+                    self.game.add_log(
+                        f'[BOT] {self.player.name}: {c.name} '
+                        f'voltou da Umbra (alpha prioritario)')
+                    return f'umbra_back_{c.card_id}'
+            # Fallback: qualquer guerreiro util
             for c in self.player.umbra[:]:
                 if c.rage >= 3:
                     self.player.step_back(c)
@@ -404,7 +423,30 @@ class PriorityBot:
 
         # Entrar na Umbra
         if podem_ir:
-            personagem = max(podem_ir, key=lambda c: c.gnosis)
+            # Tenta nao enviar o alpha (maior Renome) para Umbra
+            candidatos_alpha = [
+                c for c in self.player.pack_home
+                if 'Character' in (c.card_type or '') or 'Ally' in (c.card_type or '')
+            ]
+            possivel_alpha_id = None
+            if candidatos_alpha:
+                possivel_alpha = max(candidatos_alpha, key=lambda c: c.renown)
+                possivel_alpha_id = str(possivel_alpha.card_id)
+
+            if possivel_alpha_id:
+                personagens_sem_alpha = [
+                    c for c in podem_ir
+                    if str(c.card_id) != possivel_alpha_id
+                ]
+            else:
+                personagens_sem_alpha = podem_ir
+
+            if personagens_sem_alpha:
+                personagem = max(personagens_sem_alpha,
+                                 key=lambda c: c.gnosis)
+            else:
+                personagem = max(podem_ir, key=lambda c: c.gnosis)
+
             self.player.step_sideways(personagem)
             self.game.add_log(
                 f'[BOT] {self.player.name}: {personagem.name} '
@@ -1144,9 +1186,13 @@ class PriorityBot:
         for c in self.game.hunting_grounds_cards:
             ct = (c.card_type or '').lower()
             if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
-                candidatos.append(c)
+                # Nao ataca propria presa
+                if c.owner_id and c.owner_id != self.player_id:
+                    candidatos.append(c)
         # HG de cada jogador
         for p in self.game.players:
+            if p.id == self.player_id:
+                continue  # Nao ataca proprias cartas
             for c in p.hunting_grounds:
                 ct = (c.card_type or '').lower()
                 if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
