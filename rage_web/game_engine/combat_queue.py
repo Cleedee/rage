@@ -211,8 +211,7 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
             str(alvo.card_id))
         ct = (territory_card.card_type or '').lower()
         if 'territory' in ct or 'realm' in ct:
-            if territory_card.health_current > 0:  # Ainda nao destruido
-                territory_card.health_current = 0
+            if territory_card.zone == Zone.PACK_HOME:  # Ainda nao destruido
                 _remove_creature(game, territory_card)
                 if dono_alvo:
                     dono_alvo.discard_sept.append(territory_card)
@@ -601,11 +600,14 @@ def start_combat(game: GameState, attackers: list[str],
                     f'lados diferentes do Gauntlet')
                 return False
 
+    # Preserva alphas do estado de combate anterior
+    alphas_anteriores = dict(game.combat.alphas) if game.combat else {}
     game.combat = CombatState(
         is_active=True,
         step='declare',
         attackers=attackers,
         defenders=defenders,
+        alphas=alphas_anteriores,
     )
 
     game.add_log(

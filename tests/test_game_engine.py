@@ -2685,3 +2685,125 @@ class TestMootSystem:
         assert 'moot_chamar' in action
         assert game.moot_atual is not None
         assert game.moot_atual.nome == 'Banishment by the Council'
+
+
+class TestTerritoryAttack:
+    """Testes do ataque a Territories."""
+
+    def test_territory_e_combatente_valido(self, game):
+        """Territory deve ser reconhecido como combatente valido."""
+        from rage_web.game_engine.combat_queue import _eh_combatente_valido
+        t = CardInstance(card_id=9999, name='Test Territory',
+                         card_type='Territory', zone=Zone.PACK_HOME,
+                         owner_id='p1', controller_id='p1')
+        game.players[0].pack_home.append(t)
+        assert _eh_combatente_valido(game, '9999')
+
+    def test_territory_sem_alpha_defensor_destroi(self, game):
+        """Territory sem alpha defensor deve ser destruido."""
+        p1 = game.players[0]
+        p2 = game.players[1]
+        # Alpha do atacante
+        alpha = CardInstance(card_id=100, name='Attacker Alpha',
+                             card_type='Character', zone=Zone.PACK_HOME,
+                             health=5, health_current=5, rage=3,
+                             owner_id='p1', controller_id='p1')
+        p1.pack_home.append(alpha)
+        game.combat.alphas['p1'] = '100'
+        # Territory sem alpha defensor
+        territory = CardInstance(card_id=200, name='Dead Zone',
+                                 card_type='Territory', zone=Zone.PACK_HOME,
+                                 health=0, health_current=0,
+                                 owner_id='p2', controller_id='p2')
+        p2.pack_home.append(territory)
+        # Alpha do defensor nao definido
+        game.combat.alphas['p2'] = None
+
+        result = start_combat(game, ['100'], ['200'])
+        assert not result, 'Combate deve ser cancelado (sem defensor)'
+        assert not game.combat.is_active
+        assert territory.zone in (Zone.DISCARD_SEPT, Zone.OUT_OF_PLAY), \
+            'Territory sem defensor deve ser destruido'
+
+    def test_territory_com_alpha_defensor(self, game):
+        """Territory com alpha defensor: substitui Territory pelo alpha."""
+        p1 = game.players[0]
+        p2 = game.players[1]
+        # Alpha atacante
+        alpha_a = CardInstance(card_id=100, name='Attacker',
+                               card_type='Character', zone=Zone.PACK_HOME,
+                               health=5, health_current=5, rage=3,
+                               owner_id='p1', controller_id='p1')
+        p1.pack_home.append(alpha_a)
+        game.combat.alphas['p1'] = '100'
+        # Territory
+        territory = CardInstance(card_id=200, name='My Territory',
+                                 card_type='Territory', zone=Zone.PACK_HOME,
+                                 health=0, health_current=0,
+                                 owner_id='p2', controller_id='p2')
+        p2.pack_home.append(territory)
+        # Alpha defensor
+        alpha_d = CardInstance(card_id=300, name='Defender Alpha',
+                               card_type='Character', zone=Zone.PACK_HOME,
+                               health=5, health_current=5, rage=3,
+                               owner_id='p2', controller_id='p2')
+        p2.pack_home.append(alpha_d)
+        game.combat.alphas['p2'] = '300'
+
+        result = start_combat(game, ['100'], ['200'])
+        assert result, 'Combate deve ser iniciado'
+        assert game.combat.is_active
+        # Defensores devem ser o alpha, nao o Territory
+        assert '300' in game.combat.defenders
+        assert '200' not in game.combat.defenders
+        assert territory.zone == Zone.PACK_HOME, \
+            'Territory deve permanecer no pack (defendido)'
+
+    def test_territory_destroi_quando_alpha_morre(self, game):
+        """Territory destruido quando alpha defensor morre."""
+        p1 = game.players[0]
+        p2 = game.players[1]
+        # Alpha atacante
+        alpha_a = CardInstance(card_id=100, name='Attacker',
+                               card_type='Character', zone=Zone.PACK_HOME,
+                               health=5, health_current=5, rage=10,
+                               owner_id='p1', controller_id='p1')
+        p1.pack_home.append(alpha_a)
+        game.combat.alphas['p1'] = '100'
+        # Territory
+        territory = CardInstance(card_id=200, name='My Territory',
+                                 card_type='Territory', zone=Zone.PACK_HOME,
+                                 health=0, health_current=0,
+                                 owner_id='p2', controller_id='p2')
+        p2.pack_home.append(territory)
+        # Alpha defensor (fraco, vai morrer)
+        alpha_d = CardInstance(card_id=300, name='Defender',
+                               card_type='Character', zone=Zone.PACK_HOME,
+                               health=1, health_current=1, rage=1,
+                               owner_id='p2', controller_id='p2')
+        p2.pack_home.append(alpha_d)
+        game.combat.alphas['p2'] = '300'
+
+        result = start_combat(game, ['100'], ['200'])
+        assert result
+        # Simula combate
+        declare_action(game, '100', 'strike')
+        declare_action(game, '300', 'block')
+        reveal_all(game)
+        resolve_combat(game)
+        end_combat(game)
+
+        # Alpha defensor deve estar morto
+        assert alpha_d.health_current <= 0
+        # Territory deve ser destruido tb
+        assert territory.zone in (Zone.DISCARD_SEPT, Zone.OUT_OF_PLAY), \
+            'Territory deve ser destruido com alpha defensor'
+
+    def test_realm_e_reconhecido(self, game):
+        """Realm tambem e alvo valido."""
+        from rage_web.game_engine.combat_queue import _eh_combatente_valido
+        r = CardInstance(card_id=999, name='Test Realm',
+                         card_type='Realm', zone=Zone.PACK_HOME,
+                         owner_id='p1', controller_id='p1')
+        game.players[0].pack_home.append(r)
+        assert _eh_combatente_valido(game, '999')

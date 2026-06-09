@@ -2597,12 +2597,16 @@ def _efeito_from_json(e: dict) -> Efeito:
     for k, v in e.items():
         if k not in campos_conhecidos and k not in ('tipo', 'params'):
             params[k] = v
+    # Converte duracao para string se vier como int do JSON
+    duracao_val = e.get('duracao', '')
+    if not isinstance(duracao_val, str):
+        duracao_val = str(duracao_val) if duracao_val else ''
     return Efeito(
         tipo=e['tipo'],
         condicao=e.get('condicao_alvo'),
         alvo=e.get('alvo'),
         quantidade=e.get('quantidade', 0),
-        duracao=e.get('duracao', ''),
+        duracao=duracao_val,
         se_sucesso=[_efeito_from_json(s) for s in e.get('se_sucesso', [])],
         se_fracasso=[_efeito_from_json(f) for f in e.get('se_fracasso', [])],
         condicao_estado=e.get('condicao_estado'),

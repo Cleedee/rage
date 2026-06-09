@@ -1888,16 +1888,20 @@ class GameState:
         for pend in self.pendencias:
             expirou = False
 
-            if pend.duracao == 'end_of_turn' and fase_entrando == 'redraw':
+            duracao = pend.duracao
+            if not isinstance(duracao, str):
+                # Seguranca: se duracao nao for string (ex: int), ignora
+                duracao = str(duracao)
+            if duracao == 'end_of_turn' and fase_entrando == 'redraw':
                 expirou = True
-            elif pend.duracao == 'end_of_combat' and fase_entrando != 'combat':
+            elif duracao == 'end_of_combat' and fase_entrando != 'combat':
                 expirou = True
-            elif pend.duracao == 'end_of_phase' and pend.fase_aplicada != fase_entrando:
+            elif duracao == 'end_of_phase' and pend.fase_aplicada != fase_entrando:
                 expirou = True
-            elif pend.duracao.startswith('after_'):
+            elif duracao.startswith('after_'):
                 # Formato: 'after_N_turns' - expira quando turno atual >= N
                 try:
-                    target_turn = int(pend.duracao.split('_')[1])
+                    target_turn = int(duracao.split('_')[1])
                     if self.turn_number >= target_turn:
                         expirou = True
                 except (ValueError, IndexError):
