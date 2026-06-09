@@ -1421,6 +1421,16 @@ class ResolvedorEfeitos:
                 f'nao pode fazer Quests')
             return False
 
+        # Valida: Past Lives sao Unique (so 1 copia em jogo)
+        ct_origem = (origem.card_type or '').lower()
+        if 'past life' in ct_origem or ct_origem == 'past life':
+            for c in jogador.pack_home + jogador.hunting_grounds:
+                if c.card_id == origem.card_id and id(c) != id(origem):
+                    self.game.add_log(
+                        f'{origem.name}: Past Life unica '
+                        f'(ja tem uma copia em jogo)')
+                    return False
+
         # Cria quest state no jogador
         quest = QuestState(
             quest_card_uid=id(origem),
