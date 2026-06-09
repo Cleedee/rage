@@ -1650,19 +1650,30 @@ class PriorityBot:
         previsivel (block/dodge/strike). Se for do proprio bot,
         escolhe acao ofensiva (strike/claw/bite).
         """
+        me = self.player
+
         if owner_id != self.player_id:
             # Criatura do oponente: reage de forma defensiva
             if card.health_current < card.health * 0.4:
                 return 'dodge'
             if card.rage >= 3:
+                # Contra-ataca, mas usa BLOCK se atacante (o proprio bot)
+                # for muito mais forte. Block reduz dano pela rage do defensor.
+                max_atk_rage = 0
+                if me and me.pack_home:
+                    max_atk_rage = max(c.rage for c in me.pack_home)
+                if max_atk_rage > card.rage * 1.5:
+                    return 'block'  # Block reduz dano!
                 return 'strike'
             return 'block'
 
         # Criatura propria: age de forma ofensiva
         opp = self._get_opponent()
-        if opp.pack_home:
+        if opp and opp.pack_home:
             max_opp_rage = max(c.rage for c in opp.pack_home)
-            if max_opp_rage > card.rage * 1.5:
+            # So dodge se oponente MUITO mais forte (2x) E propria saude critica
+            if (max_opp_rage > card.rage * 2.0
+                    and card.health_current < card.health * 0.5):
                 return 'dodge'
 
         if card.rage >= 3:
