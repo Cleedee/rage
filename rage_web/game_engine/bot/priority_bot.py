@@ -352,12 +352,15 @@ class PriorityBot:
             g.resolver_moot()
             return f'moot_voto_{g.moot_atual.nome}'
 
-        # Tenta chamar uma Junta (so se tiver carta de Moot na mao)
+        # Tenta chamar uma Junta (Moot ou Board Meeting)
         for i, card in enumerate(self.player.hand):
-            if card.card_type == 'Moot':
+            ct = (card.card_type or '').lower()
+            if ct in ('moot', 'board meeting'):
+                is_board = (ct == 'board meeting')
                 modelo_id = card.modelo_id or ''
                 g.chamar_moot(self.player_id, nome=card.name,
-                              modelo_id=modelo_id, card_uid=id(card))
+                              modelo_id=modelo_id, card_uid=id(card),
+                              is_board_meeting=is_board)
                 card.zone = Zone.DISCARD_SEPT
                 self.player.discard_sept.append(
                     self.player.hand.pop(i))

@@ -1576,7 +1576,7 @@ class GameState:
 
         Regra (2.2.5):
         - So pode chamar 1 Junta por turno.
-        - Personagem precisa Renown >= requisito.
+        - Personagem precisa Renown >= requisito (renown do card).
         - Gaia chama Moots, Wyrm chama Board Meetings.
 
         Args:
@@ -1590,7 +1590,61 @@ class GameState:
             True se foi chamada.
         """
         if self.moot_atual and not self.moot_atual.resolvido:
+            self.add_log(f'  Ja ha uma Junta em andamento')
             return False  # Ja tem uma Junta em andamento
+
+        jogador = next((p for p in self.players if p.id == jogador_id), None)
+        if not jogador:
+            return False
+
+        # Obtem renown e tipo da carta
+        renown_min = 0
+        ct_tipo = ''
+        carta = self._find_card_by_uid(card_uid)
+        if carta:
+            renown_min = carta.renown or 0
+            ct_tipo = (carta.card_type or '').lower()
+        elif modelo_id:
+            from rage_web.game_engine.effects import CARTAS_EXEMPLO
+            modelo = CARTAS_EXEMPLO.get(modelo_id)
+            if modelo:
+                ct_tipo = (modelo.tipo or '').lower()
+
+        if not ct_tipo:
+            ct_tipo = 'moot' if 'moot' in nome.lower() else 'board meeting'
+
+        # Valida Gaia vs Wyrm (reusa logica de combat_queue)
+        from rage_web.game_engine.combat_queue import (_eh_pack_gaia,
+                                                         _eh_pack_wyrm)
+        chars = [c for c in jogador.pack_home
+                 if 'character' in (c.card_type or '').lower()]
+        if chars:
+            eh_gaia = _eh_pack_gaia(jogador)
+            eh_wyrm = _eh_pack_wyrm(jogador)
+
+            if is_board_meeting:
+                # Board Meeting: deve ser Wyrm OU neutro
+                if eh_gaia and not eh_wyrm:
+                    self.add_log(
+                        f'{jogador.name}: pack Gaia nao pode chamar '
+                        f'Board Meeting')
+                    return False
+            else:
+                # Moot: deve ser Gaia OU neutro
+                if eh_wyrm and not eh_gaia:
+                    self.add_log(
+                        f'{jogador.name}: pack Wyrm nao pode chamar Moot')
+                    return False
+
+        # Valida Renown minimo (se disponivel)
+        if renown_min > 0:
+            renown_jogador = sum(c.renown for c in jogador.pack_home
+                                 if c.health_current > 0)
+            if renown_jogador < renown_min:
+                self.add_log(
+                    f'{jogador.name}: Renown {renown_jogador} < '
+                    f'{renown_min} necessario para {nome}')
+                return False
 
         self.moot_atual = MootState(
             nome=nome,
@@ -1598,8 +1652,10 @@ class GameState:
             is_board_meeting=is_board_meeting,
             modelo_id=modelo_id,
             card_uid=card_uid,
+            renown_min=renown_min,
         )
-        self.add_log(f'{jogador_id} chamou {nome}')
+        self.add_log(f'{jogador_id} chamou {nome} '
+                     f'(Ren required: {renown_min})')
         return True
 
     def votar_moot(self, jogador_id: str, a_favor: bool) -> bool:

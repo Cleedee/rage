@@ -188,6 +188,23 @@
 - [x] **Permanent Gifts permanecem em jogo** — `gift_eh_permanente()` mantém card em pack_home ao invés de descarte
 - [ ] **Prey Gift payment (#2)** — Outros jogadores pagam Gifts pela Presa em combate (médio impacto)
 
+## 🔄 Pendente (Moot / Juntas)
+
+- [x] **MootState** — Estrutura de votacao com sim/nao, aprovacao, resolucao
+- [x] **Fase Moot na FSM** — Fase entre umbra e combat
+- [x] **chamar_moot()** — Cria votacao com validacao Gaia/Wyrm + Renown minimo
+- [x] **votar_moot()** — Vota com Renome total do jogador (inclui Thousand Cubs bonus)
+- [x] **resolver_moot()** — Aplica efeitos se aprovado (modelo JSON)
+- [x] **Bot _agir_moot()** — Vota estrategicamente ou chama Junta
+- [x] **Bot _moot_voto_estrategico()** — Voto SIM se propria junta ou contra lider
+- [x] **Bot reconhece Board Meeting** — Corrigido (`card_type == 'Board Meeting'`)
+- [x] **Moot effect types (5)** — MOOT_REMOVER_PERSONAGEM, MOOT_GANHAR_VP, MOOT_RESTRICAO_GLOBAL, MOOT_REBAIXAR_FORMA, MOOT_CONSTRUIR_CAERN
+- [ ] **Open Play durante Moot** — Bot so vota/passa sem jogar cartas
+- [ ] **Votacao em ordem de Renome** — Todos votam simultaneamente
+- [ ] **1 Junta por turno** — Sem flag de turno, so verifica se ja tem ativa
+- [ ] **Moot cards sem modelo JSON** — 69/74 cartas sem efeitos implementados (baixo impacto, so 7 em decks)
+- [ ] **Board Meeting sem modelo JSON** — Nenhum Board Meeting tem JSON model (baixo impacto)
+
 ## 🧪 Testes
 
 - [x] **271 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
