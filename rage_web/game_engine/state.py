@@ -19,6 +19,7 @@ class QuestState:
     """Estado de uma quest ativa no jogador.
 
     Mnesis Dreams: marca um personagem e conta turnos sem dano.
+    Past Lives: se character morre, vai pro VP valendo -3 Renown.
     """
     quest_card_uid: int       # uid da carta de quest em jogo
     target_card_uid: int      # uid do personagem alvo
@@ -28,6 +29,7 @@ class QuestState:
     completed: bool = False
     reward_vp: int = 0
     reward_acao: str = ''     # 'shuffle_card_discard_to_deck', etc.
+    failed_due_to_death: bool = False  # True se alvo morreu antes de completar
 
 
 @dataclass
@@ -894,15 +896,26 @@ class GameState:
                             p.deck_sept.append(carta)
                             self.add_log(f'{p.name} shufflou {carta.name} do discard para o deck')
 
-            # Se alguma quest removida era Past Life, restaura hand size
+            # Se alguma quest removida era Past Life, aplica penalties
             for q in completas:
                 card_quest = self._find_card_by_uid(q.quest_card_uid)
                 if card_quest:
                     ct = (card_quest.card_type or '').lower()
                     if 'past life' in ct or ct == 'past life':
-                        # Remove o card do pack_home (quest encerrou)
+                        # Past Life removida do pack_home
                         if card_quest in p.pack_home:
                             p.pack_home.remove(card_quest)
+                        # Se alvo morreu: vai pro VP do dono valendo -3
+                        if q.failed_due_to_death:
+                            card_quest.zone = Zone.VICTORY_PILE
+                            p.victory_pile.append(card_quest)
+                            p.victory_points -= 3
+                            self.add_log(
+                                f'[Past Life] {card_quest.name} '
+                                f'foi pro Victory Pile (-3 VP) '
+                                f'(total: {p.victory_points})')
+                        else:
+                            # Completa ou falha normal: descarta
                             card_quest.zone = Zone.DISCARD_SEPT
                             p.discard_sept.append(card_quest)
                         self._recalcular_past_life_hand_size(p)

@@ -564,6 +564,7 @@ class ResolvedorEfeitos:
                 for q in p.quests:
                     if q.target_card_uid == id(alvo) and not q.completed:
                         q.completed = True
+                        q.failed_due_to_death = True
                         self.game.add_log(
                             f'  Quest falhou: {alvo.name} '
                             f'(alvo da quest) foi destruido'

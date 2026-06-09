@@ -203,6 +203,16 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         _check_caern_snow_leopard(game, alvo, dono_alvo,
                                    zona_original=zona_original_death)
 
+    # Marca quests como falhas se o character/Ally morreu
+    if dono_alvo and ('Character' in (alvo.card_type or '')
+                      or 'Ally' in (alvo.card_type or '')):
+        for p in game.players:
+            for q in p.quests:
+                if (q.target_card_uid == id(alvo)
+                    and not q.completed):
+                    q.completed = True
+                    q.failed_due_to_death = True
+
     return True
 
     game.add_log(
@@ -1191,6 +1201,7 @@ def resolve_combat(game: GameState) -> bool:
                     if q.target_card_uid == id(alvo_card) and not q.completed:
                         # Alvo tomou dano fatal -> quest falhou
                         q.completed = True
+                        q.failed_due_to_death = True
                         game.add_log(
                             f'  Quest falhou: {alvo_card.name} '
                             f'(alvo da quest) foi destruido'
