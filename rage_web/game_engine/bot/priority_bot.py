@@ -726,13 +726,26 @@ class PriorityBot:
                         f'{alvo.name}')
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
 
-        # 3. Fallback: ataca Presa no Hunting Grounds
+        # 3. Tenta atacar Territory inimigo (destruicao)
+        for opp in opponents:
+            for c in opp.pack_home:
+                ct = (c.card_type or '').lower()
+                if 'territory' in ct or 'realm' in ct:
+                    start_combat(self.game, [meu_alpha_id],
+                                 [str(c.card_id)])
+                    alpha_card.is_tapped = True
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} atacou '
+                        f'Territory {c.name} ({opp.name})')
+                    return f'alpha_attack_territory_{meu_alpha_id}'
+
+        # 4. Fallback: ataca Presa no Hunting Grounds
         if alvo_hg:
             start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
             alpha_card.is_tapped = True
             self.game.add_log(
                 f'[BOT] Alpha {alpha_card.name} atacou '
-                f'{alvo_hg.name} no Hunting Grounds')
+                '{alvo_hg.name} no Hunting Grounds')
             return f'alpha_attack_hg_{meu_alpha_id}'
         return None
 

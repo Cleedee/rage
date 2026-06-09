@@ -203,6 +203,24 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         _check_caern_snow_leopard(game, alvo, dono_alvo,
                                    zona_original=zona_original_death)
 
+    # Se o alpha defensor morreu, destroy Territories que defendia
+    if (em_combate
+        and 'territory_targets' in game.combat_triggers
+        and str(alvo.card_id) in game.combat_triggers['territory_targets']):
+        territory_card = game.combat_triggers['territory_targets'].pop(
+            str(alvo.card_id))
+        ct = (territory_card.card_type or '').lower()
+        if 'territory' in ct or 'realm' in ct:
+            if territory_card.health_current > 0:  # Ainda nao destruido
+                territory_card.health_current = 0
+                _remove_creature(game, territory_card)
+                if dono_alvo:
+                    dono_alvo.discard_sept.append(territory_card)
+                territory_card.zone = Zone.DISCARD_SEPT
+                game.add_log(
+                    f'  {territory_card.name} (Territory) destruido '
+                    f'com a morte do alpha defensor!')
+
     # Marca quests como falhas se o character/Ally morreu
     if dono_alvo and ('Character' in (alvo.card_type or '')
                       or 'Ally' in (alvo.card_type or '')):
@@ -605,6 +623,47 @@ def start_combat(game: GameState, attackers: list[str],
     # Sky River Caern (597): nao-alfas imunes a challenge/sneak attack
     _check_sky_river_caern(game)
 
+    # Trata ataque a Territory: substitui defensor pelo alpha do dono
+    # Regra (Quickstart): o alpha do pack controlador pode defender
+    novos_defensores = []
+    for dfd in defenders:
+        card = _find_card(game, dfd)
+        if card:
+            ct = (card.card_type or '').lower()
+            if 'territory' in ct or 'realm' in ct:
+                dono = _find_owner(game, card)
+                if dono:
+                    alpha_id = game.combat.alphas.get(dono.id)
+                    if alpha_id:
+                        # Substitui Territory pelo alpha defensor
+                        novos_defensores.append(alpha_id)
+                        game.add_log(
+                            f'  {card.name} (Territory) defendido por '
+                            f'alpha {alpha_id}')
+                        # Marca Territory para destruicao se alpha morrer
+                        if 'territory_targets' not in game.combat_triggers:
+                            game.combat_triggers['territory_targets'] = {}
+                        game.combat_triggers['territory_targets'][alpha_id] = card
+                        continue
+                # Sem alpha defensor: Territory destruido imediatamente
+                game.add_log(
+                    f'  {card.name} (Territory) sem defensor - '
+                    f'destruido!')
+                _remove_creature(game, card)
+                if dono:
+                    dono.discard_sept.append(card)
+                card.zone = Zone.DISCARD_SEPT
+                continue
+        novos_defensores.append(dfd)
+
+    # Atualiza defensores
+    if novos_defensores != defenders:
+        game.combat.defenders = novos_defensores
+        if not novos_defensores:
+            game.combat = CombatState()
+            game.add_log('Territory destruido, combate cancelado')
+            return False
+
     return True
 
 
@@ -628,7 +687,7 @@ def _eh_combatente_valido(game: GameState, card_id: str) -> bool:
         return True  # Carta nao encontrada - assume valida (leniente)
     ct = (card.card_type or '').lower()
     TIPOS_COMBATENTES = {'character', 'ally', 'enemy', 'victim',
-                          'battlefield'}
+                          'battlefield', 'territory', 'realm'}
     return any(t in ct for t in TIPOS_COMBATENTES)
 
 

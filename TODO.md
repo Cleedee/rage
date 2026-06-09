@@ -263,7 +263,8 @@
 - [x] **Realm Umbra requirement** — Precisa ter personagem na Umbra
 - [x] **Limite 1 Realm por pack** — Validado em `pode_jogar_territory()`
 - [x] **8/72 Territory cards com JSON model** — Todos os usados em decks
-- [ ] **Attack/destroy mechanic** — Alpha pode atacar Territory do oponente; se alpha defensor morre, Territory destruido
+- [x] **Attack/destroy mechanic** — Alpha pode atacar Territory do oponente; se alpha defensor morre, Territory destruido
+- [x] **Territory substituido por alpha defensor** — `start_combat()` troca defensor Territory pelo alpha do dono
 - [ ] **Realms so podem ser atacados da Umbra** — Regra de targeting
 - [ ] **Territory special abilities via JSON** — 64/72 sem modelo (baixo impacto)
 - [ ] **"Using Territory ability is not an action"** — Pode ser usado a qualquer momento
