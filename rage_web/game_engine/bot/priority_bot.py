@@ -290,78 +290,38 @@ class PriorityBot:
         Regra (2.2.2):
         - Primeiro turno: mao inicial ja foi comprada.
         - Turnos seguintes: descarte opcional + compra ate encher.
-        - O bot descarta cartas que nao sao da sua cor (tipo).
+
+        P6: Redraw seletivo — avalia cada carta por:
+        - Utilidade (tem modelo_id, tipo, custo)
+        - Redundancia (ja tem carta similar no pack)
+        - Custo beneficio (carta cara sem personagem pra pagar)
+        - Sempre descarta as PIORES primeiro.
         """
         if self.game.turn_number == 1 and self.player.is_first_turn:
-            # Primeiro turno: mao inicial ja foi dada
             self._pass_turn()
             return 'pass_redraw'
 
         me = self.player
 
-        # Verifica se tem cartas de sept que podem ser descartadas
-        # (sem modelo_id = sem efeito definido = carta inutil)
-        # Events/Totems nao sao descartados mesmo sem modelo_id
-        # (Regra: 'Cannot be discarded voluntarily from play')
-        sept_indices = []
-        TOTEM_IDS_LOCAL = {214, 215, 817, 818, 821, 824, 826, 830, 836, 838,
-                           850, 852, 855, 867, 868, 872, 877, 880, 892, 895,
-                           897, 900, 909, 912, 914, 918, 920, 1633}
-        LUNAR_IDS = {834, 854, 865, 869, 884, 890, 897}
-        CARTAS_PERMANENTES = TOTEM_IDS_LOCAL | LUNAR_IDS
-        for i, c in enumerate(me.hand):
-            eh_sept = c.card_type not in ('Combat Action', 'Combat Event', '')
-            sem_efeito = not c.modelo_id
-            eh_permanente = c.card_id in CARTAS_PERMANENTES
-            if eh_sept and sem_efeito and not eh_permanente:
-                sept_indices.append(i)
-
-        # Se mao de sept esta cheia e tem cartas sem efeito, descarta
-        sept_count = len(me._cartas_sept())
-        if sept_indices and sept_count >= me.hand_size_sept:
-            descartadas = me.descartar_da_mao(sept_indices)
-            self.game.add_log(
-                f'[BOT] {me.name} descartou {len(descartadas)} carta(s) de sept')
-            # Depois do descarte, redraw completa
-            drawn = me.redraw_sept(descartar_primeiro=False)
-            if drawn:
-                self.game.add_log(
-                    f'[BOT] {me.name} comprou {len(drawn)} carta(s) de sept')
-            return f'redraw_descarte_{len(descartadas)}'
-
         # Tenta jogar uma Fase Lunar (se tiver na mao)
-        # Regra: Lunar Phases podem ser jogadas no inicio de qualquer turno
+        # (feito ANTES do descarte para garantir que cartas
+        #  de Fase Lunar nao sao descartadas)
         LUNAR_CARDS = {834, 854, 865, 869, 884, 890, 897}
         for i, card in enumerate(me.hand):
             if card.card_id in LUNAR_CARDS:
-                # Verifica se Lunar Eclipse esta ativo (bloqueia novas fases)
                 if (self.game.lunar_phase
                     and self.game.lunar_phase.card_id == 884):
-                    # Lunar Eclipse bloqueia novas Lunar Phases
                     break
                 if card.card_id == 884 and self.game.lunar_phase:
-                    # Lunar Eclipse remove a fase atual
                     removida = self.game.remover_lunar_phase()
-                    self.game.add_log(
-                        f'[BOT] {me.name} jogou Lunar Eclipse, '
-                        f'removendo {removida}')
-                elif card.card_id == 884 and not self.game.lunar_phase:
-                    # Nenhuma fase para remover, descarta
+                    return 'redraw_lunar_eclipse'
+                if card.card_id == 884 and not self.game.lunar_phase:
                     card.zone = Zone.DISCARD_SEPT
                     me.discard_sept.append(me.hand.pop(i))
-                    self.game.add_log(
-                        f'[BOT] {me.name} jogou Lunar Eclipse '
-                        f'(sem fase para remover)')
                     return 'redraw_lunar_eclipse'
-
                 if card.card_id == 897:
-                    # Phoebe: busca qualquer Lunar Phase
                     self._play_card(i)
-                    self.game.add_log(
-                        f'[BOT] {me.name} jogou Phoebe (busca Lunar Phase)')
                     return 'redraw_phoebe'
-
-                # Lunar Phase normal: substitui a atual
                 modelo_id = card.modelo_id or ''
                 self.game.definir_lunar_phase(
                     jogador_id=self.player_id,
@@ -370,10 +330,8 @@ class PriorityBot:
                     modelo_id=modelo_id,
                     card_uid=id(card),
                 )
-                # Move a carta para PACK_HOME como marcador ativo
                 card.zone = Zone.PACK_HOME
                 me.pack_home.append(me.hand.pop(i))
-                # Aplica efeitos do modelo JSON se existir
                 if modelo_id:
                     from rage_web.game_engine.effects import (CARTAS_EXEMPLO,
                                                                 aplicar_carta)
@@ -382,9 +340,103 @@ class PriorityBot:
                         modo_idx = self._escolher_melhor_modo(modelo_id)
                         aplicar_carta(self.game, modelo, self.player_id,
                                       modo_idx=modo_idx, card_origem=card)
-                self.game.add_log(
-                    f'[BOT] {me.name} jogou Fase Lunar {card.name}')
                 return f'redraw_lunar_{card.card_id}'
+
+        # P6: Pontua cada carta para decidir o que descartar
+        # ---------------------------------------------------
+        PONTOS_MODELO_ID = 50
+        PONTOS_PERSONAGEM = 40
+        PONTOS_CAERN_TERRITORIO = 30
+        PONTOS_EQUIPAMENTO = 20
+        PONTOS_EFEITO_VIAVEL = 15
+        PONTOS_DUPLICATA = -20
+        PONTOS_SEM_EFEITO = -30
+        PONTOS_LIXO = -100
+
+        # IDs de cartas que sao totems permanentes
+        TOTEM_IDS_LOCAL = {214, 215, 817, 818, 821, 824, 826, 830, 836, 838,
+                           850, 852, 855, 867, 868, 872, 877, 880, 892, 895,
+                           897, 900, 909, 912, 914, 918, 920, 1633}
+
+        # Cartas que ja estao em jogo (pack, hg, umbra)
+        cartas_em_jogo = set()
+        for c in me.pack_home + me.hunting_grounds + me.umbra:
+            cartas_em_jogo.add(c.card_id)
+
+        scored_cards = []
+        for i, c in enumerate(me.hand):
+            score = 0
+            ct = (c.card_type or '')
+
+            # Cartas que sao de combate: nao descartar
+            if ct in ('Combat Action', 'Combat Event'):
+                score += PONTOS_MODELO_ID + 30
+            else:
+                # Cartas de sept
+                if c.modelo_id:
+                    score += PONTOS_MODELO_ID  # Tem efeito definido
+                else:
+                    score += PONTOS_SEM_EFEITO  # Carta inutil
+
+                # Tipo de carta
+                if 'character' in ct.lower():
+                    score += PONTOS_PERSONAGEM
+                elif ct in ('Caern', 'Territory'):
+                    score += PONTOS_CAERN_TERRITORIO
+                elif 'equipment' in ct.lower():
+                    score += PONTOS_EQUIPAMENTO
+
+                # Totems permanentes: nunca descartar
+                if c.card_id in TOTEM_IDS_LOCAL:
+                    score += 80
+
+                # Duplicata: ja tem uma igual em jogo
+                if c.card_id in cartas_em_jogo:
+                    score += PONTOS_DUPLICATA
+
+                # Carta sem stats uteis (tudo 0)
+                if (c.rage == 0 and c.gnosis == 0 and c.health == 0
+                    and not c.modelo_id):
+                    score += PONTOS_LIXO
+
+                # Carta cara sem personagem para pagar
+                if c.gnosis > 0:
+                    tem_pagador = any(
+                        p.gnosis >= c.gnosis
+                        for p in me.pack_home
+                    )
+                    if not tem_pagador:
+                        score -= 15
+
+            scored_cards.append((i, score, c))
+
+        # Ordena por pontuacao (piores primeiro)
+        scored_cards.sort(key=lambda x: x[1])
+
+        # Indices para descartar: piores cartas, enquanto mao estiver cheia
+        sept_count = len(me._cartas_sept())
+        descartar_indices = []
+        for i, score, c in scored_cards:
+            # Nao descarta cartas de combate
+            if c.card_type in ('Combat Action', 'Combat Event'):
+                continue
+            # So descarta se mao estiver cheia ou carta for ruim
+            if sept_count > me.hand_size_sept or score < 0:
+                descartar_indices.append(i)
+                sept_count -= 1
+                if sept_count <= me.hand_size_sept and score >= 0:
+                    break  # Ja tem espaco, para de descartar boas cartas
+
+        if descartar_indices:
+            descartadas = me.descartar_da_mao(descartar_indices)
+            self.game.add_log(
+                f'[BOT] {me.name} descartou {len(descartadas)} carta(s) '
+                f'(redraw seletivo)')
+            drawn = me.redraw_sept(descartar_primeiro=False)
+            if drawn:
+                self.game.add_log(
+                    f'[BOT] {me.name} comprou {len(drawn)} carta(s) de sept')
+            return f'redraw_descarte_{len(descartadas)}'
 
         self._pass_turn()
         return 'pass_redraw'
