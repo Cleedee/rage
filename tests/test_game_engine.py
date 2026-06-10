@@ -1143,14 +1143,14 @@ class TestLakeNasserWallow:
     def test_gauntlet_para_carta_sem_caern(
         self, game, player1
     ):
-        """Sem Caern, Rites/Gifts funcionam normalmente (True por padrao)."""
+        """Sem Caern, Rites/Gifts NAO podem cruzar o Gauntlet (regra 5)."""
         from rage_web.game_engine.effects import _validar_gauntlet_para_carta
         from rage_web.game_engine.effects import ModeloCarta
         modelo = ModeloCarta(id='test', nome='Test Gift', tipo='Gift')
         result = _validar_gauntlet_para_carta(
             game, game.players[0], modelo
         )
-        assert result is True
+        assert result is False
 
 
 # ---------------------------------------------------------------------------
@@ -1706,7 +1706,7 @@ class TestHaunterAbilities:
         assert result is True
 
     def test_gauntlet_cross_sem_restricao_sem_caern(self):
-        """Sem restricao e sem Caern, padrao True."""
+        """Sem restricao e sem Caern, Gift NAO cruza (regra 5)."""
         from rage_web.game_engine.effects import (
             _validar_gauntlet_para_carta, ModeloCarta, Modo, Efeito, EfeitoTipo,
         )
@@ -1726,7 +1726,7 @@ class TestHaunterAbilities:
         )
         assert _validar_gauntlet_para_carta(
             game, p1, gift, card_origem=carta
-        ) is True
+        ) is False
 
 
 # ---------------------------------------------------------------------------

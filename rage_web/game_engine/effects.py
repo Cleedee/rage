@@ -211,6 +211,16 @@ class ResolvedorEfeitos:
             self.log.append(f'Sem alvo valido para {efeito.tipo.value}')
             return False
 
+        # Valida Gauntlet: verifica se o tipo de efeito pode cruzar
+        # o Gauntlet para o alvo (regra 5 - Umbra)
+        if not self._validar_gauntlet_efeito(origem, jogador, alvo):
+            nome_alvo = getattr(alvo, 'name', str(alvo))
+            self.log.append(
+                f'Gauntlet: {origem.name} nao pode atingir '
+                f'{nome_alvo} (lados diferentes do Gauntlet)'
+            )
+            return False
+
         # Armazena ultimo alvo para condicao_estado
         self._ultimo_alvo = alvo if not isinstance(alvo, list) else (alvo[0] if alvo else None)
 
@@ -426,6 +436,79 @@ class ResolvedorEfeitos:
         if resolvedor:
             return resolvedor()
         return None
+
+    def _validar_gauntlet_efeito(self, origem: CardInstance,
+                                   jogador: PlayerState,
+                                   alvo: Any) -> bool:
+        """Valida se um efeito pode cruzar o Gauntlet para o alvo.
+
+        Regra (5 - Umbra): Actions, Gifts, Rites, Combat Actions,
+        Past Lives, Quests e special abilities NAO podem cruzar o
+        Gauntlet. Events/Totems/Caerns/Territories afetam ambos os lados.
+
+        A verificacao usa a ZONA DA CRIATURA ORIGEM (quem joga a carta)
+        e a ZONA DO ALVO — se estao no mesmo lado, nao ha cruzamento.
+
+        Returns:
+            True se o efeito pode cruzar (ou não precisa).
+        """
+        tipo = (origem.card_type or '').lower()
+
+        # Events, Totems afetam ambos os lados (regra 5)
+        if tipo in ('event', 'event - totem', 'totem'):
+            return True
+
+        # Caerns e Territórios existem em ambos os lados (regra 5)
+        if tipo in ('caern', 'territory', 'realm'):
+            return True
+
+        # Tipos que NÃO podem cruzar o Gauntlet
+        tipos_que_nao_cruzam = {
+            'action', 'gift', 'past life', 'quest', 'rite',
+            'combat action', 'combat event',
+        }
+        if tipo not in tipos_que_nao_cruzam:
+            return True
+
+        # Para tipos que não cruzam: verifica se origem e alvo estão
+        # no mesmo lado do Gauntlet (nesse caso, não há cruzamento)
+        if isinstance(alvo, CardInstance):
+            if self._mesmo_lado_gauntlet_por_zona(origem, alvo):
+                return True
+            # Se estão em lados diferentes, verifica permissões especiais
+            if _gauntlet_permite_cruzar(self.game, jogador, None, None):
+                return True
+            return False
+
+        # Alvo não é CardInstance (ex: jogador, mão, deck) — permite
+        return True
+
+    def _mesmo_lado_gauntlet_por_zona(self, origem: CardInstance,
+                                      alvo: CardInstance) -> bool:
+        """Verifica se a criatura origem e o alvo estão no mesmo lado do Gauntlet.
+
+        Usa as ZONAS das criaturas:
+        - PACK_HOME = mundo físico
+        - UMBRA = Umbra
+        - HUNTING_GROUNDS / OUT_OF_PLAY / DISCARD = ambos os lados
+        """
+        def _lado(card: CardInstance) -> int:
+            if card.zone == Zone.UMBRA:
+                return -1  # Umbra
+            elif card.zone == Zone.PACK_HOME:
+                return 1   # mundo físico
+            else:
+                return 0   # ambos os lados (HG, descarte, etc)
+
+        lado_origem = _lado(origem)
+        lado_alvo = _lado(alvo)
+
+        # Se qualquer um está em ambos os lados, podem interagir
+        if lado_origem == 0 or lado_alvo == 0:
+            return True
+
+        # Mesmo lado = podem interagir
+        return lado_origem == lado_alvo
 
     def _escolher_jogador(self, jogadores: list[PlayerState]
                            ) -> Optional[PlayerState]:
@@ -2348,33 +2431,122 @@ def _condicao_fase_umbra_mokole(game: GameState,
 
 def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
                                  modelo: 'ModeloCarta',
-                                 card_origem: Optional['CardInstance'] = None
+                                 card_origem: Optional['CardInstance'] = None,
+                                 alvo: Optional['CardInstance'] = None
                                  ) -> bool:
-    """Valida se um Rite/Gift pode cruzar o Gauntlet para seu alvo.
+    """Valida se uma carta pode cruzar o Gauntlet para seu alvo.
 
-    - Lake Nasser Wallow: Rites e Gifts cruzam o Gauntlet.
-    - Haunter: Gifts com Gnosis <= 4 podem cruzar.
+    Regra (5 - Umbra):
+    - Events (incluindo Totems) afetam ambos os lados do Gauntlet.
+    - Caerns e Territórios existem em ambos os lados.
+    - Actions, Gifts, Past Lives, Quests, Rites, Combat Actions
+      e special abilities NAO podem cruzar o Gauntlet.
+    - Exceções: Caerns/habilidades que explicitamente permitem cruzar
+      (ex: Lake Nasser Wallow, Haunter).
+
+    Se o alvo está no mesmo lado do Gauntlet que o jogador,
+    não há cruzamento e a carta pode ser usada normalmente.
 
     Args:
         game: Estado da partida.
         jogador: Jogador usando a carta.
         modelo: Modelo da carta sendo usada.
         card_origem: Instancia da carta que esta usando o Gift.
+        alvo: A criatura alvo da carta (se conhecido).
 
     Returns:
         True se a carta pode ser usada (Gauntlet permitido ou nao aplicavel).
     """
-    # Verifica modificador global: rites_gifts_cross_gauntlet
-    # (ex: Lake Nasser Wallow)
-    if game.has_modifier('rites_gifts_cross_gauntlet'):
+    tipo = (modelo.tipo or '').lower()
+
+    # Events e Totems afetam ambos os lados do Gauntlet (regra 5)
+    if tipo in ('event', 'event - totem', 'totem'):
         return True
 
+    # Caerns e Territórios existem em ambos os lados (regra 5)
+    if tipo in ('caern', 'territory', 'realm'):
+        return True
+
+    # Se o alvo está no mesmo lado do Gauntlet, não há cruzamento
+    if alvo is not None:
+        if _mesmo_lado_gauntlet_para_carta(game, jogador, alvo):
+            return True
+
+    # Verifica se ha permissao especial para cruzar o Gauntlet
+    if _gauntlet_permite_cruzar(game, jogador, modelo, card_origem):
+        return True
+
+    # Cartas que nao podem cruzar o Gauntlet:
+    # Actions, Gifts, Past Lives, Quests, Rites, Combat Actions
+    tipos_que_nao_cruzam = {
+        'action', 'gift', 'past life', 'quest', 'rite',
+        'combat action', 'combat event',
+    }
+    if tipo in tipos_que_nao_cruzam:
+        return False
+
+    # Outros tipos (Characters, Equipment, etc.) - permitem
+    return True
+
+
+def _mesmo_lado_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
+                                    alvo: 'CardInstance') -> bool:
+    """Verifica se o jogador e o alvo estão no mesmo lado do Gauntlet.
+
+    - Pack Home = mundo fisico
+    - Umbra = Umbra
+    - Hunting Grounds / Caern / Territory / Spirit = ambos os lados
+    """
+    # Determina o lado do jogador (baseado na zona dos seus personagens)
+    jogador_umbra = any(c.zone == Zone.UMBRA for c in jogador.umbra)
+    jogador_fisico = any(c.zone == Zone.PACK_HOME for c in jogador.pack_home)
+
+    # Determina o lado do alvo
+    if alvo.zone == Zone.UMBRA:
+        alvo_umbra = True
+        alvo_fisico = False
+    elif alvo.zone == Zone.PACK_HOME:
+        alvo_umbra = False
+        alvo_fisico = True
+    else:
+        # Hunting Grounds, OUT_OF_PLAY, etc. = ambos os lados
+        alvo_umbra = True
+        alvo_fisico = True
+
+    # Se ambos estão no mesmo lado (ou um está em ambos), OK
+    if jogador_umbra and alvo_umbra:
+        return True
+    if jogador_fisico and alvo_fisico:
+        return True
+    if not jogador_umbra and not jogador_fisico:
+        # Jogador sem personagens em jogo - permite
+        return True
+    return False
+
+
+def _gauntlet_permite_cruzar(game: GameState, jogador: 'PlayerState',
+                             modelo: 'ModeloCarta',
+                             card_origem: Optional['CardInstance'] = None
+                             ) -> bool:
+    """Verifica se ha permissao especial para cruzar o Gauntlet.
+
+    - Lake Nasser Wallow: Rites/Gifts cruzam Gauntlet globalmente.
+    - Haunter: Gifts com Gnosis <= 4 podem cruzar.
+    - Outros Caerns com habilidade de cruzar.
+    """
+    tipo = (modelo.tipo or '').lower() if modelo else ''
+
+    # Verifica modificador global (ex: Lake Nasser Wallow)
+    if game.has_modifier('rites_gifts_cross_gauntlet'):
+        if tipo in ('rite', 'gift'):
+            return True
+
     # Verifica se o jogador tem Caern que permite cruzar Gauntlet
-    caerns = jogador.caerns_no_hunting_grounds
+    caerns = jogador.caerns_no_hunting_grounds if hasattr(jogador, 'caerns_no_hunting_grounds') else []
     for caern in caerns:
         texto = (caern.text or '').lower()
         if 'gauntlet' in texto and 'cross' in texto:
-            return True  # Caern permite cruzar
+            return True
 
     # Verifica se a origem tem restricao de cruzar Gauntlet
     # (ex: Haunter - gifts com Gnosis <=4 podem cruzar)
@@ -2389,8 +2561,7 @@ def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',
                 except (ValueError, IndexError):
                     pass
 
-    # Sem Caern especial: Rites/Gifts funcionam normalmente
-    return True
+    return False
 
 
 def _condicao_nao_frenetico(game: GameState,
@@ -2443,11 +2614,9 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
         if not _validar_condicao_uso(game, jogador, modo.condicao_uso):
             return [f'Condicao de uso nao atendida: {modo.condicao_uso}']
 
-    # Valida Gauntlet para Rites e Gifts
-    if modelo.tipo in ('Rite', 'Gift'):
-        if not _validar_gauntlet_para_carta(game, jogador, modelo,
-                                            card_origem=card_origem):
-            return ['Gauntlet: a carta nao pode cruzar para o alvo']
+    # NOTA: A validacao de Gauntlet e feita durante a aplicacao
+    # de cada efeito (em aplicar_efeito), quando o alvo e conhecido.
+    # Isso permite verificar se o alvo esta no mesmo lado do Gauntlet.
 
     # Usa a carta real (se fornecida) ou cria temporaria
     if card_origem:
