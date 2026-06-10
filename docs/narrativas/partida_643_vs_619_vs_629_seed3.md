@@ -1,150 +1,95 @@
-# 🎮 Passos da Morte (Ren20) vs Fúria e Sabedoria vs Umbral Wardens
+# 🎮 Partida Seed 3 — Sem Umbra (Ninguém Tem Caern)
 
-**Seed 3 — 3 turnos, 24 VP para o vencedor**
-
----
-
-## 📋 Overview dos Decks
-
-| Jogador | Deck | Personagens Principais |
-|---|---|---|
-| 🟦 **J1** | Passos da Morte (Ren20) | Stalks Death (Rg3 Gn8 H5), Buries the Dead (Rg2 Gn5 H2), Allya Sun-Follower (Rg3 Gn3 H4) |
-| 🟨 **J2** | Fúria e Sabedoria | Big Fisher (Rg8 Gn8 H9), Margrave Konietzko (Rg2 Gn7 H6) |
-| 🟪 **J3** | Umbral Wardens | Fade-To-Black (Rg4 Gn8 H5), Cernonous (Rg1 Gn7 H2), Modi Votishal (Rg2 Gn10 H6), Fomori Cop (Rg5 Gn2 H4) |
+**643 (Passos da Morte) vs 619 (Fúria e Sabedoria) vs 629 (Umbral Wardens)**
+*Teste da regra 2.2.4: stepping sideways exige Caern no pack.*
 
 ---
 
-## 🔵 Turno 1 — Escaramuças
+## 📋 Observação Principal
+
+Nenhum dos três decks **comprou Caern na mão inicial** nesta seed.
+Com a correção da regra 2.2.4 (`pode_step_sideways` retorna `False` se
+`caern is None`), **ninguém entrou na Umbra** — comportamento correto.
+
+Para ver a estratégia de Umbra em ação: rode seed 2 (J3 começa com
+Sky River Caern na mão e o joga prioritariamente).
+
+---
+
+## ⚔️ Turno 1 — Big Fisher vs Fomori Cop
 
 ### 🔄 Redraw
-- **Margrave Konietzko** (J2) envia uma vítima ao Wyrm → +1 VP 🟨
-- **Fade-To-Black** (J3) concede +2 Gnosis para step sideways 🟪
-- **Stalks Death** (J1) regenera 4 de dano (5/5) 🟦
+- Margrave Konietzko (J2): Wyrm ganha +1 VP por vítima
+- Fade-To-Black (J3): +2 Gnosis para step sideways/combat
 
 ### 🎴 Resource
-- **Cernonous** (J3) usa Gnosis -1 para ativar efeito permanente (Mass Pollution)
-- **Visit from White Father** (J1) compra carta de sept, +1 Rage em Allya
-- **Inspiration** (J1) dá +1 Rage/Gnosis para o round
-- **Grand Klaive** equipado em **Buries the Dead** (Gn4 pago) → dano agravado ✅
-- Stalks Death (J1), Margrave Konietzko (J2) e Fade-To-Black (J3) entram na Umbra
+- **J2**: Excitable Good Ol' Boy no HG; Iron Will; Mass Pollution (-1 Gnosis em Cernonous)
+- **J3**: Fomori Cop no HG; Iron Will; Umbral Wave
+- **J1**: The Naysayer's Hovel; Visit from White Father; Inspiration (+1 Rage/Gnosis)
 
-### ⚔️ Combate
+### ⚔️ Combate Alpha: Big Fisher (J2) → Fomori Cop (J3)
+```
+🛡️ Fomori Cop bloqueia! Redução 5 ≥ dano 5 → 0 de dano
+🐟 Big Fisher sobrevive
+```
 
-**⚡ Big Fisher (J2) vs Fomori Cop (J3)**
-- 🐟 Big Fisher ataca Fomori Cop no Hunting Grounds
-- 🛡️ Fomori Cop **bloqueia**: redução 5 ≥ dano 5 → **zero dano!**
-- 🎯 Cernonous (J3) ataca Big Fisher em contra-ataque
-- Cernonous (Rg1 + efeitos) vs Big Fisher (Rg8)
-- Ambos declaram ofensivo... **Cernonous vence!**
-  ```
-  💀 [T1 COMBAT] Big Fisher foi destruído!
-  Jogador 3 (Deck 629) ganhou 10 VP (total: 10)
-  ```
-  🟪 **Umbral Wardens assume a liderança!** Big Fisher, o maior carry de J2, cai no primeiro combate.
+**Margrave Konietzko ataca Cernonous** — mas Cernonous revida e:
+```
+💀 [T1 COMBAT] Big Fisher destruído! J3 +10 VP (total: 10)
+```
 
 ---
 
-## 🟢 Turno 2 — O Pêndulo Balança
-
-### 🔄 Redraw
-- Margrave Konietzko (J2) e Modi Votishal (J3) descem da Umbra
-- Ambas as mãos de combate são reabastecidas
-
-### 🎴 Resource
-- **J2**: Flak Jacket em Iron Will; **Sneak Attack** em Buries the Dead:
-  ```
-  💀 [T2 RESOURCE] Buries the Dead foi destruído e removido do jogo!
-  ```
-  🟨 J2 elimina Buries the Dead com Sneak Attack (ataque durante Resource).
-
-- **J3**: Skin of the Hellbound em Modi Votishal (+1 Rage, imune a Rage 6+); Chimera ativado
-- **J1**: Dead Zone; Catfeet (Allya esquiva de todos ataques)
-- Ambos os lados usam **Friends in High Places** para encerrar combates pendentes
-
-### ⚔️ Combate — Retaliação e Morte Dupla
-
-**Margrave Konietzko (J2) vs Fomori Cop (J3)**
-- 🎯 Margrave → Fomori Cop, Fomori Cop → Margrave
-- ```
-  💀 [T2 COMBAT] Fomori Cop foi destruído!
-  Jogador 2 (Deck 619) ganhou 5 VP (total: 5)
-  ```
-  🟨 Vingança! Mas a que custo?
-
-**Stalks Death (J1) vs Fade-To-Black (J3) ⚔️💥**
-- Ambos os campeões trocam golpes fatais simultaneamente:
-  ```
-  💀 [T2 COMBAT] Fade-To-Black foi destruído!
-  Jogador 1 (Deck 643) ganhou 5 VP (total: 5)
-
-  💀 [T2 COMBAT] Stalks Death foi destruído!
-  Jogador 3 (Deck 629) ganhou 9 VP (total: 19)
-  ```
-  💥 **Mútuo destruição!** Nenhum sobrevive.
-
-**Eliminação 🟦**
-```
-💀 Jogador 1 (Deck 643) foi eliminado! (sem Characters em jogo)
-```
-Passos da Morte perde todos os seus personagens.
-
----
-
-## 🔴 Turno 3 — Fim de Jogo
+## 🔥 Turno 2 — O Massacre
 
 ### 💚 Regeneração
-- Margrave Konietzko regenera (1/6)
+- Margrave e Cernonous regeneram dano do turno anterior
 
 ### 🎴 Resource
-- **Close Gauntlet** (J3): prende Skin of the Hellbound, impede fuga 🌐
-- **Mass Pollution** (J2): +2 Rage
-- Modi Votishal e Margrave Konietzko entram na Umbra
+- **J2**: Flak Jacket em Margrave; **Sneak Attack** em Buries the Dead (💀)
+- **J3**: Skin of the Hellbound; Flak Jacket em Modi Votishal; Chimera
+- **J1**: Dead Zone; Catfeet (Allya esquiva); Blur of the Milky Eye
 
-### ⚔️ Combate Final
+### ⚔️ Múltiplos Combates
 
-**Modi Votishal (J3, Rg2 Gn10 H6) vs Excitable Good Ol' Boy (J2, Rg3 H3)**
-- Modi ataca, Good Ol' Boy bloqueia (redução 4)
-- Mas não resiste ao dano sustentado:
-  ```
-  💀 [T3 COMBAT] Excitable Good Ol' Boy foi destruído!
-  Jogador 3 (Deck 629) ganhou 5 VP (total: 24)
-  ```
+**Margrave (J2) → Fomori Cop (J3)**
+```
+💀 Fomori Cop destruído! J2 +5 VP (total: 5)
+```
+
+**Fade-To-Black (J3) → Stalks Death (J1)** + **Stalks Death → Fade**
+```
+💀 Stalks Death destruído! J3 +9 VP (total: 19)
+```
+
+**Allya Sun-Follower (J1) → Margrave (J2)**
+```
+💀 Margrave destruído! J1 +10 VP (total: 10)
+💀 Allya destruída! J2 +5 VP (total: 10)
+```
 
 ---
 
-## 🏆 Resultado Final
+## 🏆 Resultado
 
 ```
-🏆 Jogador 3 (Deck 629) — Umbral Wardens — VENCEU! (24/20 VP)
+💀 Jogador 1 eliminado! (sem Characters)
+💀 Jogador 2 eliminado! (sem Characters)
+🏆 Jogador 3 (Deck 629) VENCEU!
 ```
 
-| Jogador | Deck | Pontos | Colocado |
-|---|---|---|---|
-| 🟪 **J3** | Umbral Wardens | **24 VP** | 🥇 |
-| 🟨 J2 | Fúria e Sabedoria | 5 VP | 🥈 |
-| 🟦 J1 | Passos da Morte | 5 VP | Eliminado T2 |
+| Jogador | Deck | VP |
+|---|---|---|
+| 🟪 J3 | Umbral Wardens | 19+ |
+| 🟨 J2 | Fúria e Sabedoria | 10 |
+| 🟦 J1 | Passos da Morte | 10 |
 
-## 📊 Análise
+### Mecânicas Verificadas
 
-### ✅ Correção Aplicada
-Todos os combates agora resolvem na fase **COMBATE**, não mais no REDRAW seguinte:
-- `[T1 COMBAT]` Big Fisher destruído ✅ *(antes: T2 REDRAW)*
-- `[T2 COMBAT]` Fomori Cop, Fade-To-Black, Stalks Death ✅ *(antes: T3 REDRAW)*
-- `[T3 COMBAT]` Excitable Good Ol' Boy ✅
-
-### Momentos Decisivos
-
-| Momento | Impacto |
+| Mecânica | Status |
 |---|---|
-| **T1 — Cernonous vs Big Fisher** | Cernonous mata Big Fisher de virada. J3 assume liderança com 10 VP |
-| **T2 — Stalks vs Fade-To-Black** | Mútuo destruição troca 14 VP, elimina J1 do jogo |
-| **T2 — Margrave vs Fomori Cop** | Fomori Cop vingado, mas J2 mal consegue reagir |
-
-### Mecânicas Observadas
-
-- ✅ **Block** — Fomori Cop bloqueia Big Fisher com sucesso (redução 5)
-- ✅ **Sneak Attack** — Carta usada fora do combate para eliminar personagem
-- ✅ **Friends in High Places** — Encerra combate como Evento
-- ✅ **Close Gauntlet** — Prende personagens na Umbra
-- ✅ **Crinos Flip** — Verificado após dano acumulado
-- ✅ **Eliminação** — Jogador sem personagens é removido
+| ✅ Combates resolvem no COMBATE (não sangram pro REDRAW) | OK |
+| ✅ Passar a vez durante combate não avança a fase | OK |
+| ✅ Sem Caern → ninguém step (regra 2.2.4) | OK |
+| ✅ Block funciona (Fomori Cop) | OK |
+| ✅ Sneak Attack (mata durante Resource) | OK |
