@@ -192,17 +192,25 @@ def run_match(seed: int = 42, max_turns: int = 30,
         print(f'  (max-steps: {max_steps})')
     _log_fase(game, last_turn, last_phase)
 
+    # Estado de alphas (salvo porque end_combat reseta CombatState)
+    _alpha_order = []       # Lista de card_ids em ordem
+    _alpha_index = 0        # Indice do alpha atual
+    _alpha_map = {}         # card_id -> player_id
+    _alpha_phase = False    # True = ainda processando alpha actions
+
     while step < max_steps:
-        # ── Alpha actions (seguem ordem de Renome, nao current_player) ──
-        if game.phase == 'combat' and game.combat.alpha_order:
-            if game.combat.current_alpha_index < len(game.combat.alpha_order):
-                cid_atual = game.combat.current_alpha
-                # Encontra o jogador dono deste alpha
-                dono_id = None
-                for pid, cid in game.combat.alphas.items():
-                    if cid == cid_atual:
-                        dono_id = pid
-                        break
+        # ── Inicio da Combat Phase: salvar alphas e entrar em modo alpha ──
+        if game.phase == 'combat' and game.combat.alpha_order and not _alpha_order:
+            _alpha_order = list(game.combat.alpha_order)
+            _alpha_index = 0
+            _alpha_map = {cid: pid for pid, cid in game.combat.alphas.items()}
+            _alpha_phase = True
+
+        # ── Direcionar para alpha atual (se em modo alpha e combate inativo) ──
+        if _alpha_phase and _alpha_order and _alpha_index < len(_alpha_order):
+            if not game.combat.is_active:
+                cid_atual = _alpha_order[_alpha_index]
+                dono_id = _alpha_map.get(cid_atual)
                 if dono_id:
                     cp = next(p for p in game.players if p.id == dono_id)
                     game.current_player_index = game.players.index(cp)
@@ -211,6 +219,7 @@ def run_match(seed: int = 42, max_turns: int = 30,
             else:
                 cp = game.current_player
         else:
+            _alpha_phase = False
             cp = game.current_player
 
         bot = bots[cp.id]
@@ -220,11 +229,22 @@ def run_match(seed: int = 42, max_turns: int = 30,
         action = bot.decide()
         action_count += 1
 
+        # Avancar alpha index quando o alpha age (qualquer acao)
+        if _alpha_phase and action and not action.startswith('wait') and not action.startswith('pass'):
+            _alpha_index += 1
+
         # Detecta progresso: turno ou fase mudou
         if game.turn_number != last_turn or game.phase != last_phase:
             stale_steps = 0
+            # Resetar alphas ao mudar de fase
+            if game.phase != 'combat':
+                _alpha_order.clear()
+                _alpha_index = 0
+                _alpha_map.clear()
+                _alpha_phase = False
         else:
             stale_steps += 1
+        last_phase = game.phase
 
         # Se 200 steps sem mudanca de turno/fase, algo travou
         if stale_steps > 200:

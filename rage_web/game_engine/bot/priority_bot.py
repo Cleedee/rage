@@ -577,6 +577,10 @@ class PriorityBot:
             g.combat.current_alpha_index += 1
 
         # ── RESTO DO COMBATE (cartas, eliminar, atacar) ──
+        # Se o combate esta ativo, declarar acoes de combate
+        if g.combat.is_active:
+            return self._decide_combat()
+
         # Acoes de ataque/eliminar sempre sao permitidas (sem limite).
         # So jogar cartas da mao tem limite de 3 por turno.
 
@@ -876,6 +880,10 @@ class PriorityBot:
                 # Busca a carta em TODAS as zonas (incluindo HG)
                 card = _find_card(g, cid)
                 if card:
+                    # So declara por personagens do PROPRIO bot
+                    # (nao declara por personagens de outros jogadores)
+                    if card.owner_id != self.player_id:
+                        continue
                     # Se for uma Presa e o bot for o atacante,
                     # nao pode declarar por ela (regra 4.4.2).
                     # A auto-declaracao em reveal_all() cuida do default.
@@ -891,6 +899,9 @@ class PriorityBot:
                 for p in g.players:
                     for c in p.pack_home:
                         if str(c.card_id) == cid:
+                            # So declara por personagens do PROPRIO bot
+                            if c.owner_id != self.player_id:
+                                continue
                             action = self._choose_combat_action(c, c.owner_id)
                             declare_action(g, cid, action)
                             return f'declare_{cid}_{action}'
@@ -914,6 +925,9 @@ class PriorityBot:
                 reveal_all(g)
                 return 'reveal'
 
+            # Nenhum combatente do bot precisa declarar
+            # Passar a vez para o proximo jogador
+            self._pass_turn()
             return 'combat_wait'
 
         elif g.combat.step == 'reveal':

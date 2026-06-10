@@ -7,7 +7,7 @@
       "descricao": "Prender personagem",
       "efeitos": [
         {
-          "tipo": "tapar",
+          "tipo": "restricao",
           "condicao_alvo": "criatura_inimiga"
         }
       ]
