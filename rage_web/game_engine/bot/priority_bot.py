@@ -47,6 +47,8 @@ class PriorityBot:
         # Slow deck detection
         self._vp_history: list[float] = []  # VP total ao final de cada turno
         self._vp_rate: float = 0.0  # VP/turn medio
+        # Ataques por fase de combate
+        self._ataques_feitos: set[str] = set()
 
     @property
     def player(self) -> PlayerState:
@@ -95,6 +97,9 @@ class PriorityBot:
             self._cards_played_this_turn = 0
             self._last_turn_heuristic = g.turn_number
             self._umbra_agiu = False
+        # Reseta ataques quando sai da fase de combate
+        if g.phase != 'combat':
+            self._ataques_feitos.clear()
 
         # --- Acoes por fase ---
 
@@ -733,6 +738,9 @@ class PriorityBot:
 
         from rage_web.game_engine.combat_queue import start_combat
 
+        # Marca que este alpha vai atacar (evita loop infinito)
+        self._ataques_feitos.add(meu_alpha_id)
+
         # Avalia se estrategicamente e melhor atacar Presa agora
         alvo_hg = self._melhor_alvo_hg()
         deve_atacar_presa = self._deve_atacar_presa_estrategicamente(
@@ -936,7 +944,19 @@ class PriorityBot:
                     if ce_jogado:
                         return ce_jogado
                     action = self._choose_combat_action(card, card.owner_id)
-                    declare_action(g, cid, action)
+                    result = declare_action(g, cid, action)
+                    if not result:
+                        # Fallback: tenta acoes mais seguras
+                        for fallback in ('strike', 'claw', 'bite', 'block', 'dodge'):
+                            if fallback in COMBAT_ACTIONS:
+                                result = declare_action(g, cid, fallback)
+                                if result:
+                                    action = fallback
+                                    break
+                    if not result:
+                        # Ainda falhou: passa a vez
+                        self._pass_turn()
+                        return 'combat_wait'
                     return f'play_{cid}_{action}'
 
             # Todos os combatentes do bot jogaram
@@ -1227,7 +1247,17 @@ class PriorityBot:
                                 g, cid, str(ce_card.card_id)):
                             return f'play_{cid}_ce_{ce_card.card_id}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
-                    declare_action(g, cid, action)
+                    result = declare_action(g, cid, action)
+                    if not result:
+                        for fallback in ('strike', 'claw', 'bite', 'block', 'dodge'):
+                            if fallback in COMBAT_ACTIONS:
+                                result = declare_action(g, cid, fallback)
+                                if result:
+                                    action = fallback
+                                    break
+                    if not result:
+                        self._pass_turn()
+                        return 'combat_wait'
                     return f'play_{cid}_{action}'
             g.combat.step = 'targeting'
             return 'combat_progress'
@@ -1396,9 +1426,16 @@ class PriorityBot:
 
         Regra: apenas Characters e Allies podem entrar em combate.
         Equipment, Gift, Event, Action, Territory, Caern, etc. nao.
+        Cada criatura so pode atacar uma vez por fase de combate.
         """
         ct = (card.card_type or '').lower()
-        return 'character' in ct or 'ally' in ct
+        if 'character' not in ct and 'ally' not in ct:
+            return False
+        # Verifica se ja atacou nesta fase de combate
+        if hasattr(self, '_ataques_feitos'):
+            if str(card.card_id) in self._ataques_feitos:
+                return False
+        return True
 
     def _melhor_alvo_hg(self) -> Optional[CardInstance]:
         """Encontra o melhor alvo no Hunting Grounds considerando alinhamento.
@@ -1913,6 +1950,19 @@ class PriorityBot:
             req = props.get('rage_requirement', 0)
             if card.effective_rage < req:
                 continue  # Nao atende requisito de Rage
+            # Verifica validadores especificos (ex: Tail Lash so Rokea/Mokole)
+            from rage_web.game_engine.combat_queue import COMBAT_ACTION_VALIDATORS
+            validators = COMBAT_ACTION_VALIDATORS.get(acao, [])
+            if validators:
+                # Pula acao se algum validador rejeitar
+                rejeitada = False
+                for validador in validators:
+                    erro = validador(self.game, card)
+                    if erro:
+                        rejeitada = True
+                        break
+                if rejeitada:
+                    continue
 
             # Calcula dano esperado
             acao_dano = props.get('damage')
@@ -2129,6 +2179,7 @@ class PriorityBot:
     def _attack(self, attacker_id: str, defender_id: str):
         """Inicia combate entre atacante e defensor."""
         start_combat(self.game, [attacker_id], [defender_id])
+        self._ataques_feitos.add(attacker_id)
         self.game.add_log(
             f'[BOT] {self.player.name} atacou {defender_id} com {attacker_id}')
 
