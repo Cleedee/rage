@@ -39,7 +39,6 @@ def _card_for_template(card) -> dict:
         'health': card.health,
         'health_current': card.health_current,
         'renown': card.renown,
-        'is_tapped': card.is_tapped,
         'image_url': get_card_image_url_by_id(card.card_id),
         'keywords': card.keywords,
         'text': card.text,

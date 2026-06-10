@@ -1088,6 +1088,7 @@ def resolve_combat(game: GameState) -> bool:
                     keywords = (origem_card.keywords or '').lower()
                     if 'mokole' not in keywords:
                         anexar_dano(origem_card, origem_card, 4, dono_dono)
+                        _flipar_para_crinos(game, origem_card)
                         game.add_log(
                             f'  Head Butt esquivado! {origem_card.name} '
                             f'recebe 4 de dano de volta'
@@ -1106,6 +1107,7 @@ def resolve_combat(game: GameState) -> bool:
                     keywords = (origem_card.keywords or '').lower()
                     if 'mokole' not in keywords:
                         anexar_dano(origem_card, origem_card, 4, dono_dono)
+                        _flipar_para_crinos(game, origem_card)
                         game.add_log(
                             f'  Head Butt bloqueado! {origem_card.name} '
                             f'recebe 4 de dano de volta'
@@ -1218,6 +1220,11 @@ def resolve_combat(game: GameState) -> bool:
                      f'{alvo_card.name} '
                      f'({alvo_card.health_current}/{alvo_card.health})')
 
+        # Flip para Crinos: verifica threshold a cada dano aplicado
+        # (regra: dano acumulado >= min(rage, health) da forma breed)
+        if dano > 0:
+            _flipar_para_crinos(game, alvo_card)
+
         # Retirada do combate (Anatomy Lesson: criatura ferida deve retirar)
         if retira_se_ferido and alvo_card.health_current < alvo_card.health:
             if _retirar_do_combate(game, alvo_card):
@@ -1261,10 +1268,6 @@ def resolve_combat(game: GameState) -> bool:
                     f'  Submission Hold! {alvo_card.name} (frenzied) '
                     f'nao podera esquivar na proxima rodada.'
                 )
-
-        # Tenta flipar para Crinos antes de morrer (regra 14-ritos-moots)
-        if alvo_card.health_current <= 0:
-            _flipar_para_crinos(game, alvo_card)
 
         # Morte (usa _processar_morte para logica unificada)
         if alvo_card.health_current <= 0:
@@ -1752,7 +1755,6 @@ def _check_caern_snow_leopard(game: GameState, alvo: CardInstance,
     alvo.zone = Zone.PACK_HOME
     alvo.zone_original = Zone.PACK_HOME
     alvo.health_current = alvo.health
-    alvo.is_tapped = True  # Chega tapped (exausto)
     alvo.attached_damage.clear()
     alvo.attached_equipment.clear()
     dono.pack_home.append(alvo)

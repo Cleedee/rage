@@ -111,7 +111,7 @@ class CardInstance:
     requires: str = ''
     text: str = ''
     keywords: str = ''
-    is_tapped: bool = False
+    is_tapped: bool = False  # @DEPRECATED: nao usado no Rage CCG oficial
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
     modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
@@ -473,31 +473,28 @@ class PlayerState:
         return logs
 
     def pagar_custo_rage(self, custo: int) -> Optional[str]:
-        """Paga um custo de Rage tappando um personagem."""
+        """Paga um custo de Rage usando um personagem.
+
+        Regra Rage CCG: personagens pagam custos de Rage/Gnosis
+        sem ficar 'tapped'. A limitacao e que cada personagem so
+        pode pagar um custo por turno, controlado pela stat.
+        """
         from rage_web.game_engine.rules import encontrar_pagador_rage
         pagador = encontrar_pagador_rage(self, custo)
         if pagador:
-            pagador.is_tapped = True
             return pagador.name
         return None
 
     def pagar_custo_gnosis(self, custo: int) -> Optional[str]:
-        """Paga um custo de Gnosis tappando um personagem.
+        """Paga um custo de Gnosis usando um personagem.
 
-        Regra (2.2.5):
-        - Personagem com Gnosis >= custo e selecionado.
-        - Tapped enquanto durar o efeito.
-
-        Args:
-            custo: Custo de Gnosis a pagar.
-
-        Returns:
-            Nome do personagem que pagou, ou None se nao pode pagar.
+        Regra Rage CCG: personagens pagam custos de Rage/Gnosis
+        sem ficar 'tapped'. A limitacao e que cada personagem so
+        pode pagar um custo por turno, controlado pela stat.
         """
         from rage_web.game_engine.rules import encontrar_pagador_gnosis
         pagador = encontrar_pagador_gnosis(self, custo)
         if pagador:
-            pagador.is_tapped = True
             return pagador.name
         return None
 
@@ -773,11 +770,6 @@ class GameState:
                     drawn = p.redraw_combat()
                     if drawn:
                         self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de combate')
-                # Untap todas as criaturas
-                for p in self.players:
-                    for c in p.pack_home:
-                        if c.is_tapped:
-                            c.is_tapped = False
                 # Selecao de alfas (automática para bots/jogador unico)
                 from rage_web.game_engine.combat_queue import selecionar_alfa, calcular_ordem_alfa
                 for p in self.players:
@@ -1079,6 +1071,9 @@ class GameState:
                 )
                 anexar_dano(alvo, vitima, dano_base, dono_alvo.id,
                             is_aggravated=agravado)
+                # Flip para Crinos se threshold atingido
+                from rage_web.game_engine.combat_queue import _flipar_para_crinos
+                _flipar_para_crinos(self, alvo)
 
                 if alvo.health_current <= 0:
                     _remove_creature(self, alvo)

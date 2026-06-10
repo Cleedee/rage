@@ -92,8 +92,7 @@ def _formatar_zona(cartas: list) -> list[dict]:
             'nome': nome,
             'tipo': tipo,
             'vida': vida,
-            'tapada': c.is_tapped,
-            'display': f"{nome} ({vida}){' 🔒' if c.is_tapped else ''}",
+            'display': f"{nome} ({vida})",
         })
     return resultado
 

@@ -44,7 +44,6 @@ def _serialize_card(card) -> dict:
         'health': card.health,
         'health_current': card.health_current,
         'renown': card.renown,
-        'is_tapped': card.is_tapped,
         'is_face_down': card.is_face_down,
     }
 

@@ -724,7 +724,7 @@ class PriorityBot:
                 alpha_card = c
                 break
 
-        if not alpha_card or alpha_card.is_tapped:
+        if not alpha_card:
             return None
         if not self._pode_atacar(alpha_card):
             return None
@@ -740,7 +740,6 @@ class PriorityBot:
             # Ataca Presa direto (pula inimigos)
             start_combat(self.game, [meu_alpha_id],
                          [str(alvo_hg.card_id)])
-            alpha_card.is_tapped = True
             self.game.add_log(
                 f'[BOT] Alpha {alpha_card.name} atacou '
                 f'{alvo_hg.name} no Hunting Grounds (estrategico)')
@@ -768,7 +767,6 @@ class PriorityBot:
                                                        alpha_inimigo)):
                 start_combat(self.game, [meu_alpha_id],
                              [str(alpha_inimigo.card_id)])
-                alpha_card.is_tapped = True
                 self.game.add_log(
                     f'[BOT] Alpha {alpha_card.name} atacou alpha '
                     f'{alpha_inimigo.name} ({opp.name})')
@@ -790,7 +788,6 @@ class PriorityBot:
                 if self.prioritizer.pode_eliminar(alpha_card, alvo):
                     start_combat(self.game, [meu_alpha_id],
                                  [str(alvo.card_id)])
-                    alpha_card.is_tapped = True
                     self.game.add_log(
                         f'[BOT] Alpha {alpha_card.name} atacou '
                         f'{alvo.name}')
@@ -803,7 +800,6 @@ class PriorityBot:
                 if 'territory' in ct or 'realm' in ct:
                     start_combat(self.game, [meu_alpha_id],
                                  [str(c.card_id)])
-                    alpha_card.is_tapped = True
                     self.game.add_log(
                         f'[BOT] Alpha {alpha_card.name} atacou '
                         f'Territory {c.name} ({opp.name})')
@@ -812,7 +808,6 @@ class PriorityBot:
         # 4. Fallback: ataca Presa no Hunting Grounds
         if alvo_hg:
             start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
-            alpha_card.is_tapped = True
             self.game.add_log(
                 f'[BOT] Alpha {alpha_card.name} atacou '
                 '{alvo_hg.name} no Hunting Grounds')
@@ -849,10 +844,6 @@ class PriorityBot:
             if meu_alpha_id and alvo_hg:
                 start_combat(self.game, [meu_alpha_id],
                              [str(alvo_hg.card_id)])
-                for c in self.player.pack_home:
-                    if str(c.card_id) == meu_alpha_id:
-                        c.is_tapped = True
-                        break
                 return f'attack_{meu_alpha_id}'
         elif choice == 'draw':
             self._draw()
@@ -1151,14 +1142,14 @@ class PriorityBot:
         # Rage
         custo_rage = parse_custo_rage(card.damage)
         if custo_rage is not None and custo_rage > 0:
-            tem_rage = any(not c.is_tapped and c.rage >= custo_rage
+            tem_rage = any(c.rage >= custo_rage
                           for c in self.player.pack_home)
             if not tem_rage:
                 return False
         # Gnosis (apenas para equipamentos Fetish, nao Caern)
         # Caern.gnosis = Gauntlet rating, nao custo
         if card.card_type != 'Caern' and card.gnosis and card.gnosis > 0:
-            tem_gnosis = any(not c.is_tapped and c.gnosis >= card.gnosis
+            tem_gnosis = any(c.gnosis >= card.gnosis
                             for c in self.player.pack_home)
             if not tem_gnosis:
                 return False
@@ -1349,8 +1340,8 @@ class PriorityBot:
         if not me.pack_home:
             return None
 
-        available = [c for c in me.pack_home if not c.is_tapped
-                     and self._pode_atacar(c)]
+        available = [c for c in me.pack_home
+                     if self._pode_atacar(c)]
         if not available:
             return None
 
@@ -1600,8 +1591,8 @@ class PriorityBot:
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
 
-        available = [c for c in me.pack_home if not c.is_tapped
-                     and self._pode_atacar(c)]
+        available = [c for c in me.pack_home
+                     if self._pode_atacar(c)]
         if not available:
             return None
 
@@ -1801,13 +1792,8 @@ class PriorityBot:
             f'{card.name}, deixou no pack')
 
     def _attack(self, attacker_id: str, defender_id: str):
-        """Inicia combate e tapa a criatura atacante."""
+        """Inicia combate entre atacante e defensor."""
         start_combat(self.game, [attacker_id], [defender_id])
-        # Tapa a criatura (nao pode atacar de novo neste turno)
-        for c in self.player.pack_home:
-            if str(c.card_id) == attacker_id:
-                c.is_tapped = True
-                break
         self.game.add_log(
             f'[BOT] {self.player.name} atacou {defender_id} com {attacker_id}')
 

@@ -256,14 +256,13 @@ class RageCLI(cmd.Cmd):
             if p.pack_home:
                 print(f'│ 🏠 Pack Home ({len(p.pack_home)}):')
                 for c in p.pack_home:
-                    tap = '🔒' if c.is_tapped else '  '
                     hp = f'{c.health_current}/{c.health}'
                     mods = ''
                     if c.modelo_id:
                         mods += ' ✨'
                     if c.rage or c.gnosis:
                         mods += f' R:{c.rage} G:{c.gnosis}'
-                    print(f'│   {tap} [{c.card_id:4d}] {c.name:28s} '
+                    print(f'│   [{c.card_id:4d}] {c.name:28s} '
                           f'❤️{hp:5s}{mods}')
             else:
                 print(f'│ 🏠 Pack Home: (vazio)')

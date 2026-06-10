@@ -148,10 +148,12 @@ class TestResolvedorEfeitos:
         assert len(p.hand) == antes + 2
         assert len(p.deck_combat) == deck_antes - 2
 
-    def test_tapar_criatura(self, game, resolvedor):
-        """Tapar marca criatura como tapped."""
+    def test_modificar_rage_criatura(self, game, resolvedor):
+        """Modificar Rage altera o valor da criatura."""
         criatura = game.players[0].pack_home[0]
-        efeito = Efeito(tipo=EfeitoTipo.TAPAR,
+        rage_antes = criatura.rage
+        efeito = Efeito(tipo=EfeitoTipo.MODIFICAR_RAGE,
+                        quantidade=2,
                         condicao='criatura_aliada')
         origem = CardInstance(card_id=-1, name='Teste', card_type='Event',
                               zone=Zone.OUT_OF_PLAY, owner_id='p1',
@@ -159,7 +161,7 @@ class TestResolvedorEfeitos:
 
         resultado = resolvedor.aplicar_efeito(efeito, origem, game.players[0])
         assert resultado
-        assert criatura.is_tapped
+        assert criatura.rage == rage_antes + 2
 
     def test_ganhar_vp(self, game, resolvedor):
         """Ganhar VP incrementa contador."""

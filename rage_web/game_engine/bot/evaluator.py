@@ -53,8 +53,6 @@ class TargetPrioritizer:
         saude = (card.health_current / max(card.health, 1))
         score += saude * 10.0 * self.PESOS_THREAT['saude']
 
-        if not card.is_tapped:
-            score += 10.0 * self.PESOS_THREAT['pode_agir']
 
         renown_norm = min(card.renown / 6.0, 1.0) * 10.0 * self.PESOS_THREAT['renown']
         score += renown_norm

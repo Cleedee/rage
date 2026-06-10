@@ -50,8 +50,6 @@ class EfeitoTipo(str, Enum):
     DESTRUIR = 'destruir'
     DESCARTE = 'descarte'
     COMPRAR = 'comprar'
-    TAPAR = 'tapar'
-    DESTAPAR = 'destapar'
     MODIFICAR_RAGE = 'modificar_rage'
     MODIFICAR_GNOSIS = 'modificar_gnosis'
     MODIFICAR_VIDA = 'modificar_vida'
@@ -236,8 +234,6 @@ class ResolvedorEfeitos:
             EfeitoTipo.DESTRUIR: self._resolver_destruir,
             EfeitoTipo.DESCARTE: self._resolver_descarte,
             EfeitoTipo.COMPRAR: self._resolver_comprar,
-            EfeitoTipo.TAPAR: self._resolver_tapar,
-            EfeitoTipo.DESTAPAR: self._resolver_destapar,
             EfeitoTipo.MODIFICAR_RAGE: self._resolver_modificar_rage,
             EfeitoTipo.MODIFICAR_GNOSIS: self._resolver_modificar_gnosis,
             EfeitoTipo.MODIFICAR_VIDA: self._resolver_modificar_vida,
@@ -747,24 +743,6 @@ class ResolvedorEfeitos:
                 f'para ter {qtd_alvo} na mao'
             )
         return True
-
-    def _resolver_tapar(self, efeito: Efeito, origem: CardInstance,
-                       jogador: PlayerState, alvo) -> bool:
-        """Tapa uma criatura."""
-        if isinstance(alvo, CardInstance):
-            alvo.is_tapped = True
-            self.game.add_log(f'{alvo.name} foi tapado')
-            return True
-        return False
-
-    def _resolver_destapar(self, efeito: Efeito, origem: CardInstance,
-                          jogador: PlayerState, alvo) -> bool:
-        """Destapa uma criatura."""
-        if isinstance(alvo, CardInstance):
-            alvo.is_tapped = False
-            self.game.add_log(f'{alvo.name} foi destapado')
-            return True
-        return False
 
     def _resolver_modificar_rage(self, efeito: Efeito, origem: CardInstance,
                                 jogador: PlayerState, alvo) -> bool:

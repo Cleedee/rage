@@ -59,7 +59,7 @@ def print_board(game: GameState):
     print(f'  ═══ Turno {game.turn_number} {icone} {game.phase.upper()} ═══')
     for p in game.players:
         pack = ', '.join(
-            f'{c.name}({c.health_current}/{c.health}{"🔒" if c.is_tapped else ""})'
+            f'{c.name}({c.health_current}/{c.health})'
             for c in p.pack_home
         ) or '—'
         hand = len(p.hand)
