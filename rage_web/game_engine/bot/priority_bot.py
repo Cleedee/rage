@@ -1895,9 +1895,9 @@ class PriorityBot:
         for alvo in ameacas:
             atacante = self.prioritizer.best_attacker_for(alvo, available)
             if atacante:
-                pode = self.prioritizer.pode_eliminar(atacante, alvo)
-                # Deck lento: ataca mesmo sem garantia de eliminar
-                if pode or (lento and atacante.rage >= alvo.rage * 0.5):
+                pode = self.prioritizer.pode_eliminar(atacante, alvo,
+                                                       modo_lento=lento)
+                if pode:
                     self._attack(str(atacante.card_id), str(alvo.card_id))
                     return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
 
@@ -2170,8 +2170,8 @@ class PriorityBot:
             for alvo in ameacas:
                 atacante = self.prioritizer.best_attacker_for(alvo, available)
                 if atacante:
-                    if self.prioritizer.pode_eliminar(atacante, alvo) or (
-                            lento and atacante.rage >= alvo.rage * 0.5):
+                    if self.prioritizer.pode_eliminar(atacante, alvo,
+                                                       modo_lento=lento):
                         self._attack(str(atacante.card_id), str(alvo.card_id))
                         return (f'eliminate_{atacante.card_id}'
                                 f'_vs_{alvo.card_id}')

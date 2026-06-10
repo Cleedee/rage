@@ -86,15 +86,79 @@ class TargetPrioritizer:
                       if c.rage >= rage_necessario * 0.7]
         if not candidatos:
             return None
-        return min(candidatos, key=lambda c: abs(c.rage - rage_necessario))
+        # Entre os candidatos, prefere o que minimiza dano reciproco
+        # (melhor relacao ataque/defesa)
+        def _score(c):
+            dano_recebido = max(0, alvo.effective_rage - (c.reducao_dano or 0))
+            sobrevive = (c.health_current or c.health) > dano_recebido
+            eficiencia = c.rage / max(alvo.health_current or alvo.health, 1)
+            return eficiencia + (10 if sobrevive else 0)
+        return max(candidatos, key=_score)
 
     def pode_eliminar(self, atacante: CardInstance,
-                      alvo: CardInstance) -> bool:
-        """Verifica se atacante tem chance real contra o alvo."""
+                      alvo: CardInstance,
+                      modo_lento: bool = False) -> bool:
+        """Verifica se atacante tem chance real contra o alvo.
+
+        P3: Nao atacar criatura que vai matar o atacante de volta.
+        Avalia:
+        1. Rage suficiente (>= 70% do alvo, ou >= 50% se modo_lento)
+        2. Dano causado >= HP do alvo (pode matar)
+        3. Sobrevivencia: HP do atacante > dano reciproco
+        4. Risco de VP: nao sacrificar atacante valioso
+
+        Args:
+            atacante: CardInstance que ataca.
+            alvo: CardInstance alvo.
+            modo_lento: Se True, criterio de Rage relaxado
+                        para 50% (decks lentos e sem VP).
+        """
         if atacante.rage <= 0:
             return False
-        # Atacante precisa ter pelo menos 70% do Rage do alvo
-        return atacante.rage >= alvo.rage * 0.7
+
+        rage_ratio = atacante.rage / max(alvo.rage, 1)
+        hp_atacante = atacante.health_current or atacante.health
+        hp_alvo = alvo.health_current or alvo.health
+
+        # 1. Rage minimo: 70% do alvo (ou 50% se modo_lento)
+        limite_rage = 0.5 if modo_lento else 0.7
+        if rage_ratio < limite_rage:
+            return False
+
+        # 2. Dano que o atacante causa (Rage + equipamentos)
+        dano_atacante = atacante.effective_rage
+        for eq in (atacante.attached_equipment or []):
+            if hasattr(eq, 'damage') and eq.damage:
+                try:
+                    dano_atacante += int(eq.damage)
+                except (ValueError, TypeError):
+                    pass
+
+        # 3. Dano reciproco (Rage do alvo - reducao de dano do atacante)
+        dano_reciproco = max(1, alvo.effective_rage - (atacante.reducao_dano or 0))
+
+        # 4. Consegue matar o alvo?
+        consegue_matar = dano_atacante >= hp_alvo
+
+        # 5. Sobrevive ao contra-ataque?
+        sobrevive = hp_atacante > dano_reciproco
+
+        # Decisao final
+        if consegue_matar and sobrevive:
+            return True
+        if consegue_matar and not sobrevive:
+            # Sacrificio: so vale se alvo tem Renown maior
+            return alvo.renown > atacante.renown
+        if not consegue_matar and sobrevive:
+            # Nao mata mas sobrevive: ataque de desgaste
+            # So permite se atacante tem Rage >= alvo OU modo_lento
+            if modo_lento:
+                # Desgaste vale a pena mesmo com Rage menor
+                # se pelo menos tira > 0 HP (evita ataque 0/0)
+                return dano_atacante > 0
+            return rage_ratio >= 1.0 and alvo.health > 1
+
+        return False
 
 
 class BoardEvaluator:
