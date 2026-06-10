@@ -1786,9 +1786,12 @@ class PriorityBot:
                                 owner_id: str) -> str:
         """Escolhe a melhor acao de combate para uma criatura.
 
+        Considera dano de cada acao (COMBAT_ACTION_PROPS), requisito
+        de Rage, e condicao da criatura.
+
         Se for criatura do oponente, escolhe acao defensiva ou
         previsivel (block/dodge/strike). Se for do proprio bot,
-        escolhe acao ofensiva (strike/claw/bite).
+        escolhe a acao ofensiva de maior dano viavel.
         """
         me = self.player
 
@@ -1797,30 +1800,52 @@ class PriorityBot:
             if card.health_current < card.health * 0.4:
                 return 'dodge'
             if card.rage >= 3:
-                # Contra-ataca, mas usa BLOCK se atacante (o proprio bot)
-                # for muito mais forte. Block reduz dano pela rage do defensor.
                 max_atk_rage = 0
                 if me and me.pack_home:
                     max_atk_rage = max(c.rage for c in me.pack_home)
                 if max_atk_rage > card.rage * 1.5:
-                    return 'block'  # Block reduz dano!
+                    return 'block'
                 return 'strike'
             return 'block'
 
-        # Criatura propria: age de forma ofensiva
+        # Criatura propria: escolhe acao ofensiva de maior dano viavel
+        from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS
+
         opp = self._get_opponent()
-        if opp and opp.pack_home:
-            max_opp_rage = max(c.rage for c in opp.pack_home)
-            # So dodge se oponente MUITO mais forte (2x) E propria saude critica
+        melhor_acao = 'strike'
+        melhor_dano = -1
+
+        for acao in ('anatomy_lesson', 'head_butt', 'savage_beatdown',
+                     'tail_lash', 'submission_hold', 'strike', 'claw', 'bite'):
+            props = COMBAT_ACTION_PROPS.get(acao, {})
+            req = props.get('rage_requirement', 0)
+            if card.effective_rage < req:
+                continue  # Nao atende requisito de Rage
+
+            # Calcula dano esperado
+            acao_dano = props.get('damage')
+            if acao_dano is None:
+                acao_dano = card.effective_rage  # Fallback: Rage da criatura
+
+            # Bonus de Tail Lash
+            if acao == 'tail_lash':
+                keywords = (card.keywords or '').lower()
+                if 'rokea' in keywords or 'mokole' in keywords:
+                    acao_dano += props.get('bonus_dano', 0)
+
+            if acao_dano > melhor_dano:
+                melhor_acao = acao
+                melhor_dano = acao_dano
+
+        # Dodge so em situacao critica
+        opp_pack = opp.pack_home if opp else []
+        if opp_pack:
+            max_opp_rage = max(c.rage for c in opp_pack)
             if (max_opp_rage > card.rage * 2.0
                     and card.health_current < card.health * 0.5):
                 return 'dodge'
 
-        if card.rage >= 3:
-            return 'strike'
-        if card.health_current < card.health * 0.3:
-            return 'dodge'
-        return random.choice(['strike', 'claw', 'bite', 'strike'])
+        return melhor_acao
 
     def _draw(self):
         """Compra carta do deck de combate."""

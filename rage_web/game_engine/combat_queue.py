@@ -361,16 +361,82 @@ COMBAT_ACTION_VALIDATORS: dict[str, list] = {
 # -----------------------------------------------------------------------
 
 COMBAT_ACTION_PROPS: dict[str, dict] = {
+    # Acoes basicas
+    'strike': {
+        'damage': None,           # None = usa Rage da criatura (default)
+        'rage_requirement': 0,    # Qualquer criatura pode atacar
+        'speed': 'normal',
+    },
+    'claw': {
+        'damage': None,
+        'rage_requirement': 0,
+        'speed': 'normal',
+    },
+    'bite': {
+        'damage': None,
+        'rage_requirement': 0,
+        'speed': 'normal',
+    },
+    'weapon_strike': {
+        'damage': None,           # Dano da arma + Rage da criatura
+        'rage_requirement': 0,
+        'speed': 'normal',
+    },
+    'ranged_strike': {
+        'damage': None,
+        'rage_requirement': 0,
+        'speed': 'normal',
+    },
+    # Acoes defensivas
+    'block': {
+        'damage': 0,              # Block nao causa dano
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'block_value': None,      # None = Rage do defensor
+    },
+    'dodge': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+    },
+    'flee': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'flee': True,
+    },
+    # Acoes especiais
+    'head_butt': {
+        'damage': 4,              # Dano fixo 4
+        'rage_requirement': 2,    # Requer Rage 2+
+        'speed': 'normal',
+        'bounce_se_bloqueado': True,  # Dano volta ao atacante
+    },
+    'tail_lash': {
+        'damage': 1,              # Dano base 1
+        'rage_requirement': 1,    # Requer Rage 1+
+        'speed': 'normal',
+        'bonus_dano': 4,          # +4 se Rokea/Mokole
+    },
     'anatomy_lesson': {
-        'unblockable': True,       # Dano nao pode ser bloqueado/esquivado
+        'damage': 4,              # Dano fixo 4
+        'rage_requirement': 6,    # Requer Rage 6+
+        'speed': 'normal',
+        'unblockable': True,       # Nao pode ser bloqueado/esquivado
         'retira_se_ferido': True,  # Criatura ferida deve retirar do combate
     },
     'savage_beatdown': {
-        'descarte_metade_se_frenetico': True,  # Oponente descarta metade da mao se alvo frenzied
+        'damage': 3,
+        'rage_requirement': 3,
+        'speed': 'normal',
+        'descarte_metade_se_frenetico': True,
     },
     'submission_hold': {
-        'retira_se_nao_frenetico': True,     # Remove do combate se alvo NAO frenzied
-        'nao_pode_esquivar_se_frenetico': True,  # Alvo frenzied nao pode esquivar
+        'damage': 1,
+        'rage_requirement': 2,
+        'speed': 'normal',
+        'retira_se_nao_frenetico': True,
+        'nao_pode_esquivar_se_frenetico': True,
     },
 }
 
@@ -1240,10 +1306,21 @@ def resolve_combat(game: GameState) -> bool:
                 break
 
         # Aplica dano e cria damage card (regra 6.4)
+        # Calcula dano base: primeiro da acao, depois Rage da criatura
         if skin_blocks:
             dano = 0
         else:
-            dano = max(0, origem_card.effective_rage - alvo_card.reducao_dano)
+            # Dano basico: usa damage da acao (se definido) ou Rage da criatura
+            acao_dano = props.get('damage')
+            if acao_dano is not None:
+                dano_base = acao_dano
+                game.add_log(
+                    f'  {origem_card.name} usou {acao_origem} '
+                    f'(dano: {dano_base})')
+            else:
+                dano_base = origem_card.effective_rage
+
+            dano = max(0, dano_base - alvo_card.reducao_dano)
             # Head Butt bloqueado: nao causa dano ao defensor (ja tomou bounce)
             if bloqueou_ou_esquivou and acao_origem == 'head_butt':
                 dano = 0
@@ -1257,7 +1334,7 @@ def resolve_combat(game: GameState) -> bool:
                 if dano == 0:
                     game.add_log(
                         f'  {alvo_card.name} bloqueou todo o dano '
-                        f'({reducao_block} >= {origem_card.effective_rage})'
+                        f'({reducao_block} >= {dano_base})'
                     )
 
         # Ironjaw (369): +1 dano se nem ela nem alvo tem arma
