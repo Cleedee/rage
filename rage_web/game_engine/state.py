@@ -308,10 +308,19 @@ class PlayerState:
         return [c for c in self.hand if c.card_type not in
                 ('Combat Action', 'Combat Event', '')]
 
-    def _cartas_combate(self) -> list[CardInstance]:
-        """Retorna cartas de combate na mao."""
+    @property
+    def combat_hand(self) -> list[CardInstance]:
+        """Retorna cartas de combate na mao.
+
+        Regra (6.2): Combat Actions e Combat Events formam
+        a 'combat hand' do jogador. Sept cards sao a 'sept hand'.
+        """
         return [c for c in self.hand if c.card_type in
                 ('Combat Action', 'Combat Event')]
+
+    def _cartas_combate(self) -> list[CardInstance]:
+        """Retorna cartas de combate na mao (alias para combat_hand)."""
+        return self.combat_hand
 
     def descartar_da_mao(self, indices: list[int]) -> list[CardInstance]:
         """Descarta cartas da mao para o descarte apropriado.

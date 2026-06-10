@@ -599,11 +599,10 @@ class PriorityBot:
         if action:
             return action
 
-        # 2. Usar cartas de efeito de COMBATE (limite 3)
+        # 2. Usar cartas de efeito (limite 3)
         if self._cards_played_this_turn < 3:
             for i, card in enumerate(me.hand):
-                if card.modelo_id and card.card_type in (
-                        'Combat Action', 'Combat Event', 'Action'):
+                if card.modelo_id and card.card_type:
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     if self._pode_pagar_custos(card):
                         self._cards_played_this_turn += 1

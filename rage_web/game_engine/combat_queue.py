@@ -1631,6 +1631,21 @@ def end_combat(game: GameState) -> bool:
                                 f'restaurado para {dados["valor_original"]}')
                             break
 
+    # Reabastece combat hand de todos os jogadores (Regra 6.3)
+    # Apos cada combate, jogadores reabastecem sua mao de combate
+    # ate o tamanho maximo (hand_size_combat). Se o combat deck
+    # acabar, reshuffle do descarte.
+    for p in game.players:
+        antes = len(p.combat_hand)
+        drawn = p.redraw_combat(descartar_primeiro=False)
+        depois = antes + len(drawn)
+        if drawn:
+            game.add_log(f'{p.name} reabasteceu mao de combate '
+                         f'({len(drawn)} carta(s), agora {depois}/{p.hand_size_combat})')
+        elif antes < p.hand_size_combat:
+            game.add_log(f'{p.name} sem cartas de combate no deck '
+                         f'({antes}/{p.hand_size_combat})')
+
     # Executa ataques automaticos de presas no HG
     game._check_victim_attacks()
 
