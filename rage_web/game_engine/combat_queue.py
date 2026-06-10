@@ -652,14 +652,25 @@ def advance_combat_step(game: GameState) -> bool:
     # ---- Steps de auto-advance (passam direto) ----
     if step in COMBAT_STEPS_AUTO:
         if step == 'pre_combat':
-            game.add_log('  [Pre-Combat] Sem acoes de pack/redirect (auto)')
+            # Stepping In (6.5.9): alpha substitui Presa
+            if _preparar_stepping_in(game):
+                game.add_log('  [Pre-Combat] Stepping In executado')
+            else:
+                game.add_log('  [Pre-Combat] Sem stepping in (auto)')
         elif step == 'beginning_of_combat':
             game.add_log('  [Beginning-of-Combat] Sem gifts pre-combate (auto)')
         elif step == 'bluff':
             _processar_bluff(game)
         elif step == 'withdrawal':
-            # Verifica se o atacante quer se retirar
-            # Por enquanto, nunca se retira (auto-advance)
+            if _processar_withdrawal(game):
+                game.add_log('  [Withdrawal] Atacante retirou-se')
+                # Com withdrawal, combate termina
+                idx = COMBAT_STEPS.index(step)
+                if idx + 1 < len(COMBAT_STEPS):
+                    prox = COMBAT_STEPS[idx + 1]
+                    game.combat.step = prox
+                    game.add_log(f'  Step: {step} -> {prox}')
+                return True
             game.add_log('  [Withdrawal] Atacante continua (auto)')
 
         # Avanca para o proximo step
@@ -1127,6 +1138,157 @@ def _retirar_do_combate(game: GameState, criatura: CardInstance) -> bool:
 def _find_owner(game: GameState, card: CardInstance) -> Optional[PlayerState]:
     """Encontra o jogador dono de uma carta."""
     return _find_player(game, card.owner_id)
+
+
+def _preparar_stepping_in(game: GameState) -> bool:
+    """Processa Stepping In (6.5.9) no Pre-Combat Step.
+
+    Quando uma Presa (Victim/Enemy) e atacada, um alpha do mesmo
+    alinhamento pode substitui-la como defensor:
+    - Gaia alpha step in for Victim
+    - Wyrm alpha step in for Enemy
+    - Maior Renome decide (sorteio se empate)
+
+    Returns:
+        True se algum stepping in ocorreu.
+    """
+    combat = game.combat
+    if not combat.is_active:
+        return False
+
+    stepped_in = False
+
+    for i, dfd_id in enumerate(list(combat.defenders)):
+        if dfd_id == 'hg':
+            continue
+
+        card = _find_card(game, dfd_id)
+        if not card:
+            continue
+
+        ct = (card.card_type or '').lower()
+        is_victim = 'victim' in ct
+        is_enemy = 'enemy' in ct
+
+        if not (is_victim or is_enemy):
+            continue
+
+        if not _eh_prey_no_hg(game, dfd_id):
+            continue
+
+        # Encontra alphas que podem substituir
+        # Gaia alpha for Victim, Wyrm alpha for Enemy
+        alphas_que_podem: list[tuple[str, str, CardInstance]] = []
+
+        for pid, alpha_id in combat.alphas.items():
+            alpha_card = _find_card(game, alpha_id)
+            if not alpha_card:
+                continue
+            if alpha_card.health_current <= 0:
+                continue
+
+            dono = _find_owner(game, alpha_card)
+            if not dono:
+                continue
+
+            eh_gaia = _eh_pack_gaia(dono)
+            eh_wyrm = _eh_pack_wyrm(dono)
+
+            if is_victim and eh_gaia:
+                alphas_que_podem.append((pid, alpha_id, alpha_card))
+            elif is_enemy and eh_wyrm:
+                alphas_que_podem.append((pid, alpha_id, alpha_card))
+
+        if not alphas_que_podem:
+            continue
+
+        # Maior Renome decide; empates aleatorios
+        if len(alphas_que_podem) > 1:
+            game.rng.shuffle(alphas_que_podem)
+        alphas_que_podem.sort(key=lambda x: x[2].renown, reverse=True)
+
+        _, stepping_alpha_id, stepping_alpha = alphas_que_podem[0]
+
+        # Substitui Presa pelo alpha
+        combat.defenders[i] = stepping_alpha_id
+        game.add_log(f'  [Stepping In] {stepping_alpha.name} '
+                     f'substitui {card.name} como defensor')
+
+        # Registra stepping in (para tracking futuro)
+        if not hasattr(combat, 'stepped_in_alphas'):
+            combat.stepped_in_alphas = []
+        combat.stepped_in_alphas.append(dfd_id)
+        stepped_in = True
+
+    return stepped_in
+
+
+def _processar_withdrawal(game: GameState) -> bool:
+    """Processa Withdrawal Step (6.3.1).
+
+    O atacante pode retirar do combate, encerrando-o.
+    Withdrawal nao e uma acao.
+    Maim impede withdrawal.
+    Frenzied nao pode withdrawal.
+
+    Returns:
+        True se o combate foi encerrado por withdrawal.
+    """
+    combat = game.combat
+    if not combat.is_active:
+        return False
+    if combat.step != 'withdrawal':
+        return False
+
+    # Verifica se algum atacante esta frenzied (impede withdrawal)
+    for atk_id in combat.attackers:
+        if atk_id == 'hg':
+            continue
+        card = _find_card(game, atk_id)
+        if card and card.is_frenzied:
+            game.add_log('  [Withdrawal] Frenzied nao pode retirar')
+            return False
+
+    # Verifica Maim (impede withdrawal)
+    # TODO: implementar Maim check
+
+    return False  # Por enquanto, nunca retira
+
+
+def _tentar_desafio(game: GameState, alpha_id: str,
+                      alvo_id: str) -> bool:
+    """Alpha desafia um nao-alpha (6.5.2).
+
+    O desafiado pode recusar. Se aceitar, inicia combate.
+    Soh pode desafiar criaturas (nao Territory/Battlefield).
+
+    Args:
+        game: Estado da partida.
+        alpha_id: ID do alpha que desafia.
+        alvo_id: ID do alvo do desafio.
+
+    Returns:
+        True se o combate foi iniciado (desafio aceito).
+    """
+    alvo = _find_card(game, alvo_id)
+    if not alvo:
+        return False
+
+    ct = (alvo.card_type or '').lower()
+    if not any(t in ct for t in ('character', 'ally')):
+        # Soh pode desafiar criaturas
+        return False
+
+    # Alpha nao pode desafiar outro alpha
+    if alvo_id in game.combat.alphas.values():
+        return False
+
+    # O desafiado pode recusar
+    # Por enquanto, sempre aceita (decisao do bot sera integrada depois)
+    from rage_web.game_engine.combat_queue import start_combat
+    start_combat(game, [alpha_id], [alvo_id])
+    game.add_log(f'  [Challenge] {alpha_id} desafiou {alvo_id}')
+    return True
 
 
 def _processar_bluff(game: GameState) -> bool:

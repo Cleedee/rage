@@ -747,7 +747,37 @@ class PriorityBot:
                 f'{alvo_hg.name} no Hunting Grounds (estrategico)')
             return f'alpha_attack_hg_{meu_alpha_id}'
 
-        # 1. Tenta atacar alpha inimigo (prioriza lider em VP)
+        # 1. Tenta desafiar nao-alfa de alto valor (6.5.2)
+        # Challenge: pode atacar criaturas nao-alfa
+        from rage_web.game_engine.combat_queue import _tentar_desafio
+        melhores_nao_alfa = []
+        for opp in opponents:
+            for c in opp.pack_home:
+                if c.health_current <= 0:
+                    continue
+                if str(c.card_id) in self.game.combat.alphas.values():
+                    continue  # so nao-alfa
+                ct = (c.card_type or '').lower()
+                if not any(t in ct for t in ('character', 'ally')):
+                    continue
+                if not self.prioritizer.pode_eliminar(alpha_card, c):
+                    continue
+                threat = self.prioritizer.rate_threat(c)
+                melhores_nao_alfa.append((c, threat, opp))
+
+        if melhores_nao_alfa:
+            melhores_nao_alfa.sort(key=lambda x: x[1], reverse=True)
+            melhor_c, melhor_threat, melhor_opp = melhores_nao_alfa[0]
+            if melhor_threat > 0:
+                # Desafia o nao-alfa de maior threat
+                if _tentar_desafio(self.game, meu_alpha_id,
+                                    str(melhor_c.card_id)):
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} desafiou '
+                        f'{melhor_c.name} ({melhor_opp.name})')
+                    return f'alpha_challenge_{meu_alpha_id}'
+
+        # 2. Tenta atacar alpha inimigo (prioriza lider em VP)
         alphas_inimigos = []
         for pid, cid in self.game.combat.alphas.items():
             if pid != self.player_id:

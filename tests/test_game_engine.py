@@ -3224,3 +3224,140 @@ class TestBluffStep:
         assert game.combat.step != 'bluff', 'Step deve ter avancado'
         assert game.combat.step == 'resolution', \
             f'Esperado resolution, obtido {game.combat.step}'
+
+
+class TestSteppingIn:
+    """Testes do Stepping In (6.5.9)."""
+
+    def test_stepping_in_gaia_substitui_victim(self):
+        """Alpha Gaia substitui Victim como defensor."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            start_combat, _preparar_stepping_in, _eh_pack_gaia
+        )
+        from rage_web.game_engine.state import Zone, CardInstance
+        game = build_game_from_decks(160, 629, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        victim = CardInstance(card_id=999, name='Test Victim',
+                              card_type='Victim', zone=Zone.HUNTING_GROUNDS,
+                              owner_id='', controller_id='',
+                              health=3, health_current=3, rage=0)
+        game.hunting_grounds_cards.append(victim)
+        alpha_p1 = p1.pack_home[0]
+        game.combat.alphas['p1'] = str(alpha_p1.card_id)
+        assert _eh_pack_gaia(p1), 'P1 deve ser Gaia'
+        start_combat(game, [str(alpha_p1.card_id)], ['999'])
+        assert game.combat.defenders == ['999']
+        game.combat.step = 'pre_combat'
+        result = _preparar_stepping_in(game)
+        assert result, 'Stepping In deve ocorrer'
+        # Verifica que o alpha substituiu a Victim
+        assert game.combat.defenders != ['999']
+        assert game.combat.defenders[0] == str(alpha_p1.card_id)
+
+    def test_stepping_in_sem_alpha_nao_altera(self):
+        """Sem alpha compativel, stepping in nao ocorre."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            start_combat, _preparar_stepping_in
+        )
+        from rage_web.game_engine.state import Zone, CardInstance
+        game = build_game_from_decks(160, 629, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        # Enemy no HG - alpha Wyrm para substituir
+        enemy = CardInstance(card_id=998, name='Test Enemy',
+                             card_type='Enemy', zone=Zone.HUNTING_GROUNDS,
+                             owner_id='', controller_id='',
+                             health=3, health_current=3, rage=0)
+        game.hunting_grounds_cards.append(enemy)
+        alpha_p1 = p1.pack_home[0]
+        game.combat.alphas['p1'] = str(alpha_p1.card_id)
+        # P1 e Gaia, nao pode substituir Enemy
+        start_combat(game, [str(alpha_p1.card_id)], ['998'])
+        game.combat.step = 'pre_combat'
+        result = _preparar_stepping_in(game)
+        assert not result, 'Gaia alpha nao pode substituir Enemy'
+        assert game.combat.defenders == ['998'], 'Defensor nao deve mudar'
+
+
+class TestChallenge:
+    """Testes do Challenge (6.5.2)."""
+
+    def test_desafio_nao_alfa_inicia_combate(self):
+        """Alpha desafia nao-alfa e inicia combate."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import _tentar_desafio
+        game = build_game_from_decks(160, 629, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        game.combat.alphas['p1'] = str(p1.pack_home[0].card_id)
+        game.combat.alphas['p2'] = str(p2.pack_home[0].card_id)
+        # Encontra nao-alfa em p2
+        nao_alfa = None
+        for c in p2.pack_home:
+            if str(c.card_id) != game.combat.alphas['p2']:
+                nao_alfa = c
+                break
+        assert nao_alfa is not None
+        result = _tentar_desafio(
+            game, str(p1.pack_home[0].card_id), str(nao_alfa.card_id))
+        assert result, 'Desafio deve ser aceito'
+        assert game.combat.is_active
+        assert str(nao_alfa.card_id) in game.combat.defenders
+
+    def test_desafio_alfa_recusado(self):
+        """Nao pode desafiar outro alpha."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import _tentar_desafio
+        game = build_game_from_decks(160, 629, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        game.combat.alphas['p1'] = str(p1.pack_home[0].card_id)
+        game.combat.alphas['p2'] = str(p2.pack_home[0].card_id)
+        # Tenta desafiar alpha p2 - deve falhar
+        alpha_p2_id = game.combat.alphas['p2']
+        result = _tentar_desafio(
+            game, str(p1.pack_home[0].card_id), alpha_p2_id)
+        assert not result, 'Nao pode desafiar outro alpha'
+
+
+class TestWithdrawal:
+    """Testes do Withdrawal Step (6.3.1)."""
+
+    def test_withdrawal_nao_ocorre_por_padrao(self):
+        """Withdrawal retorna False por padrao (atacante continua)."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            start_combat, _processar_withdrawal, resolve_combat
+        )
+        game = build_game_from_decks(160, 629, seed=42)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        start_combat(game, [str(p1.pack_home[0].card_id)],
+                     [str(p2.pack_home[0].card_id)])
+        # Avanca ate withdrawal
+        from rage_web.game_engine.combat_queue import advance_combat_step
+        for step in ['declaration', 'pre_combat', 'beginning_of_combat',
+                     'play_card', 'targeting', 'reveal', 'feint', 'bluff']:
+            game.combat.step = step
+            advance_combat_step(game)
+        resolve_combat(game)
+        # So verifica se a funcao existe e retorna False sem erro
+        result = _processar_withdrawal(game)
+        assert result is False, 'Withdrawal padrao = False'
