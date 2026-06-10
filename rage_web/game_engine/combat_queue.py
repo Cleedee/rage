@@ -915,6 +915,70 @@ def get_combatants(game: GameState) -> list[str]:
     return result
 
 
+def _jogar_ce_face_down(game: GameState, criatura_id: str,
+                           ce_card_id: str) -> bool:
+    """Joga um Combat Event face-down no Play Card Step.
+
+    A criatura joga um CE face-down como se fosse uma
+    Combat Action. O CE sera revelado no Reveal Step e
+    descartado como ilegal no Bluff Step (6.9.1).
+
+    Args:
+        game: Estado da partida.
+        criatura_id: ID da criatura jogando o CE.
+        ce_card_id: ID do card CE sendo jogado.
+
+    Returns:
+        True se o CE foi jogado com sucesso.
+    """
+    if not game.combat.is_active:
+        return False
+    if game.combat.step not in ('play_card',):
+        return False
+    if criatura_id not in get_combatants(game):
+        return False
+
+    ce_card = _find_card(game, ce_card_id)
+    if not ce_card:
+        return False
+
+    ct = (ce_card.card_type or '').lower()
+    if 'combat event' not in ct and ct != 'combat_event':
+        return False  # So CE pode ser jogado face-down
+
+    # Remove CE da mao e move para descarte (ilegal no Bluff Step)
+    dono = _find_owner(game, ce_card)
+    if not dono:
+        return False
+    if ce_card in dono.hand:
+        dono.hand.remove(ce_card)
+    elif ce_card in dono.combat_hand:
+        dono.combat_hand.remove(ce_card)
+    else:
+        return False
+
+    # Move para discard_combat (ja que sera ilegal)
+    ce_card.zone = Zone.DISCARD_COMBAT
+    dono.discard_combat.append(ce_card)
+
+    # Registra no estado do combate para tracking
+    game.combat.ce_face_down[criatura_id] = ce_card_id
+
+    action_name = f'ce_{ce_card_id}'
+    if not declare_action(game, criatura_id, action_name,
+                           acoes_extra=['ce']):
+        # Reverte se nao foi possivel declarar
+        dono.discard_combat.remove(ce_card)
+        dono.hand.append(ce_card)
+        ce_card.zone = Zone.HAND
+        game.combat.ce_face_down.pop(criatura_id, None)
+        return False
+
+    game.add_log(f'  {ce_card.name} jogado face-down por '
+                 f'{_find_card(game, criatura_id).name}')
+    return True
+
+
 def declare_action(game: GameState, card_id: str, action: str,
                      acoes_extra: Optional[list[str]] = None) -> bool:
     """Declara uma acao de combate para uma criatura.
@@ -943,7 +1007,9 @@ def declare_action(game: GameState, card_id: str, action: str,
     if action not in COMBAT_ACTIONS:
         # Verifica em acoes extras (Combat Actions especificas)
         if not acoes_extra or action not in acoes_extra:
-            return False
+            # Permite Combat Events jogados face-down (ce_<id>)
+            if not action.startswith('ce_'):
+                return False
 
     # Valida restricoes especificas da Combat Action
     if action in COMBAT_ACTION_VALIDATORS:
@@ -1330,8 +1396,12 @@ def _processar_bluff(game: GameState) -> bool:
         rage_req = props.get('rage_requirement', 0)
 
         # 6.9.1: Verificar ilegais (requisitos nao-Rage)
-        # No futuro: Gnosis req, restricao de forma, keywords
         # Combat Events jogados face-down sao ilegais
+        if action.startswith('ce_'):
+            game.combat.illegal_cards.add(cid)
+            game.add_log(f'  [Bluff] {card.name} jogou Combat Event '
+                         f'face-down -> ILEGAL (6.9.1)')
+            continue
 
         # 6.9.2: Verificar blefe (Rage requirement > Rage)
         if card.effective_rage < rage_req:

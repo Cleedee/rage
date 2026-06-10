@@ -617,6 +617,11 @@ class CombatState:
     # targets[card_id] = target_card_id (quem cada card mira)
     targets: dict[str, str] = field(default_factory=dict)
 
+    # --- Play Card Step (face-down cards) ---
+    # ce_face_down[creature_card_id] = ce_card_id
+    # Combat Events jogados face-down (sao ilegais no Bluff Step)
+    ce_face_down: dict[str, str] = field(default_factory=dict)
+
     # --- Bluff Step ---
     # Cartas ilegais (nao atendem requisitos)
     illegal_cards: set[str] = field(default_factory=set)

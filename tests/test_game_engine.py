@@ -3361,3 +3361,95 @@ class TestWithdrawal:
         # So verifica se a funcao existe e retorna False sem erro
         result = _processar_withdrawal(game)
         assert result is False, 'Withdrawal padrao = False'
+
+
+class TestCombatEventFaceDown:
+    """Testes de Combat Events jogados face-down (item #10)."""
+
+    def test_jogar_ce_face_down(self):
+        """Jogar CE face-down deve ser possivel no Play Card Step."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, _jogar_ce_face_down,
+            get_combatants, COMBAT_ACTIONS, advance_combat_step
+        )
+        from rage_web.game_engine.state import Zone, CardInstance
+        game = build_game_from_decks(160, 629, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        # Cria um Combat Event na mao do p1
+        ce = CardInstance(card_id=9001, name='Test CE',
+                          card_type='Combat Event', zone=Zone.HAND,
+                          owner_id='p1', controller_id='p1',
+                          health=0, health_current=0)
+        p1.hand.append(ce)
+        # Inicia combate
+        start_combat(game, [str(p1.pack_home[0].card_id)],
+                     [str(p2.pack_home[0].card_id)])
+        for step in ['declaration', 'pre_combat', 'beginning_of_combat']:
+            game.combat.step = step
+            advance_combat_step(game)
+        game.combat.step = 'play_card'
+        # Joga CE face-down
+        result = _jogar_ce_face_down(
+            game, str(p1.pack_home[0].card_id), '9001')
+        assert result, 'CE deve ser jogado face-down'
+        assert '9001' not in [str(c.card_id) for c in p1.hand], \
+            'CE deve sair da mao'
+        # Declara acao normal para defensor
+        declare_action(game, str(p2.pack_home[0].card_id), 'strike')
+        # Avanca para bluff e verifica que CE e ilegal
+        for step in ['targeting', 'reveal', 'feint']:
+            game.combat.step = step
+            advance_combat_step(game)
+        game.combat.step = 'bluff'
+        from rage_web.game_engine.combat_queue import _processar_bluff
+        _processar_bluff(game)
+        # CE foi declarado como ce_9001, deve ser marcado ilegal
+        atk_id = str(p1.pack_home[0].card_id)
+        assert atk_id in game.combat.illegal_cards or \
+            atk_id not in game.combat.declarations, \
+            'CE deve ser removido como ilegal'
+
+    def test_ce_face_down_ilegal_no_bluff(self):
+        """CE face-down e ilegal (6.9.1) e descartado no Bluff Step."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, _jogar_ce_face_down,
+            advance_combat_step, _processar_bluff
+        )
+        from rage_web.game_engine.state import Zone, CardInstance
+        game = build_game_from_decks(160, 629, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        ce = CardInstance(card_id=9002, name='Bluff CE',
+                          card_type='Combat Event', zone=Zone.HAND,
+                          owner_id='p1', controller_id='p1')
+        p1.hand.append(ce)
+        start_combat(game, [str(p1.pack_home[0].card_id)],
+                     [str(p2.pack_home[0].card_id)])
+        for step in ['declaration', 'pre_combat', 'beginning_of_combat']:
+            game.combat.step = step
+            advance_combat_step(game)
+        game.combat.step = 'play_card'
+        _jogar_ce_face_down(game, str(p1.pack_home[0].card_id), '9002')
+        declare_action(game, str(p2.pack_home[0].card_id), 'strike')
+        for step in ['targeting', 'reveal', 'feint']:
+            game.combat.step = step
+            advance_combat_step(game)
+        game.combat.step = 'bluff'
+        _processar_bluff(game)
+        atk_id = str(p1.pack_home[0].card_id)
+        # CE deve ter sido descartado
+        assert atk_id not in game.combat.declarations or \
+            game.combat.declarations.get(atk_id) is None, \
+            'CE deve ser removido das declaracoes'
+        # CE deve estar no descarte
+        found = any(c.card_id == 9002 for c in p1.discard_combat)
+        assert found, 'CE deve estar no discard_combat'

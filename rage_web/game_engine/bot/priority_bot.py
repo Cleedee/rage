@@ -929,6 +929,12 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
+                    # Tenta jogar CE face-down como blefe
+                    from rage_web.game_engine.combat_queue import \
+                        _jogar_ce_face_down
+                    ce_jogado = self._tentar_ce_face_down(card)
+                    if ce_jogado:
+                        return ce_jogado
                     action = self._choose_combat_action(card, card.owner_id)
                     declare_action(g, cid, action)
                     return f'play_{cid}_{action}'
@@ -1207,6 +1213,19 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
+                    # 20% de chance de jogar CE face-down
+                    if self.game.rng.random() < 0.2:
+                        from rage_web.game_engine.combat_queue import \
+                            _jogar_ce_face_down
+                        ce_card = None
+                        for c in self.player.combat_hand:
+                            ct = (c.card_type or '').lower()
+                            if 'combat event' in ct or ct == 'combat_event':
+                                ce_card = c
+                                break
+                        if ce_card and _jogar_ce_face_down(
+                                g, cid, str(ce_card.card_id)):
+                            return f'play_{cid}_ce_{ce_card.card_id}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     declare_action(g, cid, action)
                     return f'play_{cid}_{action}'
@@ -1919,6 +1938,51 @@ class PriorityBot:
                 return 'dodge'
 
         return melhor_acao
+
+    def _tentar_ce_face_down(self, card: CardInstance) -> Optional[str]:
+        """Tenta jogar um Combat Event face-down como blefe.
+
+        Joga CE face-down quando a criatura esta em desvantagem
+        (Rage baixa vs oponente forte) e tem um CE na mao.
+        O CE sera descartado como ilegal no Bluff Step.
+
+        Returns:
+            String de acao (play_<cid>_ce_<ce_id>) ou None.
+        """
+        g = self.game
+        from rage_web.game_engine.combat_queue import _jogar_ce_face_down
+
+        # Verifica se a criatura esta fraca para jogar CA normal
+        opp = self._get_opponent()
+        if opp and opp.pack_home:
+            max_opp_rage = max(c.rage for c in opp.pack_home)
+            if max_opp_rage <= card.rage * 1.2:
+                return None  # Nao esta em desvantagem
+
+        # Encontra CE na mao de combate
+        ce_card = None
+        for c in self.player.combat_hand:
+            ct = (c.card_type or '').lower()
+            if 'combat event' in ct or ct == 'combat_event':
+                ce_card = c
+                break
+        if not ce_card:
+            # Tenta na mao principal
+            for c in self.player.hand:
+                ct = (c.card_type or '').lower()
+                if 'combat event' in ct or ct == 'combat_event':
+                    ce_card = c
+                    break
+        if not ce_card:
+            return None
+
+        # Joga CE face-down
+        if _jogar_ce_face_down(g, str(card.card_id),
+                                str(ce_card.card_id)):
+            g.add_log(f'[BOT] {self.player.name} jogou {ce_card.name} '
+                      f'face-down como blefe')
+            return f'play_{card.card_id}_ce_{ce_card.card_id}'
+        return None
 
     def _escolher_alvo_pack(self, cid: str) -> Optional[str]:
         """Escolhe um alvo para uma criatura em pack combat.
