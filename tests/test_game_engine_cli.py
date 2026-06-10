@@ -128,7 +128,7 @@ class TestRageCLI:
         cli.onecmd('REVEAL')
         assert cli.game.combat.step == 'reveal'
 
-        # Resolve
+        # Resolve (agora avanca ate end automaticamente)
         cli.onecmd('RESOLVE')
         assert cli.game.combat.step == 'end'
 

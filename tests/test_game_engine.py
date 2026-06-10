@@ -213,7 +213,7 @@ class TestCombatQueue:
 
         assert start_combat(game, [c1_id], [c2_id])
         assert game.combat.is_active
-        assert game.combat.step == 'declare'
+        assert game.combat.step == 'declaration'
         assert c1_id in game.combat.attackers
         assert c2_id in game.combat.defenders
 
@@ -245,8 +245,14 @@ class TestCombatQueue:
         assert summary['declarations'][c2] == 'block'
         assert summary['last_to_declare'] == c2
 
-        # Resolver
+        # Resolver (novo fluxo: resolution -> withdrawal -> between_rounds -> end)
         assert resolve_combat(game)
+        assert game.combat.step == 'withdrawal'
+
+        # Avanca steps de auto-advance ate end
+        from rage_web.game_engine.combat_queue import advance_combat_step
+        assert advance_combat_step(game)  # withdrawal -> between_rounds
+        assert advance_combat_step(game)  # between_rounds -> end
         assert game.combat.step == 'end'
 
         # Encerrar
@@ -347,6 +353,10 @@ class TestCombatQueue:
 
         # Pula direto para resolve (deve revelar internamente)
         assert resolve_combat(game)
+        assert game.combat.step == 'withdrawal'
+        from rage_web.game_engine.combat_queue import advance_combat_step
+        advance_combat_step(game)  # withdrawal -> between_rounds
+        advance_combat_step(game)  # between_rounds -> end
         assert game.combat.step == 'end'
 
     def test_get_combatants(self, game):

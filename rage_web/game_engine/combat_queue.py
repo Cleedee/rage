@@ -8,8 +8,12 @@ from rage_web.game_engine.state import (
     CombatState, GameState, PlayerState, Zone,
     anexar_dano, descartar_anexos,
 )
-from rage_web.game_engine.rules import COMBAT_STEPS
+from rage_web.game_engine.rules import COMBAT_STEPS, COMBAT_STEPS_AUTO
 
+# Mapeamento de steps antigos para novos (backward compat)
+OLD_STEP_MAP = {
+    'declare': 'play_card',
+}
 
 # --- Tipos de acoes de combate ---
 
@@ -557,6 +561,80 @@ def _mesmo_lado_gauntlet(game: GameState, card_id_a: str,
     return lado_a == lado_b
 
 
+def advance_combat_step(game: GameState) -> bool:
+    """Avanca a maquina de steps de combate.
+
+    Gerencia as transicoes entre steps do Capitulo 6:
+    - Steps de auto-advance sao pulados automaticamente
+      (pre_combat, beginning_of_combat, bluff, withdrawal)
+    - Steps com acao do jogador esperam o bot agir
+      (play_card, targeting, reveal)
+    - Entre rounds: verifica se combate continua
+
+    Returns:
+        True se o step foi avancado, False se precisa de acao do jogador.
+    """
+    if not game.combat.is_active:
+        return False
+
+    step = game.combat.step
+    combat = game.combat
+
+    # Mapeia step antigo para novo (backward compat)
+    if step in OLD_STEP_MAP:
+        step = OLD_STEP_MAP[step]
+        game.combat.step = step
+
+    # ---- Steps de auto-advance (passam direto) ----
+    if step in COMBAT_STEPS_AUTO:
+        if step == 'pre_combat':
+            game.add_log('  [Pre-Combat] Sem acoes de pack/redirect (auto)')
+        elif step == 'beginning_of_combat':
+            game.add_log('  [Beginning-of-Combat] Sem gifts pre-combate (auto)')
+        elif step == 'bluff':
+            game.add_log('  [Bluff] Sem verificacao de bluff (auto)')
+        elif step == 'withdrawal':
+            # Verifica se o atacante quer se retirar
+            # Por enquanto, nunca se retira (auto-advance)
+            game.add_log('  [Withdrawal] Atacante continua (auto)')
+
+        # Avanca para o proximo step
+        idx = COMBAT_STEPS.index(step)
+        if idx + 1 < len(COMBAT_STEPS):
+            prox = COMBAT_STEPS[idx + 1]
+            game.combat.step = prox
+            game.add_log(f'  Step: {step} -> {prox}')
+            return True
+        else:
+            # Fim dos steps - deve ir para end
+            game.combat.step = 'end'
+            return True
+
+    # ---- Steps de inicio de combate ----
+    if step == 'declaration':
+        # Declaration step: atacante declarado, alvo definido
+        # (ja foi feito em start_combat)
+        # Avanca para pre_combat
+        game.combat.step = 'pre_combat'
+        game.add_log('  [Declaration] Alvo declarado, avancando...')
+        return True
+
+    if step == 'between_rounds':
+        # Verifica condicoes de fim (6.3)
+        if not combat.attackers or not combat.defenders:
+            game.add_log('  Sem atacantes ou defensores - fim do combate')
+            game.combat.step = 'end'
+            return True
+        # Por enquanto, sempre encerra apos 1 rodada
+        # (multi-round sera implementado posteriormente)
+        game.add_log('  Fim da rodada - encerrando combate')
+        game.combat.step = 'end'
+        return True
+
+    # Steps que precisam de acao do jogador: retorna False
+    return False
+
+
 def start_combat(game: GameState, attackers: list[str],
                  defenders: list[str]) -> bool:
     """Inicia um combate entre atacantes e defensores.
@@ -619,11 +697,16 @@ def start_combat(game: GameState, attackers: list[str],
     game._lowest_renown_victim_killed = None
     game.combat = CombatState(
         is_active=True,
-        step='declare',
+        step='declaration',  # Novo: comeca pelo Declaration Step (6.1)
         attackers=attackers,
         defenders=defenders,
+        original_attackers=list(attackers),
+        original_defenders=list(defenders),
         alphas=alphas_anteriores,
     )
+
+    # Popula combatants com atacantes + defensores
+    game.combat.combatants = list(attackers) + [d for d in defenders if d not in attackers]
 
     game.add_log(
         f'Combate iniciado: {len(attackers)} atacante(s) vs '
@@ -776,7 +859,7 @@ def declare_action(game: GameState, card_id: str, action: str,
     """
     if not game.combat.is_active:
         return False
-    if game.combat.step != 'declare':
+    if game.combat.step not in ('declare', 'declaration', 'play_card'):
         return False
     if card_id not in get_combatants(game):
         return False
@@ -849,11 +932,14 @@ def feint_action(game: GameState, card_id: str, new_action: str) -> bool:
 def reveal_all(game: GameState) -> bool:
     """Revela todas as acoes de combate declaradas.
 
-    Avanca do step 'declare' para 'reveal'.
+    Aceita steps 'declare' (old), 'play_card' (novo) ou
+    'declaration' (quando todas as acoes foram declaradas
+    diretamente via declare_action no novo fluxo).
+    Avanca para o step 'reveal'.
     """
     if not game.combat.is_active:
         return False
-    if game.combat.step != 'declare':
+    if game.combat.step not in ('declare', 'play_card', 'declaration'):
         return False
 
     # Antes de revelar, auto-declara 'block' para presas que ainda
@@ -995,22 +1081,27 @@ def resolve_combat(game: GameState) -> bool:
     - Criatura com health_current <= 0 morre e vai pra Victory Pile.
     - Atacar Hunting Grounds ('hg') concede 1 VP.
 
-    Avanca do step 'reveal' para 'resolve'.
-    Apos resolucao, avanca para 'end'.
+    Aceita steps 'reveal', 'resolution' (novo) e 'declare' (old).
+    Apos resolucao, avanca para 'withdrawal' (novo sistema)
+    ou 'end' (old system).
     """
     if not game.combat.is_active:
         return False
-    if game.combat.step not in ('reveal', 'declare'):
+    step = game.combat.step
+    # Aceita 'reveal' (antigo), 'resolution' (novo), 'declare' (antigo pre-reveal),
+    # 'play_card' (novo), ou 'declaration' (pular para resolucao)
+    if step not in ('reveal', 'resolution', 'declare', 'play_card', 'declaration'):
         return False
 
-    # Se ainda esta em declare, revela primeiro
-    if game.combat.step == 'declare':
+    # Se ainda esta em declare/play_card/declaration, revela primeiro
+    if step in ('declare', 'play_card', 'declaration'):
         combatants = get_combatants(game)
         if not game.combat.all_declared(combatants):
             return False
         reveal_all(game)
 
-    game.combat.step = 'resolve'
+    # Define o step apropriado
+    game.combat.step = 'resolution'
     game.add_log('━ Resolvendo combate...')
 
     def _processar_ataque(origem_id: str, alvo_id: str):
@@ -1310,8 +1401,9 @@ def resolve_combat(game: GameState) -> bool:
     # Clan of Hyenas (96): foge do combate se tomou >=3 dano neste round
     _check_hyenas_escape(game)
 
-    game.combat.step = 'end'
-    game.add_log('━ Combate encerrado.')
+    # Avanca para withdrawal step (novo sistema)
+    game.combat.step = 'withdrawal'
+    game.add_log('━ Resolucao concluida, aguardando withdrawal...')
     return True
 
 
@@ -1509,11 +1601,15 @@ def _reverter_para_breed(game: GameState):
 
 
 def end_combat(game: GameState) -> bool:
-    """Encerra o combate e reseta o estado."""
+    """Encerra o combate e reseta o estado.
+
+    Aceita step 'end' (novo), 'withdrawal' ou qualquer step
+    antigo (resolve/declare/reveal) para compatibilidade.
+    """
     if not game.combat.is_active:
         return False
 
-    if game.combat.step != 'end':
+    if game.combat.step not in ('end', 'withdrawal'):
         resolve_combat(game)
 
     # Reverte formas Crinos para Breed

@@ -1,0 +1,520 @@
+CHAPTER 6: COMBAT
+
+Definition: Opponent
+A creature one (or more) of your pack are in combat against. An ability which only targets or affects “opponents” can normally only
+be used in combat.
+Definition: Attack
+1. The instigation of combat between the attacking creature and its target (e.g. King Albrecht attacks Zhyzhak).
+2. A Combat Action which has a damage value (e.g. Dis-Arm, Dry Gulch).
+Definition: Challenge
+A request to enter combat with a member of another pack not eligible to be attacked (i.e. not an Alpha). May be refused. If accepted,
+it becomes an attack. You may only challenge creatures. You can not challenge Territories or Battlefields.
+Definition: Attacker
+In a combat, the creature who made the attack or a creature in pack combat with another attacker.
+Definition: Defender
+In a combat, any creatures fighting against the attacker(s).
+
+6.1 COMBAT DECLARATION
+
+Combat begins when an alpha declares an attack against another alpha, an Enemy or a Victim. It can also begin after an alpha
+attacks a Territory or challenges a non-alpha pack member. Certain sept cards can also initiate combat (e.g. Sneak Attack). In no
+circumstances can a pack member attack a member of its own pack. A creature in the Hunting Grounds can not attack another
+creature in the hunting grounds.General combat timing:
+○ In each step of combat except the Declaration step, and where cards and abilities are playable, first the attacker,
+then the defender, then other players have an opportunity to play cards and use abilities.
+○ The cycle repeats until all players pass in sequence, then the combat moves to the next step.
+○ Where multiple other players wish to play, decide the order randomly.
+1. Declaration Step: Closed Play.
+• Declare attacker and (intended) target.
+• Attacker uses abilities or cards played during the attack declaration (including certain Combat Events such as Hunting Party).
+• Defending player, if any, uses abilities or cards played during the attack declaration (Shieldmate is the only card at present).
+2.. Pre-Combat step Closed Play. Each player may play cards which change the participants in the combat.
+• This includes announcing Pack actions, defense of Territories, redirecting the attack, stepping in for Prey, defending a
+Battlefield, combat cancelling, etc. This step continues until no players wish to use any more cards or abilities at this step.
+• Changing the target of the attack has no affect on pack attacks already in effect.
+• Changing the target of the attack does not cancel pack defences already played. If the target is changed to a creature not
+participating in the pack defence, all members of the pack defence are removed from combat; however cards drawn for the
+pack defence remain in the player’s combat hand until played or discarded normally (e.g. at the end of combat).
+• Cards and abilities which create pack attacks or defences can be used later, in the beginning- of-combat step or between-
+rounds step, except where restricted on the card.
+
+2.. Pre-Combat step Closed Play. Each player may play cards which change the participants in the combat.
+• This includes announcing Pack actions, defense of Territories, redirecting the attack, stepping in for Prey, defending a
+Battlefield, combat cancelling, etc. This step continues until no players wish to use any more cards or abilities at this step.
+• Changing the target of the attack has no affect on pack attacks already in effect.
+• Changing the target of the attack does not cancel pack defences already played. If the target is changed to a creature not
+participating in the pack defence, all members of the pack defence are removed from combat; however cards drawn for the
+pack defence remain in the player’s combat hand until played or discarded normally (e.g. at the end of combat).
+• Cards and abilities which create pack attacks or defences can be used later, in the beginning- of-combat step or between-
+rounds step, except where restricted on the card.
+
+3. Beginning-of-Combat step: Open Play.
+• Each player may play relevant Open Play cards and abilities.
+• This includes other before-combat events (such as a beginning-of-combat Frenzy),
+Gifts to heighten the combat (Spirit of the Fray, for instance), and so forth.
+
+6.2 COMBAT ROUNDS
+
+Sidebar: Combat Events
+A quick reminder: all Combat
+Events are Combat Restricted.
+Combat Events stay in play
+until their effect ends.
+Combat is divided into combat rounds, during which each player involved in the combat
+plays a Combat Action for their creature(s). The cards are simultaneously revealed, and most
+will do a certain amount of damage to the opponent. If a Combat Action causes damage to
+an opponent, place that Combat Action under the affected creature as a damage card. If a
+creature has damage greater than or equal to its health, it dies (see damage and Death).
+
+The rigourous timing of combat rounds is:
+1. Play Card step Each creature in combat may play a combat card face down.
+• Players declare if creatures are using any weapons at this point; if nothing is said, it is assumed that creatures will use any
+weapons they are carrying.
+• Players do not have to play combat cards for all (or any of) their creatures in combat unless affected by Forced Play
+2. Targetting Step Targets of combat cards are declared.
+• Targets can be assigned to all combat cards, even if they need no target.
+• Targets must both be in the same world (see rules on Umbral combat).
+3. Reveal Step All face down combat cards are revealed.
+• Creatures that are Feinting may play a card
+• Instinctive cards can be played.
+4. Bluff Step determine if cards will be discarded or will resolve in next step
+• Discard all illegal cards.
+• Check for whether bluffs succeed or fail and discard failures
+• At the end of this step, the only combat cards left on the table should be ones that will be resolved in Resolution
+5. Resolution Step
+1. Fast Striking Actions resolve. Creatures removed from combat (e.g. killed) discard any unresolved Combat Actions they were
+playing.
+2. Normal actions resolve. Creatures removed from combat (e.g. killed) discard any unresolved Combat Actions they were
+playing.
+3. Slow Striking Actions resolve.
+• Cards which redirect or prevent damage are used when the damage would hit. Cards which heal damage cannot be used
+here.
+• Where a creature takes damage at the same speed, the opponent decides which order the damage lands.
+Non-frenzied creatures killed in combat are immediately removed from combat and sent to the appropriate Victory Pile
+or discard pile.
+6. Withdrawal Step: The attacker may announce a withdrawal, unless a creature is frenzied.
+• Any effects which take effect (or end) “at the end of the round” happen (or end) now, before withdrawal.
+• If the attacker announces a withdrawal, combat ends. If not, combat continues to the Between-rounds step.
+7. Between-rounds step: Open Play.
+• Each player may play relevant Open Play cards and abilities.
+• After this step, start a new combat round at step 1.
+
+6.3 ENDING COMBAT
+Combat ends when:
+● no creature played a Combat Action during the current combat round;
+● there are no attackers or no defenders in the combat;
+● the attacker withdraws from combat;
+● or a card that forces combat to end is played.
+● If one full round of combat passes where a creature has no valid targets, it is removed from the combat. See also
+Umbral Combat
+After every combat, all players refill their combat hand back up to their combat hand size (but cannot voluntarily discard
+any cards before doing so). If a player runs out of combat cards in his combat deck, he immediately reshuffles his discarded
+combat cards and may continue drawing from the deck.
+6.3.1 Withdrawing
+An attacker in combat may break off the attack (end combat) during the Withdrawal step of any combat round (including during
+the first round of combat). Withdrawing is not an action. Withdrawing ends the whole combat, and abilities which force or
+prevent withdrawal affect all attackers (e.g. Maim will prevent any attacker withdrawing, no matter how many atta
+
+6.4 DAMAGE AND DEATH
+Whenever a card - Combat Action or otherwise - damages a creature, it becomes a damage card on that creature. Damage cards
+are placed under the creature so that the bottom of the card is showing. If the damage value of a damage card is increased or
+decreased from its printed value, it should be marked in some way. Each damage card on a creature takes it closer to death. When
+the damage on a creature equals or exceeds its health*, it dies. No amount of healing will bring the creature back at that point.
+* Characters in breed form do not die at this point if they have a crinos form they can flip to. If a Character in Breed form takes
+damage and its total damage is equal to or greater than its printed Rage or its printed Health, it flips to its crinos/battle form
+(unless prevented from doing so). It only dies if its damage equal or exceeds its crinos-form Health.
+If a Character is forced into breed form, and has suffered more damage than his breed form health, he is dead. If a Character is
+forced to change forms, he can use a card that allows him to change back in order to cancel the change (e.g. Shapeshift, Fang
+Necklace of Fenris): this acts as a cancellation of the effect. This does not include abilities which do not explicitly state on the card
+that you may change forms.
+6.4.1 Healing Damage
+Definition: Aggravated damage- Aggravated damage is damage that cannot be regenerated, although it can be removed
+and healed. Aggravated damage cards should be marked in some way.
+Most Characters regenerate their damage card with the lowest damage during the Regeneration phase, but other cards can heal
+or remove damage. When a damage card is healed, all ongoing effects caused by the damage end (e.g. Head Wound, Maim).
+However, effects which have already taken place are not reversed (e.g. destroyed equipment), nor are effects cancelled if they are
+not caused by the damage (e.g. Hamstringed, Body Wrack). Once a card resolves and becomes a damage card, it no longer counts
+as its original card type and cannot be cancelled.
+
+6.4.2 Death
+Whenever a creature dies and is not in Full Frenzy:
+• Discard all cards except Past Lives that are attached to dead creatures
+• Take Past Lives and put them in the dead character’s owner’s Victory Pile
+• Discard any Gifts or Rites with ongoing effects that only affect the deceased. Other ongoing and permanent effects played
+by the deceased remain in play.•
+Creatures killed in combat are placed in the Victory Pile of the player that
+killed them. If they were killed by Prey, treat them as if they were died outside
+combat
+
+6.4.3 VP complications
+
+Normally you earn VP equal to the renown of the creatures you kill. However, Wyrm
+creatures normally gain 0 VP for killing Enemies. Gaia creatures normally gain 0 VP for
+killing Victims. They WILL earn full VP if the Prey initiated the attack against them. Effects
+which grant bonus VP to a kill (or reduce its VP) occur AFTER you determine whether you
+received VP equal to the renown of the creature or not.
+
+If you killed a creature but it was worth no Victory Points for some reason, it is still placed
+in your Victory Pile. Some effects can also modify the value of kills in your Victory Pile. If
+a separate card is not placed in the card to show you how the value is modified, mark the
+modified card in some way to remind you how it was modified. See sidebar on suggestions
+of how to mark this.
+
+When determining who killed an creature, there can not be more than one killer. Who-
+ever dealt the damage that killed it is the killer. (see Resolution Step) You can also have
+circumstances where a creature died in combat but no creature directly killed it
+
+If a creature dies while fighting against your pack, gain VP as if your pack killed it. However only if one creature kills another by
+dealing it damage (as opposed to reducing its health or other means) does it count as a kill for that creature. Example: If Scar Throat
+Leech-Killer is fighting a vampire and something is played that reduces the vampires health so it is now dead, Scar Throat does NOT
+gain bonus victory points for the vampire because he did not kill it.
+
+6.4.4 Death outside combat
+If a creature dies outside combat, it is not worth Victory Points unless a card effects says otherwise. Characters killed in this way
+are removed from the game. Other creatures are simply discarded to their owner’s sept discard pile.
+
+6.5 COMBAT DECLARATION OPTIONS
+A member of a pack may NEVER declare an attack or challenge against another member of his own pack, regardless of any card text.
+Nor may Prey attack other Prey. Similarly, a player may NEVER play combat cards for creatures on both sides of a combat.
+6.5.1 Attacking a creature
+Combat will begin between the attacker and defender. Use the combat declaration sequence. An attack cannot be declared except as
+an Alpha action or with a card ability. An attack can only be declared against valid targets: for alpha actions, that is (normally) another
+alpha or Prey; valid targets for other attacks are determined by the card ability; a target becomes invalid if it cannot be attacked
+across the Gauntlet or if the attacker is prevented from attacking it by some other effect (e.g. it is forced to attack something else).
+
+6.5.2 Challenging
+An alpha may challenge a member of another pack who is not their alpha. This is counted as an attack except that creature can
+normally decline the challenge (in the defender section of the Declaration step). If the challenge is declined there is no combat and
+the challenger’s alpha action is over.
+
+6.5.3 Attacking a Battlefield
+Battlefields can normally only be attacked as an Alpha action.
+
+6.5.3.A Attacking a Battlefield
+Battlefields can be attacked from either side of the Gauntlet but are assumed to exist only on the side they are attacked from for the
+duration of the combat. When a Battlefield is attacked, it can be defended by another alpha or, if none is eligible or volunteers, it will
+defend itself.
+Defense by an alpha. Any Alpha that matches the Defender conditions may defend. This is considered a type of stepping in. It may
+defend with a total renown of pack members, including the Alpha, up to the Defender Renown. This counts as a pack defense.
+Self-defending. If no alpha defends the Battlefield, a single player will play for the Battlefield.
+
+- The Battlefield will have Rage, Gnosis and Health equal to its Renown.
+- The Battlefield automatically has the Keywords listed for the Defending Alpha (choose one if there are options).
+- The defending player may also choose ONE additional creature Keyword to give the Battlefield. Examples of Keywords: Black Fury, Ahroun, Spirit, Kailindo (but not Fast or Slow Striking).
+- Selecting the Spirit keyword allows the Battlefield to exist on both sides of the Gauntlet.
+
+6.5.3.b Battlefield combat
+Once defenders have been chosen, both sides draw the number of additional combat cards listed against the chosen attacker/chosen
+defender and follow any special rules listed for attacker and defender. You cannot use additional cards to draw in more renown of
+creatures or draw additional cards, unless they specifically mention Battlefields.
+
+- Combat Events can be used as normal, but they will not add creatures or draw additional cards unless they specify they
+work on the Battlefield. Their other effects will still take place. Example: if you play Frenzy, the frenzied creature still
+fights until “hacked apart” but draws no cards for the frenzy.
+- Any cards that refer to “yielding a Battlefield” means the attacker is withdrawing, as per normal Withdrawal rules..
+
+6.5.4c Victory Points
+
+- Self-defending: If you defeat the Battlefield put it in your Victory Pile where it is worth VP equal to its Renown. If you do
+not defeat the Battlefield, any damage on it is healed at the end of combat.
+- Defense by an alpha: Normally you only score VP for the creatures you kill in this combat except…
+- Defense by an alpha, where one side sweeps the battlefield: that side puts the Battlefield in their Victory Pile where
+it is worth VP equal to its Renown. You sweep the Battlefield if, at the end of the round, you still have creatures on the
+- Battlefield but your opponent does not. This includes if the attacker Yields the Battlefield or withdraws
+
+6.5.4 Attacking a Territory
+Use the combat declaration sequence normally: combat will result if a pack member defends their territory.
+If an alpha chooses to attack another pack’s Territory, that pack’s alpha may choose to defend the Territory. Defending a Territory
+is an action. Either side may use pack tactics.
+If the attacker kills the defender, or all defenders leave combat before the attackers, the Territory is destroyed and discarded. A
+Territory is likewise destroyed if the pack controlling it does not choose to defend it or cannot do so (e.g. they have no alpha). If
+the combat is ended prematurely, or the attacker withdraws, the Territory is not destroyed.
+Territories exist in both worlds. If your alpha is in the Umbra and attacks a territory whose alpha is in the physical world, the
+opposing alpha cannot defend the territory, and the territory is destroyed. (and vice versa) See Umbral combat.
+
+6.5.5 Attacking to bind
+When you attack a Spirit in the Hunting Grounds, if the attacker is in the Umbra, you may announce that you are attempting to
+bind it instead. If you kill the Spirit while it is in this combat, instead heal all damage on it, including any damage that was on it
+from previous combats, and it becomes an Ally of your pack. While it remains an Ally of your pack, the bound Spirit is worth half
+its Renown (round up) in VP. The bound Spirit is worth VP as normal if it is killed by an opponent. Players only get victory points for
+binding Spirits if they bind them as a result of attacking them to bind.
+Binding a spirit does not actually kill the spirit and no effect that is triggered by killing a creature will be triggered by binding a spirit.
+If you attempted to bind a spirit and did not do enough damage to “kill” it, the damage remains on it after combat ends.
+Wyrm creatures can get VP for binding Spirit Enemies. Gaia creatures can get VP for binding Spirit Victims.
+
+6.5.6 Forced Attacks
+In some cases, an effect will force an attacker to declare an attack against a particular target. The attacker may not be forced to attack
+a non-valid target (see Attacking a creature). If the attacker is forced to attack multiple targets, he may select which of the targets to
+attack (alphas do not get multiple alpha actions to attack each one). In most cases, alphas can choose to pass or take an alternate
+Alpha action that does not involve attacking rather than make a forced attack.
+If an ability prevents an otherwise forced attack (e.g. that alpha you have a rivalry with has a Flower of Aphrodite), the creature is no
+longer forced to attack that target as it is not a valid target. (see attacking a creature)
+
+6.5.7 Attack restrictions
+Various card effects and rules effects (such as Loyalty) can prevent you attacking a specific creature or other target. When the
+attacker can’t attack a target, it means:
+- They cannot declare attacks against the target.
+- They cannot voluntarily join a pack attack against the target (but will do so if the effect is “automatic” or brings in your
+whole pack).
+It has no effect on playing Combat Actions or choosing targets for Combat Actions.
+Challenging is a type of attack. You can not challenge things you can not attack.
+
+6.5.8 Pack combat
+Cards and abilities which let you pack attack or defend can be played and used in the precombat step, beginning-of-combat step or a
+between-rounds step, except as limited by the card. (E.g. Cub’s Cry can be used “between rounds of combat”, i.e. only in a between-
+rounds step.) Notable exceptions Hunting Party, Attacking the Wyrm and Ass Whuppin’ Lynch Mob which can only be played during
+the Declaration step.
+Some creatures can automatically join pack combat or draw others into combat. An ability which says this creature can pack attack
+or defend with that creature means that, as per the circumstances on the card, this creature can join in pack attack or defence (e.g.
+Dreams-of-Wonder can join in pack attack or defence in any combat in which one of her Spirit Allies is already fighting). These abili-
+ties can be used even if that creature was brought into pack combat by some other means. E.g. if Blood-on-the-Wind pack attacks
+with Allison Kachina and Dreams-of-Wonder, Allison can bring her brother, and Dreams can bring in her Spirit buddies.
+Creatures pack defending in the Hunting Ground works the same way.
+You cannot bring creatures from outside your pack into pack combat nor pack defend with creatures in the Hunting Ground unless
+specifically stated on a card. Similarly, if a card does let you bring in creatures from outside your pack, you cannot bring in creatures
+such that a creature is in a pack with the target of its Rivalry.
+
+6.5.9 Stepping in
+A Gaia Alpha may, at his option, step in place of a Victim when an attack has been declared against that Victim. Likewise, a Wyrm
+Alpha may step in and defend for an Enemy when an attack is declared against that Enemy. It is not considered the creature’s Alpha
+action to “step in” in this manner but it is an action.
+If two alphas want to step in and defend, the creature with the highest Renown gets to do so (decide ties randomly). See Umbral
+Combat for how that affects stepping in.
+
+6.6 PLAY-CARD STEP OPTIONS
+6.6.1 Multiple Cards
+Sometimes a creature will be able to play multiple Combat Actions during a round. These are considered separate Combat Actions,
+and may be targeted at different opponents.
+When one side has multiple combat cards played at the same time, the controlling player may determine the order that the blows
+land when they damage their targets. This is particularly important when the damage would kill a creature (due to death blow
+abilities such as Taking the Death Blow or the VP bonus of Scar Throat Leech-Killer). A creature is considered killed by the creature
+who played the fatal damage card.
+6.6.2 Pack actions
+Certain cards allow groups of creatures to enter combat as packs, much like normal wolves. A pack action is any combat in which
+you have more than one member of your pack in combat at the same time (or, if playing for prey, when prey pack defend). In a pack
+action, you have multiple creatures on your side of combat, and each is able to play Combat Actions. A pack defence is a pack combat
+for the defending side (creatures which automatically pack defend join the defender in a pack defence). A pack attack is a pack action
+for the attacking side (creatures which automatically pack attack join the attacker in a pack attack).
+
+In pack combat, each creature in combat may play a combat action, although they do not need to do so (unless compelled to do so by
+forced play). The player must select which card is being played by whom (while they are face down).
+6.6.3 Playing for prey
+Whenever a prey creature needs to play a Combat Action, a player not in combat against it plays for it from their combat hand. Only
+one player can play for prey each round, but which player that is can change between rounds. If the available players cannot agree
+between themselves, decide randomly between those that want to play for prey.
+When an Enemy or Victim can play multiple Combat Actions (e.g, Pentex Forestry Team, Zmei), all combat actions it plays during a
+single combat round must come from the same player’s hand. If prey is in a pack action, all the cards for creatures in the pack action
+must come from the same player.
+6.6.4 Umbra-only Combat Actions
+Combat Actions which must be played in the Umbra require both the creature playing the card and the target (if any) to be in the
+Umbra. Spirits normally exist in both the real world and Um
+
+6.6.5 Alternate Combat Actions
+Certain non-combat cards (i.e. sept cards) are played as combat actions, or played in place of combat actions. If you can play
+Multiple Combat Actions in a round, you may Alternate Combat actions for all or some of them, up to the total allowed.
+● A card or ability that is played as a Combat Action (e.g. Wasp Talons, Wanchese’s Bow) is considered a legal Combat
+Action. It can be dodged, or Distracted, and bluffs will not work against the user.
+● Alternative Combat Actions are played at the end of the Reveal Step. Choose a target as they are played.
+● All Alternative Combat Actions are considered Instinctive.
+
+6.6.6 Restricted, forced and random play
+6.6.6a Restricted play
+If a card restricts a creature to playing Combat Actions which meet certain Rage restrictions (e.g Catfeet, Drattosi), any other Combat
+Action played by the creature is illegal. The restrictions are absolute: a creature that is restricted to Rage 1 Combat Actions cannot
+play Combat Actions without a Rage requirement (or rather, such cards are illegal).
+Restricted Play does NOT require you play a card in a given round. It does mean if you play anything, it must meet the restriction (else
+be considered illegal).
+If you have no cards you can play legally due to the requirements of Restricted Play, this does NOT count as being prevented from
+playing a combat action for abilities like Gloom-at-Midnight or for playing Instinctive Combat Actions.
+6.6.6b Forced play
+Forced play requires you to play a card every round you are forced to play, if you have any Combat cards available. (see also Can’t vs
+Must effects) This can force you to play an illegal card.
+
+- You cannot play Alternate Combat Actions while affected by Forced Play effects.
+- If you are part of a pack action, you may select cards for creatures unaffected by Forced Play effects first, then for all
+creatures affected by forced play. If multiple creatures are affected by forced play, you may have them play their forced
+cards in any order.
+- You can be affected by multiple Forced Play and Restricted Play effects. If the revealed card does not meet ALL the
+conditions of the Forced Play and Restricted Play effects, it is illegal.
+
+6.6.6c Random play
+- Random play is a specific type of forced play. For each card a creature must play randomly, a random card is picked from
+the player’s combat hand. Targets will be chosen as normal in next step.
+- Random cards can be illegal cards (including Combat Events) and are handled normally in the Establish-bluff step
+- If a prey creature is made to play randomly, also decide randomly which player (excluding the opposing player) will play
+for all prey this round, even if that player has nothing the prey can legally play.
+
+6.7 TARGETING STEP OPTIONS
+Each combat card played in the previous step is assigned a target. Where one side has pack combat, the opponent of the packcombat declares which creature his Combat Action(s) target. When both sides of combat are using pack actions, targets are assigned
+in order: the attacking pack chooses targets for one of its creatures, then the defending pack chooses one of its creature’s targets,
+and this repeats until all creatures in combat have been given a target.
+
+6.8 REVEAL STEP OPTIONS
+At the end of the Reveal Step, after normal Combat Actions have been revealed, there is an additional ministep in which Feinting,
+Alternative Combat Actions and Instinctive Combat Actions can be played (if available to creatures in combat). All additional cards
+played during Reveal are played face up.
+If creatures can play multiple Combat Actions due to another effect, those additional actions may be played via Feinting or as
+Instinctive Combat Actions when allowed.
+Forced and Restricted play effects still apply to card selection for Feints and Instinctive cards.
+The order is:
+1. Any creature which can and chooses to use feinting plays a combat card
+2. Any creature which can and chooses to use an Alternative Combat Action plays it now
+3. Any creature which is prevented from playing Combat Actions (either specifically or prevented from taking any action)
+may play an Instinctive Combat Action if one is available to it.
+4. Targets are chosen for cards played during this mini-step
+
+6.8.1 Feinting
+An ability which allows a creature to play a Combat Action after other creatures have revealed their Combat Actions. E.g. Feint, Dr.
+Spencer. After you have seen your opponents cards, you do NOT have to play a card unless another effect requires you to do so.
+If you choose to play a card, you may play as many Combat Cards as you may do so. Normally that is one. See Playing Multiple
+Combat Actions.
+All cards are played face up during Reveal step, so playing another Feint during Reveal will not allow you Feint a second time.
+6.8.2 Instinctive Combat Action
+A Combat Action which can be played if the user is “stymied” (prevented from playing actions or Combat Action). Alternate Combat
+Actions may all be played as Instinctives. You can only use Instinctive Actions if you were prevented from playing a combat card,
+NOT if you voluntarily played no card in the normal play sequence.
+You may only play an Instinctive Action if you are the target of a card. Reminder: blocks/dodges have no target at this step, so do not
+count as targetting you.
+If you choose to play a card, you may play as many Instinctive Combat Cards as abilities let you. Normally that is one. See Playing
+Multiple Combat Actions.
+Cards that they are Instinctive Combat Actions may be played as normal combat cards following the regular combat card timing. You
+are not required to use them ONLY as Instinctive cards.
+
+6.9 BLUFF STEP OPTIONS
+All Combat Actions have requirements. Normally this is a Rage requirement, although some cards have instead a Gnosis requirement
+and there may also be additional conditions (e.g. “crinos form only”). See also Restricted Play. If those are requirements are not met,
+Combat Actions may be discarded in this step.
+Special abilities of Combat Actions do not resolve if they were discarded in this step unless they specifically state they occur at a
+different time.
+
+6.91. Illegal cards
+Illegal cards are determined in the Establish-Bluff step: nothing after this point can change whether a card is legal or not. Any CombatActions which the user does not meet the non-Rage requirements and conditions
+for are considered illegal Combat Actions. It is also possible to play Combat Events
+face down, and these are considered illegal cards too. Illegal cards are immediately
+discarded when revealed. Illegal cards are NOT considered “cards played” for
+purposes of frenzy, ending combat etc.
+Anything that is NOT Rage and is REQUIRED to play a combat action is a non-Rage re-
+quirement. This includes cards that require Gnosis instead of Rage. Some cards may
+state that they will do effect Y if you meet X requirement. Those are not requirement
+for determining if the card can be played at all. They will just provide the additional
+benefit if you meet X requirement.
+If you failed to meet the requirements of Restricted or Forced Play effects, that will
+also make a card illegal.
+Discard all illegal cards before determining if bluffs will succeed or fail.
+
+6.9.2 Bluffs
+Creatures can try to perform mighty feats in combat beyond their normal abilities -
+specifically it is possible to play Combat Actions which require more Rage than a creature has. This is known as bluffing.
+A bluff succeeds if:
+• it has a target and the target also bluffed OR target played no legal cards
+• OR it has no target and no creature targeted it with a non-bluffed Combat Action this round
+Otherwise the bluff fails and it is discarded. Nothing after this point can change whether a card is bluffed or not.
+
+6.10 RESOLUTION STEP OPTIONS
+6.10.1 Fast Striking & Slow Striking
+Fast Striking and Slow Striking are keywords applied to Combat Actions. If a Combat Action has neither of these keywords, it resoves
+at normal speed.
+• Fast Striking Combat Actions resolve before normal Combat Actions, which resolve before Slow Striking Combat Actions.
+• There is no opportunity to use card effects between resolution, except for those which trigger off damage dealt.
+• A creature removed from combat (including killed) must discard any unresolved Combat Actions they played this round.
+• Combat Actions are unaffected by Combat Actions slower than themselves (e.g. a Fast Strike cannot be dodged by a
+Fancy Footwork - unless that Fancy Footwork was itself Fast Striking due to, for instance, Spirit of the Fray).
+Combat Actions cannot be given more than one of each of these keywords. Combat Actions with both Fast Striking and Slow Striking
+act at normal speed.
+
+6.10.2 Dodges and Blocks
+Dodges and Blocks are ways of preventing damage from Combat Actions (they do not work on damage from other sources). If you
+dodge an attack, all damage from it is prevented. Blocks prevent a specified amount of damage, up to the total damage dealt. Note
+that Combat Actions that dodge or block do not prevent damage from attacks at a faster speed. They may prevent damage from
+slower actions.
+Definition: Unblockable - Blocks have no effect on this attack.
+Definition: Undodgeable - Dodges have no effect on this attack.
+Dodges and blocks that do no damage have no target. You decare one during targeting (so it is not obvious you are playing a block
+or dodge), but they are not actually targeting those creatures. You do not choose what card you will Dodge or Block until you would
+resolve your card.
+Some cards both attack AND block/dodge at same time (example: Evade and Strike). When you declare targets for these types of
+cards, they DO have a target who will be affected by the damage when the card resolves. You do not have to dodge/block the target
+of the attack portion of the card, you may still choose what card you block/dodge when it resolves.
+
+6.10.3 Redirecting attacks
+Some abilities allow you to redirect an damage card from one creature to another as it resolves . Redirect abilities will specify when
+they are used and who the damage is redirected to.
+- Redirection effects are not considered attacks by the creature using them. The attack is still considered to come from
+the creature that initially played it, even if the damage is redirected back onto the creature that played it. Effects on the
+damage card which are not reliant on damaging its target take effect normally.
+- Redirection takes place after dodges, blocks. It takes place before other cards which affect Damage Cards.
+- The same damage can be redirected more than once in a combat.
+Redirected damage cards do not damage their original target. Ignore all damage effects on cards until the damage will
+not be redirected again.
+- Some redirection abilities substitute the new creature for old. This has no effect if both creatures are in combat. If the
+new creature was not originally in combat, the original target is removed from combat: if this removal is prevented, the
+new creature still joins combat and the damage is still redirected.
+
+6.10.4 Parting shots
+A creature using a Combat Action that removes it from combat (or makes it step sideways) is still affected by Combat Actions
+targeting him that resolve at the same time.
+
+6.11 FRENZY
+Frenzy is when a character loses rational control of his combat instinct. There are several types of frenzy in Rage:
+• Frenzy (aka, a full frenzy): a creature is totally consumed by bloodlust and the desire to kill.
+• Limited frenzy (e.g., a Battle Fervor): the creature has at least a little control over his actions.
+• Fox frenzy: the creature instinctively flees the combat.
+Cards that just say they send a creature into frenzy mean “full frenzy” unless otherwise specified in the text or errata of the card.
+
+6.11.1 Common rules
+Limited frenzies and Fox frenzies are limited to the abilities listed on the card and the effects common to all frenzies. Those
+effects are:
+● Unless a card specifically states otherwise, Allies and Prey may not frenzy. Card abilities which incite frenzies will not
+work on them, unless the card specifically says it will work on Allies or Prey.
+● A creature may not “double-frenzy” and draw multiple frenzy cards; a creature may only be affected by one frenzy at a time.
+● When a creature frenzies, any cards drawn for the frenzy are placed in your combat hand. They may be used both by the
+frenzied creature and any packmates in a pack action with him.
+● A frenzied creature may not play Gifts. Gifts played before the creature frenzied are not affected.
+● If a frenzied character is forced back into Breed form, frenzy continues in that form. They will flip to Crinos as normal
+when they take additional damage.
+
+6.11.2 Ending a frenzy
+- Frenzy ends either when the frenzy is cancelled, combat ends, the frenzied creature is removed from combat (by death
+or otherwise) or it is out of playable Combat Actions (see below for longer explanation).
+- When a frenzy ends, the player must immediately discard a number of combat cards equal to the number of cards drawn
+for the frenzy. The cards discarded are randomly selected from the player’s combat hand. If this is more card than are
+currently in your hand, just discard the whole hand. Nothing additional happens.
+
+For purposes of ending a Frenzy, one of your pack is deemed out of playable Combat Actions if:
+1. the creature did not play a combat action this round AND
+2. you do not have a Combat Action in your combat hand that the creature can play next round.
+This is checked at the end of each round, just before the attacker decides if they will withdraw or not; if this effect will end a frenzy,
+reveal your hand to all opponents for confirmation.
+
+6.11.3 Full frenzy additional rules
+The following effects apply to full frenzy only. Sept cards which incite Frenzies will incite a full frenzy when used on creatures. The
+Frenzy Combat Event sends a creature into full frenzy.
+● The creature immediately changes to crinos or battle Form (if possible).●
+- At the start of the frenzy, the creature draws a number of additional combat cards equal to her current Rage score in
+crinos or battle Form.
+- Attackers may not withdraw from a combat when any creature is fully frenzied.
+- A fully frenzied creature must play every Combat Action that it can, including bluffs. This is a type of Forced Play.
+- If a fully frenzied creature is flipped to Breed form and dies as a result, it will flip back to Crinos the next time it takes
+damage. It’s still dead, regardless.
+- A Fully frenzied creature who takes enough damage to kill it is dead, but it is just too angry to realize it. Cards which
+trigger on a creature’s death must be played at the moment it dies, even though it may keep fighting. Healing the damage
+after a creature is dead will not stop the creature dying. Once the Combat or frenzy ends, the creature will fight no more
+(and will go into the Victory Pile of the pack that killed it, if any). The creature also stops fighting if it has total damage
+equal to its Health plus Rage, taken from when the creature frenzied (after flipping to crinos): this is referred to as the
+“hacked apart” level (i.e. when the creature is in too many pieces to fight on). The amount of damage needed to “hack
+apart” a creature is determined when the frenzy starts. If its Rage or Health is reduced or increased during the combat, it
+won’t change how much damage is required to hack it apart.
+- Abilities which directly increase Rage will increase the number of cards drawn in frenzy and how much damage it takes
+to hack apart a creature. (e.g. Might of Thor, Beast-of-War) Abilities which state the creature plays “cards at +X Rage”
+(e.g. battle Song, Gibbous Moon) do not increase the number of cards drawn for frenzy or raise the hacked apart level.
+Similarly, items which allow a creature to “play combat actions of X Rage or less” (e.g. most Firearms), do not affect
+how many cards the creature draws for frenzy nor increase its hacked apart level.
+
+
+
+Combat Events
+
+A quick reminder: all Combat
+Events are Combat Restricted.
+Combat Events stay in play
+until their effect ends.

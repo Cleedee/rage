@@ -146,9 +146,16 @@ class TestPriorityBot:
         atk = game.players[0].pack_home[0]
         start_combat(game, [str(atk.card_id)], [str(vitima.card_id)])
 
-        # Bot esta em combate, deve declarar
+        # Bot esta em combate, deve declarar (novo fluxo: auto-advance
+        # por declaration/pre_combat/beginning_of_combat, depois play_card)
         action = bot.decide()
-        assert action.startswith('declare_')
+        # O bot pode precisar de algumas chamadas para avancar
+        # pelos steps de auto-advance antes de jogar a carta
+        for _ in range(10):
+            if action.startswith('play_') or action.startswith('declare_'):
+                break
+            action = bot.decide()
+        assert action.startswith('play_') or action.startswith('declare_')
 
     def test_difficulty_levels(self, game):
         """Todos os niveis de dificuldade funcionam."""

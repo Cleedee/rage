@@ -51,13 +51,30 @@ HAND_SIZE_SEPT = 5
 HAND_SIZE_COMBAT = 5
 
 # Etapas do combate
+# Fluxo completo baseado no Capitulo 6 das regras oficiais
+# DECLARACAO (6.1) -> RODADAS (6.2) -> FIM (6.3)
 COMBAT_STEPS = [
-    'select_alpha', # Escolher alfa (maior Renome age primeiro)
-    'declare',      # Escolher acao face-down
-    'reveal',       # Revelar + "Ultimo a Declarar" pode Feint
-    'resolve',      # Aplicar danos e efeitos
-    'end',          # Remover mortos, mends
+    'select_alpha',        # Escolher alfa (maior Renome age primeiro)
+    'alpha_action',        # Alpha declara ataque/challenge/outra acao
+    # --- Fases de declaracao (6.1) ---
+    'declaration',         # Declarar atacante+alvo; atacante (Hunting Party) e defensor (Shieldmate) jogam cards
+    'pre_combat',          # Pack actions, redirect, step in for Prey, combat cancelling (Closed Play)
+    'beginning_of_combat', # Open Play (gifts pre-combate, frenzy)
+    # --- Rodadas de combate (6.2) ---
+    'play_card',           # Cada criatura joga combat card face-down; weapons declarados
+    'targeting',           # Atribuir alvos as combat cards (devem mesmo mundo/Gauntlet)
+    'reveal',              # Revelar cartas; feinting, instinctive, alternative
+    'bluff',               # Verificar requisitos, descartar ilegais, verificar bluffs
+    'resolution',          # Fast Striking -> Normal -> Slow Striking, aplicar dano
+    'withdrawal',          # Atacante pode retirar (fim do combate se retirar)
+    'between_rounds',      # Open Play entre rodadas; loop para play_card
+    'end',                 # Fim do combate, cleanup
 ]
+
+# Steps de auto-advance (sem acao do jogador, apenas transicao)
+COMBAT_STEPS_AUTO = {
+    'pre_combat', 'beginning_of_combat', 'bluff', 'withdrawal',
+}
 
 # Tipos de carta no jogo
 CARD_TYPES = {

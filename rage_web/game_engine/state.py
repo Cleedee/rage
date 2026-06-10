@@ -554,13 +554,27 @@ class PlayerState:
 
 @dataclass
 class CombatState:
-    """Estado atual do combate."""
+    """Estado atual do combate.
+
+    Steps (Cap. 6):
+    - select_alpha: Escolher alfa
+    - alpha_action: Alpha declara ataque/challenge
+    - declaration: Declarar atacante+alvo; abilities na declaracao
+    - pre_combat: Pack actions, redirect, cancel, step in (Closed Play)
+    - beginning_of_combat: Open Play pre-rodadas
+    - play_card: Cada criatura joga combat card face-down
+    - targeting: Atribuir alvos
+    - reveal: Revelar + feinting + instinctive + alternative
+    - bluff: Verificar requisitos, descartar ilegais
+    - resolution: Fast -> Normal -> Slow, aplicar dano
+    - withdrawal: Atacante pode retirar
+    - between_rounds: Open Play entre rodadas
+    - end: Fim do combate
+    """
     is_active: bool = False
-    step: str = ''            # select_alpha, declare, reveal, resolve, end
+    step: str = ''
     attackers: list[str] = field(default_factory=list)
     defenders: list[str] = field(default_factory=list)
-    declarations: dict[str, Optional[str]] = field(default_factory=dict)
-    declaration_order: list[str] = field(default_factory=list)
 
     # Alpha selection
     alphas: dict[str, str] = field(default_factory=dict)
@@ -571,6 +585,53 @@ class CombatState:
     """Indice do alpha atual em alpha_order"""
     alpha_actions_taken: int = 0
     """Contador de acoes alfa tomadas"""
+
+    # ---- NOVOS CAMPOS (Cap. 6) ----
+
+    # Rodada de combate atual (0 = pre-rodadas, 1+ = rodadas)
+    round_number: int = 0
+
+    # Combatentes ativos (atualizado a cada rodada)
+    combatants: list[str] = field(default_factory=list)
+
+    # Declaracao original (attackers vs defenders)
+    original_attackers: list[str] = field(default_factory=list)
+    original_defenders: list[str] = field(default_factory=list)
+
+    # --- Play Card Step ---
+    # played_cards[card_id] = action_name (strike, block, dodge, etc)
+    played_cards: dict[str, str] = field(default_factory=dict)
+    # face_down_order: ordem em que os cards foram jogados
+    face_down_order: list[str] = field(default_factory=list)
+
+    # --- Targeting Step ---
+    # targets[card_id] = target_card_id (quem cada card mira)
+    targets: dict[str, str] = field(default_factory=dict)
+
+    # --- Bluff Step ---
+    # Cartas ilegais (nao atendem requisitos)
+    illegal_cards: set[str] = field(default_factory=set)
+    # Cartas que sao bluff (Rage req maior que a Rage do personagem)
+    bluff_cards: set[str] = field(default_factory=set)
+    # Cartas que falharam o bluff
+    bluff_failed: set[str] = field(default_factory=set)
+
+    # --- Resolution Step ---
+    # Dano pendente por velocidade: fast, normal, slow
+    # damage_queue[card_id] = [(target_id, damage_value, speed), ...]
+    damage_queue: list[tuple[str, str, int, str]] = field(default_factory=list)
+
+    # --- Withdrawal ---
+    # Se o atacante se retirou
+    attacker_withdrew: bool = False
+
+    # Metadados de compatibilidade com o sistema anterior
+    # declarations: mapeia card_id -> action (antigo declare_action)
+    declarations: dict[str, Optional[str]] = field(default_factory=dict)
+    # declaration_order: ordem das declaracoes
+    declaration_order: list[str] = field(default_factory=list)
+    # weapon_declarations: card_id -> weapon_card_id (armas usadas)
+    weapon_declarations: dict[str, str] = field(default_factory=dict)
 
     @property
     def last_to_declare(self) -> Optional[str]:
@@ -586,26 +647,28 @@ class CombatState:
         return None
 
     def declare(self, card_id: str, action: str) -> bool:
+        """Registra a acao de combate de uma criatura (antigo 'declare').
+        Agora mapeia tanto para declarations (back compat) quanto
+        para played_cards (novo sistema).
+        """
         if not self.is_active:
             return False
         if card_id in self.declarations:
             return False
         self.declarations[card_id] = action
         self.declaration_order.append(card_id)
+        # Tambem registra no novo sistema (play_card)
+        self.played_cards[card_id] = action
+        self.face_down_order.append(card_id)
         return True
 
     def all_declared(self, combatants: list[str]) -> bool:
+        """Verifica se todos os combatentes declararam."""
         return all(c in self.declarations for c in combatants)
 
     def selecionar_alfa(self, jogador_id: str, card_id: str):
-        """Seleciona o alpha de um jogador.
-
-        Args:
-            jogador_id: ID do jogador.
-            card_id: ID da criatura escolhida como alpha.
-        """
+        """Seleciona o alpha de um jogador."""
         self.alphas[jogador_id] = card_id
-        # Recalcula ordem decrescente de Renome
         self._recalcular_ordem_alfa()
 
     def _recalcular_ordem_alfa(self):
@@ -615,8 +678,38 @@ class CombatState:
         - Alpha com maior Renome age primeiro.
         - Empates sao resolvidos aleatoriamente.
         """
-        # A ordem e recalculada externamente em combat_queue.py
         pass
+
+    def iniciar_nova_rodada(self):
+        """Prepara para uma nova rodada de combate.
+        Preserva declarations para o round anterior para log,
+        mas limpa played_cards para o novo round.
+        """
+        self.round_number += 1
+        self.played_cards.clear()
+        self.face_down_order.clear()
+        self.targets.clear()
+        self.illegal_cards.clear()
+        self.bluff_cards.clear()
+        self.bluff_failed.clear()
+        self.damage_queue.clear()
+        self.weapon_declarations.clear()
+        # Mantem declarations para compatibilidade
+        self.declarations.clear()
+        self.declaration_order.clear()
+
+    def limpar_combatentes_mortos(self, mortos: set[str]):
+        """Remove combatentes mortos de todas as listas."""
+        self.attackers = [c for c in self.attackers if c not in mortos]
+        self.defenders = [c for c in self.defenders if c not in mortos]
+        self.combatants = [c for c in self.combatants if c not in mortos]
+        for cid in mortos:
+            self.declarations.pop(cid, None)
+            self.played_cards.pop(cid, None)
+            if cid in self.declaration_order:
+                self.declaration_order.remove(cid)
+            if cid in self.face_down_order:
+                self.face_down_order.remove(cid)
 
 
 @dataclass

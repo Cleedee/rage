@@ -755,9 +755,17 @@ class RageCLI(cmd.Cmd):
             print(f'  {card_id} nao pode usar Feint agora.')
 
     def do_RESOLVE(self, arg):
-        """RESOLVE - Resolve o combate atual."""
+        """RESOLVE - Resolve o combate atual.
+        Avanca por withdrawal -> between_rounds -> end.
+        """
         g = self.game
         if resolve_combat(g):
+            print('  Dano aplicado!')
+            # Avanca steps de auto-advance ate end
+            from rage_web.game_engine.combat_queue import advance_combat_step
+            while g.combat.is_active and g.combat.step not in ('end',):
+                if not advance_combat_step(g):
+                    break
             print('  Combate resolvido!')
         else:
             print('  Nao foi possivel resolver o combate.')

@@ -859,81 +859,156 @@ class PriorityBot:
     def _decide_combat(self) -> str:
         """Age durante o combate.
 
-        Declara acoes para TODOS os combatentes (incluindo oponentes)
-        para simplificar o ciclo sem necessidade de alternancia.
+        Suporta tanto steps antigos (declare, reveal, resolve, end)
+        quanto novos (declaration, play_card, targeting, reveal,
+        bluff, resolution, withdrawal, between_rounds).
 
         Regra (4.4.2): qualquer jogador exceto o atacante pode declarar
         acoes de combate por uma Presa (Victim/Enemy/Battlefield) no HG.
         """
         from rage_web.game_engine.combat_queue import _find_card, \
-            _eh_prey_no_hg, _eh_atacante_da_presa
+            _eh_prey_no_hg, _eh_atacante_da_presa, advance_combat_step
 
         g = self.game
+        step = g.combat.step
 
-        if g.combat.step == 'declare':
+        # ---- NOVOS STEPS ----
+
+        if step == 'declaration':
+            # Declaration Step: ja foi configurado em start_combat
+            # Avanca para pre_combat
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step in ('pre_combat', 'beginning_of_combat'):
+            # Auto-advance (sem pack actions por enquanto)
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step == 'play_card':
+            # Play Card Step: jogar combat cards face-down
+            # (mesma logica do antigo 'declare')
+            self._feinted_ids.clear()
+            all_cids = get_combatants(g)
+            for cid in all_cids:
+                if cid in g.combat.played_cards:
+                    continue
+
+                card = _find_card(g, cid)
+                if card:
+                    if card.owner_id != self.player_id:
+                        continue
+                    if _eh_prey_no_hg(g, cid):
+                        if _eh_atacante_da_presa(g, cid, self.player_id):
+                            continue
+                    action = self._choose_combat_action(card, card.owner_id)
+                    declare_action(g, cid, action)
+                    return f'play_{cid}_{action}'
+
+            # Todos os combatentes do bot jogaram
+            combatants = get_combatants(g)
+            if all(c in g.combat.played_cards for c in combatants):
+                # Avanca para targeting
+                g.combat.step = 'targeting'
+                return 'combat_targeting'
+
+            # Verifica se so presas nao declaradas (auto-declare)
+            pendentes = [c for c in combatants
+                         if c not in g.combat.played_cards]
+            if pendentes and all(_eh_prey_no_hg(g, c) for c in pendentes):
+                reveal_all(g)
+                return 'reveal'
+
+            self._pass_turn()
+            return 'combat_wait'
+
+        if step == 'targeting':
+            # Targeting Step: alvos atribuidos
+            # Por enquanto, auto-advance (alvos sao definidos
+            # implicitamente pelos pares atacante-defensor)
+            g.combat.step = 'reveal'
+            return 'combat_progress'
+
+        if step == 'reveal':
+            return self._handle_reveal_step()
+
+        if step == 'bluff':
+            # Bluff Step: verificar requisitos
+            # Por enquanto, auto-advance
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step == 'resolution':
+            # Resolution Step: aplicar dano
+            resolve_combat(g)
+            return 'combat_resolve'
+
+        if step == 'withdrawal':
+            # Withdrawal Step: verificar se atacante retira
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step == 'between_rounds':
+            # Between-rounds: verificar se continua
+            if not g.combat.attackers or not g.combat.defenders:
+                g.combat.step = 'end'
+                return 'combat_end'
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step == 'end':
+            end_combat(g)
+            return 'end_combat'
+
+        # ---- STEPS ANTIGOS (backward compat) ----
+
+        if step == 'declare':
             self._feinted_ids.clear()  # Novo round de combate
             all_cids = get_combatants(g)
             for cid in all_cids:
                 if cid in g.combat.declarations:
                     continue
 
-                # Busca a carta em TODAS as zonas (incluindo HG)
                 card = _find_card(g, cid)
                 if card:
-                    # So declara por personagens do PROPRIO bot
-                    # (nao declara por personagens de outros jogadores)
                     if card.owner_id != self.player_id:
                         continue
-                    # Se for uma Presa e o bot for o atacante,
-                    # nao pode declarar por ela (regra 4.4.2).
-                    # A auto-declaracao em reveal_all() cuida do default.
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
-                            # Bot atacante: nao pode jogar pela presa
                             continue
                     action = self._choose_combat_action(card, card.owner_id)
                     declare_action(g, cid, action)
                     return f'declare_{cid}_{action}'
 
-                # Fallback: busca em pack_home (comportamento antigo)
                 for p in g.players:
                     for c in p.pack_home:
                         if str(c.card_id) == cid:
-                            # So declara por personagens do PROPRIO bot
                             if c.owner_id != self.player_id:
                                 continue
                             action = self._choose_combat_action(c, c.owner_id)
                             declare_action(g, cid, action)
                             return f'declare_{cid}_{action}'
 
-            # Se sobram apenas Presas que o bot (como atacante) nao pode
-            # declarar, verifica se reveal_all() pode auto-declara-las.
-            # Se sim, prossegue; se nao, retorna wait.
             combatants = get_combatants(g)
             if g.combat.all_declared(combatants):
                 reveal_all(g)
                 return 'reveal'
 
-            # Verifica se as unicas nao declaradas sao Presas
-            # que serao auto-declaradas por reveal_all()
             pendentes = [c for c in combatants
                          if c not in g.combat.declarations]
             if pendentes and all(
                 _eh_prey_no_hg(g, c) for c in pendentes
             ):
-                # reveal_all() vai auto-declara-las como block
                 reveal_all(g)
                 return 'reveal'
 
-            # Nenhum combatente do bot precisa declarar
-            # Passar a vez para o proximo jogador
             self._pass_turn()
             return 'combat_wait'
 
-        elif g.combat.step == 'reveal':
+        if step == 'reveal':
             return self._handle_reveal_step()
 
-        elif g.combat.step in ('resolve', 'end'):
+        if step in ('resolve',):
             resolve_combat(g)
             end_combat(g)
             return 'end_combat'
@@ -1041,22 +1116,22 @@ class PriorityBot:
     def _decide_combat_random(self) -> str:
         """Acoes aleatorias em combate (modo facil)."""
         from rage_web.game_engine.combat_queue import _find_card, \
-            _eh_prey_no_hg, _eh_atacante_da_presa
+            _eh_prey_no_hg, _eh_atacante_da_presa, advance_combat_step
 
         g = self.game
         combatants = get_combatants(g)
+        step = g.combat.step
 
-        if g.combat.step == 'declare':
+        # ---- STEPS ANTIGOS ----
+        if step == 'declare':
             for cid in combatants:
                 if cid not in g.combat.declarations:
-                    # Se for Presa e o bot for o atacante, pula
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
                     action = random.choice(list(COMBAT_ACTIONS))
                     declare_action(g, cid, action)
                     return f'declare_{cid}_{action}'
-            # Se sobram apenas Presas que serao auto-declaradas
             pendentes = [c for c in combatants
                          if c not in g.combat.declarations]
             if pendentes and all(
@@ -1067,9 +1142,47 @@ class PriorityBot:
             if g.combat.all_declared(combatants):
                 reveal_all(g)
 
-        resolve_combat(g)
-        end_combat(g)
-        return 'combat_end'
+            resolve_combat(g)
+            end_combat(g)
+            return 'combat_end'
+
+        # ---- NOVOS STEPS ----
+        if step in ('declaration', 'pre_combat', 'beginning_of_combat'):
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step == 'play_card':
+            for cid in combatants:
+                if cid not in g.combat.played_cards:
+                    if _eh_prey_no_hg(g, cid):
+                        if _eh_atacante_da_presa(g, cid, self.player_id):
+                            continue
+                    action = random.choice(list(COMBAT_ACTIONS))
+                    declare_action(g, cid, action)
+                    return f'play_{cid}_{action}'
+            g.combat.step = 'targeting'
+            return 'combat_progress'
+
+        if step == 'targeting':
+            g.combat.step = 'reveal'
+            return 'combat_progress'
+
+        if step == 'reveal':
+            return self._handle_reveal_step()
+
+        if step in ('bluff', 'withdrawal', 'between_rounds'):
+            advance_combat_step(g)
+            return 'combat_progress'
+
+        if step == 'resolution':
+            resolve_combat(g)
+            return 'combat_resolve'
+
+        if step == 'end':
+            end_combat(g)
+            return 'end_combat'
+
+        return 'combat_unknown'
 
     # ------------------------------------------------------------------
     # Sub-arvores de decisao
