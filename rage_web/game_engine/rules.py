@@ -1012,21 +1012,26 @@ def pode_step_sideways(personagem: 'CardInstance',
     """Verifica se um personagem pode stepping sideways.
 
     Regra (2.2.4):
+    - Character so pode step usando um Caern no pack OU card ability.
     - Precisa ser um Character.
     - Sua Creature Class pode stepping sideways.
     - Gnosis >= Gauntlet do Caern.
+    - Sem Caern no pack, NAO pode step (a menos que card ability permita).
 
     Args:
         personagem: O personagem a verificar.
-        caern: O Caern usado (opcional, usa padrao se None).
-        gauntlet: Rating do Gauntlet (padrao 6 se nao houver Caern).
+        caern: O Caern usado (opcional, sem Caern = False).
+        gauntlet: Rating do Gauntlet (ignorado se caern for None).
 
     Returns:
-        True se o personagem pode stepping sideways.
+        True se o personagem pode stepping sideways via Caern.
     """
     if 'Character' not in (personagem.card_type or ''):
         return False
-    # Verifica Gnosis
+    # Regra 2.2.4: precisa de um Caern no pack
+    if caern is None:
+        return False
+    # Verifica Gnosis >= Gauntlet do Caern
     gnosis_req = gauntlet
     if personagem.gnosis < gnosis_req:
         return False

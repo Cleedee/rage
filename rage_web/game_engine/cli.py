@@ -1031,6 +1031,7 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                         damage=card_model.damage or '',
                         text=card_model.text or '',
                         keywords=card_model.keyword or '',
+                        tags=card_model.tags or '',
                         modelo_id=modelo_id,
                     )
                     cards.append(ci)

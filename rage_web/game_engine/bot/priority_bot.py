@@ -163,6 +163,19 @@ class PriorityBot:
                     self._cards_played_this_turn += 1
                     return f'play_character_{card.card_id}'
 
+        # 1.5 Prioridade alta: jogar Caern (habilita acesso a Umbra)
+        for i, card in enumerate(me.hand):
+            ct = card.card_type or ''
+            if ct == 'Caern':
+                if self._pode_pagar_custos(card):
+                    from rage_web.game_engine.rules import pode_jogar_caern
+                    if pode_jogar_caern(me, card, self.game):
+                        self._play_card(i)
+                        self._cards_played_this_turn += 1
+                        self.game.add_log(
+                            f'[BOT] {me.name}: jogou Caern {card.name}')
+                        return f'play_caern_{card.card_id}'
+
         # 2. Jogar cartas de HG (Victim/Enemy/Battlefield + subtipos) — essenciais
         #    para ter alvos no Hunting Grounds
         for i, card in enumerate(me.hand):
@@ -376,37 +389,114 @@ class PriorityBot:
         self._pass_turn()
         return 'pass_redraw'
 
+    # ── Tags/chaves que indicam utilidade na Umbra ──
+    _UMBRA_TAGS = {
+        'umbra', 'umbra-synergy', 'umbra-regen', 'umbral',
+        'spirit', 'class-spirit', 'sideways',
+    }
+    _UMBRA_TIPO = {
+        'class-spirit',  # Criaturas espirituais existem em ambos mundos
+    }
+
+    @staticmethod
+    def _carta_tem_utilidade_umbra(card) -> bool:
+        """Verifica se uma carta tem utilidade na Umbra.
+
+        Analisa tags, tipo e texto da carta para detectar
+        se ela e mais eficaz ou so funciona na Umbra.
+        """
+        # Tags explicitas
+        tags = (card.tags or '').lower()
+        for kw in PriorityBot._UMBRA_TAGS:
+            if kw in tags:
+                return True
+        # Tipo espiritual
+        tipo = (card.card_type or '').lower()
+        for kw in PriorityBot._UMBRA_TIPO:
+            if kw in tipo:
+                return True
+        # Texto da carta
+        texto = (card.text or '').lower()
+        if 'umbra' in texto:
+            return True
+        return False
+
+    def _pontuacao_utilidade_umbra(self) -> int:
+        """Calcula pontuacao de utilidade na Umbra baseada na mao.
+
+        Retorna 0-5: quantas cartas uteis na Umbra o bot tem na mao.
+        Usado para decidir se vale a pena entrar na Umbra.
+        """
+        score = 0
+        for card in self.player.hand:
+            if self._carta_tem_utilidade_umbra(card):
+                score += 1
+        return score
+
+    def _oponente_pode_seguir_umbra(self) -> bool:
+        """Verifica se algum oponente pode seguir para a Umbra.
+
+        Se NENHUM oponente tem Caern + personagem com Gnosis alta,
+        entrar na Umbra e uma vantagem enorme (ataque unilateral).
+        """
+        for p in self.game.players:
+            if p.id == self.player_id:
+                continue
+            from rage_web.game_engine.rules import encontrar_caern, GAUNTLET_DEFAULT
+            caern = encontrar_caern(p)
+            if caern is None:
+                continue  # Sem Caern, nao pode seguir
+            gauntlet = getattr(caern, 'damage', GAUNTLET_DEFAULT)
+            try:
+                gauntlet = int(gauntlet) if gauntlet else GAUNTLET_DEFAULT
+            except (ValueError, TypeError):
+                gauntlet = GAUNTLET_DEFAULT
+            # Tem personagem com Gnosis >= Gauntlet?
+            for c in p.pack_home:
+                if 'Character' in (c.card_type or '') and c.gnosis >= gauntlet:
+                    return True  # Este oponente PODE seguir
+        return False
+
     def _agir_umbra(self) -> str:
         """Age na fase de Umbra: stepping sideways.
 
         Regra (2.2.4):
-        - So pode tomar UMA acao de stepping por Umbra phase.
-        - Step para Umbra se tiver personagens com Gnosis alta.
-        - Step de volta se tiver personagem na Umbra com Rage >= 3.
+        - Character so pode step usando Caern no pack OU card ability.
+        - Step simultaneo em Closed Play.
+        - Um personagem nao pode entrar E sair na mesma fase.
+
+        Estrategia:
+        1. Se tem carta util na Umbra na mao, prioriza entrar.
+        2. Se oponente nao pode seguir, prioriza entrar (vantagem).
+        3. Volta personagens uteis para combate se precisar.
+        4. Alpha fica no Pack Home se possivel.
+        5. Uma acao por fase (entrar OU sair, nunca ambos).
         """
         podem_ir, podem_voltar = self.player.personagens_que_podem_step()
 
-        # So uma acao de Umbra por fase
+        # Regra: UMA acao de Umbra por fase (Closed Play simultaneo)
         if getattr(self, '_umbra_agiu', False):
             self._pass_turn()
             return 'pass_umbra'
         self._umbra_agiu = True
 
-        # Prioridade: voltar da Umbra se tiver guerreiro util
+        utilidade_umbra = self._pontuacao_utilidade_umbra()
+        oponente_pode_seguir = self._oponente_pode_seguir_umbra()
+
+        # ── Se tem personagens na Umbra, decide se volta ──
         if self.player.umbra:
-            # Tenta trazer o alpha primeiro (maior poder de combate = rage*health)
+            # Identifica quem seria o alpha (maior poder de combate no pack)
             candidatos_alpha = [
                 c for c in self.player.pack_home
                 if 'Character' in (c.card_type or '') or 'Ally' in (c.card_type or '')
             ]
             possivel_alpha_id = None
             if candidatos_alpha:
-                # Poder de combate: rage * health (melhor indicador que renown)
                 possivel_alpha = max(candidatos_alpha,
                                      key=lambda c: c.effective_rage * c.effective_health)
                 possivel_alpha_id = str(possivel_alpha.card_id)
 
-            # Traz o possivel alpha da Umbra se estiver la
+            # Traz o alpha se ele estiver na Umbra
             for c in self.player.umbra[:]:
                 if str(c.card_id) == possivel_alpha_id and c.rage >= 1:
                     self.player.step_back(c)
@@ -414,31 +504,41 @@ class PriorityBot:
                         f'[BOT] {self.player.name}: {c.name} '
                         f'voltou da Umbra (alpha prioritario)')
                     return f'umbra_back_{c.card_id}'
-            # Fallback: qualquer guerreiro util
-            for c in self.player.umbra[:]:
-                if c.rage >= 3:
-                    self.player.step_back(c)
-                    self.game.add_log(
-                        f'[BOT] {self.player.name}: {c.name} '
-                        f'voltou da Umbra')
-                    return f'umbra_back_{c.card_id}'
+
+            # Se oponente NAO pode seguir, combate sera no mundo fisico.
+            # Melhor trazer combatentes com Rage >= 3.
+            if not oponente_pode_seguir:
+                for c in self.player.umbra[:]:
+                    if c.rage >= 3:
+                        self.player.step_back(c)
+                        self.game.add_log(
+                            f'[BOT] {self.player.name}: {c.name} '
+                            f'voltou da Umbra (combatente)')
+                        return f'umbra_back_{c.card_id}'
+
             self._pass_turn()
             return 'pass_umbra'
 
-        # Entrar na Umbra
+        # ── Decidir se vale a pena entrar ──
+        # Prioridade: utilidade na mao (0-5) * 2 + vantagem vs oponente
+        # Se nao tem carta util E oponente pode seguir: baixa prioridade
+        if utilidade_umbra == 0 and oponente_pode_seguir:
+            self._pass_turn()
+            return 'pass_umbra'
+
         if podem_ir:
-            # Tenta nao enviar o melhor combatente (rage*health) para Umbra
+            # Quem enviar?
             candidatos_alpha = [
                 c for c in self.player.pack_home
                 if 'Character' in (c.card_type or '') or 'Ally' in (c.card_type or '')
             ]
             possivel_alpha_id = None
             if candidatos_alpha:
-                # Usa power rating (rage * health) como indicador de quem fica
                 possivel_alpha = max(candidatos_alpha,
                                      key=lambda c: c.effective_rage * c.effective_health)
                 possivel_alpha_id = str(possivel_alpha.card_id)
 
+            # Filtra quem enviar: prioriza Gnosis alta, evita alpha
             if possivel_alpha_id:
                 personagens_sem_alpha = [
                     c for c in podem_ir
@@ -451,13 +551,19 @@ class PriorityBot:
                 personagem = max(personagens_sem_alpha,
                                  key=lambda c: c.gnosis)
             else:
-                # So tem o melhor combatente e ele pode ir — deixa ir
+                # So tem alpha disponivel
+                if oponente_pode_seguir:
+                    # Oponente segue — alpha precisa estar no pack
+                    self._pass_turn()
+                    return 'pass_umbra'
                 personagem = max(podem_ir, key=lambda c: c.gnosis)
 
             self.player.step_sideways(personagem)
             self.game.add_log(
                 f'[BOT] {self.player.name}: {personagem.name} '
-                f'entrou na Umbra')
+                f'entrou na Umbra'
+                + (' (vantagem: oponente nao segue)' if not oponente_pode_seguir else '')
+                + (f' (+{utilidade_umbra} cartas uteis)' if utilidade_umbra else ''))
             return f'umbra_step_{personagem.card_id}'
 
         self._pass_turn()

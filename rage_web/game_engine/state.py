@@ -111,6 +111,7 @@ class CardInstance:
     requires: str = ''
     text: str = ''
     keywords: str = ''
+    tags: str = ''
     is_tapped: bool = False  # @DEPRECATED: nao usado no Rage CCG oficial
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
