@@ -690,6 +690,11 @@ class CombatState:
     # Ex: {'restricted': 'rage_2', 'forced': True, 'random': True}
     restricoes_round: dict[str, dict] = field(default_factory=dict)
 
+    # --- P8: Virtual Damage Actions ---
+    # dano_actions[action_name] = {'damage': int, 'card_id': int, 'card_name': str}
+    # Acoes geradas a partir de combat cards com efeito 'dano'
+    dano_actions: dict[str, dict] = field(default_factory=dict)
+
     def get_restricoes(self, card_id: str) -> dict:
         """Retorna as restricoes de uma criatura para esta rodada."""
         return self.restricoes_round.get(card_id, {})

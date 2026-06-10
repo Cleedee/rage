@@ -1327,17 +1327,19 @@ class PriorityBot:
                     if ce_jogado:
                         return ce_jogado
 
-                    # P4: Tenta usar carta da mao de combate como acao
+                    # P4+P8: Tenta usar carta da mao de combate como acao
                     # antes de cair em acoes basicas (strike/claw/bite).
                     carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
                     if carta_acao and carta_combate:
                         result = declare_action(g, cid, carta_acao)
                         if result:
-                            # Consome a carta da mao de combate
-                            if carta_combate in self.player.combat_hand:
-                                self.player.combat_hand.remove(carta_combate)
-                                carta_combate.zone = Zone.DISCARD_COMBAT
-                                self.player.discard_combat.append(carta_combate)
+                            # P8: acao virtual 'dano_' ja consumiu a carta
+                            if not carta_acao.startswith('dano_'):
+                                # P4: consome a carta da mao de combate
+                                if carta_combate in self.player.combat_hand:
+                                    self.player.combat_hand.remove(carta_combate)
+                                    carta_combate.zone = Zone.DISCARD_COMBAT
+                                    self.player.discard_combat.append(carta_combate)
                             self._usou_carta_combate = True
                             g.add_log(f'{self.player.name} usou carta de combate '
                                       f'{carta_combate.name} como {carta_acao}')
@@ -1654,17 +1656,19 @@ class PriorityBot:
                         if ce_card and _jogar_ce_face_down(
                                 g, cid, str(ce_card.card_id)):
                             return f'play_{cid}_ce_{ce_card.card_id}'
-                    # P4: Tenta usar carta da mao de combate como acao
+                    # P4+P8: Tenta usar carta da mao de combate como acao
                     card = _find_card(g, cid)
                     if card and card.owner_id == self.player_id:
                         carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
                         if carta_acao and carta_combate and self.game.rng.random() < 0.5:
                             result = declare_action(g, cid, carta_acao)
                             if result:
-                                if carta_combate in self.player.combat_hand:
-                                    self.player.combat_hand.remove(carta_combate)
-                                    carta_combate.zone = Zone.DISCARD_COMBAT
-                                    self.player.discard_combat.append(carta_combate)
+                                # P8: acao virtual 'dano_' ja consumiu a carta
+                                if not carta_acao.startswith('dano_'):
+                                    if carta_combate in self.player.combat_hand:
+                                        self.player.combat_hand.remove(carta_combate)
+                                        carta_combate.zone = Zone.DISCARD_COMBAT
+                                        self.player.discard_combat.append(carta_combate)
                                 return f'play_{cid}_{carta_acao}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     result = declare_action(g, cid, action)
@@ -2413,17 +2417,15 @@ class PriorityBot:
         raise ValueError('Nenhum oponente')
 
     def _escolher_carta_combate_como_acao(self, card: CardInstance) -> tuple[Optional[str], Optional[CardInstance]]:
-        """P4: Tenta usar carta da mao de combate como acao declarada.
+        """P4+P8: Tenta usar carta da mao de combate como acao declarada.
 
-        Percorre a mao de combate do jogador e verifica se alguma
-        carta tem nome que corresponde a uma COMBAT_ACTION conhecida
-        (ex: 'Head Butt' -> 'head_butt', 'Dodge' -> 'dodge').
+        Duas estrategias:
+        P4: Mapeia nome da carta para COMBAT_ACTION conhecida
+            (ex: 'Head Butt' -> 'head_butt').
+        P8: Para cartas com efeito 'dano' no modelo que nao mapeiam
+            para acao conhecida, cria acao virtual 'dano_<uid>'.
 
-        So retorna cartas OFENSIVAS (com dano > 0) que sejam
-        melhores que a melhor acao basica. Defensivas (block/dodge)
-        sao deixadas para _choose_combat_action.
-
-        Returns:
+        Retorna:
             (action_name, card_instance) ou (None, None) se nenhuma
             carta viavel foi encontrada.
         """
@@ -2431,7 +2433,9 @@ class PriorityBot:
             return None, None
 
         from rage_web.game_engine.combat_queue import (
-            COMBAT_ACTION_PROPS, COMBAT_ACTION_VALIDATORS)
+            COMBAT_ACTION_PROPS, COMBAT_ACTION_VALIDATORS,
+            _registrar_acao_dano)
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO
 
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
@@ -2475,49 +2479,96 @@ class PriorityBot:
             if nome_slug in MAPA_NOMES_CARTA_PARA_ACAO:
                 nome_slug = MAPA_NOMES_CARTA_PARA_ACAO[nome_slug]
 
-            if nome_slug not in COMBAT_ACTION_PROPS:
-                continue
+            # ── P4: Checa se nome mapeia para COMBAT_ACTION ──
+            if nome_slug in COMBAT_ACTION_PROPS:
+                # Pula acoes defensivas (deixa _choose_combat_action decidir)
+                if nome_slug in ACES_DEFENSIVAS:
+                    continue
 
-            # Pula acoes defensivas (deixa _choose_combat_action decidir)
-            if nome_slug in ACES_DEFENSIVAS:
-                continue
+                props = COMBAT_ACTION_PROPS.get(nome_slug, {})
+                req = props.get('rage_requirement', 0)
 
-            props = COMBAT_ACTION_PROPS.get(nome_slug, {})
-            req = props.get('rage_requirement', 0)
+                if card.effective_rage < req:
+                    continue
+                if nivel_restrito is not None and req > nivel_restrito:
+                    continue
 
-            if card.effective_rage < req:
-                continue
-            if nivel_restrito is not None and req > nivel_restrito:
-                continue
+                # Validadores especificos
+                validators = COMBAT_ACTION_VALIDATORS.get(nome_slug, [])
+                rejeitada = False
+                for validador in validators:
+                    erro = validador(self.game, card)
+                    if erro:
+                        rejeitada = True
+                        break
+                if rejeitada:
+                    continue
 
-            # Validadores especificos
-            validators = COMBAT_ACTION_VALIDATORS.get(nome_slug, [])
-            rejeitada = False
-            for validador in validators:
-                erro = validador(self.game, card)
-                if erro:
-                    rejeitada = True
-                    break
-            if rejeitada:
-                continue
+                # Calcula dano esperado
+                acao_dano = props.get('damage')
+                if acao_dano is None:
+                    acao_dano = card.effective_rage
 
-            # Calcula dano esperado
-            acao_dano = props.get('damage')
-            if acao_dano is None:
-                acao_dano = card.effective_rage
+                # Bonus de Tail Lash
+                if nome_slug == 'tail_lash':
+                    keywords = (card.keywords or '').lower()
+                    if 'rokea' in keywords or 'mokole' in keywords:
+                        acao_dano += props.get('bonus_dano', 0)
 
-            # Bonus de Tail Lash
-            if nome_slug == 'tail_lash':
-                keywords = (card.keywords or '').lower()
-                if 'rokea' in keywords or 'mokole' in keywords:
-                    acao_dano += props.get('bonus_dano', 0)
+                # So retorna se dano > 0 E pelo menos tao bom quanto a melhor basica
+                # (>= para usar cartas com propriedades especiais tipo head_butt bounce)
+                if acao_dano > 0 and acao_dano >= melhor_dano_basico and acao_dano > melhor_dano:
+                    melhor_acao = nome_slug
+                    melhor_carta = carta_combate
+                    melhor_dano = acao_dano
 
-            # So retorna se dano > 0 E pelo menos tao bom quanto a melhor basica
-            # (>= para usar cartas com propriedades especiais tipo head_butt bounce)
-            if acao_dano > 0 and acao_dano >= melhor_dano_basico and acao_dano > melhor_dano:
-                melhor_acao = nome_slug
-                melhor_carta = carta_combate
-                melhor_dano = acao_dano
+        # ── P8: Se P4 nao achou nada, busca cartas com efeito 'dano' ──
+        # (ex: Telling Blow, Reckless Swing, Lucky Blow)
+        if melhor_acao is None:
+            for carta_combate in self.player.combat_hand:
+                # Pula cartas que ja foram mapeadas (evita duplicacao)
+                nome_slug = (carta_combate.name or '').lower().replace(' ', '_').replace('-', '_')
+                if nome_slug in MAPA_NOMES_CARTA_PARA_ACAO:
+                    nome_slug = MAPA_NOMES_CARTA_PARA_ACAO[nome_slug]
+                if nome_slug in COMBAT_ACTION_PROPS:
+                    if nome_slug not in ACES_DEFENSIVAS:
+                        continue  # Ja foi considerada em P4
+                if nome_slug in ACES_DEFENSIVAS:
+                    continue
+
+                # Verifica se o modelo da carta tem efeito 'dano'
+                if not carta_combate.modelo_id:
+                    continue
+                modelo = CARTAS_EXEMPLO.get(carta_combate.modelo_id)
+                if not modelo or not modelo.modos:
+                    continue
+
+                # Encontra o primeiro efeito de dano
+                dano_valor = None
+                for modo in modelo.modos:
+                    for efeito in (modo.efeitos or []):
+                        from rage_web.game_engine.effects import EfeitoTipo
+                        if getattr(efeito, 'tipo', None) == EfeitoTipo.DANO:
+                            dano_valor = getattr(efeito, 'quantidade', None)
+                            break
+                    if dano_valor is not None:
+                        break
+
+                if dano_valor is None or dano_valor <= 0:
+                    continue
+
+                # So usa se dano >= melhor basica (ou se basica for strike puro e dano for util)
+                if dano_valor < melhor_dano_basico:
+                    continue
+
+                # Registra acao virtual
+                acao_virtual = _registrar_acao_dano(self.game, carta_combate,
+                                                     str(card.card_id))
+                if acao_virtual:
+                    if dano_valor > melhor_dano:
+                        melhor_acao = acao_virtual
+                        melhor_carta = carta_combate  # Ja foi consumido
+                        melhor_dano = dano_valor
 
         return melhor_acao, melhor_carta
 

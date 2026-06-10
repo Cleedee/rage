@@ -1024,6 +1024,73 @@ def _jogar_ce_face_down(game: GameState, criatura_id: str,
     return True
 
 
+def _registrar_acao_dano(game: GameState, card: CardInstance,
+                          criatura_id: str) -> Optional[str]:
+    """P8: Registra uma acao virtual de dano a partir de um combat card.
+
+    Examina o modelo da carta em busca de efeitos do tipo 'dano'.
+    Se encontrar, cria uma acao virtual 'dano_<uid>' com o valor de
+    dano do primeiro efeito de dano encontrado.
+
+    A acao e registrada em game.combat.dano_actions e a carta e
+    consumida da mao de combate.
+
+    Args:
+        game: Estado da partida.
+        card: Carta de combate (Combat Action, Combat Event, etc.).
+        criatura_id: ID da criatura que usara a acao.
+
+    Returns:
+        Nome da acao virtual (ex: 'dano_12345') ou None se a carta
+        nao tem efeito de dano.
+    """
+    if not card.modelo_id:
+        return None
+
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+    if not modelo or not modelo.modos:
+        return None
+
+    # Procura o primeiro efeito de dano em qualquer modo
+    dano_valor = None
+    for modo in modelo.modos:
+        for efeito in (modo.efeitos or []):
+            from rage_web.game_engine.effects import EfeitoTipo
+            if getattr(efeito, 'tipo', None) == EfeitoTipo.DANO:
+                dano_valor = getattr(efeito, 'quantidade', None)
+                break
+        if dano_valor is not None:
+            break
+
+    if dano_valor is None or dano_valor <= 0:
+        return None
+
+    # Cria nome unico para acao virtual
+    uid = id(card)
+    action_name = f'dano_{uid}'
+
+    # Registra no estado do combate
+    game.combat.dano_actions[action_name] = {
+        'damage': dano_valor,
+        'card_id': card.card_id,
+        'card_name': card.name,
+    }
+
+    # Consome a carta da mao de combate
+    dono = _find_owner(game, card)
+    if dono and card in dono.combat_hand:
+        dono.combat_hand.remove(card)
+    card.zone = Zone.DISCARD_COMBAT
+    if dono:
+        dono.discard_combat.append(card)
+
+    game.add_log(f'  {card.name} registrado como acao de dano '
+                 f'(dano: {dano_valor})')
+
+    return action_name
+
+
 def declare_action(game: GameState, card_id: str, action: str,
                      acoes_extra: Optional[list[str]] = None) -> bool:
     """Declara uma acao de combate para uma criatura.
@@ -1054,7 +1121,9 @@ def declare_action(game: GameState, card_id: str, action: str,
         if not acoes_extra or action not in acoes_extra:
             # Permite Combat Events jogados face-down (ce_<id>)
             if not action.startswith('ce_'):
-                return False
+                # P8: Permite acoes virtuais de dano (dano_<uid>)
+                if not action.startswith('dano_'):
+                    return False
 
     # Valida restricoes especificas da Combat Action
     if action in COMBAT_ACTION_VALIDATORS:
@@ -1804,14 +1873,25 @@ def resolve_combat(game: GameState) -> bool:
             dano = 0
         else:
             # Dano basico: usa damage da acao (se definido) ou Rage da criatura
-            acao_dano = props.get('damage')
-            if acao_dano is not None:
-                dano_base = acao_dano
-                game.add_log(
-                    f'  {origem_card.name} usou {acao_origem} '
-                    f'(dano: {dano_base})')
+            # P8: Verifica se e acao virtual de dano (dano_<uid>)
+            if acao_origem.startswith('dano_'):
+                dano_info = game.combat.dano_actions.get(acao_origem)
+                if dano_info:
+                    dano_base = dano_info['damage']
+                    game.add_log(
+                        f'  {origem_card.name} usou {dano_info["card_name"]} '
+                        f'(dano: {dano_base})')
+                else:
+                    dano_base = origem_card.effective_rage
             else:
-                dano_base = origem_card.effective_rage
+                acao_dano = props.get('damage')
+                if acao_dano is not None:
+                    dano_base = acao_dano
+                    game.add_log(
+                        f'  {origem_card.name} usou {acao_origem} '
+                        f'(dano: {dano_base})')
+                else:
+                    dano_base = origem_card.effective_rage
 
             # Grand Klaive (306): +1 Rage em Crinos
             if origem_card.is_crinos:
