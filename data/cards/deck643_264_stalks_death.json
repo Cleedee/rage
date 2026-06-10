@@ -7,14 +7,6 @@
       "descricao": "Personagem: Rg3 Gn8 H5 (Ren9) - Ragabash",
       "efeitos": [
         {
-          "tipo": "restringir",
-          "condicao_alvo": "self",
-          "params": {
-            "descricao": "Pode usar Gifts Philodox alem dos normais",
-            "gifts_extras": ["philodox"]
-          }
-        },
-        {
           "tipo": "registrar_trigger_combate",
           "condicao_alvo": "self",
           "params": {
@@ -39,6 +31,7 @@
     "rage": 3,
     "gnosis": 8,
     "health": 5,
-    "requires": ""
+    "requires": "",
+    "notas": "Philodox Gifts implementado via rules.pode_usar_gift(). +1 VP ao ser destruido via trigger."
   }
 }

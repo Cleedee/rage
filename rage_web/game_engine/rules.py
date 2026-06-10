@@ -404,6 +404,12 @@ def pode_usar_gift(player: 'PlayerState',
             if 'auspice' in req_lower:
                 if char.gnosis >= (gift_card.gnosis or 0):
                     return True
+        # Stalks Death (264): pode usar Philodox Gifts
+        if 'stalks death' in char_text:
+            req_lower = (gift_card.requires or '').lower()
+            if 'philodox' in req_lower:
+                if char.gnosis >= (gift_card.gnosis or 0):
+                    return True
 
     if not requires:
         # Sem requisito de keyword: apenas check de Gnosis

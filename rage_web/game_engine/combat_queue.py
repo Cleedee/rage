@@ -1630,6 +1630,15 @@ def resolve_combat(game: GameState) -> bool:
                         f'({origem_card.name} Rage {origem_card.effective_rage} <= 4)')
                 break
 
+        # Grand Klaive (306): dano agravado (Weapon)
+        for eq in origem_card.attached_equipment:
+            if eq.card_id == 306:  # Grand Klaive
+                war_knife_aggravated = True
+                game.add_log(
+                    f'  Grand Klaive: dano agravado '
+                    f'({origem_card.name})')
+                break
+
         # Skin of the Hellbound (697): imune a dano de Rage 6+
         skin_blocks = False
         for eq in alvo_card.attached_equipment:
@@ -1656,6 +1665,16 @@ def resolve_combat(game: GameState) -> bool:
                     f'(dano: {dano_base})')
             else:
                 dano_base = origem_card.effective_rage
+
+            # Grand Klaive (306): +1 Rage em Crinos
+            if origem_card.is_crinos:
+                for eq in origem_card.attached_equipment:
+                    if eq.card_id == 306:
+                        dano_base += 1
+                        game.add_log(
+                            f'  Grand Klaive: +1 Rage em Crinos '
+                            f'({origem_card.name})')
+                        break
 
             dano = max(0, dano_base - alvo_card.reducao_dano)
             # Head Butt bloqueado: nao causa dano ao defensor (ja tomou bounce)
