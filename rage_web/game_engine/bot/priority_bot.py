@@ -944,9 +944,11 @@ class PriorityBot:
         if step == 'reveal':
             return self._handle_reveal_step()
 
+        if step == 'feint':
+            return self._handle_feint_step()
+
         if step == 'bluff':
             # Bluff Step: verificar requisitos
-            # Por enquanto, auto-advance
             advance_combat_step(g)
             return 'combat_progress'
 
@@ -1028,18 +1030,25 @@ class PriorityBot:
         return 'combat_unknown'
 
     def _handle_reveal_step(self) -> str:
-        """Lida com o Reveal Step: Feint unico por criatura, depois resolve.
+        """Reveal Step: avanca para Feint Step.
 
-        Cada criatura pode usar Feint no maximo uma vez por round de
-        combate (controlado por _feinted_ids).
+        As cartas ja foram reveladas pela etapa de targeting.
+        O Feint Step (6.8) cuidara das decisoes de feint.
+        """
+        g = self.game
+        g.combat.step = 'feint'
+        return 'combat_progress'
+
+    def _handle_feint_step(self) -> str:
+        """Feint Step (6.8.1): decide se alguma criatura deve feintar.
+
+        O ultimo a declarar pode trocar sua acao apos ver
+        as revelacoes. Se nenhum feint for desejado/possivel,
+        avanca para Bluff Step.
         """
         g = self.game
         opp = self._get_opponent()
         combatants = get_combatants(g)
-
-        OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
-                     'ranged_strike'}
-        DEFENSIVAS = {'block', 'dodge', 'flee'}
 
         for cid in combatants:
             criatura = None
@@ -1081,10 +1090,9 @@ class PriorityBot:
                     self._feinted_ids.add(cid)
                     return f'feint_{cid}_{melhor_acao}'
 
-        resolve_combat(g)
-        end_combat(g)
-        self._feinted_ids.clear()
-        return 'end_combat'
+        # Nenhum feint desejado/possivel -> avanca para bluff
+        g.combat.step = 'bluff'
+        return 'combat_progress'
 
     def _melhor_acao_feint(self, criatura: CardInstance,
                            acao_atual: str,
@@ -1201,6 +1209,9 @@ class PriorityBot:
         if step == 'reveal':
             return self._handle_reveal_step()
 
+        if step == 'feint':
+            g.combat.step = 'bluff'
+            return 'combat_progress'
         if step in ('bluff', 'withdrawal', 'between_rounds'):
             advance_combat_step(g)
             return 'combat_progress'

@@ -63,7 +63,8 @@ COMBAT_STEPS = [
     # --- Rodadas de combate (6.2) ---
     'play_card',           # Cada criatura joga combat card face-down; weapons declarados
     'targeting',           # Atribuir alvos as combat cards (devem mesmo mundo/Gauntlet)
-    'reveal',              # Revelar cartas; feinting, instinctive, alternative
+    'reveal',              # Revelar cartas
+    'feint',               # Feinting (6.8.1), Instinctive (6.8.2), Alternative (6.6.5)
     'bluff',               # Verificar requisitos, descartar ilegais, verificar bluffs
     'resolution',          # Fast Striking -> Normal -> Slow Striking, aplicar dano
     'withdrawal',          # Atacante pode retirar (fim do combate se retirar)
