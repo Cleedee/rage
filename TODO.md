@@ -306,91 +306,266 @@
 - [ ] **Testes para Ally recruitment** — `pode_recrutar_ally()` com diversos padrões
 - [ ] **Testes para Quests** — `_check_quests()`, Past Life penalties, Unique enforcement
 
-## 🔄 Pendente (Regras de Combate — Capítulo 6)
+## 🔄 Pendente (Regras de Combate — Capítulo 6) — Análise Completa
 
-### Challenge
-- [ ] **Challenge como ação do jogador** — Desafiar não-Alpha para combate (pode ser recusado)
-- [ ] **Challenge só para Characters** — Não pode desafiar Territories ou Battlefields
-- [ ] **Se aceito, vira ataque** — Challenge aceito = ataque normal
+### Status Geral
 
-### Escape
-- [ ] **Escape como mecânica geral** — Criaturas saindo do combate (Dodge/Flee)
-- [ ] **Escape não afeta outros combatentes** — Apenas a criatura que escapa sai
-- [ ] **Nerve Agent e efeitos similares** — Criatura sai mas retorna (não é escape)
+O sistema atual implementa um fluxo simplificado (`select_alpha → declare → reveal → resolve → end`) que resolve 1 rodada de combate sem pack actions, bluff, ou re-rodadas. O capítulo 6 (520 linhas) descreve um sistema muito mais completo.
 
-### Attacker/Defender
-- [ ] **Conceitos distintos no estado** — `CombatState` já tem attackers/defenders mas não usa como conceitos de regra
-- [ ] **Pack combat** — Múltiplas criaturas de um lado vs outro
+**Cobertura estimada**: ~35% do Capítulo 6 implementado.
 
-### Regras de Gauntlet (Regra 5)
-- [x] **Events/Totems afetam ambos os lados** — Implementado
-- [x] **Caerns/Territories existem em ambos os lados** — Implementado
-- [x] **Actions/Gifts/Rites/Combat Actions NÃO cruzam** — `_validar_gauntlet_efeito()` implementado
-- [x] **Criaturas na Umbra só atacam outras na Umbra** — `_mesmo_lado_gauntlet()`
-- [x] **Criaturas no mundo físico só atacam outras no mundo físico** — `_mesmo_lado_gauntlet()`
-- [ ] **Criaturas em ambos os lados podem votar em Juntas** — Não implementado
-- [ ] **Juntas sem alvo específico funcionam cross-Gauntlet** — Não implementado
-- [ ] **Criaturas só na Umbra não são alvos de Juntas** — Não implementado
+---
 
-### Alpha Actions
-- [x] **Alpha ataca primeiro (maior Renome)** — `calcular_ordem_alfa()`
-- [x] **Alpha pode atacar Prey no HG** — `_melhor_alvo_hg()`
-- [x] **Alpha pode atacar outro alpha** — `_agir_alpha()`
-- [x] **Alpha pode atacar Territory** — `start_combat()` substitui defensor
-- [x] **Alpha pode Engage Battlefield** — `_agir_alpha()`
-- [ ] **Alpha pode Challenge não-Alpha** — Não implementado
-- [ ] **Alpha pode usar card/ability como alpha action** — Não implementado
-- [ ] **Se alpha morrer, não pode selecionar outro até próximo Combat phase** — Não implementado
+### 🏗️ 1. REFATORAR MÁQUINA DE STEPS (ALTA PRIORIDADE)
 
-### Combat Flow
-- [x] **Declaração simultânea** — Bots declaram em sequência
-- [x] **Último a declarar pode Feint** — `_handle_reveal_step()`
-- [x] **Reveal → Resolve → End** — Fluxo completo
-- [x] **Prey se defende automaticamente (Block)** — `reveal_all()`
-- [ ] **Pre-Combat Step** — Pack actions, redirect attack, combat cancelling, stepping in for Prey, defending Battlefield
-- [ ] **Targeting Step** — Atribuir targets às Combat Cards (devem estar no mesmo mundo/Gauntlet)
-- [ ] **Establish-Bluff Step** — Cartas ilegais descartadas (non-Rage requirements não atendidos)
-- [ ] **Between-rounds step** — Jogar Combat Actions entre rodadas
-- [ ] **Withdrawal step** — Criaturas podem se retirar
-- [ ] **Anatomy Lesson e efeitos de retirada** — Forçar retirada
-- [ ] **Attacker/Defender abilities during declaration** — Usar abilities/cards ao declarar ataque
-- [ ] **Pack attacks/defences** — Múltiplas criaturas de um lado vs outro
-- [ ] **Redirect attack target** — Mudar alvo do ataque (não cancela pack defences)
-- [ ] **Combat cancelling** — Cancelar combate inteiro
-- [ ] **Forced attacks** — Efeitos que forçam ataque contra alvo específico
-- [ ] **Attack restrictions** — Loyalty, Flower of Aphrodite, etc.
-- [ ] **Combat Events during declaration** — Hunting Party, etc.
-- [ ] **Shieldmate during attack declaration** — Única card que pode ser jogada pelo defensor na declaração
+**Atual:** `select_alpha → declare → reveal → resolve → end` (5 steps)
 
-### Combat Actions
-- [x] **Fast Striking** — Age primeiro na batalha
-- [x] **Block reduz dano pela Rage do defensor** — Regra 6.10
-- [x] **Dodge evita ataque** — `declare_action()`
-- [x] **Flee (fuga)** — `declare_action()`
-- [ ] **Instinctive Combat Actions** — Jogadas se "stymied" (impedido de jogar)
-- [ ] **Alternative Combat Actions** — Opções alternativas de combate
-- [ ] **Whip of the Wicked constraint** — Oponente deve declarar block/dodge primeiro
+**Regras (6.1, 6.2):**
+```
+Declaration Step       → Declarar ataque (Closed Play)
+Pre-Combat Step        → Pack actions, redirect, cancel (Closed Play)
+Beginning-of-Combat    → Open Play (gifts, frenzy pre-combate)
+─── Rounds ───
+  Play Card Step        → Jogar combat card face-down
+  Targeting Step        → Atribuir alvos
+  Reveal Step           → Revelar cartas, feinting, instinctive
+  Bluff Step            → Verificar requisitos, descartar ilegais
+  Resolution Step       → Fast → Normal → Slow, aplicar dano
+  Withdrawal Step       → Atacante pode retirar
+  Between-rounds Step   → Open Play (repetir rounds)
+```
 
-### Vitória e Eliminação
-- [x] **VP por matar criaturas** — `_processar_morte()`
-- [x] **VP por Renome do alpha** — `_agir_alpha()`
-- [x] **Eliminação sem Characters** — Regra 2.3
-- [x] **Vitória por VP >= Renown level** — `verificar_vitoria()`
-- [ ] **Empate: jogo continua por mais um turno** — Não implementado
-- [ ] **Jogador eliminado pode ganhar VP no turno da eliminação** — Não implementado
+- [ ] **Fase extra: Declaration Step** — Declarar atacante + alvo; atacante (Hunting Party) e defensor (Shieldmate) jogam cards
+- [ ] **Fase extra: Pre-Combat Step** — Pack actions, redirect attack, stepping in for Prey, defending Battlefield, combat cancelling
+- [ ] **Fase extra: Beginning-of-Combat Step** — Open Play (gifts pre-combate, frenzy)
+- [ ] **Rounds: Play Card Step** — Cada criatura joga uma combat card face-down; weapons declarados
+- [ ] **Rounds: Targeting Step** — Alvos atribuídos às combat cards (devem mesmo mundo/Gauntlet)
+- [ ] **Rounds: Bluff Step (Establish-Bluff)** — Verificar requisitos não-Rage; descartar ilegais; verificar bluff
+- [ ] **Rounds: Withdrawal Step** — Atacante pode retirar (fim do combate)
+- [ ] **Rounds: Between-rounds Step** — Open Play entre rodadas
+- [ ] **Múltiplas rodadas** — Repetir Play Card → Between-rounds até condição de fim
+- [ ] **Condições de fim (6.3)**: sem combat action, sem atacantes/defensores, atacante retirou, card forçou fim
+- [ ] **Sem alvo válido por 1 round = removido** (6.3 último bullet)
 
-## 🔄 Pendente (Decks)
+### 🎴 2. COMBAT HAND / COMBAT DECK (ALTA PRIORIDADE)
 
-### Deck 734 — Círculo Kailindo
-- [x] **Refinamento inicial** — Removidas cartas com req não atendido
-- [x] **Renome 30/30** — Ajustado
-- [ ] **Loop de ataque infinito** — Bot fica atacando repetidamente após combates
-- [ ] **Verificar estratégia do bot** — Deck pode precisar de ajustes nas heurísticas
+**Atual:** Mão principal usada para Combat Actions. **Regras:** Combat Deck separado com Combat Hand.
 
-## 📊 Progresso
+- [ ] **Criar CombatDeck** — Deck separado com Combat Cards (Actions + Events)
+- [ ] **Criar CombatHand** — Mão separada; tamanho baseado em Renome do alpha + participantes
+- [ ] **Refill pós-combate** (6.3) — Reabastecer combat hand após cada combate
+- [ ] **Embaralhar discard ao acabar** — Se combat deck acabar, reshuffle descartadas
+- [ ] **Bot jogar da combat hand** — Bot precisa selecionar da combat hand, não da mão principal
+- [ ] **Combat Events ficam em jogo** — (sidebar) Permanecem em jogo até efeito acabar
+
+### 👊 3. COMBAT ACTIONS COM DANO PRÓPRIO (MÉDIA PRIORIDADE)
+
+**Atual:** Dano = Rage do atacante (hardcoded em `resolve_combat`)
+
+**Regras:** Combat Actions têm seu próprio valor de dano. A Rage do personagem é o **requirement**, não o dano.
+
+- [ ] **Modelo JSON de Combat Action** — Cada CA precisa de: `damage`, `rage_requirement`, `speed` (fast/normal/slow), `keywords`
+- [ ] **Resolver dano pelo card** — `resolve_combat()` usa damage do card, não `origem.rage`
+- [ ] **Bluff check** — Se Rage do personagem < rage_requirement do card, é bluff (pode falhar)
+
+### ⚡ 4. VELOCIDADES DE RESOLUÇÃO (MÉDIA PRIORIDADE)
+
+**Atual:** Todas as ações resolvem simultaneamente
+
+**Regras (6.10.1):** Fast Striking → Normal → Slow Striking
+
+- [ ] **Fast Striking resolve primeiro** — Antes de ações normais
+- [ ] **Slow Striking resolve depois** — Depois de ações normais
+- [ ] **Criatura removida descarta ações não resolvidas** — Se morreu em Fast, não resolve Normal
+- [ ] **Fast não pode ser dodged por Slow** — Fancy Footwork sem Spirit of the Fray falha
+- [ ] **Múltiplos cards na mesma velocidade** — Oponente decide ordem do dano
+
+### 📦 5. PACK COMBAT (MÉDIA PRIORIDADE)
+
+**Atual:** 1v1 apenas. **Regras (6.5.8, 6.6.2):** Múltiplas criaturas por lado.
+
+- [ ] **Estrutura PackAction/PackDefence** — Lista de criaturas atacando/defendendo juntas
+- [ ] **Pack attack cards** — Hunting Party, Cub's Cry, Attacking the Wyrm, Ass Whuppin' Lynch Mob
+- [ ] **Auto-pack creatures** — Dreams-of-Wonder (pack com Spirit Allies), etc.
+- [ ] **Pack actions no Pre-Combat Step** — Anunciar pack actions
+- [ ] **Draw adicional para pack** — Cada participante pode desenhar cards extras
+- [ ] **Alpha pode recusar pack attack** — Para tomar alpha action diferente
+- [ ] **Pack defence no HG** — Funciona igual (6.5.8)
+- [ ] **Não pode pack attack com criatura de outro pack** — Exceto se card permite
+
+### 🎯 6. TARGETING STEP (MÉDIA PRIORIDADE)
+
+**Atual:** Alvo definido na declaração. **Regras (6.7):** Alvos declarados APÓS cartas face-down.
+
+- [ ] **Alvos declarados após Play Card** — Primeiro jogam face-down, depois declaram alvos
+- [ ] **Pack targeting alternado** — Atacante escolhe, depois defensor, repete
+- [ ] **Dodge/Block não têm alvo** — Declarados sem alvo específico
+- [ ] **Alvo no mesmo mundo** — Gauntlet check ao atribuir alvo
+
+### 🃏 7. BLUFF E CARTAS ILEGAIS (MÉDIA PRIORIDADE)
+
+**Regras (6.9):**
+
+- [ ] **Illegal cards (6.9.1)** — Cartas sem requisitos não-Rage são descartadas no Bluff Step:
+  - Gnosis requirements
+  - Form restrictions ("crinos form only")
+  - Keyword requirements
+  - Combat Events face-down são ilegais
+  - Restricted Play violations
+- [ ] **Bluff (6.9.2)** — Jogar CA com Rage requirement maior que a Rage do personagem
+  - **Succeed**: alvo também bluffou OU alvo não jogou carta legal
+  - **Fail**: carta descartada
+  - **Sem alvo**: succeed se ninguém targetou com non-bluffed card
+- [ ] **Descartar ilegais ANTES de verificar bluff** — Ordem correta: 6.9.1 → 6.9.2
+- [ ] **Legalidade é definitiva após Bluff Step** — Nada muda depois
+
+### 🛡️ 8. FEINTING, INSTINCTIVE, ALTERNATIVE (MÉDIA PRIORIDADE)
+
+**Regras (6.8):** Mini-step no fim do Reveal Step
+
+**Ordem:** 1. Feinting → 2. Alternative → 3. Instinctive → 4. Escolher alvos
+
+- [ ] **Feinting (6.8.1)** — Jogar card após ver oponente (parcial: só no reveal)
+  - Pode jogar MÚLTIPLOS cards se tiver habilidades
+  - Cards face-up (não pode feintar de novo)
+  - Não OBRIGADO a jogar (diferente de Forced Play)
+- [ ] **Instinctive (6.8.2)** — Se "stymied" (impedido de jogar)
+  - Só se foi impedido, não se voluntariamente não jogou
+  - Só se é alvo de um card
+  - Alternative CAs são Instinctive (6.6.5)
+- [ ] **Alternative Combat Actions (6.6.5)** — Sept cards jogadas como CA
+  - Wasp Talons, Wanchese's Bow, etc.
+  - Jogadas no fim do Reveal Step
+  - Consideradas Instinctive; podem ser dodged/distracted
+  - Bluff não funciona contra quem usa Alternative
+
+### 🏃 9. CHALLENGE, STEP IN, ESCAPE (BAIXA PRIORIDADE)
+
+- [ ] **Challenge (6.5.2)** — Alpha desafia não-Alpha; alvo pode recusar
+  - Recusado = alpha action acaba sem combate
+  - Só contra Characters (não Territory/Battlefield)
+- [ ] **Stepping in (6.5.9)** — Alpha substitui Presa quando atacada
+  - Gaia alpha step in for Victim; Wyrm alpha step in for Enemy
+  - Maior Renome decide (sorteio se empate)
+- [ ] **Escape** — Criatura sai do combate (Dodge como escape, Flee)
+- [ ] **Nerve Agent** — Sai mas retorna (não é escape)
+- [ ] **Escape não afeta outros** — Só a criatura escapa
+
+### 🔄 10. COMBAT EVENTS COMO FACE-DOWN (BAIXA PRIORIDADE)
+
+**Atual:** Combat Events são jogados como efeitos (anunciador). **Regras:** Podem ser face-down no Play Card Step.
+
+- [ ] **CE jogáveis face-down** — No Play Card Step
+- [ ] **CE face-down revelados = ilegais** — Descartados no Bluff Step
+- [ ] **CE timing específico** — Alguns em momentos específicos
+
+### 🔥 11. FRENZY (BAIXA PRIORIDADE — MUITO TRABALHO)
+
+**Regras (6.11):**
+
+- [ ] **Full Frenzy (6.11.3)**:
+  - Flipa para Crinos
+  - Draw cards = Rage em Crinos
+  - Forced Play: deve jogar tudo
+  - Attacker não pode withdraw
+  - "Hacked apart" se dano >= Health + Rage (calculado no início)
+  - Morre mas continua lutando até fim do combate/frenzy
+- [ ] **Limited Frenzy** — Controle parcial
+- [ ] **Fox Frenzy** — Foge do combate
+- [ ] **Allies/Prey não frenzam** — Exceto se card especifica
+- [ ] **Não double-frenzy** — Só um frenzy por vez
+- [ ] **Frenzied não joga Gifts** — Pré-frenzy continuam
+- [ ] **Ending frenzy (6.11.2)** — Cancelado, fim combate, sem actions
+  - Descartar X cards aleatórios = cards draw para frenzy
+
+### 🎲 12. RESTRICTED / FORCED / RANDOM PLAY (BAIXA PRIORIDADE)
+
+**Regras (6.6.6):**
+
+- [ ] **Restricted Play (6.6.6a)** — Só pode jogar CAs com certa restrição (e.g. Catfeet: Rage 1)
+  - Não obriga a jogar; mas se jogar, deve atender
+  - Sem cards legais ≠ impedido
+- [ ] **Forced Play (6.6.6b)** — Obrigado a jogar se tiver cards
+  - Não pode Alternative CAs
+  - Pack: selecionar non-forced primeiro
+  - Múltiplos effects: card deve atender TODOS
+- [ ] **Random Play (6.6.6c)** — Card aleatório da combat hand
+  - Alvo escolhido normalmente
+  - Pode ser ilegal
+  - Prey random: decidir aleatoriamente quem joga
+
+### 🎯 13. MECÂNICAS ADICIONAIS (BAIXA PRIORIDADE)
+
+- [ ] **Redirect (6.10.3)** — Redirecionar dano (depois dodge/block, antes outros effects)
+  - Pode ser redirecionado múltiplas vezes
+  - Novo alvo não estava em combate: original removido
+- [ ] **Parting shots (6.10.4)** — Criatura que sai ainda leva dano na mesma velocidade
+- [ ] **Forced Attacks (6.5.6)** — Força ataque contra alvo específico
+  - Alpha pode passar em vez de forced attack
+  - Alvo inválido = não forced
+- [ ] **Attack Restrictions (6.5.7)** — Loyalty, etc.
+  - Não pode atacar alvo específico
+  - Não pode pack attack voluntário
+- [ ] **Withdrawing (6.3.1)** — Atacante rompe combate no Withdrawal Step
+  - Não é action
+  - Maim impede withdraw
+  - Frenzied não pode withdraw
+- [ ] **Umbra-only CAs (6.6.4)** — Criatura E alvo na Umbra
+
+### 📋 14. COMBAT DECLARATION OPTIONS
+
+- [ ] **Territory attack (6.5.4)** — Alpha ataca Territory; alpha defensor defende
+  - Defensor morto = Territory destruído
+  - Attacker withdraw = Territory intacto
+  - Existe em ambos mundos (Gauntlet check)
+- [ ] **Battlefield attack (6.5.3)** — Alpha action; defendido por alpha ou self-defend
+  - Self-defend: R/G/H = Renown, keywords do Defending Alpha + 1
+  - Spirit keyword = ambos lados Gauntlet
+  - Defeat = VP = Renown; Sweep = VP = Renown
+- [ ] **Attacking to bind (6.5.5)** — Atacante na Umbra bind Spirit no HG
+  - "Kill" = cura dano, vira Ally
+  - Bound Spirit = 1/2 Renown VP
+  - Wyrm bind Enemies, Gaia bind Victims
+- [ ] **Multiple CAs (6.6.1)** — Criatura pode jogar múltiplos cards/round
+  - Considerados separados
+  - Podem mirar oponentes diferentes
+  - Controlador decide ordem do dano
+
+### 🎲 15. DAMAGE SYSTEM REWORK (MÉDIA PRIORIDADE)
+
+**Atual:** Dano = inteiro (Rage do atacante). **Regras:** Damage cards são cards físicos.
+
+- [ ] **Damage cards físicos** — Cada CA virada vira damage card
+- [ ] **Aggravated damage (6.4.1)** — Marcado; não regenera
+- [ ] **Healing** — Cura damage card de menor valor; efeitos do card terminam
+- [ ] **Damage card effects** — Head Wound, Maim = efeitos do damage card, não do CA
+- [ ] **Death blow tracking** — Quem deu o dano fatal = killer; apenas 1 killer (6.4.3)
+- [ ] **VP complications (6.4.3)**:
+  - Wyrm: 0 VP por Enemy; Gaia: 0 VP por Victim
+  - Exceto se Presa iniciou ataque
+  - Bonus VP AFTER VP base
+  - 0 VP ainda vai pro VP (como 0)
+- [ ] **Death outside combat (6.4.4)** — Character = removido; Non-character = discard
+
+### 📊 Progresso Atualizado
 
 - **291 testes passando**
-- **~85% das regras de combate implementadas**
+- **~35% do Capítulo 6 implementado** (vs ~85% estimado anteriormente)
 - **~70% das regras de Gauntlet implementadas**
 - **~60% das regras de Moot/Juntas implementadas**
 - **~50% das regras de Territories/Realms implementadas**
+
+### Prioridade de Implementação
+
+1. 🏗️ **Refatorar máquina de steps** — Fundação para todo o resto
+2. 🎴 **Combat Hand/Deck** — Necessário para jogar combat cards adequadamente
+3. 👊 **Combat Actions com dano próprio** — Muda completamente como dano é calculado
+4. ⚡ **Velocidades de resolução** — Fast/Normal/Slow
+5. 📦 **Pack Combat** — Múltiplas criaturas
+6. 🎯 **Targeting Step** — Alvos após face-down
+7. 🃏 **Bluff/Illegal** — Coração do sistema de combate
+8. 🛡️ **Feinting/Instinctive/Alternative** — Complementos do Reveal Step
+9. 🏃 **Challenge/Step In/Escape** — Ações de combate
+10. 🔥 **Frenzy** — Complexo, requer base sólida
+11. 🎲 **Restrict/Forced/Random Play** — Detalhes finos
+12. 🎯 **Combat Declaration Options** — Battlefield, Territory, Bind
