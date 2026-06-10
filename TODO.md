@@ -300,8 +300,86 @@
 
 ## 🧪 Testes
 
-- [x] **276 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador
+- [x] **291 testes passando** — Endpoints, state, combat, bot, CLI, API, effects, anunciador, gauntlet, flip Crinos
 - [ ] **Testes para Caern special abilities** — Verificar cada Caern implementado
 - [ ] **Testes para Gift Rage FOO Rule** — Validação de requisitos
 - [ ] **Testes para Ally recruitment** — `pode_recrutar_ally()` com diversos padrões
 - [ ] **Testes para Quests** — `_check_quests()`, Past Life penalties, Unique enforcement
+
+## 🔄 Pendente (Regras de Combate — Capítulo 6)
+
+### Challenge
+- [ ] **Challenge como ação do jogador** — Desafiar não-Alpha para combate (pode ser recusado)
+- [ ] **Challenge só para Characters** — Não pode desafiar Territories ou Battlefields
+- [ ] **Se aceito, vira ataque** — Challenge aceito = ataque normal
+
+### Escape
+- [ ] **Escape como mecânica geral** — Criaturas saindo do combate (Dodge/Flee)
+- [ ] **Escape não afeta outros combatentes** — Apenas a criatura que escapa sai
+- [ ] **Nerve Agent e efeitos similares** — Criatura sai mas retorna (não é escape)
+
+### Attacker/Defender
+- [ ] **Conceitos distintos no estado** — `CombatState` já tem attackers/defenders mas não usa como conceitos de regra
+- [ ] **Pack combat** — Múltiplas criaturas de um lado vs outro
+
+### Regras de Gauntlet (Regra 5)
+- [x] **Events/Totems afetam ambos os lados** — Implementado
+- [x] **Caerns/Territories existem em ambos os lados** — Implementado
+- [x] **Actions/Gifts/Rites/Combat Actions NÃO cruzam** — `_validar_gauntlet_efeito()` implementado
+- [x] **Criaturas na Umbra só atacam outras na Umbra** — `_mesmo_lado_gauntlet()`
+- [x] **Criaturas no mundo físico só atacam outras no mundo físico** — `_mesmo_lado_gauntlet()`
+- [ ] **Criaturas em ambos os lados podem votar em Juntas** — Não implementado
+- [ ] **Juntas sem alvo específico funcionam cross-Gauntlet** — Não implementado
+- [ ] **Criaturas só na Umbra não são alvos de Juntas** — Não implementado
+
+### Alpha Actions
+- [x] **Alpha ataca primeiro (maior Renome)** — `calcular_ordem_alfa()`
+- [x] **Alpha pode atacar Prey no HG** — `_melhor_alvo_hg()`
+- [x] **Alpha pode atacar outro alpha** — `_agir_alpha()`
+- [x] **Alpha pode atacar Territory** — `start_combat()` substitui defensor
+- [x] **Alpha pode Engage Battlefield** — `_agir_alpha()`
+- [ ] **Alpha pode Challenge não-Alpha** — Não implementado
+- [ ] **Alpha pode usar card/ability como alpha action** — Não implementado
+- [ ] **Se alpha morrer, não pode selecionar outro até próximo Combat phase** — Não implementado
+
+### Combat Flow
+- [x] **Declaração simultânea** — Bots declaram em sequência
+- [x] **Último a declarar pode Feint** — `_handle_reveal_step()`
+- [x] **Reveal → Resolve → End** — Fluxo completo
+- [x] **Prey se defende automaticamente (Block)** — `reveal_all()`
+- [ ] **Between-rounds step** — Jogar Combat Actions entre rodadas
+- [ ] **Withdrawal step** — Criaturas podem se retirar
+- [ ] **Anatomy Lesson e efeitos de retirada** — Forçar retirada
+
+### Combat Actions
+- [x] **Fast Striking** — Age primeiro na batalha
+- [x] **Block reduz dano pela Rage do defensor** — Regra 6.10
+- [x] **Dodge evita ataque** — `declare_action()`
+- [x] **Flee (fuga)** — `declare_action()`
+- [ ] **Instinctive Combat Actions** — Jogadas se "stymied" (impedido de jogar)
+- [ ] **Alternative Combat Actions** — Opções alternativas de combate
+- [ ] **Whip of the Wicked constraint** — Oponente deve declarar block/dodge primeiro
+
+### Vitória e Eliminação
+- [x] **VP por matar criaturas** — `_processar_morte()`
+- [x] **VP por Renome do alpha** — `_agir_alpha()`
+- [x] **Eliminação sem Characters** — Regra 2.3
+- [x] **Vitória por VP >= Renown level** — `verificar_vitoria()`
+- [ ] **Empate: jogo continua por mais um turno** — Não implementado
+- [ ] **Jogador eliminado pode ganhar VP no turno da eliminação** — Não implementado
+
+## 🔄 Pendente (Decks)
+
+### Deck 734 — Círculo Kailindo
+- [x] **Refinamento inicial** — Removidas cartas com req não atendido
+- [x] **Renome 30/30** — Ajustado
+- [ ] **Loop de ataque infinito** — Bot fica atacando repetidamente após combates
+- [ ] **Verificar estratégia do bot** — Deck pode precisar de ajustes nas heurísticas
+
+## 📊 Progresso
+
+- **291 testes passando**
+- **~85% das regras de combate implementadas**
+- **~70% das regras de Gauntlet implementadas**
+- **~60% das regras de Moot/Juntas implementadas**
+- **~50% das regras de Territories/Realms implementadas**
