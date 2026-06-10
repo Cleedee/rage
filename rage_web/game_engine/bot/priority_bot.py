@@ -2561,10 +2561,17 @@ class PriorityBot:
                     self._equip_card_to_pack(card)
 
     def _equip_card_to_pack(self, card):
-        """Tenta equipar um Equipment a uma criatura do pack.
+        """P5: Equipa um Equipment na criatura mais adequada do pack.
 
-        Usa as mesmas regras de _validar_restricoes_equipamento
-        para escolher o melhor alvo.
+        Analisa o tipo de equipamento (Weapon, Armor, Fetish) e
+        escolhe a criatura mais beneficiada:
+        - Weapon: maior Rage (mais dano por ataque)
+        - Armor: maior HP ou mais danificada (reducao de dano)
+        - Fetish generico: maior Gnosis (pode pagar custo)
+
+        Considera equipamentos existentes para nao stackar armas.
+        Usa _validar_restricoes_equipamento para restricoes de
+        forma/requisito.
         """
         from rage_web.game_engine.state import Zone
         candidates = [
@@ -2575,18 +2582,61 @@ class PriorityBot:
         if not candidates:
             return
 
-        # Importa validador de equipamento
         from rage_web.game_engine.effects import ResolvedorEfeitos
         resolvedor = ResolvedorEfeitos(self.game)
 
-        # Testa cada candidato em ordem: mais forte primeiro
-        def priority(c):
-            return (c.rage, c.gnosis, c.health)
-        candidates.sort(key=priority, reverse=True)
+        # Analisa o tipo de equipamento pelas keywords
+        kw = (card.keywords or '').lower()
+        eh_weapon = 'weapon' in kw
+        eh_armor = 'armor' in kw
+        eh_fetish = 'fetish' in kw and 'non-fetish' not in kw
+
+        # Pontua cada candidato
+        def score(c):
+            s = 0
+
+            # Verifica se ja tem equipamento similar
+            tem_weapon = False
+            tem_armor = False
+            for eq in (c.attached_equipment or []):
+                eq_kw = (eq.keywords or '').lower()
+                if 'weapon' in eq_kw:
+                    tem_weapon = True
+                if 'armor' in eq_kw:
+                    tem_armor = True
+
+            if eh_weapon:
+                if tem_weapon:
+                    return -100  # Nao stackar duas armas
+                s += c.rage * 10  # Maior Rage = mais dano
+            elif eh_armor:
+                if tem_armor:
+                    s -= 30
+                hp_perdido = (c.health or 0) - (c.health_current or c.health or 0)
+                s += hp_perdido * 8  # Quem mais precisa de protecao
+                s += (c.health or 0) * 3  # Tanques se beneficiam mais
+            elif eh_fetish:
+                s += c.gnosis * 8  # Maior Gnosis = melhor para Fetish
+            else:
+                s += c.rage * 3 + c.gnosis * 3 + c.health * 2
+
+            # Penalidade: Gnosis insuficiente para requisito
+            gnosis_req = card.gnosis or 0
+            if gnosis_req > 0 and c.gnosis < gnosis_req:
+                s -= 50
+
+            # Penalidade: criatura morta/ferida grave
+            hp_atual = c.health_current or c.health or 0
+            if hp_atual <= 0:
+                s -= 100
+
+            return s
+
+        # Ordena por pontuacao decrescente
+        candidates.sort(key=score, reverse=True)
 
         for alvo in candidates:
             if resolvedor._validar_restricoes_equipamento(card, alvo):
-                # Equipa! Remove do pack_home, anexa ao alvo
                 if card in self.player.pack_home:
                     self.player.pack_home.remove(card)
                 card.zone = Zone.OUT_OF_PLAY
@@ -2596,7 +2646,6 @@ class PriorityBot:
                     f'{card.name} em {alvo.name}')
                 return
 
-        # Se nao achou alvo valido, deixa no pack_home mesmo
         self.game.add_log(
             f'[BOT] {self.player.name} nao achou alvo para '
             f'{card.name}, deixou no pack')
