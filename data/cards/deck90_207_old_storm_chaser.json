@@ -7,9 +7,13 @@
       "descricao": "Aumentar mao de sept em +1",
       "efeitos": [
         {
-          "tipo": "comprar",
-          "condicao_alvo": "deck_sept",
-          "quantidade": 1
+          "tipo": "modificar_hand_size",
+          "params": {
+            "tipo": "sept",
+            "delta": 1,
+            "duracao": "enquanto_em_jogo"
+          },
+          "alvo": "self"
         }
       ]
     }
@@ -18,7 +22,7 @@
     "fonte": "analise_v2+revisado",
     "card_id": 207,
     "texto_original": "When in play, Old Storm-Chaser increases your sept hand size by 1.",
-    "keywords": "Garou - Red Talons - Theurge - Lupus - Gaia - Male",
+    "keywords": "Garou - Red Talons - Theurpe - Lupus - Gaia - Male",
     "damage": "",
     "rage": 3,
     "gnosis": 9,

@@ -902,6 +902,10 @@ class GameState:
     last_alpha_per_player: dict = field(default_factory=dict)
     """player_id -> card_id do alpha do ultimo combate."""
 
+    # Efeitos ja usados neste turno (ex: Owl 1x/turno)
+    used_effects: list[int] = field(default_factory=list)
+    """Lista de id(CardInstance) dos efeitos ja usados neste turno."""
+
     def __post_init__(self):
         """Propaga o RNG do jogo para todos os jogadores."""
         for p in self.players:
@@ -1029,6 +1033,8 @@ class GameState:
             self.current_player_index = 0
             for p in self.players:
                 p.reset_pass()
+            # Reseta efeitos 1x/turno
+            self.used_effects.clear()
             # Aplica efeitos de Fase Lunar (ex: Full Moon -> Unlucky Lune)
             self._check_lunar_phase_effects()
             # Redraw de sept no inicio do turno
@@ -1147,6 +1153,38 @@ class GameState:
                 f'[Past Life] sept hand size: '
                 f'{p.hand_size_sept} -> {novo_size}')
             p.hand_size_sept = novo_size
+
+    def _recalcular_hand_sizes(self, p: PlayerState):
+        """Recalcula hand sizes de sept e combate baseado em
+        todas as cartas em jogo (Old Storm Chaser, Chimera, etc.).
+
+        Regra (2.1.3): quando hand size e alterado, o redraw
+        compra ate o novo tamanho.
+        """
+        # Primeiro recalcula efeitos base (Past Life)
+        self._recalcular_past_life_hand_size(p)
+
+        # Depois aplica bonus de cartas em jogo
+        # Old Storm Chaser (207): +1 sept hand size
+        tem_old_storm = any(
+            c.card_id == 207 and c.zone in (Zone.PACK_HOME, Zone.HUNTING_GROUNDS, Zone.UMBRA)
+            for c in p.pack_home + p.hunting_grounds + p.umbra
+        )
+        if tem_old_storm:
+            # Old Storm Chaser: +1 sept hand size (ja inclui no recalculo)
+            bonus_soma = sum(
+                1 for c in p.pack_home + p.hunting_grounds + p.umbra
+                if c.card_id == 207  # Old Storm Chaser
+                or c.card_id == 824   # Chimera
+            )
+            if bonus_soma > 0:
+                novo = max(1, p.hand_size_sept + bonus_soma)
+                if p.hand_size_sept != novo:
+                    self.add_log(
+                        f'[Hand Size] sept hand size: '
+                        f'{p.hand_size_sept} -> {novo} '
+                        f'(bonus de {bonus_soma} carta(s) em jogo)')
+                    p.hand_size_sept = novo
 
     def _coletar_todas_vitimas_hg(self) -> list:
         """Coleta todas as presas do Hunting Grounds (global + players).

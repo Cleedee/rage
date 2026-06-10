@@ -91,6 +91,7 @@ class EfeitoTipo(str, Enum):
     IMUNE_COMBATE_RAGE = 'imune_combate_rage'  # Imune a combat actions de certo Rage (Dhul Fiqar)
     MODIFICAR_ATRIBUTO_PASSIVO = 'modificar_atributo_passivo'  # Buff passivo persistente (John)
     MODIFICAR_GAUNTLET = 'modificar_gauntlet'  # Modifica o Gauntlet (Shadow-Weaver)
+    MODIFICAR_HAND_SIZE = 'modificar_hand_size'  # Modifica hand size (Old Storm Chaser)
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
     MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
@@ -282,6 +283,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.IMUNE_COMBATE_RAGE: self._resolver_imune_combate_rage,
             EfeitoTipo.MODIFICAR_ATRIBUTO_PASSIVO: self._resolver_modificar_atributo_passivo,
             EfeitoTipo.MODIFICAR_GAUNTLET: self._resolver_modificar_gauntlet,
+            EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
             # Efeitos de Moot
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
             EfeitoTipo.MOOT_GANHAR_VP: self._resolver_moot_ganhar_vp,
@@ -2272,6 +2274,62 @@ class ResolvedorEfeitos:
         self.game.add_log(
             f'{origem.name}: Gauntlet ajustado para {valor}'
         )
+        return True
+
+    # -------------------------------------------------------------------
+    # MODIFICAR_HAND_SIZE
+    # -------------------------------------------------------------------
+    def _resolver_modificar_hand_size(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState,
+                                       alvo) -> bool:
+        """Modifica o hand size de sept ou combate.
+
+        Regra (2.1.3): se o hand size de um jogador e alterado,
+        quando ele compra seu redraw, compra ate o novo tamanho.
+
+        Efeito esperado:
+        {
+            "tipo": "modificar_hand_size",
+            "params": {
+                "tipo": "sept",       # "sept" ou "combat"
+                "delta": 1,            # +1 ou -1
+                "duracao": "enquanto_em_jogo"
+            }
+        }
+        """
+        params = efeito.params or {}
+        tipo = params.get('tipo', 'sept')
+        delta = params.get('delta', 1)
+        duracao = params.get('duracao', 'enquanto_em_jogo')
+
+        if tipo == 'sept':
+            novo = max(1, jogador.hand_size_sept + delta)
+            if jogador.hand_size_sept != novo:
+                self.game.add_log(
+                    f'{origem.name}: sept hand size '
+                    f'{jogador.hand_size_sept} -> {novo}')
+                jogador.hand_size_sept = novo
+                # Se esta em redraw, ja compra ate o novo tamanho
+                if self.game.phase == 'redraw':
+                    drawn = jogador.redraw_sept(descartar_primeiro=False)
+                    if drawn:
+                        self.game.add_log(
+                            f'{jogador.name} comprou '
+                            f'{len(drawn)} carta(s) (hand size ajustado)')
+                # Recalcula de todos para detectar conflitos
+                for p in self.game.players:
+                    self.game._recalcular_hand_sizes(p)
+        elif tipo == 'combat':
+            novo = max(1, jogador.hand_size_combat + delta)
+            if jogador.hand_size_combat != novo:
+                self.game.add_log(
+                    f'{origem.name}: combat hand size '
+                    f'{jogador.hand_size_combat} -> {novo}')
+                jogador.hand_size_combat = novo
+                for p in self.game.players:
+                    self.game._recalcular_hand_sizes(p)
+
         return True
 
     # -------------------------------------------------------------------
