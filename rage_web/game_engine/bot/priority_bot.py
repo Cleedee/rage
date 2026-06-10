@@ -882,12 +882,22 @@ class PriorityBot:
             melhor_c, melhor_threat, melhor_opp = melhores_nao_alfa[0]
             if melhor_threat > 0:
                 # Desafia o nao-alfa de maior threat
-                if _tentar_desafio(self.game, meu_alpha_id,
-                                    str(melhor_c.card_id)):
+                # Se recusado, acao alpha termina (6.5.2)
+                aceito = _tentar_desafio(
+                    self.game, meu_alpha_id, str(melhor_c.card_id))
+                if aceito:
                     self.game.add_log(
                         f'[BOT] Alpha {alpha_card.name} desafiou '
                         f'{melhor_c.name} ({melhor_opp.name})')
                     return f'alpha_challenge_{meu_alpha_id}'
+                else:
+                    # Recusado: acao alpha encerrada (6.5.2)
+                    # Nao chama _pass_turn() — o match loop avanca
+                    # o alpha_index automaticamente.
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} desafiou '
+                        f'{melhor_c.name}, mas foi RECUSADO')
+                    return f'alpha_challenge_refused_{meu_alpha_id}'
 
         # 2. Tenta atacar alpha inimigo (prioriza lider em VP)
         alphas_inimigos = []

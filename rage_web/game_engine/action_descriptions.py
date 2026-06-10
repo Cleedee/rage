@@ -288,6 +288,10 @@ def _describe_alpha(acao: str, card_name: Optional[str], game=None) -> str:
     """Descreve acoes de alpha."""
     if 'attack' in acao:
         return 'Ataque Alpha'
+    if 'challenge_refused' in acao:
+        return 'Desafio Recusado'
+    if 'challenge' in acao:
+        return 'Desafio Alpha'
     return 'Ação Alpha'
 
 

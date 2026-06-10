@@ -1327,6 +1327,7 @@ def _tentar_desafio(game: GameState, alpha_id: str,
 
     O desafiado pode recusar. Se aceitar, inicia combate.
     Soh pode desafiar criaturas (nao Territory/Battlefield).
+    Se recusar, combate nao acontece e a acao alpha termina.
 
     Args:
         game: Estado da partida.
@@ -1349,12 +1350,101 @@ def _tentar_desafio(game: GameState, alpha_id: str,
     if alvo_id in game.combat.alphas.values():
         return False
 
-    # O desafiado pode recusar
-    # Por enquanto, sempre aceita (decisao do bot sera integrada depois)
-    from rage_web.game_engine.combat_queue import start_combat
-    start_combat(game, [alpha_id], [alvo_id])
-    game.add_log(f'  [Challenge] {alpha_id} desafiou {alvo_id}')
-    return True
+    alpha = _find_card(game, alpha_id)
+    if not alpha:
+        return False
+
+    # ── O desafiado decide se aceita (6.5.2) ──
+    aceita = _desafiado_aceita_desafio(game, alvo, alpha)
+
+    if aceita:
+        from rage_web.game_engine.combat_queue import start_combat
+        start_combat(game, [alpha_id], [alvo_id])
+        game.add_log(
+            f'  [Challenge] {alpha.name} desafiou {alvo.name} — ACEITO')
+        return True
+    else:
+        game.add_log(
+            f'  [Challenge] {alvo.name} RECUSOU o desafio '
+            f'de {alpha.name} (acao alpha encerrada)')
+        return False
+
+
+def _desafiado_aceita_desafio(game: GameState,
+                                alvo: CardInstance,
+                                desafiante: CardInstance) -> bool:
+    """Decide se o desafiado aceita o desafio (6.5.2).
+
+    Criterios:
+    1. Se Rage do alvo >= Rage do desafiante + 2: aceita
+       (confianca em revidar)
+    2. Se HP do alvo <= Rage do desafiante * 2: recusa
+       (risco de morte muito alto)
+    3. Se alvo tem carta defensiva (block/dodge/flee) na mao
+       de combate: +30% de aceitar
+    4. Se desafiante tem Rage muito maior: recusa
+    5. Fator aleatorio para variacao
+
+    Returns:
+        True se aceita o desafio.
+    """
+    rage_alvo = alvo.effective_rage
+    rage_des = desafiante.effective_rage
+    hp_alvo = alvo.health_current or alvo.health
+    dano_esperado = rage_des  # Dano basico do desafiante
+
+    # Fatores de decisao
+    score = 50  # Neutro (50% base)
+
+    # 1. Vantagem de Rage
+    if rage_alvo >= rage_des + 2:
+        score += 30  # Confiante
+    elif rage_alvo >= rage_des:
+        score += 10  # Leve vantagem
+    elif rage_alvo < rage_des - 3:
+        score -= 30  # Desvantagem grande
+    else:
+        score -= 10  # Leve desvantagem
+
+    # 2. Risco de morte
+    if hp_alvo <= dano_esperado:
+        score -= 40  # Morte quase certa
+    elif hp_alvo <= dano_esperado * 2:
+        score -= 15  # Risco alto
+
+    # 3. Tem carta defensiva na mao de combate?
+    tem_defesa = False
+    dono = _find_player(game, alvo.owner_id)
+    if dono:
+        for card in dono.combat_hand:
+            nome = (card.name or '').lower()
+            ct = (card.card_type or '').lower()
+            if ('block' in nome or 'dodge' in nome
+                or 'defend' in nome or 'evasion' in nome
+                or 'flee' in nome
+                or 'block and strike' in nome):
+                tem_defesa = True
+                break
+            # Tambem checa por tipo Combat Action defensiva
+            if 'combat action' in ct or 'combat event' in ct:
+                texto = (card.text or '').lower()
+                if any(p in texto for p in ('block', 'dodge', 'flee',
+                                              'evasion', 'defend')):
+                    tem_defesa = True
+                    break
+    if tem_defesa:
+        score += 30
+
+    # 4. Fator aleatorio
+    score += game.rng.randint(-20, 20)
+
+    # 5. Desafiante com Rage muito alta: medo extra
+    if rage_des >= 7:
+        score -= 10
+    if rage_des >= 9:
+        score -= 10
+
+    return score >= 50
 
 
 def _processar_bluff(game: GameState) -> bool:
