@@ -947,19 +947,52 @@ class PriorityBot:
                         f'{alvo.name}')
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
 
-        # 3. Tenta atacar Territory inimigo (destruicao)
+        # 3. Tenta atacar Territory inimigo (6.5.4)
         for opp in opponents:
             for c in opp.pack_home:
                 ct = (c.card_type or '').lower()
                 if 'territory' in ct or 'realm' in ct:
                     start_combat(self.game, [meu_alpha_id],
-                                 [str(c.card_id)])
+                                 [str(c.card_id)],
+                                 attack_type='territory',
+                                 target_card_id=str(c.card_id))
                     self.game.add_log(
                         f'[BOT] Alpha {alpha_card.name} atacou '
                         f'Territory {c.name} ({opp.name})')
                     return f'alpha_attack_territory_{meu_alpha_id}'
 
-        # 4. Fallback: ataca Presa no Hunting Grounds
+        # 4. Tenta atacar Battlefield inimigo (6.5.3)
+        for opp in opponents:
+            for c in opp.pack_home + opp.hunting_grounds:
+                ct = (c.card_type or '').lower()
+                if 'battlefield' in ct:
+                    start_combat(self.game, [meu_alpha_id],
+                                 [str(c.card_id)],
+                                 attack_type='battlefield',
+                                 target_card_id=str(c.card_id))
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} atacou '
+                        f'Battlefield {c.name} ({opp.name})')
+                    return f'alpha_attack_battlefield_{meu_alpha_id}'
+
+        # 5. Tenta vincular Spirit no Hunting Grounds (6.5.5)
+        # So disponivel se o alpha esta na Umbra
+        if alpha_card.zone == Zone.UMBRA:
+            for opp in opponents:
+                for c in opp.hunting_grounds:
+                    ct = (c.card_type or '').lower()
+                    if 'spirit' in ct:
+                        # Spirit no HG pode ser vinculado
+                        start_combat(self.game, [meu_alpha_id],
+                                     [str(c.card_id)],
+                                     attack_type='bind',
+                                     target_card_id=str(c.card_id))
+                        self.game.add_log(
+                            f'[BOT] Alpha {alpha_card.name} tentou '
+                            f'vincular Spirit {c.name} ({opp.name})')
+                        return f'alpha_attack_bind_{meu_alpha_id}'
+
+        # 6. Fallback: ataca Presa no Hunting Grounds
         if alvo_hg:
             start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
             self.game.add_log(

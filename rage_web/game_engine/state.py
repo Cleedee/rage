@@ -640,6 +640,19 @@ class CombatState:
     # Se o atacante se retirou
     attacker_withdrew: bool = False
 
+    # --- Combat Declaration Options (6.5.3, 6.5.4, 6.5.5) ---
+    # Tipo de ataque: 'creature' (padrao), 'territory', 'battlefield', 'bind'
+    attack_type: str = 'creature'
+    # Para Territory: card_id do Territory atacado
+    territory_target: Optional[str] = None
+    # Para Battlefield: card_id do Battlefield atacado
+    battlefield_target: Optional[str] = None
+    # Para Bind: card_id do Spirit sendo vinculado
+    bind_target: Optional[str] = None
+    # Para autodefesa de Battlefield: dados do Battlefield como combatente
+    # battlefield_self_defense[card_id] = dict com rage, gnosis, health, keywords
+    battlefield_self_defense: dict[str, dict] = field(default_factory=dict)
+
     # Metadados de compatibilidade com o sistema anterior
     # declarations: mapeia card_id -> action (antigo declare_action)
     declarations: dict[str, Optional[str]] = field(default_factory=dict)

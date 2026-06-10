@@ -711,13 +711,19 @@ def advance_combat_step(game: GameState) -> bool:
 
 
 def start_combat(game: GameState, attackers: list[str],
-                 defenders: list[str]) -> bool:
+                 defenders: list[str],
+                 attack_type: str = 'creature',
+                 target_card_id: Optional[str] = None) -> bool:
     """Inicia um combate entre atacantes e defensores.
 
     Args:
         game: Estado da partida.
         attackers: Lista de IDs das criaturas atacantes.
         defenders: Lista de IDs das criaturas defensoras.
+        attack_type: Tipo de ataque ('creature', 'territory',
+                      'battlefield', 'bind').
+        target_card_id: ID do Territory/Battlefield/Spirit atacado
+                         (usado para attack_type != 'creature').
 
     Returns:
         True se o combate foi iniciado.
@@ -778,6 +784,12 @@ def start_combat(game: GameState, attackers: list[str],
         original_attackers=list(attackers),
         original_defenders=list(defenders),
         alphas=alphas_anteriores,
+        attack_type=attack_type,
+        territory_target=target_card_id if attack_type == 'territory'
+                         else None,
+        battlefield_target=target_card_id if attack_type == 'battlefield'
+                           else None,
+        bind_target=target_card_id if attack_type == 'bind' else None,
     )
 
     # Popula combatants com atacantes + defensores
@@ -838,6 +850,39 @@ def start_combat(game: GameState, attackers: list[str],
             game.combat = CombatState()
             game.add_log('Territory destruido, combate cancelado')
             return False
+
+    # ---- Battlefield: autodefesa se nenhum alpha defendeu ----
+    if attack_type == 'battlefield' and target_card_id:
+        bf_card = _find_card(game, target_card_id)
+        if bf_card:
+            # Verifica se algum defensor e o alpha do dono
+            dono_bf = _find_owner(game, bf_card)
+            alpha_defendeu = False
+            if dono_bf:
+                alpha_id = game.combat.alphas.get(dono_bf.id)
+                if alpha_id and alpha_id in game.combat.defenders:
+                    alpha_defendeu = True
+            if not alpha_defendeu:
+                # Autodefesa: Battlefield vira combatente com
+                # Rage/Gnosis/Health = Renown
+                bf_renown = getattr(bf_card, 'renown', 3) or 3
+                # Cria uma entrada para o Battlefield como combatente
+                game.combat.battlefield_self_defense[target_card_id] = {
+                    'rage': bf_renown,
+                    'gnosis': bf_renown,
+                    'health': bf_renown,
+                    'health_current': bf_renown,
+                    'renown': bf_renown,
+                    'card': bf_card,
+                }
+                # Adiciona o Battlefield como defensor
+                if target_card_id not in game.combat.defenders:
+                    game.combat.defenders.append(target_card_id)
+                if target_card_id not in game.combat.combatants:
+                    game.combat.combatants.append(target_card_id)
+                game.add_log(
+                    f'  {bf_card.name} (Battlefield) em autodefesa '
+                    f'(Rg/Gn/Hp={bf_renown})')
 
     return True
 
@@ -1897,20 +1942,59 @@ def resolve_combat(game: GameState) -> bool:
 
         # Morte (usa _processar_morte para logica unificada)
         if alvo_card.health_current <= 0:
-            _processar_morte(game, alvo_card, origem_card,
-                             dono_origem, em_combate=True)
-
-            # Marca dano em quests (se alvo era alvo de quest, reseta)
-            for p in game.players:
-                for q in p.quests:
-                    if q.target_card_uid == id(alvo_card) and not q.completed:
-                        # Alvo tomou dano fatal -> quest falhou
-                        q.completed = True
-                        q.failed_due_to_death = True
+            # 6.5.5: Attacking to Bind — em vez de matar o Spirit,
+            # cura todo dano e ele se torna um Ally
+            if (game.combat.attack_type == 'bind'
+                    and str(alvo_card.card_id) == game.combat.bind_target):
+                dono_alvo = _find_owner(game, alvo_card)
+                if dono_alvo:
+                    # Cura todo dano
+                    alvo_card.health_current = alvo_card.health
+                    alvo_card.damage_aggravated = 0
+                    alvo_card.attached_damage.clear()
+                    # Move da zona do dono original para Pack Home do atacante
+                    for zone_list in (dono_alvo.pack_home,
+                                      dono_alvo.hunting_grounds,
+                                      dono_alvo.umbra):
+                        if alvo_card in zone_list:
+                            zone_list.remove(alvo_card)
+                            break
+                    # Torna-se Ally do atacante
+                    if dono_origem:
+                        dono_origem.pack_home.append(alvo_card)
+                        alvo_card.owner_id = dono_origem.id
+                        alvo_card.controller_id = dono_origem.id
+                        alvo_card.zone = Zone.PACK_HOME
+                        # Marca como Ally
+                        ct = (alvo_card.card_type or '').lower()
+                        if 'spirit' in ct:
+                            if 'character' in ct:
+                                alvo_card.card_type = 'Character - Spirit Ally'
+                            else:
+                                alvo_card.card_type = 'Ally - Bound Spirit'
                         game.add_log(
-                            f'  Quest falhou: {alvo_card.name} '
-                            f'(alvo da quest) foi destruido'
-                        )
+                            f'  [Bind] {alvo_card.name} foi vinculado! '
+                            f'Tornou-se Ally de {dono_origem.name}')
+                    else:
+                        # Fallback: apenas remove e descarta
+                        dono_alvo.discard_sept.append(alvo_card)
+                        alvo_card.zone = Zone.DISCARD_SEPT
+                # Bind: nao gera VP (o Spirit nao morreu)
+            else:
+                _processar_morte(game, alvo_card, origem_card,
+                                 dono_origem, em_combate=True)
+
+                # Marca dano em quests (se alvo era alvo de quest, reseta)
+                for p in game.players:
+                    for q in p.quests:
+                        if q.target_card_uid == id(alvo_card) and not q.completed:
+                            # Alvo tomou dano fatal -> quest falhou
+                            q.completed = True
+                            q.failed_due_to_death = True
+                            game.add_log(
+                                f'  Quest falhou: {alvo_card.name} '
+                                f'(alvo da quest) foi destruido'
+                            )
 
     # ---- Ordem de resolucao por velocidade (6.10.1) ----
     # Fast Striking -> Normal -> Slow Striking
@@ -2209,6 +2293,49 @@ def end_combat(game: GameState) -> bool:
 
     # Reverte formas Crinos para Breed
     _reverter_para_breed(game)
+
+    # ---- Battlefield sweep (6.5.4c) ----
+    if game.combat.attack_type == 'battlefield':
+        bf_id = game.combat.battlefield_target
+        if bf_id:
+            # Verifica se um lado varreu o campo
+            atacantes_vivos = [
+                cid for cid in game.combat.original_attackers
+                if cid in game.combat.combatants
+                or cid in [str(c.card_id) for c in game.players[0].pack_home]
+            ]
+            defensores_vivos = [
+                cid for cid in game.combat.original_defenders
+                if cid in game.combat.combatants
+                or cid in [str(c.card_id) for c in game.players[0].pack_home]
+            ]
+            # Se um lado varreu, coloca Battlefield no VP do varredor
+            if atacantes_vivos and not defensores_vivos:
+                # Atacante varreu
+                bf_card = _find_card(game, bf_id)
+                if bf_card:
+                    bf_renown = getattr(bf_card, 'renown', 3) or 3
+                    dono_atacante = _find_owner(
+                        game, game.combat.attackers[0])
+                    if dono_atacante:
+                        dono_atacante.victory_points += bf_renown
+                        game.add_log(
+                            f'  [Battlefield] Atacante varreu! '
+                            f'{bf_card.name} concedeu '
+                            f'{bf_renown} VP a {dono_atacante.name}')
+            elif defensores_vivos and not atacantes_vivos:
+                # Defensor varreu
+                bf_card = _find_card(game, bf_id)
+                if bf_card:
+                    bf_renown = getattr(bf_card, 'renown', 3) or 3
+                    dono_defensor = _find_owner(
+                        game, game.combat.defenders[0])
+                    if dono_defensor:
+                        dono_defensor.victory_points += bf_renown
+                        game.add_log(
+                            f'  [Battlefield] Defensor varreu! '
+                            f'{bf_card.name} concedeu '
+                            f'{bf_renown} VP a {dono_defensor.name}')
 
     # Restaura debuff do Caern of the Unwashed Child
     if 'unwashed_child_debuff' in game.combat_triggers:
