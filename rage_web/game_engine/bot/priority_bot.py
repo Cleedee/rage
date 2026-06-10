@@ -97,8 +97,6 @@ class PriorityBot:
             self._cards_played_this_turn = 0
             self._last_turn_heuristic = g.turn_number
             self._umbra_agiu = False
-        # Reseta ataques quando sai da fase de combate
-        if g.phase != 'combat':
             self._ataques_feitos.clear()
 
         # --- Acoes por fase ---
