@@ -96,11 +96,11 @@ def _flipar_para_crinos(game: GameState, card: CardInstance) -> bool:
     card.restricoes.append('health_breed')
     card.restricoes.append('gnosis_breed')
 
-    # Recalcula health_current: dano total eh o mesmo,
+    # Recalcula health_current: mesmo dano total,
     # mas o pool de vida agora e health_morph
+    # (sync_health() usa health_morph quando is_crinos)
     if card.health_morph > 0:
-        novo_health = max(0, card.health_morph - dano_total)
-        card.health_current = novo_health
+        card.sync_health()
 
     game.add_log(
         f'  🔄 {card.name} flipou para forma Crinos! '
@@ -2262,10 +2262,8 @@ def _reverter_para_breed(game: GameState):
                     if r in c.restricoes:
                         c.restricoes.remove(r)
                 health_antes = c.health_current
-                # Recalcula health_current: mesmo dano total,
-                # mas pool agora e breed health
-                dano_total = c.health_morph - health_antes
-                c.health_current = max(0, c.health - dano_total)
+                # Recalcula health_current via sync (usa damage cards)
+                c.sync_health()
                 game.add_log(
                     f'  ↩️ {c.name} voltou a forma Breed '
                     f'(H {health_antes}/{c.health_morph} -> '
@@ -2293,6 +2291,12 @@ def end_combat(game: GameState) -> bool:
 
     # Reverte formas Crinos para Breed
     _reverter_para_breed(game)
+
+    # Validacao pos-combate: sincroniza health_current de
+    # todas as criaturas com base nas damage cards (regra 6.4)
+    for p in game.players:
+        for c in p.pack_home + p.hunting_grounds + p.umbra:
+            c.sync_health()
 
     # ---- Battlefield sweep (6.5.4c) ----
     if game.combat.attack_type == 'battlefield':

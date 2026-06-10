@@ -594,11 +594,35 @@ class ResolvedorEfeitos:
 
     def _resolver_curar(self, efeito: Efeito, origem: CardInstance,
                         jogador: PlayerState, alvo) -> bool:
-        """Cura uma criatura."""
+        """Cura uma criatura removendo damage cards.
+
+        Regra (6.4): curar remove cartas de dano anexadas a
+        criatura (da menor para a maior). health_current e
+        recalculado via sync_health() apos cada remocao.
+        """
         qtd = efeito.quantidade or 2
         if isinstance(alvo, CardInstance):
-            cura_real = min(qtd, alvo.health - alvo.health_current)
-            alvo.health_current += cura_real
+            cura_real = 0
+            # Remove damage cards ate atingir a quantidade de cura
+            # (ordem: menor valor primeiro)
+            while cura_real < qtd and alvo.attached_damage:
+                # Encontra a damage card de menor valor
+                menor = min(alvo.attached_damage,
+                            key=lambda d: int(d.damage or '0'))
+                valor = int(menor.damage or '0')
+                # Quanto podemos curar com esta card?
+                espaco = qtd - cura_real
+                if valor <= espaco:
+                    # Remove a card inteira
+                    alvo.attached_damage.remove(menor)
+                    cura_real += valor
+                else:
+                    # Cura parcial: reduz o valor da damage card
+                    # (marca o novo valor no campo damage)
+                    menor.damage = str(valor - espaco)
+                    cura_real = qtd
+            # Sincroniza health_current
+            alvo.sync_health()
             self.game.add_log(
                 f'{alvo.name} curou {cura_real} '
                 f'({alvo.health_current}/{alvo.health})'

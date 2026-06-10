@@ -130,6 +130,30 @@ class CardInstance:
     is_crinos: bool = False  # True = em forma Crinos (alterna via Shapeshift)
 
     @property
+    def total_dano(self) -> int:
+        """Soma do valor de todas as damage cards anexadas.
+
+        Regra (6.4): cada damage card tem um valor (dano causado).
+        A criatura morre quando total_dano >= health.
+        """
+        return sum(int(d.damage or '0') for d in self.attached_damage)
+
+    def sync_health(self) -> int:
+        """Recalcula health_current a partir de health - total_dano.
+
+        Mantem a consistencia entre health_current e o valor
+        real das damage cards anexadas (regra 6.4).
+        Se a criatura esta em Crinos, usa health_morph como pool.
+
+        Returns:
+            O novo valor de health_current.
+        """
+        pool = self.health_morph if self.is_crinos and self.health_morph > 0 else self.health
+        novo = max(0, pool - self.total_dano)
+        self.health_current = novo
+        return novo
+
+    @property
     def effective_rage(self) -> int:
         """Rage efetivo da criatura, considerando modificadores.
 
@@ -180,16 +204,16 @@ def anexar_dano(alvo: CardInstance, origem: CardInstance,
                 is_aggravated: bool = False) -> CardInstance:
     """Aplica dano e anexa a damage card a uma criatura.
 
-    1. Cria a damage card a partir da origem.
+    1. Cria a damage card a partir da origem (regra 6.4).
     2. Anexa a `alvo.attached_damage`.
-    3. Reduz `health_current` do alvo.
+    3. Recalcula `health_current` via sync_health().
 
     Returns:
         A damage card criada.
     """
     damage_card = criar_carta_dano(origem, valor, dono_id, is_aggravated)
     alvo.attached_damage.append(damage_card)
-    alvo.health_current = max(0, alvo.health_current - valor)
+    alvo.sync_health()
     return damage_card
 
 
