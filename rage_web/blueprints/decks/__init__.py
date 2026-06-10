@@ -421,31 +421,31 @@ def _export_discord(deck, cards, grupos_por_tipo):
     e layout compacto que funciona bem no Discord.
     """
     ORDEM_TIPOS = [
-        ('Character', '👤', 'Personagens'),
-        ('Ally', '🤝', 'Aliados'),
-        ('Enemy', '👹', 'Inimigos'),
-        ('Victim', '🎯', 'Vítimas'),
+        ('Character', '👤', 'Characters'),
+        ('Ally', '🤝', 'Allies'),
+        ('Enemy', '👹', 'Enemies'),
+        ('Victim', '🎯', 'Victims'),
         ('Gift', '✨', 'Gifts'),
-        ('Equipment', '⚔️', 'Equipamentos'),
+        ('Equipment', '⚔️', 'Equipment'),
         ('Caern', '🏔️', 'Caerns'),
-        ('Territory', '🗺️', 'Territórios'),
+        ('Territory', '🗺️', 'Territories'),
         ('Quest', '📜', 'Quests'),
-        ('Rite', '🔥', 'Ritos'),
-        ('Event', '🌟', 'Eventos'),
-        ('Action', '⚡', 'Ações'),
-        ('Moot', '🗳️', 'Juntas'),
-        ('Board Meeting', '🏛️', 'Reuniões de Conselho'),
-        ('Combat Action', '🗡️', 'Ações de Combate'),
-        ('Combat Event', '💥', 'Eventos de Combate'),
-        ('Battlefield', '🏟️', 'Campos de Batalha'),
-        ('Past Life', '🔮', 'Vidas Passadas'),
-        ('Realm', '🌌', 'Reinos'),
+        ('Rite', '🔥', 'Rites'),
+        ('Event', '🌟', 'Events'),
+        ('Action', '⚡', 'Actions'),
+        ('Moot', '🗳️', 'Moots'),
+        ('Board Meeting', '🏛️', 'Board Meetings'),
+        ('Combat Action', '🗡️', 'Combat Actions'),
+        ('Combat Event', '💥', 'Combat Events'),
+        ('Battlefield', '🏟️', 'Battlefields'),
+        ('Past Life', '🔮', 'Past Lives'),
+        ('Realm', '🌌', 'Realms'),
     ]
 
     lines = []
 
     # Cabeçalho
-    lines.append(f'# {deck.name or "Deck sem nome"}')
+    lines.append(f'# {deck.name or "Untitled Deck"}')
     if deck.description:
         lines.append(f'*{deck.description}*')
     lines.append('')
@@ -456,7 +456,7 @@ def _export_discord(deck, cards, grupos_por_tipo):
     total_sept = sum(e['quantity'] for e in cards if 'combat' not in (e['card'].tipo or '').lower() and 'Character' not in (e['card'].tipo or ''))
     total_cards = sum(e['quantity'] for e in cards)
 
-    lines.append(f'**📊 Stats:** {total_cards} cartas | 👤 {total_chars} personagens | 🗡️ {total_combat} combate | 📦 {total_sept} sept')
+    lines.append(f'**📊 Stats:** {total_cards} cards | 👤 {total_chars} characters | 🗡️ {total_combat} combat | 📦 {total_sept} sept')
     lines.append('')
     lines.append('---')
     lines.append('')
@@ -467,7 +467,7 @@ def _export_discord(deck, cards, grupos_por_tipo):
         if not grupo:
             continue
 
-        lines.append(f'**{emoji} {tipo_label} ({len(grupo)} tipos, {sum(e["quantity"] for e in grupo)} cartas)**')
+        lines.append(f'**{emoji} {tipo_label} ({len(grupo)} types, {sum(e["quantity"] for e in grupo)} cards)**')
         lines.append('')
 
         for entry in sorted(grupo, key=lambda x: x['card'].name):
@@ -493,7 +493,7 @@ def _export_discord(deck, cards, grupos_por_tipo):
     for tipo in sorted(grupos_por_tipo):
         if tipo not in tipos_cobertos:
             grupo = grupos_por_tipo[tipo]
-            lines.append(f'**📦 {tipo} ({len(grupo)} tipos)**')
+            lines.append(f'**📦 {tipo} ({len(grupo)} types)**')
             lines.append('')
             for entry in sorted(grupo, key=lambda x: x['card'].name):
                 card = entry['card']

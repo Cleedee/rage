@@ -138,15 +138,15 @@
           {% if deck %}
           <a class="button is-info is-light"
              href="{{ url_for('decks.export_deck', id=deck.id) }}" download>
-            <i class="bi bi-download"></i> Exportar TXT
+            <i class="bi bi-download"></i> TXT Export
           </a>
           <a class="button is-info is-light"
              href="{{ url_for('decks.export_deck', id=deck.id, fmt='xml') }}" download>
-            <i class="bi bi-code"></i> Exportar XML
+            <i class="bi bi-code"></i> XML Export
           </a>
           <a class="button is-success is-light"
              href="{{ url_for('decks.export_deck', id=deck.id, fmt='discord') }}" download>
-            <i class="bi bi-discord"></i> Exportar Discord
+            <i class="bi bi-discord"></i> Discord Export
           </a>
           <a class="button is-danger is-light"
              href="{{ url_for('decks.delete_deck', id=deck.id) }}"
