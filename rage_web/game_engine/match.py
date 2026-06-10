@@ -333,6 +333,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'    💀 {entry_stripped}')
             elif 'causou' in entry_body and 'dano' in entry_body:
                 print(f'    💥 {entry_stripped}')
+            elif 'usou ' in entry_body and '(dano:' in entry_body:
+                print(f'    ⚔️  {entry_stripped}')
             elif 'atacou Hunting Grounds' in entry_body:
                 print(f'    🎯 {entry_stripped}')
             elif 'sofreu' in entry_body and 'dano' in entry_body:
@@ -360,6 +362,10 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 continue  # ja exibido como 👁️
             elif 'Resolvendo combate' in entry_body:
                 continue
+            elif entry_body.startswith('Resolucao por velocidade'):
+                print(f'    ⚡ {entry_stripped}')
+            elif entry_body.startswith('[Fim'):
+                print(f'    ⚡ {entry_stripped}')
             else:
                 # Só mostra se parecer relevante
                 if any(kw in entry_body for kw in ['regenera', 'imune', 'ataque', 'dano', 'cura', 'morte']):

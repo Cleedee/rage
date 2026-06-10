@@ -1454,26 +1454,78 @@ def resolve_combat(game: GameState) -> bool:
                             f'(alvo da quest) foi destruido'
                         )
 
-    # Processa atacantes contra defensores (match por indice)
-    for i, a_id in enumerate(game.combat.attackers):
-        if a_id == 'hg':
-            continue
-        d_id = (game.combat.defenders[i]
-                if i < len(game.combat.defenders) else None)
-        if d_id:
-            _processar_ataque(a_id, d_id)
+    # ---- Ordem de resolucao por velocidade (6.10.1) ----
+    # Fast Striking -> Normal -> Slow Striking
+    # Criaturas mortas em Fast nao resolvem suas acoes em Normal/Slow
+    def _get_dead_ids() -> set[str]:
+        """Retorna IDs das criaturas mortas (health_current <= 0)."""
+        dead = set()
+        for p in game.players:
+            for zone_list in (p.pack_home, p.hunting_grounds, p.umbra):
+                for c in zone_list:
+                    if c.health_current <= 0:
+                        cid = str(c.card_id)
+                        dead.add(cid)
+        return dead
 
-    # Processa contra-ataques: defensores ofensivos atacam de volta
-    for i, d_id in enumerate(game.combat.defenders):
-        if d_id == 'hg':
-            continue
-        a_id = (game.combat.attackers[i]
-                if i < len(game.combat.attackers) else None)
-        if not a_id:
-            continue
-        acao = game.combat.declarations.get(d_id, 'strike')
-        if acao in ACOES_OFENSIVAS:
-            _processar_ataque(d_id, a_id)
+    def _processar_lado_velocidade(velocidade: str):
+        """Processa ataques de uma velocidade especifica.
+
+        1. Atacantes com esta velocidade atacam defensores
+        2. Defensores com acao ofensiva desta velocidade contra-atacam
+        3. Remove mortos apos cada velocidade
+        """
+        mortos = _get_dead_ids()
+        game.combat.limpar_combatentes_mortos(mortos)
+
+        # Atacantes -> Defensores
+        for i, a_id in enumerate(game.combat.attackers):
+            if a_id == 'hg':
+                continue
+            acao_a = game.combat.declarations.get(a_id, 'strike')
+            props_a = COMBAT_ACTION_PROPS.get(acao_a, {})
+            if props_a.get('speed', 'normal') != velocidade:
+                continue
+            if acao_a not in ACOES_OFENSIVAS:
+                continue
+            d_id = (game.combat.defenders[i]
+                    if i < len(game.combat.defenders) else None)
+            if d_id and d_id != 'hg':
+                _processar_ataque(a_id, d_id)
+
+        mortos = _get_dead_ids()
+        game.combat.limpar_combatentes_mortos(mortos)
+
+        # Defensores ofensivos -> Atacantes (contra-ataque)
+        for i, d_id in enumerate(game.combat.defenders):
+            if d_id == 'hg':
+                continue
+            acao_d = game.combat.declarations.get(d_id, 'strike')
+            props_d = COMBAT_ACTION_PROPS.get(acao_d, {})
+            if props_d.get('speed', 'normal') != velocidade:
+                continue
+            if acao_d not in ACOES_OFENSIVAS:
+                continue
+            a_id = (game.combat.attackers[i]
+                    if i < len(game.combat.attackers) else None)
+            if a_id and a_id != 'hg':
+                _processar_ataque(d_id, a_id)
+
+        mortos = _get_dead_ids()
+        game.combat.limpar_combatentes_mortos(mortos)
+        if mortos:
+            game.add_log(f'  [Fim {velocidade}] {len(mortos)} criatura(s) removida(s)')
+
+    game.add_log('━ Resolucao por velocidade:')
+
+    # 1. Fast Striking
+    _processar_lado_velocidade('fast')
+
+    # 2. Normal
+    _processar_lado_velocidade('normal')
+
+    # 3. Slow Striking
+    _processar_lado_velocidade('slow')
 
     # Clan of Hyenas (96): foge do combate se tomou >=3 dano neste round
     _check_hyenas_escape(game)
