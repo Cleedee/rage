@@ -922,9 +922,23 @@ class PriorityBot:
             return 'combat_wait'
 
         if step == 'targeting':
-            # Targeting Step: alvos atribuidos
-            # Por enquanto, auto-advance (alvos sao definidos
-            # implicitamente pelos pares atacante-defensor)
+            # Targeting Step: cada combatente escolhe um alvo
+            # (pack combat: cada criatura pode mirar em qualquer oponente)
+            for cid in g.combat.attackers + g.combat.defenders:
+                if cid in g.combat.targets:
+                    continue
+                # So atribui alvo para criaturas do proprio bot
+                card = _find_card(g, cid)
+                if not card or card.owner_id != self.player_id:
+                    continue
+                acao = g.combat.declarations.get(cid, 'strike')
+                if acao in ('block', 'dodge', 'flee'):
+                    continue  # defensivas nao precisam de alvo
+                # Escolhe alvo: oponente
+                alvo = self._escolher_alvo_pack(cid)
+                if alvo:
+                    g.combat.targets[cid] = alvo
+                    return f'target_{cid}_{alvo}'
             g.combat.step = 'reveal'
             return 'combat_progress'
 
@@ -1163,6 +1177,25 @@ class PriorityBot:
             return 'combat_progress'
 
         if step == 'targeting':
+            # Random: atribui alvos aleatorios
+            for cid in g.combat.attackers + g.combat.defenders:
+                if cid in g.combat.targets:
+                    continue
+                card = _find_card(g, cid)
+                if not card or card.owner_id != self.player_id:
+                    continue
+                acao = g.combat.declarations.get(cid, 'strike')
+                if acao in ('block', 'dodge', 'flee'):
+                    continue  # defensivas nao precisam de alvo
+                # Escolhe alvo aleatorio do lado oposto
+                if cid in g.combat.attackers:
+                    alvos = [d for d in g.combat.defenders if d != 'hg']
+                else:
+                    alvos = [a for a in g.combat.attackers if a != 'hg']
+                if alvos:
+                    alvo = random.choice(alvos)
+                    g.combat.targets[cid] = alvo
+                    return f'target_{cid}_{alvo}'
             g.combat.step = 'reveal'
             return 'combat_progress'
 
@@ -1846,6 +1879,53 @@ class PriorityBot:
                 return 'dodge'
 
         return melhor_acao
+
+    def _escolher_alvo_pack(self, cid: str) -> Optional[str]:
+        """Escolhe um alvo para uma criatura em pack combat.
+
+        Se a criatura e atacante, mira em um defensor.
+        Se e defensora, mira em um atacante.
+        Prefere alvos com menor HP para eliminar rapido.
+        """
+        from rage_web.game_engine.combat_queue import _find_card
+        g = self.game
+        card = _find_card(g, cid)
+        if not card:
+            return None
+
+        # Determina lado oposto
+        if cid in g.combat.attackers:
+            oponentes = g.combat.defenders
+        elif cid in g.combat.defenders:
+            oponentes = g.combat.attackers
+        else:
+            return None
+
+        # Escolhe o melhor alvo entre os oponentes
+        melhor_alvo = None
+        melhor_score = -999
+
+        for oid in oponentes:
+            if oid == 'hg':
+                continue
+            o_card = _find_card(g, oid)
+            if not o_card or o_card.health_current <= 0:
+                continue
+            if oid in g.combat.targets.values():
+                # Ja esta sendo atacado - pode ser bom (foco) ou ruim
+                pass
+
+            # Score: prefere alvos com HP baixo e Rage alta
+            hp_ratio = o_card.health_current / max(o_card.health, 1)
+            score = -hp_ratio * 10  # Quanto menos HP, melhor
+            score += min(o_card.effective_rage / 10, 1)  # Rage alta = ameaca
+            score += o_card.renown / 10  # Renome alto = mais VP
+
+            if score > melhor_score:
+                melhor_score = score
+                melhor_alvo = oid
+
+        return melhor_alvo
 
     def _draw(self):
         """Compra carta do deck de combate."""

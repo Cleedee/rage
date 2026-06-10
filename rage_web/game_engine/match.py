@@ -284,6 +284,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 print(f'  {color}{cp.name}: 👁️  {descricao}{reset}')
             elif action in ('end_combat', 'combat_end'):
                 print(f'  {color}{cp.name}: 🏁 {descricao}{reset}')
+            elif action.startswith('target_'):
+                print(f'  {color}{cp.name}: 🎯 {descricao}{reset}')
             elif action == 'combat_wait':
                 print(f'  {color}{cp.name}: ⏳ {descricao}{reset}')
             elif action == 'draw':

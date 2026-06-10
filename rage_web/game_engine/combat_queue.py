@@ -1478,8 +1478,8 @@ def resolve_combat(game: GameState) -> bool:
         mortos = _get_dead_ids()
         game.combat.limpar_combatentes_mortos(mortos)
 
-        # Atacantes -> Defensores
-        for i, a_id in enumerate(game.combat.attackers):
+        # Atacantes -> Defensores (usando targets para pack combat)
+        for a_id in game.combat.attackers:
             if a_id == 'hg':
                 continue
             acao_a = game.combat.declarations.get(a_id, 'strike')
@@ -1488,16 +1488,20 @@ def resolve_combat(game: GameState) -> bool:
                 continue
             if acao_a not in ACOES_OFENSIVAS:
                 continue
-            d_id = (game.combat.defenders[i]
-                    if i < len(game.combat.defenders) else None)
+            # Pack combat: usa target especifico, fallback para pareamento por indice
+            d_id = game.combat.targets.get(a_id)
+            if not d_id:
+                i = game.combat.attackers.index(a_id)
+                d_id = (game.combat.defenders[i]
+                        if i < len(game.combat.defenders) else None)
             if d_id and d_id != 'hg':
                 _processar_ataque(a_id, d_id)
 
         mortos = _get_dead_ids()
         game.combat.limpar_combatentes_mortos(mortos)
 
-        # Defensores ofensivos -> Atacantes (contra-ataque)
-        for i, d_id in enumerate(game.combat.defenders):
+        # Defensores ofensivos -> Atacantes (contra-ataque, tb com targets)
+        for d_id in game.combat.defenders:
             if d_id == 'hg':
                 continue
             acao_d = game.combat.declarations.get(d_id, 'strike')
@@ -1506,8 +1510,12 @@ def resolve_combat(game: GameState) -> bool:
                 continue
             if acao_d not in ACOES_OFENSIVAS:
                 continue
-            a_id = (game.combat.attackers[i]
-                    if i < len(game.combat.attackers) else None)
+            # Pack combat: usa target especifico, fallback para pareamento por indice
+            a_id = game.combat.targets.get(d_id)
+            if not a_id:
+                i = game.combat.defenders.index(d_id)
+                a_id = (game.combat.attackers[i]
+                        if i < len(game.combat.attackers) else None)
             if a_id and a_id != 'hg':
                 _processar_ataque(d_id, a_id)
 

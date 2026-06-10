@@ -97,6 +97,11 @@ def describe_action(acao: str, game=None) -> str:
         return _describe_redraw(acao, game)
     elif acao.startswith('pass_'):
         return _describe_pass(acao)
+    elif acao.startswith('target_'):
+        parts = acao.split('_')
+        if len(parts) == 3:
+            return f'Escolher alvo: {parts[1]} -> {parts[2]}'
+        return acao
     elif acao == 'reveal':
         return 'Revelar ações'
     elif acao in ('end_combat', 'combat_end'):
