@@ -4,24 +4,23 @@
   "tipo": "Event",
   "modos": [
     {
-      "descricao": "Evento",
+      "descricao": "Pack Totem - Olhar mao do oponente",
       "efeitos": [
         {
-          "tipo": "modificar_atributo",
-          "condicao_alvo": "criatura_aliada",
+          "tipo": "olhar_topo_deck",
+          "condicao_alvo": "jogador_inimigo",
           "params": {
-            "atributos": [
-              "rage",
-              "health"
-            ],
-            "duracao": "permanente"
+            "alvo": "mao",
+            "qual_mao": "combate_ou_sept",
+            "frequencia": "turnos_alternados",
+            "descricao": "Owl: olhar 1 mao do oponente a cada 2 turnos"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "deck643_refinado",
     "card_id": 892,
     "texto_original": "You may look at 1 opponent's hand (combat or sept) once every other turn. A pack may not have more than 1 Pack Totem at any time.",
     "keywords": "Pack Totem",

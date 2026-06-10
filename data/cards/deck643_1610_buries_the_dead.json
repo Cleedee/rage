@@ -4,21 +4,30 @@
   "tipo": "Character - Gaia",
   "modos": [
     {
-      "descricao": "Personagem: Rg2 Gn5 H2 (Ren6)",
+      "descricao": "Personagem: Rg2 Gn5 H2 (Ren6) - Ahroun",
       "efeitos": [
+        {
+          "tipo": "auto_pack_attack",
+          "condicao_alvo": "self",
+          "params": {
+            "condicao": "packmate_fights_vampire",
+            "descricao": "Auto pack attack/defend quando packmate luta contra Vampiro"
+          }
+        },
         {
           "tipo": "comprar",
           "condicao_alvo": "jogador",
           "quantidade": 1,
           "params": {
-            "zona": "deck_combate"
+            "zona": "deck_combate",
+            "condicao": "auto_pack_ativado"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "deck643_refinado",
     "card_id": 1610,
     "texto_original": "Buries-the-Dead bears many scars across her throat from her battles against Leeches. She may automatically pack attack or defend when a packmate fights a Vampire. Draw a combat card when this occurs. Rivalry: Vampires.",
     "keywords": "Garou - Silent Strider - Ahroun - Homid - Female - Gaia - Rivalry: Vampires",

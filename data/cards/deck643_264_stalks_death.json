@@ -4,20 +4,34 @@
   "tipo": "Character - Gaia",
   "modos": [
     {
-      "descricao": "Personagem: Rg3 Gn8 H5 (Ren9)",
+      "descricao": "Personagem: Rg3 Gn8 H5 (Ren9) - Ragabash",
       "efeitos": [
         {
           "tipo": "restringir",
-          "condicao_alvo": "jogador",
+          "condicao_alvo": "self",
           "params": {
-            "descricao": "personagem_rg3_gn8_h5"
+            "descricao": "Pode usar Gifts Philodox alem dos normais",
+            "gifts_extras": ["philodox"]
+          }
+        },
+        {
+          "tipo": "registrar_trigger_combate",
+          "condicao_alvo": "self",
+          "params": {
+            "trigger": "ao_ser_destruido",
+            "descricao": "Quem derrotar Stalks Death ganha +1 VP",
+            "efeito": {
+              "tipo": "ganhar_vp",
+              "condicao_alvo": "jogador_inimigo",
+              "quantidade": 1
+            }
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "deck643_refinado",
     "card_id": 264,
     "texto_original": "Stalks-Death has never lost a combat in his life. Anyone who defeats him may take a 'trophy,' earning them +1 victory points for killing him. He may use Philodox Gifts in addition to his normal ones.",
     "keywords": "Garou - Silent Striders - Ragabash - Lupus - Gaia - Male",

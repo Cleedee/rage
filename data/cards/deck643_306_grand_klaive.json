@@ -4,30 +4,35 @@
   "tipo": "Equipment",
   "modos": [
     {
-      "descricao": "Equipar (Gn4)",
+      "descricao": "Equipar (Gn4): +1 Rage, -1 Gnosis",
       "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "gnosis_custo": 4,
+            "descricao": "Grand Klaive - arma poderosa"
+          }
+        },
         {
           "tipo": "modificar_atributo",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "rage",
-              "gnosis"
-            ],
+            "atributos": ["rage"],
             "valor": 1,
-            "duracao": "ate_fim_combate"
+            "duracao": "permanente"
           }
         },
         {
-          "tipo": "dano",
-          "condicao_alvo": "criatura_inimiga",
-          "quantidade": 1
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": -1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "deck643_refinado",
     "card_id": 306,
     "texto_original": "Weapon. All damage done by the Grand Klaive is aggravated. When in Crinos form, the owner acts at +1 Rage. The owner of a Grand Klaive acts at -1 Gnosis.",
     "keywords": "Gaia Fetish - Weapon - Klaive",
@@ -35,6 +40,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "notas": "+1 Rage incondicional (Crinos check complexo), -1 Gnosis penalidade. Dano agravado nao implementado."
   }
 }
