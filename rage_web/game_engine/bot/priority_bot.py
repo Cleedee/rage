@@ -1131,6 +1131,23 @@ class PriorityBot:
                     ce_jogado = self._tentar_ce_face_down(card)
                     if ce_jogado:
                         return ce_jogado
+
+                    # P4: Tenta usar carta da mao de combate como acao
+                    # antes de cair em acoes basicas (strike/claw/bite).
+                    carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
+                    if carta_acao and carta_combate:
+                        result = declare_action(g, cid, carta_acao)
+                        if result:
+                            # Consome a carta da mao de combate
+                            if carta_combate in self.player.combat_hand:
+                                self.player.combat_hand.remove(carta_combate)
+                                carta_combate.zone = Zone.DISCARD_COMBAT
+                                self.player.discard_combat.append(carta_combate)
+                            self._usou_carta_combate = True
+                            g.add_log(f'{self.player.name} usou carta de combate '
+                                      f'{carta_combate.name} como {carta_acao}')
+                            return f'play_{cid}_{carta_acao}'
+
                     action = self._choose_combat_action(card, card.owner_id)
                     result = declare_action(g, cid, action)
                     if not result:
@@ -1442,6 +1459,18 @@ class PriorityBot:
                         if ce_card and _jogar_ce_face_down(
                                 g, cid, str(ce_card.card_id)):
                             return f'play_{cid}_ce_{ce_card.card_id}'
+                    # P4: Tenta usar carta da mao de combate como acao
+                    card = _find_card(g, cid)
+                    if card and card.owner_id == self.player_id:
+                        carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
+                        if carta_acao and carta_combate and self.game.rng.random() < 0.5:
+                            result = declare_action(g, cid, carta_acao)
+                            if result:
+                                if carta_combate in self.player.combat_hand:
+                                    self.player.combat_hand.remove(carta_combate)
+                                    carta_combate.zone = Zone.DISCARD_COMBAT
+                                    self.player.discard_combat.append(carta_combate)
+                                return f'play_{cid}_{carta_acao}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     result = declare_action(g, cid, action)
                     if not result:
@@ -2188,12 +2217,124 @@ class PriorityBot:
                 return p
         raise ValueError('Nenhum oponente')
 
+    def _escolher_carta_combate_como_acao(self, card: CardInstance) -> tuple[Optional[str], Optional[CardInstance]]:
+        """P4: Tenta usar carta da mao de combate como acao declarada.
+
+        Percorre a mao de combate do jogador e verifica se alguma
+        carta tem nome que corresponde a uma COMBAT_ACTION conhecida
+        (ex: 'Head Butt' -> 'head_butt', 'Dodge' -> 'dodge').
+
+        So retorna cartas OFENSIVAS (com dano > 0) que sejam
+        melhores que a melhor acao basica. Defensivas (block/dodge)
+        sao deixadas para _choose_combat_action.
+
+        Returns:
+            (action_name, card_instance) ou (None, None) se nenhuma
+            carta viavel foi encontrada.
+        """
+        if not self.player.combat_hand:
+            return None, None
+
+        from rage_web.game_engine.combat_queue import (
+            COMBAT_ACTION_PROPS, COMBAT_ACTION_VALIDATORS)
+
+        nivel_restrito = self.game.combat.get_restricted_level(
+            str(card.card_id))
+
+        # Calcula o dano da melhor acao basica para comparacao
+        melhor_dano_basico = card.effective_rage  # 'strike' = Rage
+        for acao_basica in ('head_butt', 'anatomy_lesson',
+                            'savage_beatdown', 'tail_lash',
+                            'submission_hold', 'claw', 'bite'):
+            props = COMBAT_ACTION_PROPS.get(acao_basica, {})
+            req = props.get('rage_requirement', 0)
+            if card.effective_rage < req:
+                continue
+            if nivel_restrito is not None and req > nivel_restrito:
+                continue
+            acao_dano = props.get('damage')
+            if acao_dano is None:
+                acao_dano = card.effective_rage
+            if acao_basica == 'tail_lash':
+                keywords = (card.keywords or '').lower()
+                if 'rokea' in keywords or 'mokole' in keywords:
+                    acao_dano += props.get('bonus_dano', 0)
+            if acao_dano > melhor_dano_basico:
+                melhor_dano_basico = acao_dano
+
+        ACES_DEFENSIVAS = {'block', 'dodge', 'flee', 'ranged_strike'}
+
+        melhor_acao = None
+        melhor_carta = None
+        melhor_dano = -1
+
+        for carta_combate in self.player.combat_hand:
+            # Converte nome da carta para slug
+            nome_slug = (carta_combate.name or '').lower().replace(' ', '_').replace('-', '_')
+
+            # Mapeia nomes de cartas comuns
+            MAPA_NOMES_CARTA_PARA_ACAO = {
+                'evasion': 'dodge',
+                'block_and_strike': 'block',
+            }
+            if nome_slug in MAPA_NOMES_CARTA_PARA_ACAO:
+                nome_slug = MAPA_NOMES_CARTA_PARA_ACAO[nome_slug]
+
+            if nome_slug not in COMBAT_ACTION_PROPS:
+                continue
+
+            # Pula acoes defensivas (deixa _choose_combat_action decidir)
+            if nome_slug in ACES_DEFENSIVAS:
+                continue
+
+            props = COMBAT_ACTION_PROPS.get(nome_slug, {})
+            req = props.get('rage_requirement', 0)
+
+            if card.effective_rage < req:
+                continue
+            if nivel_restrito is not None and req > nivel_restrito:
+                continue
+
+            # Validadores especificos
+            validators = COMBAT_ACTION_VALIDATORS.get(nome_slug, [])
+            rejeitada = False
+            for validador in validators:
+                erro = validador(self.game, card)
+                if erro:
+                    rejeitada = True
+                    break
+            if rejeitada:
+                continue
+
+            # Calcula dano esperado
+            acao_dano = props.get('damage')
+            if acao_dano is None:
+                acao_dano = card.effective_rage
+
+            # Bonus de Tail Lash
+            if nome_slug == 'tail_lash':
+                keywords = (card.keywords or '').lower()
+                if 'rokea' in keywords or 'mokole' in keywords:
+                    acao_dano += props.get('bonus_dano', 0)
+
+            # So retorna se dano > 0 E pelo menos tao bom quanto a melhor basica
+            # (>= para usar cartas com propriedades especiais tipo head_butt bounce)
+            if acao_dano > 0 and acao_dano >= melhor_dano_basico and acao_dano > melhor_dano:
+                melhor_acao = nome_slug
+                melhor_carta = carta_combate
+                melhor_dano = acao_dano
+
+        return melhor_acao, melhor_carta
+
     def _choose_combat_action(self, card: CardInstance,
                                 owner_id: str) -> str:
         """Escolhe a melhor acao de combate para uma criatura.
 
         Considera dano de cada acao (COMBAT_ACTION_PROPS), requisito
         de Rage, e condicao da criatura.
+
+        P4: Fallback quando _escolher_carta_combate_como_acao()
+        nao encontra carta viavel na mao de combate.
 
         Se for criatura do oponente, escolhe acao defensiva ou
         previsivel (block/dodge/strike). Se for do proprio bot,
