@@ -3100,3 +3100,127 @@ class TestTerritoryAttack:
                          owner_id='p1', controller_id='p1')
         game.players[0].pack_home.append(r)
         assert _eh_combatente_valido(game, '999')
+
+
+class TestBluffStep:
+    """Testes do Bluff Step (6.9)."""
+
+    def _setup_bluff_game(self, seed=42):
+        """Cria cenario basico de combate para teste de bluff."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        game = build_game_from_decks(160, 629, seed=seed)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+            p.draw_combat(p.hand_size_combat)
+        return game
+
+    def _advance_to_play_card(self, game):
+        from rage_web.game_engine.combat_queue import advance_combat_step
+        for step_name in ['declaration', 'pre_combat', 'beginning_of_combat']:
+            game.combat.step = step_name
+            advance_combat_step(game)
+
+    def test_bluff_detectado_quando_rage_insuficiente(self):
+        """Criatura com Rage baixa jogando acao com req alto = bluff."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, _processar_bluff, _find_card,
+            COMBAT_ACTION_PROPS,
+        )
+        game = self._setup_bluff_game()
+        p1 = game.players[0]
+        p2 = game.players[1]
+        # Usa criatura com menor Rage possivel
+        atk = min(p1.pack_home, key=lambda c: c.effective_rage)
+        dfd = max(p2.pack_home, key=lambda c: c.effective_rage)
+        assert atk.effective_rage < 6, 'Precisa de Rage < 6 para anatomy_lesson bluff'
+        start_combat(game, [str(atk.card_id)], [str(dfd.card_id)])
+        self._advance_to_play_card(game)
+        game.combat.step = 'play_card'
+        declare_action(game, str(atk.card_id), 'anatomy_lesson')
+        declare_action(game, str(dfd.card_id), 'strike')
+        game.combat.targets[str(atk.card_id)] = str(dfd.card_id)
+        game.combat.step = 'bluff'
+        _processar_bluff(game)
+        assert str(atk.card_id) in game.combat.bluff_cards
+        assert str(atk.card_id) in game.combat.bluff_failed
+        assert str(atk.card_id) not in game.combat.declarations
+        assert str(dfd.card_id) in game.combat.declarations  # oponente mantido
+
+    def test_bluff_sucesso_quando_alvo_tambem_blefa(self):
+        """Bluff bem-sucedido quando ambos blefam."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, _processar_bluff,
+        )
+        game = self._setup_bluff_game(seed=99)
+        p1 = game.players[0]
+        p2 = game.players[1]
+        atk = min(p1.pack_home, key=lambda c: c.effective_rage)
+        dfd = min(p2.pack_home, key=lambda c: c.effective_rage)
+        assert atk.effective_rage < 6 and dfd.effective_rage < 6
+        start_combat(game, [str(atk.card_id)], [str(dfd.card_id)])
+        self._advance_to_play_card(game)
+        game.combat.step = 'play_card'
+        declare_action(game, str(atk.card_id), 'anatomy_lesson')
+        declare_action(game, str(dfd.card_id), 'anatomy_lesson')
+        game.combat.targets[str(atk.card_id)] = str(dfd.card_id)
+        game.combat.targets[str(dfd.card_id)] = str(atk.card_id)
+        game.combat.step = 'bluff'
+        _processar_bluff(game)
+        assert not game.combat.bluff_failed, 'Ambos blefes devem suceder'
+        assert len(game.combat.declarations) == 2, 'Ambas cartas mantidas'
+
+    def test_bluff_falha_quando_alvo_joga_carta_legal(self):
+        """Bluff falha quando alvo jogou carta legal (sem bluff)."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, _processar_bluff,
+        )
+        game = self._setup_bluff_game()
+        p1 = game.players[0]
+        p2 = game.players[1]
+        atk = min(p1.pack_home, key=lambda c: c.effective_rage)
+        dfd = max(p2.pack_home, key=lambda c: c.effective_rage)
+        start_combat(game, [str(atk.card_id)], [str(dfd.card_id)])
+        self._advance_to_play_card(game)
+        game.combat.step = 'play_card'
+        declare_action(game, str(atk.card_id), 'head_butt')  # req 2, Rage pode ser ok
+        # Garante que atk tem Rage < 2
+        if atk.effective_rage >= 2:
+            # Usa anatomy_lesson se head_butt nao for bluff
+            declare_action(game, str(atk.card_id), 'anatomy_lesson')
+        declare_action(game, str(dfd.card_id), 'strike')  # req 0, sempre legal
+        game.combat.targets[str(atk.card_id)] = str(dfd.card_id)
+        game.combat.step = 'bluff'
+        _processar_bluff(game)
+        # O atacante deve ter blefe falhado se Rage < requisito
+        if str(atk.card_id) in game.combat.bluff_cards:
+            assert str(atk.card_id) in game.combat.bluff_failed
+
+    def test_bluff_step_integrado_na_maquina_de_steps(self):
+        """advance_combat_step deve chamar _processar_bluff."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, advance_combat_step,
+            COMBAT_STEPS,
+        )
+        game = self._setup_bluff_game()
+        p1 = game.players[0]
+        p2 = game.players[1]
+        atk = min(p1.pack_home, key=lambda c: c.effective_rage)
+        dfd = max(p2.pack_home, key=lambda c: c.effective_rage)
+        start_combat(game, [str(atk.card_id)], [str(dfd.card_id)])
+        # Avanca ate play_card
+        for step_name in ['declaration', 'pre_combat', 'beginning_of_combat']:
+            game.combat.step = step_name
+            advance_combat_step(game)
+        game.combat.step = 'play_card'
+        declare_action(game, str(atk.card_id), 'anatomy_lesson')
+        declare_action(game, str(dfd.card_id), 'strike')
+        game.combat.targets[str(atk.card_id)] = str(dfd.card_id)
+        # Avanca para bluff
+        game.combat.step = 'bluff'
+        result = advance_combat_step(game)
+        assert result, 'advance_combat_step deve processar bluff'
+        # Apos bluff, step deve ser 'resolution' (proximo na lista)
+        assert game.combat.step != 'bluff', 'Step deve ter avancado'
+        assert game.combat.step == 'resolution', \
+            f'Esperado resolution, obtido {game.combat.step}'

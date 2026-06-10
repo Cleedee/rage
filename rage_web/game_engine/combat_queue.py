@@ -656,7 +656,7 @@ def advance_combat_step(game: GameState) -> bool:
         elif step == 'beginning_of_combat':
             game.add_log('  [Beginning-of-Combat] Sem gifts pre-combate (auto)')
         elif step == 'bluff':
-            game.add_log('  [Bluff] Sem verificacao de bluff (auto)')
+            _processar_bluff(game)
         elif step == 'withdrawal':
             # Verifica se o atacante quer se retirar
             # Por enquanto, nunca se retira (auto-advance)
@@ -1127,6 +1127,114 @@ def _retirar_do_combate(game: GameState, criatura: CardInstance) -> bool:
 def _find_owner(game: GameState, card: CardInstance) -> Optional[PlayerState]:
     """Encontra o jogador dono de uma carta."""
     return _find_player(game, card.owner_id)
+
+
+def _processar_bluff(game: GameState) -> bool:
+    """Processa Bluff Step (6.9).
+
+    Fluxo:
+    1. Identifica cartas ilegais (6.9.1): cartas que nao atendem
+       requisitos nao-Rage (Gnosis, forma, keywords, etc.)
+    2. Identifica blefes (6.9.2): Combat Actions com Rage requirement
+       maior que a Rage efetiva da criatura.
+    3. Remove ilegais.
+    4. Determina sucesso/falha dos blefes (simultaneo).
+    5. Remove blefes falhos.
+
+    Returns:
+        True se processado.
+    """
+    if game.combat.step != 'bluff':
+        return False
+
+    game.combat.illegal_cards.clear()
+    game.combat.bluff_cards.clear()
+    game.combat.bluff_failed.clear()
+
+    combatants = get_combatants(game)
+
+    # --- Fase 1: Identificar ilegais e blefes ---
+    for cid, action in list(game.combat.declarations.items()):
+        if cid not in combatants:
+            continue
+        if not action:
+            continue
+
+        card = _find_card(game, cid)
+        if not card:
+            continue
+
+        props = COMBAT_ACTION_PROPS.get(action, {})
+        rage_req = props.get('rage_requirement', 0)
+
+        # 6.9.1: Verificar ilegais (requisitos nao-Rage)
+        # No futuro: Gnosis req, restricao de forma, keywords
+        # Combat Events jogados face-down sao ilegais
+
+        # 6.9.2: Verificar blefe (Rage requirement > Rage)
+        if card.effective_rage < rage_req:
+            game.combat.bluff_cards.add(cid)
+            game.add_log(f'  [Bluff] {card.name} esta blefando com {action} '
+                         f'(Rage {card.effective_rage} < {rage_req})')
+
+    # Descartar ilegais ANTES de verificar blefes (6.9.1 ordem)
+    for cid in list(game.combat.illegal_cards):
+        if cid in game.combat.declarations:
+            del game.combat.declarations[cid]
+        game.combat.targets.pop(cid, None)
+        card = _find_card(game, cid)
+        game.add_log(f'  [Bluff] {(card.name if card else cid)}: '
+                     f'carta ilegal descartada (6.9.1)')
+
+    # --- Fase 2: Determinar sucesso/falha dos blefes ---
+    # Todas as verificacoes sao simultaneas
+    for cid in list(game.combat.bluff_cards):
+        if cid not in game.combat.declarations:
+            game.combat.bluff_cards.discard(cid)
+            continue
+
+        card = _find_card(game, cid)
+        card_name = card.name if card else cid
+
+        target_id = game.combat.targets.get(cid)
+
+        if target_id:
+            target_bluffed = target_id in game.combat.bluff_cards
+            target_has_declaration = target_id in game.combat.declarations
+
+            if target_bluffed:
+                game.add_log(f'  [Bluff] {card_name}: blefe OK '
+                             f'(alvo tambem blefou)')
+            elif not target_has_declaration:
+                game.add_log(f'  [Bluff] {card_name}: blefe OK '
+                             f'(alvo sem carta legal)')
+            else:
+                game.combat.bluff_failed.add(cid)
+                game.add_log(f'  [Bluff] {card_name}: blefe FALHOU '
+                             f'(alvo jogou carta real)')
+        else:
+            targeted_by_non_bluff = any(
+                tgt_id == cid and src_id not in game.combat.bluff_cards
+                for src_id, tgt_id in game.combat.targets.items()
+            )
+            if targeted_by_non_bluff:
+                game.combat.bluff_failed.add(cid)
+                game.add_log(f'  [Bluff] {card_name}: blefe FALHOU '
+                             f'(atacado por carta real)')
+            else:
+                game.add_log(f'  [Bluff] {card_name}: blefe OK '
+                             f'(sem alvo, sem ataque real)')
+
+    # Remover blefes falhos
+    for cid in game.combat.bluff_failed:
+        if cid in game.combat.declarations:
+            del game.combat.declarations[cid]
+        game.combat.targets.pop(cid, None)
+        card = _find_card(game, cid)
+        game.add_log(f'  [Bluff] {(card.name if card else cid)}: '
+                     f'removido do combate (blefe falhou)')
+
+    return True
 
 
 ACOES_OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
