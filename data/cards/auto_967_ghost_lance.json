@@ -1,5 +1,5 @@
 {
-  "id": "card_967",
+  "id": "ghost-lance",
   "nome": "Ghost Lance",
   "tipo": "Gift",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": "Uktena - Silent Striders - Philodox"
+    "requires": "Uktena - Silent Striders - Philodox",
+    "slug": "ghost-lance"
   }
 }

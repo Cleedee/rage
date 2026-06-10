@@ -1,5 +1,5 @@
 {
-  "id": "card_337",
+  "id": "tim-rowantree_r3",
   "nome": "Tim Rowantree",
   "tipo": "Character - Gaia",
   "modos": [],
@@ -16,6 +16,7 @@
     "renown": 3,
     "requires": "",
     "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "tim-rowantree_r3"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1056",
+  "id": "spirit-of-the-fray",
   "nome": "Spirit of the Fray",
   "tipo": "Gift",
   "modos": [
@@ -30,6 +30,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Ahroun",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "spirit-of-the-fray"
   }
 }

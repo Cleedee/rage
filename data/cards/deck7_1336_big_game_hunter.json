@@ -1,5 +1,5 @@
 {
-  "id": "card_1336",
+  "id": "big-game-hunter_r6",
   "nome": "Big Game Hunter",
   "tipo": "Enemy",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 8,
     "gnosis": 0,
     "health": 5,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "big-game-hunter_r6"
   }
 }

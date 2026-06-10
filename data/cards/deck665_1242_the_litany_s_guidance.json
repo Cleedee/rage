@@ -1,5 +1,5 @@
 {
-  "id": "card_1242",
+  "id": "the-litany-s-guidance_r7",
   "nome": "The Litany's Guidance",
   "tipo": "Moot",
   "modos": [
@@ -18,6 +18,7 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1242,
-    "texto_original": "The character who calls this vote declares war on the Wyrm and its followers. If The Litany's Guidance passes, for the remainder of the game Gaia packs will not gain any victory points for killing Gaia pack characters or allies."
+    "texto_original": "The character who calls this vote declares war on the Wyrm and its followers. If The Litany's Guidance passes, for the remainder of the game Gaia packs will not gain any victory points for killing Gaia pack characters or allies.",
+    "slug": "the-litany-s-guidance_r7"
   }
 }

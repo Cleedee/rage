@@ -1,5 +1,5 @@
 {
-  "id": "card_829",
+  "id": "close-gauntlet",
   "nome": "Close Gauntlet",
   "tipo": "Event",
   "modos": [
@@ -26,6 +26,7 @@
     "gnosis": 0,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "close-gauntlet"
   }
 }

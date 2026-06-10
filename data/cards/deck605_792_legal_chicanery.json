@@ -1,5 +1,5 @@
 {
-  "id": "card_792",
+  "id": "legal-chicanery",
   "nome": "Legal Chicanery",
   "tipo": "Action",
   "modos": [
@@ -31,6 +31,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Wyrm",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "legal-chicanery"
   }
 }

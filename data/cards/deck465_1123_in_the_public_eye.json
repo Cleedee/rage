@@ -1,33 +1,35 @@
 {
-    "id": "card_1123",
-    "nome": "In the Public Eye",
-    "tipo": "Quest",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Kinfolk - Pentex Executive",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "in-the-public-eye",
+  "nome": "In the Public Eye",
+  "tipo": "Quest",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Kinfolk - Pentex Executive",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Olho publico",
+      "efeitos": [
         {
-            "descricao": "Olho publico",
-            "efeitos": [
-                {
-                    "tipo": "quest_check",
-                    "alvo": "self",
-                    "quantidade": 0,
-                    "acao": "alpha_sobreviveu",
-                    "vp": 1
-                }
-            ]
+          "tipo": "quest_check",
+          "alvo": "self",
+          "quantidade": 0,
+          "acao": "alpha_sobreviveu",
+          "vp": 1
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Alpha Kinfolk/Pentex Exec nao atacavel por Garou/Fera. +1 VP se sobreviver."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Alpha Kinfolk/Pentex Exec nao atacavel por Garou/Fera. +1 VP se sobreviver.",
+    "slug": "in-the-public-eye",
+    "card_id": 1123
+  }
 }

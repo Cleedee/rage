@@ -1,26 +1,27 @@
 {
-    "id": "card_448",
-    "nome": "A Bus Full of People",
-    "tipo": "Victim",
-    "renown": 6,
-    "atributos": {
-        "rage": 2,
-        "gnosis": 0,
-        "health": 10
-    },
-    "keyword": "Human",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Vitima",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 448,
-        "texto_original": "A Bus Full of People — vitima de 10 de vida, nenhum efeito especial.",
-        "expansion": "TheWyrm",
-        "precisa_revisao": false
+  "id": "a-bus-full-of-people_r6",
+  "nome": "A Bus Full of People",
+  "tipo": "Victim",
+  "renown": 6,
+  "atributos": {
+    "rage": 2,
+    "gnosis": 0,
+    "health": 10
+  },
+  "keyword": "Human",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Vitima",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 448,
+    "texto_original": "A Bus Full of People — vitima de 10 de vida, nenhum efeito especial.",
+    "expansion": "TheWyrm",
+    "precisa_revisao": false,
+    "slug": "a-bus-full-of-people_r6"
+  }
 }

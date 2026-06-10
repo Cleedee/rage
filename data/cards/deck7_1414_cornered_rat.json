@@ -1,5 +1,5 @@
 {
-  "id": "card_1414",
+  "id": "cornered-rat",
   "nome": "Cornered Rat",
   "tipo": "Combat Event",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "cornered-rat"
   }
 }

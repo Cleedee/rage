@@ -1,32 +1,34 @@
 {
-    "id": "card_1379",
-    "nome": "Animal Attraction",
-    "tipo": "Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Garou - Fera - Walid Set",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "animal-attraction",
+  "nome": "Animal Attraction",
+  "tipo": "Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Garou - Fera - Walid Set",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Atracao Animal",
+      "efeitos": [
         {
-            "descricao": "Atracao Animal",
-            "efeitos": [
-                {
-                    "tipo": "mover_para",
-                    "alvo": "ally_inimigo",
-                    "quantidade": 0,
-                    "zona": "pack_home"
-                }
-            ]
+          "tipo": "mover_para",
+          "alvo": "ally_inimigo",
+          "quantidade": 0,
+          "zona": "pack_home"
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Rouba Ally nao-Spirit pro seu pack. Nao em combate/fase de combate."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Rouba Ally nao-Spirit pro seu pack. Nao em combate/fase de combate.",
+    "slug": "animal-attraction",
+    "card_id": 1379
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1610",
+  "id": "buries-the-dead_r6",
   "nome": "Buries the Dead",
   "tipo": "Character - Gaia",
   "modos": [
@@ -35,6 +35,7 @@
     "rage": 2,
     "gnosis": 5,
     "health": 2,
-    "requires": ""
+    "requires": "",
+    "slug": "buries-the-dead_r6"
   }
 }

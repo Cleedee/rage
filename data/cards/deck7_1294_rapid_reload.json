@@ -1,5 +1,5 @@
 {
-  "id": "card_1294",
+  "id": "rapid-reload",
   "nome": "Rapid Reload",
   "tipo": "Combat Action",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "rapid-reload"
   }
 }

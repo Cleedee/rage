@@ -1,5 +1,5 @@
 {
-  "id": "card_46",
+  "id": "blood-on-the-wind_r9",
   "nome": "Blood-on-the-Wind",
   "tipo": "Character - Gaia",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 3,
     "gnosis": 9,
     "health": 4,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "blood-on-the-wind_r9"
   }
 }

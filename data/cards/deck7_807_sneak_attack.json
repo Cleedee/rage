@@ -1,5 +1,5 @@
 {
-  "id": "card_807",
+  "id": "sneak-attack",
   "nome": "Sneak Attack",
   "tipo": "Action",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "sneak-attack"
   }
 }

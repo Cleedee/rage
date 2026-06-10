@@ -1,5 +1,5 @@
 {
-  "id": "card_988",
+  "id": "inspiration",
   "nome": "Inspiration",
   "tipo": "Gift",
   "modos": [
@@ -30,6 +30,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Silver Fangs - Ahroun - Cults",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "inspiration"
   }
 }

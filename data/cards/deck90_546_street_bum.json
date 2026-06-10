@@ -1,5 +1,5 @@
 {
-  "id": "card_546",
+  "id": "street-bum_r3",
   "nome": "Street Bum",
   "tipo": "Victim",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 2,
     "gnosis": 0,
     "health": 3,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "street-bum_r3"
   }
 }

@@ -1,25 +1,27 @@
 {
-    "id": "card_579",
-    "nome": "Caern of Rytthiku",
-    "tipo": "Caern",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 3,
-        "health": 0
-    },
-    "requires": "Eater-of-Souls",
-    "keyword": "",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Caern de Rytthiku",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Pack pode atacar Enemies (nao so Victims) no HG por VP. Passiva via GameModifier."
+  "id": "caern-of-rytthiku",
+  "nome": "Caern of Rytthiku",
+  "tipo": "Caern",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0
+  },
+  "requires": "Eater-of-Souls",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Caern de Rytthiku",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Pack pode atacar Enemies (nao so Victims) no HG por VP. Passiva via GameModifier.",
+    "slug": "caern-of-rytthiku",
+    "card_id": 579
+  }
 }

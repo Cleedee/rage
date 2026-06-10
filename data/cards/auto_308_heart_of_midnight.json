@@ -1,5 +1,5 @@
 {
-  "id": "card_308",
+  "id": "heart-of-midnight",
   "nome": "Heart of Midnight",
   "tipo": "Equipment",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "heart-of-midnight"
   }
 }

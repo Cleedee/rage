@@ -1,5 +1,5 @@
 {
-  "id": "card_24",
+  "id": "dharma-bum_r1",
   "nome": "Dharma Bum",
   "tipo": "Character - Gaia",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 1,
     "gnosis": 2,
     "health": 1,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "dharma-bum_r1"
   }
 }

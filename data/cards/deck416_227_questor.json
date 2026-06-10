@@ -1,34 +1,35 @@
 {
-    "id": "card_227",
-    "nome": "Questor",
-    "tipo": "Character - Wyrm",
-    "modos": [
+  "id": "questor_r8",
+  "nome": "Questor",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "+1 VP ao matar vitima no Hunting Grounds",
+      "efeitos": [
         {
-            "descricao": "+1 VP ao matar vitima no Hunting Grounds",
-            "efeitos": [
-                {
-                    "tipo": "ganhar_vp",
-                    "quantidade": 1,
-                    "condicao_alvo": "jogador",
-                    "params": {
-                        "condicao": "quando_matar_vitima_hg"
-                    }
-                }
-            ]
+          "tipo": "ganhar_vp",
+          "quantidade": 1,
+          "condicao_alvo": "jogador",
+          "params": {
+            "condicao": "quando_matar_vitima_hg"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 227,
-        "texto_original": "Questor has been seduced by the evil influence of the Wyrm. He gains +1 victory points each time he kills a Victim from the Hunting Grounds.",
-        "keywords": "Garou - Black Spiral Dancer - Galliard - Lupus - Beast-of-War - Wyrm - Male",
-        "damage": "morph:7/7/9",
-        "rage": 3,
-        "gnosis": 7,
-        "health": 3,
-        "requires": "",
-        "precisa_revisao": false,
-        "renown": 8,
-        "nota_revisao": "Questor passive implemented in register_card_passives + check_kill_bonuses"
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 227,
+    "texto_original": "Questor has been seduced by the evil influence of the Wyrm. He gains +1 victory points each time he kills a Victim from the Hunting Grounds.",
+    "keywords": "Garou - Black Spiral Dancer - Galliard - Lupus - Beast-of-War - Wyrm - Male",
+    "damage": "morph:7/7/9",
+    "rage": 3,
+    "gnosis": 7,
+    "health": 3,
+    "requires": "",
+    "precisa_revisao": false,
+    "renown": 8,
+    "nota_revisao": "Questor passive implemented in register_card_passives + check_kill_bonuses",
+    "slug": "questor_r8"
+  }
 }

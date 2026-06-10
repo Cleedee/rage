@@ -1,5 +1,5 @@
 {
-  "id": "card_1469",
+  "id": "quari-filth_r3",
   "nome": "Quari Filth",
   "tipo": "Character - Rogue",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "quari-filth_r3"
   }
 }

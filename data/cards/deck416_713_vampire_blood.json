@@ -1,34 +1,35 @@
 {
-    "id": "card_713",
-    "nome": "Vampire Blood",
-    "tipo": "Equipment",
-    "modos": [
+  "id": "vampire-blood",
+  "nome": "Vampire Blood",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Descartar para curar menor dano",
+      "efeitos": [
         {
-            "descricao": "Descartar para curar menor dano",
-            "efeitos": [
-                {
-                    "tipo": "curar",
-                    "quantidade": 1,
-                    "condicao_alvo": "criatura_aliada",
-                    "params": {
-                        "descarta_para_curar": true,
-                        "tipo_curar": "menor_dano"
-                    }
-                }
-            ],
-            "condicao_uso": ""
+          "tipo": "curar",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "descarta_para_curar": true,
+            "tipo_curar": "menor_dano"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 713,
-        "texto_original": "Discard to remove (heal) the lowest damage card from the equipped character. This can be done at any time.",
-        "keywords": "Bane Fetish",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 2,
-        "health": 0,
-        "requires": "",
-        "precisa_revisao": false
+      ],
+      "condicao_uso": ""
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 713,
+    "texto_original": "Discard to remove (heal) the lowest damage card from the equipped character. This can be done at any time.",
+    "keywords": "Bane Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "requires": "",
+    "precisa_revisao": false,
+    "slug": "vampire-blood"
+  }
 }

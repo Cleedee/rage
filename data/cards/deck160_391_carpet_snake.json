@@ -1,5 +1,5 @@
 {
-  "id": "card_391",
+  "id": "carpet-snake_r3",
   "nome": "Carpet Snake",
   "tipo": "Ally",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 1,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "carpet-snake_r3"
   }
 }

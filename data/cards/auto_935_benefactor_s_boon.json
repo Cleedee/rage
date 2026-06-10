@@ -1,5 +1,5 @@
 {
-  "id": "card_935",
+  "id": "benefactor-s-boon",
   "nome": "Benefactor's Boon",
   "tipo": "Gift",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": "Chulorviah - Pentex"
+    "requires": "Chulorviah - Pentex",
+    "slug": "benefactor-s-boon"
   }
 }

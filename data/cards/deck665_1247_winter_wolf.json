@@ -1,5 +1,5 @@
 {
-  "id": "card_1247",
+  "id": "winter-wolf_r6",
   "nome": "Winter Wolf",
   "tipo": "Moot",
   "modos": [
@@ -20,6 +20,7 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1247,
-    "texto_original": "A successful vote removes any 1 Garou of Renown 6 or higher from play. This Garou is placed in its owner's victory pile and is worth its Renown in victory points."
+    "texto_original": "A successful vote removes any 1 Garou of Renown 6 or higher from play. This Garou is placed in its owner's victory pile and is worth its Renown in victory points.",
+    "slug": "winter-wolf_r6"
   }
 }

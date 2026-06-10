@@ -1,5 +1,5 @@
 {
-  "id": "card_726",
+  "id": "assegai",
   "nome": "Assegai",
   "tipo": "Equipment",
   "modos": [
@@ -33,6 +33,7 @@
       "modificar_reducao_dano adiciona +1 reducao de dano passiva",
       "Restricao de forma (Homid/Crinos) validada em _validar_restricoes_equipamento",
       "Reducao de dano se aplica a dano de combate (Rage do atacante)"
-    ]
+    ],
+    "slug": "assegai"
   }
 }

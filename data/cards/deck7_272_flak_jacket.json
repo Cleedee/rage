@@ -1,5 +1,5 @@
 {
-  "id": "card_272",
+  "id": "flak-jacket",
   "nome": "Flak Jacket",
   "tipo": "Equipment",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "flak-jacket"
   }
 }

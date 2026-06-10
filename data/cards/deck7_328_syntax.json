@@ -1,5 +1,5 @@
 {
-  "id": "card_328",
+  "id": "syntax_r2",
   "nome": "Syntax",
   "tipo": "Character - Gaia",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "syntax_r2"
   }
 }

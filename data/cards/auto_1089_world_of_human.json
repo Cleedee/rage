@@ -1,5 +1,5 @@
 {
-  "id": "card_1089",
+  "id": "world-of-human",
   "nome": "World of Human",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "requires": "Homid"
+    "requires": "Homid",
+    "slug": "world-of-human"
   }
 }

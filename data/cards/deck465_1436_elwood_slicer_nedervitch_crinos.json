@@ -1,25 +1,27 @@
 {
-    "id": "card_1436",
-    "nome": "Elwood Slicer Nedervitch Crinos",
-    "tipo": "Character - Wyrm",
-    "renown": 3,
-    "atributos": {
-        "rage": 1,
-        "gnosis": 2,
-        "health": 2
-    },
-    "requires": "",
-    "keyword": "Pentex - Iliad Fomori - Homid - Beast-of-War - Wyrm - Male",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "First Team 28",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Auto pack attack FT28. Pode flipar para Battle form."
+  "id": "elwood-slicer-nedervitch-crinos_r3",
+  "nome": "Elwood Slicer Nedervitch Crinos",
+  "tipo": "Character - Wyrm",
+  "renown": 3,
+  "atributos": {
+    "rage": 1,
+    "gnosis": 2,
+    "health": 2
+  },
+  "requires": "",
+  "keyword": "Pentex - Iliad Fomori - Homid - Beast-of-War - Wyrm - Male",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "First Team 28",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Auto pack attack FT28. Pode flipar para Battle form.",
+    "slug": "elwood-slicer-nedervitch-crinos_r3",
+    "card_id": 1436
+  }
 }

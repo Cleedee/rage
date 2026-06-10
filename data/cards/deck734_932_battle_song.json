@@ -1,5 +1,5 @@
 {
-  "id": "card_932",
+  "id": "battle-song",
   "nome": "Battle Song",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": "Galliard"
+    "requires": "Galliard",
+    "slug": "battle-song"
   }
 }

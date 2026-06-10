@@ -1,5 +1,5 @@
 {
-  "id": "card_99",
+  "id": "command-spirit",
   "nome": "Command Spirit",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": "Theurge - Uktena"
+    "requires": "Theurge - Uktena",
+    "slug": "command-spirit"
   }
 }

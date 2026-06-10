@@ -1,5 +1,5 @@
 {
-  "id": "card_142",
+  "id": "haunts-the-skyline_r3",
   "nome": "Haunts-the-Skyline",
   "tipo": "Character - Gaia",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 1,
     "gnosis": 4,
     "health": 1,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "haunts-the-skyline_r3"
   }
 }

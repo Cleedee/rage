@@ -1,5 +1,5 @@
 {
-  "id": "card_154",
+  "id": "john-hidden-moon_r8",
   "nome": "John Hidden-Moon",
   "tipo": "Character - Gaia",
   "modos": [
@@ -12,7 +12,9 @@
           "params": {
             "descricao": "personagem_rg4_gn7_h5_kailindo",
             "restricao": "frenzy_lunar_eclipse_only",
-            "exceto": ["ahroun_gifts_during_eclipse"]
+            "exceto": [
+              "ahroun_gifts_during_eclipse"
+            ]
           }
         }
       ]
@@ -27,6 +29,7 @@
     "rage": 4,
     "gnosis": 7,
     "health": 5,
-    "requires": ""
+    "requires": "",
+    "slug": "john-hidden-moon_r8"
   }
 }

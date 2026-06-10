@@ -1,30 +1,31 @@
 {
-    "id": "card_175",
-    "nome": "Longtooth Soulkiller",
-    "tipo": "Character - Wyrm",
-    "modos": [
+  "id": "longtooth-soulkiller_r8",
+  "nome": "Longtooth Soulkiller",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "Usar Gifts de 7a Geracao",
+      "efeitos": [
         {
-            "descricao": "Usar Gifts de 7a Geracao",
-            "efeitos": [
-                {
-                    "tipo": "usar_gift",
-                    "condicao_alvo": "jogador"
-                }
-            ]
+          "tipo": "usar_gift",
+          "condicao_alvo": "jogador"
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 175,
-        "texto_original": "Longtooth can use 7th Generation Gifts as well as his normal ones.",
-        "keywords": "Garou - Black Spiral Dancer - Galliard - Metis - Defiler - Wyrm - Male",
-        "damage": "",
-        "rage": 8,
-        "gnosis": 7,
-        "health": 8,
-        "requires": "",
-        "precisa_revisao": false,
-        "renown": 8,
-        "nota_revisao": "Longtooth modifier registered in register_card_passives"
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 175,
+    "texto_original": "Longtooth can use 7th Generation Gifts as well as his normal ones.",
+    "keywords": "Garou - Black Spiral Dancer - Galliard - Metis - Defiler - Wyrm - Male",
+    "damage": "",
+    "rage": 8,
+    "gnosis": 7,
+    "health": 8,
+    "requires": "",
+    "precisa_revisao": false,
+    "renown": 8,
+    "nota_revisao": "Longtooth modifier registered in register_card_passives",
+    "slug": "longtooth-soulkiller_r8"
+  }
 }

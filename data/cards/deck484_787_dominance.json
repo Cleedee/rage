@@ -1,31 +1,33 @@
 {
-    "id": "card_787",
-    "nome": "Dominance",
-    "tipo": "Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "dominance",
+  "nome": "Dominance",
+  "tipo": "Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Cancelar Action",
+      "efeitos": [
         {
-            "descricao": "Cancelar Action",
-            "efeitos": [
-                {
-                    "tipo": "cancelar_acao",
-                    "alvo": "acao",
-                    "quantidade": 0
-                }
-            ]
+          "tipo": "cancelar_acao",
+          "alvo": "acao",
+          "quantidade": 0
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Cancela Action de Renome <= user. Vai pro VP valendo 1 de Renome."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Cancela Action de Renome <= user. Vai pro VP valendo 1 de Renome.",
+    "slug": "dominance",
+    "card_id": 787
+  }
 }

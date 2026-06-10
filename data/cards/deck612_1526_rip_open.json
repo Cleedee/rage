@@ -1,5 +1,5 @@
 {
-  "id": "card_1526",
+  "id": "rip-open",
   "nome": "Rip Open",
   "tipo": "Combat Action",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 0,
     "renown": 0,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "rip-open"
   }
 }

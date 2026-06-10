@@ -1,5 +1,5 @@
 {
-  "id": "card_1000",
+  "id": "luna-s-armor",
   "nome": "Luna's Armor",
   "tipo": "Gift",
   "modos": [
@@ -27,6 +27,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": "Children of Gaia - Shadow Lords - Silver Fangs"
+    "requires": "Children of Gaia - Shadow Lords - Silver Fangs",
+    "slug": "luna-s-armor"
   }
 }

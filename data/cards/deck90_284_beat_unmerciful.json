@@ -1,5 +1,5 @@
 {
-  "id": "card_284",
+  "id": "beat-unmerciful",
   "nome": "Beat Unmerciful",
   "tipo": "Combat Action",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "beat-unmerciful"
   }
 }

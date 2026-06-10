@@ -1,5 +1,5 @@
 {
-  "id": "card_195",
+  "id": "mother-larissa_r8",
   "nome": "Mother Larissa",
   "tipo": "Character - Gaia",
   "modos": [
@@ -38,6 +38,7 @@
     "rage": 2,
     "gnosis": 9,
     "health": 3,
-    "requires": ""
+    "requires": "",
+    "slug": "mother-larissa_r8"
   }
 }

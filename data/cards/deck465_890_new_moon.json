@@ -1,32 +1,34 @@
 {
-    "id": "card_890",
-    "nome": "New Moon",
-    "tipo": "Event",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "",
-    "keyword": "Lunar Phase",
-    "damage": "",
-    "modos": [
+  "id": "new-moon",
+  "nome": "New Moon",
+  "tipo": "Event",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "",
+  "keyword": "Lunar Phase",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Lua nova",
+      "efeitos": [
         {
-            "descricao": "Lua nova",
-            "efeitos": [
-                {
-                    "tipo": "impedir_frenzy",
-                    "alvo": "todos",
-                    "quantidade": 0,
-                    "ragabash_gnosis_bonus": true
-                }
-            ]
+          "tipo": "impedir_frenzy",
+          "alvo": "todos",
+          "quantidade": 0,
+          "ragabash_gnosis_bonus": true
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Ninguem frenzia. Ragabash +1 Gnosis. Descartar quando nova fase lunar."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Ninguem frenzia. Ragabash +1 Gnosis. Descartar quando nova fase lunar.",
+    "slug": "new-moon",
+    "card_id": 890
+  }
 }

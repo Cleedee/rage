@@ -1,52 +1,53 @@
 {
-    "id": "card_42",
-    "nome": "Barnaby Shadrack",
-    "tipo": "Character - Wyrm",
-    "renown": 9,
-    "atributos": {
-        "rage": 3,
-        "gnosis": 4,
-        "health": 5,
-        "rage_morph": 3,
-        "gnosis_morph": 4,
-        "health_morph": 5
-    },
-    "keyword": "Human - Pentex - Executive - Mage - Homid - Defiler - Wyrm - Male",
-    "damage": "",
-    "modos": [
+  "id": "barnaby-shadrack_r9",
+  "nome": "Barnaby Shadrack",
+  "tipo": "Character - Wyrm",
+  "renown": 9,
+  "atributos": {
+    "rage": 3,
+    "gnosis": 4,
+    "health": 5,
+    "rage_morph": 3,
+    "gnosis_morph": 4,
+    "health_morph": 5
+  },
+  "keyword": "Human - Pentex - Executive - Mage - Homid - Defiler - Wyrm - Male",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Barnaby Shadrack",
+      "efeitos": [
         {
-            "descricao": "Barnaby Shadrack",
-            "efeitos": [
-                {
-                    "tipo": "comprar",
-                    "condicao_alvo": "jogador_aliado",
-                    "quantidade": 2,
-                    "params": {
-                        "zona": "deck_sept"
-                    }
-                }
-            ],
-            "passivas": [
-                {
-                    "tipo": "ignorar_gifts",
-                    "descricao": "Ignorar efeitos de Gifts"
-                },
-                {
-                    "tipo": "start_equip",
-                    "descricao": "Comeca com Submachine Gun",
-                    "params": {
-                        "equip_id": "submachine_gun",
-                        "aggravated": true
-                    }
-                }
-            ]
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "quantidade": 2,
+          "params": {
+            "zona": "deck_sept"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 42,
-        "texto_original": "Barnaby can begin the game equipped with a Submachine Gun. A Submachine Gun will always do aggravated damage in Barnaby's hands. He can choose to ignore the effects of any Gifts used upon him and adds 2 cards to your sept hand.",
-        "expansion": "TheWarOfTheAmazon",
-        "precisa_revisao": false
+      ],
+      "passivas": [
+        {
+          "tipo": "ignorar_gifts",
+          "descricao": "Ignorar efeitos de Gifts"
+        },
+        {
+          "tipo": "start_equip",
+          "descricao": "Comeca com Submachine Gun",
+          "params": {
+            "equip_id": "submachine_gun",
+            "aggravated": true
+          }
+        }
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 42,
+    "texto_original": "Barnaby can begin the game equipped with a Submachine Gun. A Submachine Gun will always do aggravated damage in Barnaby's hands. He can choose to ignore the effects of any Gifts used upon him and adds 2 cards to your sept hand.",
+    "expansion": "TheWarOfTheAmazon",
+    "precisa_revisao": false,
+    "slug": "barnaby-shadrack_r9"
+  }
 }

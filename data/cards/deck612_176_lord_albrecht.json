@@ -1,5 +1,5 @@
 {
-  "id": "card_176",
+  "id": "lord-albrecht_r7",
   "nome": "Lord Albrecht",
   "tipo": "Character - Gaia",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 4,
     "renown": 7,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "lord-albrecht_r7"
   }
 }

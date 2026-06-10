@@ -1,5 +1,5 @@
 {
-  "id": "card_283",
+  "id": "battle-fervor",
   "nome": "Battle Fervor",
   "tipo": "Combat Event",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 0,
     "renown": 0,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "battle-fervor"
   }
 }

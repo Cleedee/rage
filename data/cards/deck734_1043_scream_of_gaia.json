@@ -1,5 +1,5 @@
 {
-  "id": "card_1043",
+  "id": "scream-of-gaia",
   "nome": "Scream of Gaia",
   "tipo": "Gift",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Get of Fenris - Red Talons"
+    "requires": "Get of Fenris - Red Talons",
+    "slug": "scream-of-gaia"
   }
 }

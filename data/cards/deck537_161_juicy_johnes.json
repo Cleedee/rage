@@ -1,5 +1,5 @@
 {
-  "id": "card_161",
+  "id": "juicy-johnes_r1",
   "nome": "Juicy Johnes",
   "tipo": "Character - Wyrm",
   "renown": 1,
@@ -23,7 +23,9 @@
           "condicao_alvo": "jogador_inimigo_matador",
           "quantidade": -2,
           "params": {
-            "atributos": ["gnosis"],
+            "atributos": [
+              "gnosis"
+            ],
             "duracao": "permanente",
             "minimo": 0
           }
@@ -36,6 +38,7 @@
     "card_id": 161,
     "texto_original": "Juicy subtracts 2 Gnosis from whoever kills him. This Gnosis penalty lasts until the end of the game.",
     "expansion": "TheWarOfTheAmazon",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "juicy-johnes_r1"
   }
 }

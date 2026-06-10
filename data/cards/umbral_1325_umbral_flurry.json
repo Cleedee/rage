@@ -1,5 +1,5 @@
 {
-  "id": "card_1325",
+  "id": "umbral-flurry",
   "nome": "Umbral Flurry",
   "tipo": "Combat Action",
   "modos": [
@@ -27,6 +27,7 @@
     "gnosis": 4,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "umbral-flurry"
   }
 }

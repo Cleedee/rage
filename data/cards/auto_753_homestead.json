@@ -1,5 +1,5 @@
 {
-  "id": "card_753",
+  "id": "homestead",
   "nome": "Homestead",
   "tipo": "Territory",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": "Gaia Garou"
+    "requires": "Gaia Garou",
+    "slug": "homestead"
   }
 }

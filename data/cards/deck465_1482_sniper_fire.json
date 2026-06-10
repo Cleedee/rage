@@ -1,32 +1,34 @@
 {
-    "id": "card_1482",
-    "nome": "Sniper Fire",
-    "tipo": "Combat Event",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Firearm",
-    "keyword": "Pack Action",
-    "damage": "",
-    "modos": [
+  "id": "sniper-fire",
+  "nome": "Sniper Fire",
+  "tipo": "Combat Event",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Firearm",
+  "keyword": "Pack Action",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Fogo de atirador",
+      "efeitos": [
         {
-            "descricao": "Fogo de atirador",
-            "efeitos": [
-                {
-                    "tipo": "remover_do_combate",
-                    "alvo": "aliado",
-                    "quantidade": 0,
-                    "acao": "entrar"
-                }
-            ]
+          "tipo": "remover_do_combate",
+          "alvo": "aliado",
+          "quantidade": 0,
+          "acao": "entrar"
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Packmate com Firearm entra no combate entre rounds."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Packmate com Firearm entra no combate entre rounds.",
+    "slug": "sniper-fire",
+    "card_id": 1482
+  }
 }

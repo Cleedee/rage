@@ -1,5 +1,5 @@
 {
-  "id": "card_1289",
+  "id": "overextended-attack",
   "nome": "Overextended Attack",
   "tipo": "Combat Action",
   "modos": [
@@ -24,6 +24,7 @@
     "rage": 2,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "overextended-attack"
   }
 }

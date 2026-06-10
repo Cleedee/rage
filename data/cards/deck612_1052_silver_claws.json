@@ -1,5 +1,5 @@
 {
-  "id": "card_1052",
+  "id": "silver-claws",
   "nome": "Silver Claws",
   "tipo": "Gift",
   "modos": [
@@ -30,6 +30,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Ahroun - Silver Fangs",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "silver-claws"
   }
 }

@@ -2928,7 +2928,7 @@ class TestMootSystem:
             ))
 
         game.chamar_moot('p1', nome='Caern Building',
-                         modelo_id='card_1198')
+                         modelo_id='caern-building_r6')
         game.votar_moot('p1', a_favor=True)
         game.votar_moot('p2', a_favor=True)
         game.resolver_moot()
@@ -2948,7 +2948,7 @@ class TestMootSystem:
             ))
 
         game.chamar_moot('p1', nome='Caern Building',
-                         modelo_id='card_1198')
+                         modelo_id='caern-building_r6')
         game.votar_moot('p1', a_favor=True)
         game.votar_moot('p2', a_favor=False)
         game.resolver_moot()
@@ -2967,7 +2967,7 @@ class TestMootSystem:
             card_id=1186, name='Banishment by the Council',
             card_type='Moot', zone=Zone.HAND,
             owner_id='p1', controller_id='p1',
-            modelo_id='card_1186',
+            modelo_id='banishment-by-the-council_r8',
         )
         game.players[0].hand.append(moot_card)
 

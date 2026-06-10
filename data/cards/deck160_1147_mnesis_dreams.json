@@ -1,5 +1,5 @@
 {
-  "id": "card_1147",
+  "id": "mnesis-dreams",
   "nome": "Mnesis Dreams",
   "tipo": "Quest",
   "modos": [
@@ -34,6 +34,9 @@
       "Alvo: personagem Mokole na Umbra",
       "Recompensa: shuffle + 2 VP"
     ],
-    "sistemas_usados": ["quest_system"]
+    "sistemas_usados": [
+      "quest_system"
+    ],
+    "slug": "mnesis-dreams"
   }
 }

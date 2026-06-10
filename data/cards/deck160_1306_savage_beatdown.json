@@ -1,5 +1,5 @@
 {
-  "id": "card_1306",
+  "id": "savage-beatdown",
   "nome": "Savage Beatdown",
   "tipo": "Combat Action",
   "modos": [
@@ -33,6 +33,7 @@
       "Efeito 'descarte metade da mao se frenzied' implementado no _processar_ataque",
       "Propriedade 'descarte_metade_se_frenetico' em COMBAT_ACTION_PROPS",
       "Usa _resolver_descartar_metade_mao como referencia, mas logica esta inline no combate"
-    ]
+    ],
+    "slug": "savage-beatdown"
   }
 }

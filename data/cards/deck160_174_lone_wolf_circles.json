@@ -1,5 +1,5 @@
 {
-  "id": "card_174",
+  "id": "lone-wolf-circles_r4",
   "nome": "Lone Wolf Circles",
   "tipo": "Character - Gaia",
   "modos": [
@@ -30,6 +30,7 @@
       "Chamado apos reveal_all() no primeiro round de combate",
       "Nao pode participar de Pack Actions: flag 'sem_pack_actions'",
       "Integracao com CLI/API: chamar funcao apos REVEAL"
-    ]
+    ],
+    "slug": "lone-wolf-circles_r4"
   }
 }

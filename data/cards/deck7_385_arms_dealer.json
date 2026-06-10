@@ -1,5 +1,5 @@
 {
-  "id": "card_385",
+  "id": "arms-dealer_r3",
   "nome": "Arms Dealer",
   "tipo": "Ally",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "arms-dealer_r3"
   }
 }

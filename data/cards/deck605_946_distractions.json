@@ -1,5 +1,5 @@
 {
-  "id": "card_946",
+  "id": "distractions",
   "nome": "Distractions",
   "tipo": "Gift",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Galliard - Stargazers",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "distractions"
   }
 }

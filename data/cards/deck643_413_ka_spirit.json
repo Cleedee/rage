@@ -1,5 +1,5 @@
 {
-  "id": "card_413",
+  "id": "ka-spirit",
   "nome": "Ka Spirit",
   "tipo": "Ally",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 2,
     "gnosis": 1,
     "health": 2,
-    "requires": "Silent Striders"
+    "requires": "Silent Striders",
+    "slug": "ka-spirit"
   }
 }

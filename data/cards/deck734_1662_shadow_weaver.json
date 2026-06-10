@@ -1,5 +1,5 @@
 {
-  "id": "card_1662",
+  "id": "shadow-weaver_r2",
   "nome": "Shadow-Weaver",
   "tipo": "Character - Rogue",
   "modos": [
@@ -27,6 +27,7 @@
     "rage": 1,
     "gnosis": 2,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "shadow-weaver_r2"
   }
 }

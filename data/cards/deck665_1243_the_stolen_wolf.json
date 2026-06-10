@@ -1,5 +1,5 @@
 {
-  "id": "card_1243",
+  "id": "the-stolen-wolf_r6",
   "nome": "The Stolen Wolf",
   "tipo": "Moot",
   "modos": [
@@ -17,6 +17,7 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1243,
-    "texto_original": "Select a Garou. Only members of that Garou's auspice may vote. If passed, the victim reverts to his breed form. He cannot change form until he frenzies."
+    "texto_original": "Select a Garou. Only members of that Garou's auspice may vote. If passed, the victim reverts to his breed form. He cannot change form until he frenzies.",
+    "slug": "the-stolen-wolf_r6"
   }
 }

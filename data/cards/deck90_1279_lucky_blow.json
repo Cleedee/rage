@@ -1,5 +1,5 @@
 {
-  "id": "card_1279",
+  "id": "lucky-blow",
   "nome": "Lucky Blow",
   "tipo": "Combat Action",
   "modos": [
@@ -24,6 +24,7 @@
     "rage": 2,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "lucky-blow"
   }
 }

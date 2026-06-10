@@ -1,38 +1,40 @@
 {
-    "id": "card_361",
-    "nome": "Amber Eyes-Like-Knives",
-    "tipo": "Character - Gaia",
-    "renown": 0,
-    "atributos": {
-        "rage": 1,
-        "gnosis": 3,
-        "health": 1
-    },
-    "requires": "",
-    "keyword": "Mokole - Homid - Gaia - Female",
-    "damage": "",
-    "modos": [
+  "id": "amber-eyes-like-knives_r3",
+  "nome": "Amber Eyes-Like-Knives",
+  "tipo": "Character - Gaia",
+  "renown": 0,
+  "atributos": {
+    "rage": 1,
+    "gnosis": 3,
+    "health": 1
+  },
+  "requires": "",
+  "keyword": "Mokole - Homid - Gaia - Female",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Olhos de Ambar",
+      "efeitos": [
         {
-            "descricao": "Olhos de Ambar",
-            "efeitos": [
-                {
-                    "tipo": "impedir_acoes",
-                    "alvo": "inimigo",
-                    "quantidade": 0,
-                    "duracao": "prox_resource"
-                },
-                {
-                    "tipo": "impedir_acoes",
-                    "alvo": "self",
-                    "quantidade": 0,
-                    "duracao": "prox_resource"
-                }
-            ]
+          "tipo": "impedir_acoes",
+          "alvo": "inimigo",
+          "quantidade": 0,
+          "duracao": "prox_resource"
+        },
+        {
+          "tipo": "impedir_acoes",
+          "alvo": "self",
+          "quantidade": 0,
+          "duracao": "prox_resource"
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Fim da Regen: alvo + ela mesma so Combat Actions no prox Resource."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Fim da Regen: alvo + ela mesma so Combat Actions no prox Resource.",
+    "slug": "amber-eyes-like-knives_r3",
+    "card_id": 361
+  }
 }

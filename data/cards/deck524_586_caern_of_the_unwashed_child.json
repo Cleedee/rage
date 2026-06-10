@@ -1,34 +1,38 @@
 {
-    "id": "card_586",
-    "nome": "Caern of the Unwashed Child",
-    "tipo": "Caern",
-    "requires": "Defiler",
-    "atributos": {
-        "gnosis": 4
-    },
-    "modos": [
+  "id": "caern-of-the-unwashed-child",
+  "nome": "Caern of the Unwashed Child",
+  "tipo": "Caern",
+  "requires": "Defiler",
+  "atributos": {
+    "gnosis": 4
+  },
+  "modos": [
+    {
+      "descricao": "Oponente perde 2 Gnosis ou 2 Rage no combate",
+      "efeitos": [
         {
-            "descricao": "Oponente perde 2 Gnosis ou 2 Rage no combate",
-            "efeitos": [
-                {
-                    "tipo": "modificar_atributo",
-                    "condicao_alvo": "criatura_inimiga",
-                    "quantidade": -2,
-                    "params": {
-                        "atributos": ["rage", "gnosis"],
-                        "minimo": 1,
-                        "duracao": "ate_fim_combate",
-                        "escolha": "dono_caern"
-                    }
-                }
-            ]
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -2,
+          "params": {
+            "atributos": [
+              "rage",
+              "gnosis"
+            ],
+            "minimo": 1,
+            "duracao": "ate_fim_combate",
+            "escolha": "dono_caern"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 586,
-        "texto_original": "Opponents facing your pack lose either 2 Gnosis or 2 Rage for the duration of the combat (caern holder chooses which). This caern can never reduce an opponent's Rage or Gnosis below 1.",
-        "expansion": "TheWyrm",
-        "precisa_revisao": false
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 586,
+    "texto_original": "Opponents facing your pack lose either 2 Gnosis or 2 Rage for the duration of the combat (caern holder chooses which). This caern can never reduce an opponent's Rage or Gnosis below 1.",
+    "expansion": "TheWyrm",
+    "precisa_revisao": false,
+    "slug": "caern-of-the-unwashed-child"
+  }
 }

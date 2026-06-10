@@ -1,5 +1,5 @@
 {
-  "id": "card_1389",
+  "id": "firyal-the-whip_r3",
   "nome": "Firyal the Whip",
   "tipo": "Character - Gaia",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 2,
     "gnosis": 3,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "firyal-the-whip_r3"
   }
 }

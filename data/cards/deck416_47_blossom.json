@@ -1,37 +1,38 @@
 {
-    "id": "card_47",
-    "nome": "Blossom",
-    "tipo": "Character - Wyrm",
-    "modos": [
+  "id": "blossom_r4_thewyrm",
+  "nome": "Blossom",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "Remover self + 1 personagem ate fim do turno",
+      "efeitos": [
         {
-            "descricao": "Remover self + 1 personagem ate fim do turno",
-            "efeitos": [
-                {
-                    "tipo": "remover_do_jogo",
-                    "condicao_alvo": "criatura_aliada",
-                    "quantidade": 1,
-                    "params": {
-                        "also_remove_self": true,
-                        "restricao_extra": "nao_pode_agir",
-                        "limite_afetar_mesmo_alvo": 2
-                    }
-                }
-            ],
-            "condicao_uso": "antes_dos_alfas"
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "also_remove_self": true,
+            "restricao_extra": "nao_pode_agir",
+            "limite_afetar_mesmo_alvo": 2
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 47,
-        "texto_original": "Before Alphas are chosen, Blossom can remove herself and 1 character from play until end of turn. Neither can take actions other than regenerate during this time. Blossom cannot affect the same target more than twice.",
-        "keywords": "Odyssey - Fomori - Pentex - Homid - Defiler - Wyrm - Female",
-        "damage": "",
-        "rage": 1,
-        "gnosis": 6,
-        "health": 2,
-        "renown": 4,
-        "requires": "",
-        "precisa_revisao": false,
-        "nota_revisao": "Implementado via params: also_remove_self + restricao_extra"
+      ],
+      "condicao_uso": "antes_dos_alfas"
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 47,
+    "texto_original": "Before Alphas are chosen, Blossom can remove herself and 1 character from play until end of turn. Neither can take actions other than regenerate during this time. Blossom cannot affect the same target more than twice.",
+    "keywords": "Odyssey - Fomori - Pentex - Homid - Defiler - Wyrm - Female",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 6,
+    "health": 2,
+    "renown": 4,
+    "requires": "",
+    "precisa_revisao": false,
+    "nota_revisao": "Implementado via params: also_remove_self + restricao_extra",
+    "slug": "blossom_r4_thewyrm"
+  }
 }

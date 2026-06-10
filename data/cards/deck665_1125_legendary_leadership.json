@@ -1,5 +1,5 @@
 {
-  "id": "card_1125",
+  "id": "legendary-leadership",
   "nome": "Legendary Leadership",
   "tipo": "Quest",
   "modos": [
@@ -16,6 +16,7 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1125,
-    "texto_original": "Play immediately after a successful moot vote. If a moot you played passed, your pack gains a number of victory points equal to that moot's Renown requirement."
+    "texto_original": "Play immediately after a successful moot vote. If a moot you played passed, your pack gains a number of victory points equal to that moot's Renown requirement.",
+    "slug": "legendary-leadership"
   }
 }

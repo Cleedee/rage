@@ -1,5 +1,5 @@
 {
-  "id": "card_1115",
+  "id": "bully-s-quest",
   "nome": "Bully's Quest",
   "tipo": "Quest",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "bully-s-quest"
   }
 }

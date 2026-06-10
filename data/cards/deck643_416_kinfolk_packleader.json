@@ -1,5 +1,5 @@
 {
-  "id": "card_416",
+  "id": "kinfolk-packleader_r4",
   "nome": "Kinfolk Packleader",
   "tipo": "Ally",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 3,
     "gnosis": 3,
     "health": 3,
-    "requires": "Lupus"
+    "requires": "Lupus",
+    "slug": "kinfolk-packleader_r4"
   }
 }

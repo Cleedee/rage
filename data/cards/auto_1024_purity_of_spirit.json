@@ -1,5 +1,5 @@
 {
-  "id": "card_1024",
+  "id": "purity-of-spirit",
   "nome": "Purity of Spirit",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Ahroun"
+    "requires": "Ahroun",
+    "slug": "purity-of-spirit"
   }
 }

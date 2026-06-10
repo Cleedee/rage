@@ -1,5 +1,5 @@
 {
-  "id": "card_282",
+  "id": "attacking-the-wyrm",
   "nome": "Attacking the Wyrm",
   "tipo": "Combat Event",
   "modos": [
@@ -43,6 +43,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "attacking-the-wyrm"
   }
 }

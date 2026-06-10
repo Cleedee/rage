@@ -1,25 +1,27 @@
 {
-    "id": "card_376",
-    "nome": "Thousand Cubs",
-    "tipo": "Character - Gaia",
-    "renown": 0,
-    "atributos": {
-        "rage": 4,
-        "gnosis": 6,
-        "health": 4
-    },
-    "requires": "",
-    "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Mil Filhotes",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "+2 Renome em Moots (passiva via register_card_passives + votar_moot)"
+  "id": "thousand-cubs_r8",
+  "nome": "Thousand Cubs",
+  "tipo": "Character - Gaia",
+  "renown": 0,
+  "atributos": {
+    "rage": 4,
+    "gnosis": 6,
+    "health": 4
+  },
+  "requires": "",
+  "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Mil Filhotes",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "+2 Renome em Moots (passiva via register_card_passives + votar_moot)",
+    "slug": "thousand-cubs_r8",
+    "card_id": 376
+  }
 }

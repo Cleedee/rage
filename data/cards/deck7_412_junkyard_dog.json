@@ -1,5 +1,5 @@
 {
-  "id": "card_412",
+  "id": "junkyard-dog_r3",
   "nome": "Junkyard 'Dog'",
   "tipo": "Ally",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 2,
     "gnosis": 1,
     "health": 4,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "junkyard-dog_r3"
   }
 }

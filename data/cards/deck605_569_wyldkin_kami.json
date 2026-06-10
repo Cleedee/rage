@@ -1,5 +1,5 @@
 {
-  "id": "card_569",
+  "id": "wyldkin-kami_r9",
   "nome": "Wyldkin Kami",
   "tipo": "Victim",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 7,
     "renown": 9,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "wyldkin-kami_r9"
   }
 }

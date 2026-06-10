@@ -1,5 +1,5 @@
 {
-  "id": "card_41",
+  "id": "banana-split_r2",
   "nome": "Banana Split",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 3,
     "gnosis": 1,
     "health": 3,
-    "requires": ""
+    "requires": "",
+    "slug": "banana-split_r2"
   }
 }

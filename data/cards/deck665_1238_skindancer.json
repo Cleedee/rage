@@ -1,5 +1,5 @@
 {
-  "id": "card_1238",
+  "id": "skindancer_r6",
   "nome": "Skindancer",
   "tipo": "Moot",
   "modos": [
@@ -19,6 +19,7 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1238,
-    "texto_original": "Choose 1 Garou. Successful vote means that the Garou is revealed as being a Skindancer (thus of the Wyrm and considered an enemy card) and is removed from his pack and placed in the Hunting Grounds."
+    "texto_original": "Choose 1 Garou. Successful vote means that the Garou is revealed as being a Skindancer (thus of the Wyrm and considered an enemy card) and is removed from his pack and placed in the Hunting Grounds.",
+    "slug": "skindancer_r6"
   }
 }

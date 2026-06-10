@@ -1,5 +1,5 @@
 {
-  "id": "card_1322",
+  "id": "taking-the-death-blow",
   "nome": "Taking the Death Blow",
   "tipo": "Combat Event",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "taking-the-death-blow"
   }
 }

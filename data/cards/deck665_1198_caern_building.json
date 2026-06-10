@@ -1,5 +1,5 @@
 {
-  "id": "card_1198",
+  "id": "caern-building_r6",
   "nome": "Caern Building",
   "tipo": "Moot",
   "modos": [
@@ -20,6 +20,7 @@
   "_metadata": {
     "fonte": "manual",
     "card_id": 1198,
-    "texto_original": "This Rite takes the form of a moot, as caern building requires cooperation. Select a player to own the caern. If the vote passes, the player gains 4 victory points."
+    "texto_original": "This Rite takes the form of a moot, as caern building requires cooperation. Select a player to own the caern. If the vote passes, the player gains 4 victory points.",
+    "slug": "caern-building_r6"
   }
 }

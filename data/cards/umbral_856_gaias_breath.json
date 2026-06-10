@@ -1,5 +1,5 @@
 {
-  "id": "card_856",
+  "id": "gaia-s-breath",
   "nome": "Gaia's Breath",
   "tipo": "Event",
   "modos": [
@@ -26,6 +26,7 @@
     "gnosis": 0,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "gaia-s-breath"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_271",
+  "id": "firebomb",
   "nome": "Firebomb",
   "tipo": "Equipment",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "firebomb"
   }
 }

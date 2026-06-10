@@ -1,5 +1,5 @@
 {
-  "id": "card_15",
+  "id": "conrad-walks-the-line_r5",
   "nome": "Conrad Walks-the-Line",
   "tipo": "Character - Rogue",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 2,
     "gnosis": 3,
     "health": 2,
-    "requires": ""
+    "requires": "",
+    "slug": "conrad-walks-the-line_r5"
   }
 }

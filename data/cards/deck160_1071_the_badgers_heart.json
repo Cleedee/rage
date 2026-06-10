@@ -1,5 +1,5 @@
 {
-  "id": "card_1071",
+  "id": "the-badger-s-heart",
   "nome": "The Badger's Heart",
   "tipo": "Gift",
   "modos": [
@@ -30,6 +30,7 @@
       "Propriedade effective_rage usada no combate em vez de rage direto",
       "Efeito permanente: expira quando alvo entra em full frenzy ou e cancelado",
       "rage_morph precisa ser copiado do banco ao criar CardInstance"
-    ]
+    ],
+    "slug": "the-badger-s-heart"
   }
 }

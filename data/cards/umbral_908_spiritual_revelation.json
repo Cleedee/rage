@@ -1,5 +1,5 @@
 {
-  "id": "card_908",
+  "id": "spiritual-revelation",
   "nome": "Spiritual Revelation",
   "tipo": "Event",
   "modos": [
@@ -25,6 +25,7 @@
     "gnosis": 0,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "spiritual-revelation"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_517",
+  "id": "pentex-first-team-43_r8",
   "nome": "Pentex First Team 43",
   "tipo": "Enemy",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 4,
     "gnosis": 4,
     "health": 8,
-    "requires": ""
+    "requires": "",
+    "slug": "pentex-first-team-43_r8"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1300",
+  "id": "rent-asunder",
   "nome": "Rent Asunder",
   "tipo": "Combat Action",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Crinos form - Not bluffed",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "rent-asunder"
   }
 }

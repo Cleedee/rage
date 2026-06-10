@@ -1,25 +1,27 @@
 {
-    "id": "card_90",
-    "nome": "Unseelie Troll",
-    "tipo": "Ally",
-    "renown": 7,
-    "atributos": {
-        "rage": 5,
-        "gnosis": 5,
-        "health": 6
-    },
-    "requires": "Pentex Executive",
-    "keyword": "Faerie - Pentex",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Troll Unseelie",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Considerado Crinos. Pode usar gifts Beast-of-War e Eater-of-Souls (passiva)"
+  "id": "unseelie-troll_r7",
+  "nome": "Unseelie Troll",
+  "tipo": "Ally",
+  "renown": 7,
+  "atributos": {
+    "rage": 5,
+    "gnosis": 5,
+    "health": 6
+  },
+  "requires": "Pentex Executive",
+  "keyword": "Faerie - Pentex",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Troll Unseelie",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Considerado Crinos. Pode usar gifts Beast-of-War e Eater-of-Souls (passiva)",
+    "slug": "unseelie-troll_r7",
+    "card_id": 90
+  }
 }

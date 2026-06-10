@@ -1,5 +1,5 @@
 {
-  "id": "card_725",
+  "id": "animal-mummy",
   "nome": "Animal Mummy",
   "tipo": "Equipment",
   "modos": [
@@ -31,6 +31,7 @@
       "Destruicao aleatoria (coin flip): probabilidade=0.5",
       "'Sept card' inclui totens, territorios, caerns - filtro por tipo pendente",
       "Sistema de ativacao de equipamentos uma vez por turno pendente"
-    ]
+    ],
+    "slug": "animal-mummy"
   }
 }

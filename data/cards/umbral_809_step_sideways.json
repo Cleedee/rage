@@ -1,5 +1,5 @@
 {
-  "id": "card_809",
+  "id": "step-sideways",
   "nome": "Step Sideways",
   "tipo": "Action",
   "modos": [
@@ -27,6 +27,7 @@
     "gnosis": 0,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "step-sideways"
   }
 }

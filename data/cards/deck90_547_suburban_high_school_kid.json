@@ -1,5 +1,5 @@
 {
-  "id": "card_547",
+  "id": "suburban-high-school-kid_r2",
   "nome": "Suburban High School Kid",
   "tipo": "Victim",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 2,
     "gnosis": 0,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "suburban-high-school-kid_r2"
   }
 }

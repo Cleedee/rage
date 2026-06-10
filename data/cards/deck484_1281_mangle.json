@@ -1,37 +1,39 @@
 {
-    "id": "card_1281",
-    "nome": "Mangle",
-    "tipo": "Combat Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 8,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Crinos form - Not bluffed",
-    "keyword": "Slow Striking",
-    "damage": "6",
-    "modos": [
+  "id": "mangle_unlimited",
+  "nome": "Mangle",
+  "tipo": "Combat Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 8,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Crinos form - Not bluffed",
+  "keyword": "Slow Striking",
+  "damage": "6",
+  "modos": [
+    {
+      "descricao": "Despedacar",
+      "efeitos": [
         {
-            "descricao": "Despedacar",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "alvo": "inimigo",
-                    "quantidade": 6
-                },
-                {
-                    "tipo": "impedir_acoes",
-                    "alvo": "inimigo",
-                    "quantidade": 0,
-                    "duracao": "fim_do_prox_round_combate"
-                }
-            ]
+          "tipo": "dano",
+          "alvo": "inimigo",
+          "quantidade": 6
+        },
+        {
+          "tipo": "impedir_acoes",
+          "alvo": "inimigo",
+          "quantidade": 0,
+          "duracao": "fim_do_prox_round_combate"
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Nao pode ser bluffed. Ferido nao age ate fim do prox round de combate."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Nao pode ser bluffed. Ferido nao age ate fim do prox round de combate.",
+    "slug": "mangle_unlimited",
+    "card_id": 1281
+  }
 }

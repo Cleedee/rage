@@ -1,5 +1,5 @@
 {
-  "id": "card_622",
+  "id": "blood-dagger",
   "nome": "Blood Dagger",
   "tipo": "Equipment",
   "modos": [
@@ -34,6 +34,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "blood-dagger"
   }
 }

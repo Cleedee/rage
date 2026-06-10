@@ -1,5 +1,5 @@
 {
-  "id": "card_758",
+  "id": "monster-joe-s-truck-n-tow",
   "nome": "Monster Joe's Truck-n-Tow",
   "tipo": "Territory",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "monster-joe-s-truck-n-tow"
   }
 }

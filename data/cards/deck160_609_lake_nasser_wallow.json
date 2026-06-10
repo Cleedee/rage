@@ -1,5 +1,5 @@
 {
-  "id": "card_609",
+  "id": "lake-nasser-wallow",
   "nome": "Lake Nasser Wallow",
   "tipo": "Caern",
   "modos": [
@@ -23,6 +23,10 @@
       "Efeito passivo: Rites e Gifts do pack podem cruzar a Gauntlet",
       "Implementado via game_modifiers: rites_gifts_cross_gauntlet"
     ],
-    "sistemas_usados": ["continuous_passive", "gauntlet_crossing"]
+    "sistemas_usados": [
+      "continuous_passive",
+      "gauntlet_crossing"
+    ],
+    "slug": "lake-nasser-wallow"
   }
 }

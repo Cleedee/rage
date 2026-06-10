@@ -1,5 +1,5 @@
 {
-  "id": "card_194",
+  "id": "morihei-high-mountain_r8",
   "nome": "Morihei High-Mountain",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 3,
     "gnosis": 9,
     "health": 3,
-    "requires": ""
+    "requires": "",
+    "slug": "morihei-high-mountain_r8"
   }
 }

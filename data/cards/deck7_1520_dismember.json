@@ -1,5 +1,5 @@
 {
-  "id": "card_1520",
+  "id": "dismember",
   "nome": "Dismember",
   "tipo": "Combat Action",
   "modos": [
@@ -34,6 +34,7 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "dismember"
   }
 }

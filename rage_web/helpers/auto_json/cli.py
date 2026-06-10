@@ -36,7 +36,7 @@ def cmd_status():
         from collections import Counter
         tipos = Counter()
         for c in CardModel.query.all():
-            modelo_key = f'card_{c.id}'
+            modelo_key = c.slug or f'card_{c.id}'
             if modelo_key not in CARTAS_EXEMPLO:
                 tipos[c.tipo or 'Unknown'] += 1
         print(f'\nTop tipos sem JSON:')

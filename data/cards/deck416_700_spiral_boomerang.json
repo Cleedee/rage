@@ -1,44 +1,45 @@
 {
-    "id": "card_700",
-    "nome": "Spiral Boomerang",
-    "tipo": "Equipment",
-    "modos": [
+  "id": "spiral-boomerang",
+  "nome": "Spiral Boomerang",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Forcar oponente a Umbria por 2 turnos",
+      "efeitos": [
         {
-            "descricao": "Forcar oponente a Umbria por 2 turnos",
-            "efeitos": [
-                {
-                    "tipo": "mover_para",
-                    "condicao_alvo": "criatura_inimiga",
-                    "quantidade": 1,
-                    "params": {
-                        "zona": "umbra",
-                        "duracao": 2,
-                        "retornar_zona_original": true
-                    }
-                },
-                {
-                    "tipo": "remover_do_jogo",
-                    "condicao_alvo": "criatura_aliada",
-                    "params": {
-                        "descarte_apos_uso": true
-                    }
-                }
-            ],
-            "condicao_uso": ""
+          "tipo": "mover_para",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "zona": "umbra",
+            "duracao": 2,
+            "retornar_zona_original": true
+          }
+        },
+        {
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "descarte_apos_uso": true
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 700,
-        "texto_original": "Select 1 character you're in combat with. That character is forced into the Umbra and the Hunting Grounds for 2 turns, after which she returns to the physical world and her pack. Discard the Spiral Boomerang upon use.",
-        "keywords": "Bane Fetish",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 3,
-        "health": 0,
-        "renown": 0,
-        "requires": "",
-        "precisa_revisao": false,
-        "nota_revisao": "mover_para com duracao + descarte apos uso implementado e testado"
+      ],
+      "condicao_uso": ""
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 700,
+    "texto_original": "Select 1 character you're in combat with. That character is forced into the Umbra and the Hunting Grounds for 2 turns, after which she returns to the physical world and her pack. Discard the Spiral Boomerang upon use.",
+    "keywords": "Bane Fetish",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0,
+    "renown": 0,
+    "requires": "",
+    "precisa_revisao": false,
+    "nota_revisao": "mover_para com duracao + descarte apos uso implementado e testado",
+    "slug": "spiral-boomerang"
+  }
 }

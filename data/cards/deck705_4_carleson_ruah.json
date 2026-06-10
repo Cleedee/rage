@@ -1,5 +1,5 @@
 {
-  "id": "card_4",
+  "id": "carleson-ruah_r4",
   "nome": "Carleson Ruah",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 4,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "carleson-ruah_r4"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_638",
+  "id": "devilwhip",
   "nome": "Devilwhip",
   "tipo": "Equipment - Bane Fetish - Weapon",
   "modos": [
@@ -42,6 +42,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "devilwhip"
   }
 }

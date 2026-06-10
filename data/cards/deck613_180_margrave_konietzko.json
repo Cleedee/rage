@@ -1,5 +1,5 @@
 {
-  "id": "card_180",
+  "id": "margrave-konietzko_r10",
   "nome": "Margrave Konietzko",
   "tipo": "Character - Gaia",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 6,
     "renown": 10,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "margrave-konietzko_r10"
   }
 }

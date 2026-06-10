@@ -1,5 +1,5 @@
 {
-  "id": "card_167",
+  "id": "king-albrecht_r13",
   "nome": "King Albrecht",
   "tipo": "Character - Gaia",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 6,
     "renown": 13,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "king-albrecht_r13"
   }
 }

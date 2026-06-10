@@ -1,5 +1,5 @@
 {
-  "id": "card_1330",
+  "id": "searching-for-weakness",
   "nome": "Searching for Weakness",
   "tipo": "Combat Action",
   "modos": [
@@ -24,6 +24,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "searching-for-weakness"
   }
 }

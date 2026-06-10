@@ -1,30 +1,31 @@
 {
-    "id": "card_1308",
-    "nome": "Septum Crushed",
-    "tipo": "Combat Action",
-    "modos": [
+  "id": "septum-crushed",
+  "nome": "Septum Crushed",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 4 de dano",
+      "efeitos": [
         {
-            "descricao": "Causar 4 de dano",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "quantidade": 4,
-                    "condicao_alvo": "criatura_inimiga"
-                }
-            ],
-            "condicao_uso": ""
+          "tipo": "dano",
+          "quantidade": 4,
+          "condicao_alvo": "criatura_inimiga"
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 1308,
-        "texto_original": "'Got your nose!'",
-        "keywords": "",
-        "damage": "4",
-        "rage": 5,
-        "gnosis": 0,
-        "health": 0,
-        "requires": "",
-        "precisa_revisao": false
+      ],
+      "condicao_uso": ""
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 1308,
+    "texto_original": "'Got your nose!'",
+    "keywords": "",
+    "damage": "4",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "",
+    "precisa_revisao": false,
+    "slug": "septum-crushed"
+  }
 }

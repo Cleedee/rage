@@ -1,5 +1,5 @@
 {
-  "id": "card_1381",
+  "id": "mosquito-swarm_r5",
   "nome": "Mosquito Swarm",
   "tipo": "Ally",
   "modos": [
@@ -39,6 +39,7 @@
     "rage": 2,
     "gnosis": 4,
     "health": 3,
-    "requires": "Wendigo - Bubasti - Hellcat"
+    "requires": "Wendigo - Bubasti - Hellcat",
+    "slug": "mosquito-swarm_r5"
   }
 }

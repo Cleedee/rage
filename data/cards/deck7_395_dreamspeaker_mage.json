@@ -1,5 +1,5 @@
 {
-  "id": "card_395",
+  "id": "dreamspeaker-mage_r8_theumbra",
   "nome": "Dreamspeaker Mage",
   "tipo": "Ally",
   "modos": [
@@ -31,6 +31,7 @@
     "rage": 4,
     "gnosis": 8,
     "health": 3,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "dreamspeaker-mage_r8_theumbra"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_109",
+  "id": "disquiet",
   "nome": "Disquiet",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Homid - Eater-of-Souls- ananasi"
+    "requires": "Homid - Eater-of-Souls- ananasi",
+    "slug": "disquiet"
   }
 }

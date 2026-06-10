@@ -1,31 +1,33 @@
 {
-    "id": "card_1413",
-    "nome": "The Whole Nine Yards",
-    "tipo": "Combat Event",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "",
-    "keyword": "Frenzy",
-    "damage": "",
-    "modos": [
+  "id": "the-whole-nine-yards",
+  "nome": "The Whole Nine Yards",
+  "tipo": "Combat Event",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "",
+  "keyword": "Frenzy",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Frenzy total",
+      "efeitos": [
         {
-            "descricao": "Frenzy total",
-            "efeitos": [
-                {
-                    "tipo": "remover_do_combate",
-                    "alvo": "packmates",
-                    "quantidade": 0
-                }
-            ]
+          "tipo": "remover_do_combate",
+          "alvo": "packmates",
+          "quantidade": 0
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Frenzy completo. Nao prevenivel. Packmates removidos ate fim do combate."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Frenzy completo. Nao prevenivel. Packmates removidos ate fim do combate.",
+    "slug": "the-whole-nine-yards",
+    "card_id": 1413
+  }
 }

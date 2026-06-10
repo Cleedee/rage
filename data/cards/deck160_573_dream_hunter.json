@@ -1,5 +1,5 @@
 {
-  "id": "card_573",
+  "id": "dream-hunter_r4",
   "nome": "Dream Hunter",
   "tipo": "Enemy",
   "modos": [
@@ -23,6 +23,11 @@
       "Pode usar Mokole e Get of Fenris Gifts",
       "Se morto por Mokole: busca Quest/Rite/Junta do deck para mao"
     ],
-    "sistemas_usados": ["death_trigger", "umbra_only", "search_deck"]
+    "sistemas_usados": [
+      "death_trigger",
+      "umbra_only",
+      "search_deck"
+    ],
+    "slug": "dream-hunter_r4"
   }
 }

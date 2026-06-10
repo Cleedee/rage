@@ -1,32 +1,33 @@
 {
-    "id": "card_964",
-    "nome": "Gaia's Will Corrupted",
-    "tipo": "Gift",
-    "modos": [
+  "id": "gaia-s-will-corrupted_thewaroftheamazon",
+  "nome": "Gaia's Will Corrupted",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "5 dano a uma vitima em combate",
+      "efeitos": [
         {
-            "descricao": "5 dano a uma vitima em combate",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "condicao_alvo": "vitima",
-                    "quantidade": 5
-                }
-            ],
-            "condicao_uso": "combate"
+          "tipo": "dano",
+          "condicao_alvo": "vitima",
+          "quantidade": 5
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 964,
-        "texto_original": "Combat Restricted. Play Gaia's Will Corrupted during the Withdrawal step of combat. Gaia's Will Corrupted does 5 damage to a Victim that the Gift user is facing in combat.",
-        "keywords": "",
-        "damage": "5",
-        "rage": 0,
-        "gnosis": 7,
-        "health": 0,
-        "renown": 0,
-        "requires": "Black Spiral Dancer - Hellcat",
-        "precisa_revisao": false,
-        "nota_revisao": "condicao_alvo=vitima implementado no resolvedor"
+      ],
+      "condicao_uso": "combate"
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 964,
+    "texto_original": "Combat Restricted. Play Gaia's Will Corrupted during the Withdrawal step of combat. Gaia's Will Corrupted does 5 damage to a Victim that the Gift user is facing in combat.",
+    "keywords": "",
+    "damage": "5",
+    "rage": 0,
+    "gnosis": 7,
+    "health": 0,
+    "renown": 0,
+    "requires": "Black Spiral Dancer - Hellcat",
+    "precisa_revisao": false,
+    "nota_revisao": "condicao_alvo=vitima implementado no resolvedor",
+    "slug": "gaia-s-will-corrupted_thewaroftheamazon"
+  }
 }

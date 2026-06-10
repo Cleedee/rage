@@ -1,37 +1,38 @@
 {
-    "id": "card_535",
-    "nome": "Renegade Werewolf Hunter",
-    "tipo": "Victim",
-    "modos": [
+  "id": "renegade-werewolf-hunter_r8",
+  "nome": "Renegade Werewolf Hunter",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Dano agravado, ataca BSD maior Renome",
+      "efeitos": [
         {
-            "descricao": "Dano agravado, ataca BSD maior Renome",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "quantidade": 0,
-                    "condicao_alvo": "criatura_inimiga",
-                    "params": {
-                        "agravado": true,
-                        "alvo": "maior_renown_bsd",
-                        "ataque_auto_3_rounds": true
-                    }
-                }
-            ],
-            "condicao_uso": "fim_da_fase_combate"
+          "tipo": "dano",
+          "quantidade": 0,
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "agravado": true,
+            "alvo": "maior_renown_bsd",
+            "ataque_auto_3_rounds": true
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 535,
-        "texto_original": "All damage from the Werewolf Hunter is aggravated. At the end of each Combat Phase, attacks the BSD with the highest Renown for 3 rounds.",
-        "keywords": "Human",
-        "damage": "",
-        "rage": 7,
-        "gnosis": 1,
-        "health": 4,
-        "renown": 8,
-        "requires": "",
-        "precisa_revisao": false,
-        "nota_revisao": "Ataque automatico implementado em _check_victim_attacks()"
+      ],
+      "condicao_uso": "fim_da_fase_combate"
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 535,
+    "texto_original": "All damage from the Werewolf Hunter is aggravated. At the end of each Combat Phase, attacks the BSD with the highest Renown for 3 rounds.",
+    "keywords": "Human",
+    "damage": "",
+    "rage": 7,
+    "gnosis": 1,
+    "health": 4,
+    "renown": 8,
+    "requires": "",
+    "precisa_revisao": false,
+    "nota_revisao": "Ataque automatico implementado em _check_victim_attacks()",
+    "slug": "renegade-werewolf-hunter_r8"
+  }
 }

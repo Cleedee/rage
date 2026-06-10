@@ -1,5 +1,5 @@
 {
-  "id": "card_956",
+  "id": "fatal-flaw",
   "nome": "Fatal Flaw",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 2,
     "health": 0,
-    "requires": "Shadow Lords - Ragabash - Lupus"
+    "requires": "Shadow Lords - Ragabash - Lupus",
+    "slug": "fatal-flaw"
   }
 }

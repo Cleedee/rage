@@ -1,5 +1,5 @@
 {
-  "id": "card_1324",
+  "id": "umbral-escape_unlimited",
   "nome": "Umbral Escape",
   "tipo": "Combat Action",
   "modos": [
@@ -29,6 +29,7 @@
     "gnosis": 3,
     "health": 0,
     "keywords": "Fast Striking",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "umbral-escape_unlimited"
   }
 }

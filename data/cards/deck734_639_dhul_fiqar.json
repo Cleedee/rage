@@ -1,5 +1,5 @@
 {
-  "id": "card_639",
+  "id": "dhul-fiqar",
   "nome": "Dhul Fiqar",
   "tipo": "Equipment - Gaia Fetish - Weapon",
   "modos": [
@@ -41,6 +41,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "dhul-fiqar"
   }
 }

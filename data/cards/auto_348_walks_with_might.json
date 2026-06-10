@@ -1,5 +1,5 @@
 {
-  "id": "card_348",
+  "id": "walks-with-might_r9",
   "nome": "Walks-with-Might",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 5,
     "gnosis": 7,
     "health": 5,
-    "requires": ""
+    "requires": "",
+    "slug": "walks-with-might_r9"
   }
 }

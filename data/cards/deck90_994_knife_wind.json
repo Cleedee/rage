@@ -1,5 +1,5 @@
 {
-  "id": "card_994",
+  "id": "knife-wind",
   "nome": "Knife Wind",
   "tipo": "Gift",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "knife-wind"
   }
 }

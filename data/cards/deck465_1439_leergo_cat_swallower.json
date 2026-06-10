@@ -1,25 +1,27 @@
 {
-    "id": "card_1439",
-    "nome": "Leergo Cat Swallower",
-    "tipo": "Character - Wyrm",
-    "renown": 3,
-    "atributos": {
-        "rage": 2,
-        "gnosis": 4,
-        "health": 2
-    },
-    "requires": "",
-    "keyword": "Garou - Black Spiral Dancer - Galliard - Homid - Eater-of-Souls - Wyrm - Male",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "First Team 28",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "+1 Rage vs Gaia. Auto pack attack/defend FT28. Rivalry: Garou."
+  "id": "leergo-cat-swallower_r3",
+  "nome": "Leergo Cat Swallower",
+  "tipo": "Character - Wyrm",
+  "renown": 3,
+  "atributos": {
+    "rage": 2,
+    "gnosis": 4,
+    "health": 2
+  },
+  "requires": "",
+  "keyword": "Garou - Black Spiral Dancer - Galliard - Homid - Eater-of-Souls - Wyrm - Male",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "First Team 28",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "+1 Rage vs Gaia. Auto pack attack/defend FT28. Rivalry: Garou.",
+    "slug": "leergo-cat-swallower_r3",
+    "card_id": 1439
+  }
 }

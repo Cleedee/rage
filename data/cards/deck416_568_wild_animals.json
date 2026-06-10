@@ -1,36 +1,37 @@
 {
-    "id": "card_568",
-    "nome": "Wild Animals",
-    "tipo": "Victim",
-    "modos": [
+  "id": "wild-animals_r5",
+  "nome": "Wild Animals",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Ataca maior Rage Wyrm",
+      "efeitos": [
         {
-            "descricao": "Ataca maior Rage Wyrm",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "quantidade": 0,
-                    "condicao_alvo": "criatura_inimiga",
-                    "params": {
-                        "alvo": "maior_rage_wyrm",
-                        "ataque_auto_1_round": true
-                    }
-                }
-            ],
-            "condicao_uso": "fim_da_fase_combate"
+          "tipo": "dano",
+          "quantidade": 0,
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "alvo": "maior_rage_wyrm",
+            "ataque_auto_1_round": true
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 568,
-        "texto_original": "Guided by Gaia herself, this pack of jungle creatures will attack the highest Rage Wyrm character at the end of each Combat Phase.",
-        "keywords": "Animal",
-        "damage": "",
-        "rage": 6,
-        "gnosis": 3,
-        "health": 4,
-        "renown": 5,
-        "requires": "",
-        "precisa_revisao": false,
-        "nota_revisao": "Ataque automatico implementado em _check_victim_attacks()"
+      ],
+      "condicao_uso": "fim_da_fase_combate"
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 568,
+    "texto_original": "Guided by Gaia herself, this pack of jungle creatures will attack the highest Rage Wyrm character at the end of each Combat Phase.",
+    "keywords": "Animal",
+    "damage": "",
+    "rage": 6,
+    "gnosis": 3,
+    "health": 4,
+    "renown": 5,
+    "requires": "",
+    "precisa_revisao": false,
+    "nota_revisao": "Ataque automatico implementado em _check_victim_attacks()",
+    "slug": "wild-animals_r5"
+  }
 }

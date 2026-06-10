@@ -16,6 +16,28 @@ Princípios:
 from __future__ import annotations
 import re
 from typing import Any, Optional
+from slugify import slugify
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Helpers de ID
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _card_id(card) -> str:
+    """Gera ID estavel para o JSON: slug do nome.
+    
+    Prioridade:
+    1. Se card tem slug no banco, usa
+    2. Se card tem renown, adiciona _r{N}
+    3. Fallback: card_{id}
+    """
+    if hasattr(card, 'slug') and card.slug:
+        return card.slug
+    # Fallback: gera slug na hora
+    slug_base = slugify(card.name) if card.name else _card_id(card)
+    if card.renown and card.renown > 0:
+        return f'{slug_base}_r{card.renown}'
+    return slug_base
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Helpers de parsing
@@ -589,7 +611,7 @@ def parse_combat_action(card) -> Optional[dict]:
             })
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': card.tipo,
         'modos': [{'descricao': 'Ação de Combate', 'efeitos': efeitos}],
@@ -627,7 +649,7 @@ def parse_gift(card) -> Optional[dict]:
             })
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': 'Gift',
         'modos': [{'descricao': f'Usar Gift (Gn{gnosis})', 'efeitos': efeitos}],
@@ -661,7 +683,7 @@ def parse_equipment(card) -> Optional[dict]:
         efeitos.append({'tipo': 'equipar', 'condicao_alvo': 'criatura_aliada'})
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': 'Equipment',
         'modos': [{'descricao': f'Equipar (Gn{gnosis})', 'efeitos': efeitos}],
@@ -687,7 +709,7 @@ def parse_event(card) -> Optional[dict]:
                         'quantidade': 1, 'params': {'zona': 'deck_sept'}}]
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': 'Event',
         'modos': [{'descricao': 'Evento', 'efeitos': efeitos}],
@@ -712,7 +734,7 @@ def parse_action(card) -> Optional[dict]:
                         'quantidade': 1, 'params': {'zona': 'deck_sept'}}]
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': 'Action',
         'modos': [{'descricao': 'Ação', 'efeitos': efeitos}],
@@ -731,7 +753,7 @@ def parse_ally(card) -> Optional[dict]:
                     'params': {'descricao': f'aliado_h{health}'}}]
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': 'Ally',
         'modos': [{'descricao': f'Aliado (H{health})', 'efeitos': efeitos}],
@@ -756,7 +778,7 @@ def parse_territory(card) -> Optional[dict]:
                         'params': {'descricao': 'territorio'}}]
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': 'Territory',
         'modos': [{'descricao': 'Território', 'efeitos': efeitos}],
@@ -798,7 +820,7 @@ def parse_character(card) -> Optional[dict]:
         })
 
     return {
-        'id': f'card_{card.id}',
+        'id': _card_id(card),
         'nome': card.name,
         'tipo': card.tipo,
         'modos': [{'descricao': f'Personagem: Rg{rage} Gn{gnosis} H{health} (Ren{renown})',
@@ -817,14 +839,14 @@ def parse_rite(card) -> Optional[dict]:
         efeitos = [{'tipo': 'comprar', 'condicao_alvo': 'jogador',
                     'quantidade': 1, 'params': {'zona': 'deck_sept'}}]
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Rite',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Rite',
         'modos': [{'descricao': 'Rito', 'efeitos': efeitos}],
     }
 
 
 def parse_moot(card) -> Optional[dict]:
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Moot',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Moot',
         'modos': [{'descricao': 'Junta', 'efeitos': [
             {'tipo': 'restringir', 'condicao_alvo': 'jogador',
              'params': {'descricao': 'moot'}}
@@ -834,7 +856,7 @@ def parse_moot(card) -> Optional[dict]:
 
 def parse_board_meeting(card) -> Optional[dict]:
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Board Meeting',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Board Meeting',
         'modos': [{'descricao': 'Reunião', 'efeitos': [
             {'tipo': 'restringir', 'condicao_alvo': 'jogador',
              'params': {'descricao': 'board_meeting'}}
@@ -852,7 +874,7 @@ def parse_caern(card) -> Optional[dict]:
         except ValueError:
             pass
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Caern',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Caern',
         'modos': [{'descricao': 'Caern', 'efeitos': [
             {'tipo': 'modificar_gnosis', 'condicao_alvo': 'jogador',
              'quantidade': gnosis_bonus}
@@ -871,7 +893,7 @@ def parse_enemy(card) -> Optional[dict]:
             dmg = m['quantidade']
         efeitos = [{'tipo': 'dano', 'condicao_alvo': 'criatura_inimiga', 'quantidade': dmg}]
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Enemy',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Enemy',
         'modos': [{'descricao': f'Inimigo (H{health})', 'efeitos': efeitos}],
     }
 
@@ -879,7 +901,7 @@ def parse_enemy(card) -> Optional[dict]:
 def parse_victim(card) -> Optional[dict]:
     health = card.health or 1
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Victim',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Victim',
         'modos': [{'descricao': f'Vítima (H{health})', 'efeitos': [
             {'tipo': 'restringir', 'condicao_alvo': 'jogador',
              'params': {'vida_da_vitima': health}}
@@ -889,7 +911,7 @@ def parse_victim(card) -> Optional[dict]:
 
 def parse_quest(card) -> Optional[dict]:
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Quest',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Quest',
         'modos': [{'descricao': 'Quest', 'efeitos': [
             {'tipo': 'quest_check', 'condicao_alvo': 'jogador'}
         ]}],
@@ -898,7 +920,7 @@ def parse_quest(card) -> Optional[dict]:
 
 def parse_battlefield(card) -> Optional[dict]:
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Battlefield',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Battlefield',
         'modos': [{'descricao': 'Campo de Batalha', 'efeitos': [
             {'tipo': 'restringir', 'condicao_alvo': 'jogador',
              'params': {'descricao': 'battlefield'}}
@@ -908,7 +930,7 @@ def parse_battlefield(card) -> Optional[dict]:
 
 def parse_past_life(card) -> Optional[dict]:
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Past Life',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Past Life',
         'modos': [{'descricao': 'Vida Passada', 'efeitos': [
             {'tipo': 'modificar_atributo', 'condicao_alvo': 'criatura_aliada',
              'params': {'atributos': ['rage', 'gnosis'], 'valor': 1, 'duracao': 'permanente'}}
@@ -918,7 +940,7 @@ def parse_past_life(card) -> Optional[dict]:
 
 def parse_realm(card) -> Optional[dict]:
     return {
-        'id': f'card_{card.id}', 'nome': card.name, 'tipo': 'Realm',
+        'id': _card_id(card), 'nome': card.name, 'tipo': 'Realm',
         'modos': [{'descricao': 'Reino', 'efeitos': [
             {'tipo': 'restringir', 'condicao_alvo': 'jogador',
              'params': {'descricao': 'realm'}}

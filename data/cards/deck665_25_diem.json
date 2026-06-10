@@ -1,5 +1,5 @@
 {
-  "id": "card_25",
+  "id": "diem_r1",
   "nome": "Diem",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 2,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "diem_r1"
   }
 }

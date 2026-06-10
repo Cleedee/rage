@@ -1,25 +1,27 @@
 {
-    "id": "card_1335",
-    "nome": "Bitter Hatar",
-    "tipo": "Enemy",
-    "renown": 0,
-    "atributos": {
-        "rage": 7,
-        "gnosis": 6,
-        "health": 7
-    },
-    "requires": "Ananasi",
-    "keyword": "Ananasi",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Bitter Hatar",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Pode jogar como Ally Ananasi (pode_ser_ally - stub)"
+  "id": "bitter-hatar_r7",
+  "nome": "Bitter Hatar",
+  "tipo": "Enemy",
+  "renown": 0,
+  "atributos": {
+    "rage": 7,
+    "gnosis": 6,
+    "health": 7
+  },
+  "requires": "Ananasi",
+  "keyword": "Ananasi",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Bitter Hatar",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Pode jogar como Ally Ananasi (pode_ser_ally - stub)",
+    "slug": "bitter-hatar_r7",
+    "card_id": 1335
+  }
 }

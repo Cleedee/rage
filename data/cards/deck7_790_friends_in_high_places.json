@@ -1,5 +1,5 @@
 {
-  "id": "card_790",
+  "id": "friends-in-high-places_thewyrm",
   "nome": "Friends in High Places",
   "tipo": "Action",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "friends-in-high-places_thewyrm"
   }
 }

@@ -1,31 +1,33 @@
 {
-    "id": "card_1411",
-    "nome": "Vicious Assault",
-    "tipo": "Combat Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 4,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "",
-    "keyword": "",
-    "damage": "3",
-    "modos": [
+  "id": "vicious-assault_ahadi-hellcats",
+  "nome": "Vicious Assault",
+  "tipo": "Combat Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "",
+  "keyword": "",
+  "damage": "3",
+  "modos": [
+    {
+      "descricao": "Assalto Violento",
+      "efeitos": [
         {
-            "descricao": "Assalto Violento",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "alvo": "inimigo",
-                    "quantidade": 3
-                }
-            ]
+          "tipo": "dano",
+          "alvo": "inimigo",
+          "quantidade": 3
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Se nao bloqueado e Rage >=8, +3 dano extra."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Se nao bloqueado e Rage >=8, +3 dano extra.",
+    "slug": "vicious-assault_ahadi-hellcats",
+    "card_id": 1411
+  }
 }

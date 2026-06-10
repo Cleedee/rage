@@ -1,5 +1,5 @@
 {
-  "id": "card_1355",
+  "id": "fog",
   "nome": "Fog",
   "tipo": "Event",
   "modos": [
@@ -31,6 +31,7 @@
       "Cartas do tipo Event sao descartadas apos anular",
       "Pack Totem em jogo: Fog fica no Hunting Grounds como permanente",
       "Sistema de permanentes/passivas continuas a ser implementado"
-    ]
+    ],
+    "slug": "fog"
   }
 }

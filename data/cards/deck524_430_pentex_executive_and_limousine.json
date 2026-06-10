@@ -1,44 +1,45 @@
 {
-    "id": "card_430",
-    "nome": "Pentex Executive and Limousine",
-    "tipo": "Ally",
-    "renown": 8,
-    "atributos": {
-        "rage": 3,
-        "gnosis": 2,
-        "health": 7
-    },
-    "requires": "Pentex",
-    "keyword": "Human - Pentex - Executive",
-    "damage": "",
-    "modos": [
+  "id": "pentex-executive-and-limousine_r8",
+  "nome": "Pentex Executive and Limousine",
+  "tipo": "Ally",
+  "renown": 8,
+  "atributos": {
+    "rage": 3,
+    "gnosis": 2,
+    "health": 7
+  },
+  "requires": "Pentex",
+  "keyword": "Human - Pentex - Executive",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Pentex Executive",
+      "efeitos": [],
+      "passivas": [
         {
-            "descricao": "Pentex Executive",
-            "efeitos": [],
-            "passivas": [
-                {
-                    "tipo": "votos_moot",
-                    "descricao": "3 votos em Junta/Board Meeting",
-                    "params": {
-                        "votos": 3
-                    }
-                },
-                {
-                    "tipo": "destruir_caern",
-                    "descricao": "Pode destruir 1 Caern por partida",
-                    "params": {
-                        "limite": 1,
-                        "alvo": "caern_inimigo"
-                    }
-                }
-            ]
+          "tipo": "votos_moot",
+          "descricao": "3 votos em Junta/Board Meeting",
+          "params": {
+            "votos": 3
+          }
+        },
+        {
+          "tipo": "destruir_caern",
+          "descricao": "Pode destruir 1 Caern por partida",
+          "params": {
+            "limite": 1,
+            "alvo": "caern_inimigo"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 430,
-        "texto_original": "The Pentex Executive has 3 votes which can be placed in a board meeting or in a moot.  The Pentex Executive can destroy 1 caern per game.",
-        "expansion": "TheWyrm",
-        "precisa_revisao": false
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 430,
+    "texto_original": "The Pentex Executive has 3 votes which can be placed in a board meeting or in a moot.  The Pentex Executive can destroy 1 caern per game.",
+    "expansion": "TheWyrm",
+    "precisa_revisao": false,
+    "slug": "pentex-executive-and-limousine_r8"
+  }
 }

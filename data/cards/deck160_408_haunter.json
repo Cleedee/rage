@@ -1,5 +1,5 @@
 {
-  "id": "card_408",
+  "id": "haunter_r7",
   "nome": "Haunter",
   "tipo": "Ally",
   "modos": [
@@ -12,7 +12,11 @@
           "condicao_alvo": "criatura_aliada",
           "alvo": "umbra",
           "restricoes": {
-            "gifts_permitidos": ["Fomori", "Metis", "Shadow Lords"],
+            "gifts_permitidos": [
+              "Fomori",
+              "Metis",
+              "Shadow Lords"
+            ],
             "gifts_cruzam_gauntlet_se_gnosis_lte": 4
           }
         }
@@ -35,6 +39,7 @@
       "Gifts com Gnosis <=4 cruzam Gauntlet: implementado em _validar_gauntlet_para_carta",
       "Gifts de Fomori/Metis/Shadow Lords: restricao de tribo no uso de gifts",
       "Restricao de tribo de gifts requer sistema de uso de gifts (futuro)"
-    ]
+    ],
+    "slug": "haunter_r7"
   }
 }

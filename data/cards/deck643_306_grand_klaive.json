@@ -1,5 +1,5 @@
 {
-  "id": "card_306",
+  "id": "grand-klaive",
   "nome": "Grand Klaive",
   "tipo": "Equipment",
   "modos": [
@@ -18,7 +18,9 @@
           "tipo": "modificar_atributo",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": ["rage"],
+            "atributos": [
+              "rage"
+            ],
             "valor": 1,
             "duracao": "permanente"
           }
@@ -41,6 +43,7 @@
     "gnosis": 4,
     "health": 0,
     "requires": "",
-    "notas": "+1 Rage incondicional (Crinos check complexo), -1 Gnosis penalidade. Dano agravado nao implementado."
+    "notas": "+1 Rage incondicional (Crinos check complexo), -1 Gnosis penalidade. Dano agravado nao implementado.",
+    "slug": "grand-klaive"
   }
 }

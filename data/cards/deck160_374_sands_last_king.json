@@ -1,5 +1,5 @@
 {
-  "id": "card_374",
+  "id": "sand-s-last-king_r10",
   "nome": "Sand's Last King",
   "tipo": "Character - Gaia",
   "modos": [
@@ -21,6 +21,9 @@
     "notas": [
       "Pode recrutar Aliados que exigem Ajaba, Bastet ou Silent Striders"
     ],
-    "sistemas_usados": ["recruitment"]
+    "sistemas_usados": [
+      "recruitment"
+    ],
+    "slug": "sand-s-last-king_r10"
   }
 }

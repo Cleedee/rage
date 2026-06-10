@@ -1,5 +1,5 @@
 {
-  "id": "card_247",
+  "id": "sees-through-stars_r7",
   "nome": "Sees-through-Stars",
   "tipo": "Character - Gaia",
   "modos": [],
@@ -16,6 +16,7 @@
     "renown": 7,
     "requires": "",
     "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "sees-through-stars_r7"
   }
 }

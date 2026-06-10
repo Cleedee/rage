@@ -1,5 +1,5 @@
 {
-  "id": "card_122",
+  "id": "hunting-party",
   "nome": "Hunting Party",
   "tipo": "Combat Event",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "hunting-party"
   }
 }

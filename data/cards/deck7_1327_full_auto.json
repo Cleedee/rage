@@ -1,5 +1,5 @@
 {
-  "id": "card_1327",
+  "id": "full-auto",
   "nome": "Full Auto",
   "tipo": "Combat Action",
   "modos": [
@@ -34,6 +34,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "full-auto"
   }
 }

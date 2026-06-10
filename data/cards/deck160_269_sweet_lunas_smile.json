@@ -1,5 +1,5 @@
 {
-  "id": "card_269",
+  "id": "sweet-luna-s-smile_r6",
   "nome": "Sweet Luna's Smile",
   "tipo": "Character - Gaia",
   "modos": [
@@ -30,6 +30,7 @@
       "Regenerar dano agravado: 'pode_regenerar_agravado' implementado em state.py",
       "+1 Rage/Gnosis/Health enquanto Lunar Phase em jogo: buff continuo condicional",
       "Sistema de buffs condicionais (lunar_phase) pendente de implementacao"
-    ]
+    ],
+    "slug": "sweet-luna-s-smile_r6"
   }
 }

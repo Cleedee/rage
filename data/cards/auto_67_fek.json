@@ -1,5 +1,5 @@
 {
-  "id": "card_67",
+  "id": "fek_r6",
   "nome": "Fek",
   "tipo": "Character - Wyrm",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 5,
     "gnosis": 7,
     "health": 5,
-    "requires": ""
+    "requires": "",
+    "slug": "fek_r6"
   }
 }

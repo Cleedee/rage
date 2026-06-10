@@ -1,25 +1,27 @@
 {
-    "id": "card_1337",
-    "nome": "Ootani Oil Bane",
-    "tipo": "Enemy",
-    "renown": 0,
-    "atributos": {
-        "rage": 5,
-        "gnosis": 5,
-        "health": 5
-    },
-    "requires": "",
-    "keyword": "Spirit - Bane",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Ootani Bane do Oleo",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Sem withdraw ate mao vazia, sem armas (passiva)"
+  "id": "ootani-oil-bane_r6",
+  "nome": "Ootani Oil Bane",
+  "tipo": "Enemy",
+  "renown": 0,
+  "atributos": {
+    "rage": 5,
+    "gnosis": 5,
+    "health": 5
+  },
+  "requires": "",
+  "keyword": "Spirit - Bane",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Ootani Bane do Oleo",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Sem withdraw ate mao vazia, sem armas (passiva)",
+    "slug": "ootani-oil-bane_r6",
+    "card_id": 1337
+  }
 }

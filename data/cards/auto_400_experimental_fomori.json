@@ -1,5 +1,5 @@
 {
-  "id": "card_400",
+  "id": "experimental-fomori_r5",
   "nome": "Experimental Fomori",
   "tipo": "Ally",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 5,
     "gnosis": 1,
     "health": 5,
-    "requires": "Pentex"
+    "requires": "Pentex",
+    "slug": "experimental-fomori_r5"
   }
 }

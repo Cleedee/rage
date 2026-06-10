@@ -1,5 +1,5 @@
 {
-  "id": "card_321",
+  "id": "feint",
   "nome": "Feint",
   "tipo": "Combat Action",
   "modos": [
@@ -27,6 +27,7 @@
     "rage": 4,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "feint"
   }
 }

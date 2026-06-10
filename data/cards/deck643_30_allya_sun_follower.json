@@ -1,5 +1,5 @@
 {
-  "id": "card_30",
+  "id": "allya-sun-follower_r5",
   "nome": "Allya Sun-Follower",
   "tipo": "Character - Gaia",
   "modos": [
@@ -27,6 +27,7 @@
     "gnosis": 3,
     "health": 4,
     "requires": "",
-    "notas": "quest_check com forcar_quests. Implementacao parcial: bot tenta cumprir Quests quando possivel."
+    "notas": "quest_check com forcar_quests. Implementacao parcial: bot tenta cumprir Quests quando possivel.",
+    "slug": "allya-sun-follower_r5"
   }
 }

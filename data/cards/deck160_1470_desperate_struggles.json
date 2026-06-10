@@ -1,5 +1,5 @@
 {
-  "id": "card_1470",
+  "id": "desperate-struggles",
   "nome": "Desperate Struggles",
   "tipo": "Combat Action",
   "modos": [
@@ -31,6 +31,7 @@
     "rage": 1,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "desperate-struggles"
   }
 }

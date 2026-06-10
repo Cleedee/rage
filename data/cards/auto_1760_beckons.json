@@ -1,5 +1,5 @@
 {
-  "id": "card_1760",
+  "id": "beckons",
   "nome": "Beckons",
   "tipo": "Gift",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Bakemono - Vampire"
+    "requires": "Bakemono - Vampire",
+    "slug": "beckons"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_937",
+  "id": "blur-of-the-milky-eye",
   "nome": "Blur of the Milky Eye",
   "tipo": "Gift",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 2,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "blur-of-the-milky-eye"
   }
 }

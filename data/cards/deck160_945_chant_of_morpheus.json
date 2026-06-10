@@ -1,5 +1,5 @@
 {
-  "id": "card_945",
+  "id": "chant-of-morpheus",
   "nome": "Chant of Morpheus",
   "tipo": "Gift",
   "modos": [
@@ -34,6 +34,7 @@
       "restringir: adiciona 'nao_pode_frenzy' na criatura alvo",
       "Restauracao automatica via expirar_pendencias (end_of_phase)",
       "Restricao nao_pode_frenzy limpa no inicio do novo turno (redraw)"
-    ]
+    ],
+    "slug": "chant-of-morpheus"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_628",
+  "id": "chainsaw",
   "nome": "Chainsaw",
   "tipo": "Equipment",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "chainsaw"
   }
 }

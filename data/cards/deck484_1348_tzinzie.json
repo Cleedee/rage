@@ -1,34 +1,36 @@
 {
-    "id": "card_1348",
-    "nome": "Tzinzie",
-    "tipo": "Event",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Ajaba - Bastet",
-    "keyword": "Personal Totem",
-    "damage": "",
-    "modos": [
+  "id": "tzinzie",
+  "nome": "Tzinzie",
+  "tipo": "Event",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Ajaba - Bastet",
+  "keyword": "Personal Totem",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Tzinzie",
+      "efeitos": [
         {
-            "descricao": "Tzinzie",
-            "efeitos": [
-                {
-                    "tipo": "registrar_trigger_combate",
-                    "alvo": "self",
-                    "quantidade": 0,
-                    "params": {
-                        "trigger": "tzinzie"
-                    }
-                }
-            ]
+          "tipo": "registrar_trigger_combate",
+          "alvo": "self",
+          "quantidade": 0,
+          "params": {
+            "trigger": "tzinzie"
+          }
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Personal Totem. Inicio do combate: nomeia Combat Action. Oponente descarta randomico ao revela-la. Trigger via GameModifier."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Personal Totem. Inicio do combate: nomeia Combat Action. Oponente descarta randomico ao revela-la. Trigger via GameModifier.",
+    "slug": "tzinzie",
+    "card_id": 1348
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1258",
+  "id": "grrash-tak-hyrrr_r6",
   "nome": "Grrash Tak'Hyrrr",
   "tipo": "Battlefield",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 0,
     "renown": 6,
     "requires": "Wyrm",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "grrash-tak-hyrrr_r6"
   }
 }

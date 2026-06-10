@@ -1,5 +1,5 @@
 {
-  "id": "card_402",
+  "id": "flame-spirit_r6",
   "nome": "Flame Spirit",
   "tipo": "Ally",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 1,
     "gnosis": 5,
     "health": 3,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "flame-spirit_r6"
   }
 }

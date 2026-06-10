@@ -1,5 +1,5 @@
 {
-  "id": "card_280",
+  "id": "anatomy-lesson",
   "nome": "Anatomy Lesson",
   "tipo": "Combat Action",
   "modos": [
@@ -30,6 +30,7 @@
       "Retirada do combate implementada em _retirar_do_combate (combat_queue.py)",
       "Condicao 'nao_frenetico' validada em _validar_condicao_uso (effects.py)",
       "Efeito 'fugir' removido do JSON — a retirada e feita no combate, nao via aplicar_carta"
-    ]
+    ],
+    "slug": "anatomy-lesson"
   }
 }

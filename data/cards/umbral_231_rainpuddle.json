@@ -1,5 +1,5 @@
 {
-  "id": "card_231",
+  "id": "rainpuddle_r2",
   "nome": "Rainpuddle",
   "tipo": "Character - Gaia",
   "modos": [
@@ -30,6 +30,7 @@
     "renown": 2,
     "requires": "",
     "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "rainpuddle_r2"
   }
 }

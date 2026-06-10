@@ -1,5 +1,5 @@
 {
-  "id": "card_776",
+  "id": "the-naysayer-s-hovel",
   "nome": "The Naysayer's Hovel",
   "tipo": "Territory",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 0,
     "renown": 0,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "the-naysayer-s-hovel"
   }
 }

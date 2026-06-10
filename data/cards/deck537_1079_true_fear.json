@@ -1,5 +1,5 @@
 {
-  "id": "card_1079",
+  "id": "true-fear",
   "nome": "True Fear",
   "tipo": "Gift",
   "requires": "Ahroun - Red Talons - Shadow Lords",
@@ -28,6 +28,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "true-fear"
   }
 }

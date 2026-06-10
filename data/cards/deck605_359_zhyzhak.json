@@ -1,5 +1,5 @@
 {
-  "id": "card_359",
+  "id": "zhyzhak_r9",
   "nome": "Zhyzhak",
   "tipo": "Character - Wyrm",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 4,
     "renown": 9,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "zhyzhak_r9"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_65",
+  "id": "fangthane-bloodjaw_r2",
   "nome": "Fangthane Bloodjaw",
   "tipo": "Character - Wyrm",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 2,
     "renown": 2,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "fangthane-bloodjaw_r2"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_159",
+  "id": "jubati_r3",
   "nome": "Jubati",
   "tipo": "Character - Gaia",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "jubati_r3"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_331",
+  "id": "tanzut_r4",
   "nome": "Tanzut",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 4,
     "health": 2,
-    "requires": ""
+    "requires": "",
+    "slug": "tanzut_r4"
   }
 }

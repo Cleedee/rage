@@ -1,26 +1,28 @@
 {
-    "id": "card_1523",
-    "nome": "Iron Skin",
-    "tipo": "Combat Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 1,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "(Rokea) - (Ship)",
-    "keyword": "Block - Instinctive",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Pele de ferro",
-            "acao_combate": "block",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Instinctive. Block acao. Bloqueia ate 3 dano de 1 ataque. Comportamento nativo do sistema de combate."
+  "id": "iron-skin",
+  "nome": "Iron Skin",
+  "tipo": "Combat Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "(Rokea) - (Ship)",
+  "keyword": "Block - Instinctive",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Pele de ferro",
+      "acao_combate": "block",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Instinctive. Block acao. Bloqueia ate 3 dano de 1 ataque. Comportamento nativo do sistema de combate.",
+    "slug": "iron-skin",
+    "card_id": 1523
+  }
 }

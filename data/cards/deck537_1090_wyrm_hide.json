@@ -1,5 +1,5 @@
 {
-  "id": "card_1090",
+  "id": "wyrm-hide",
   "nome": "Wyrm Hide",
   "tipo": "Gift",
   "requires": "Black Spiral Dancer",
@@ -12,7 +12,9 @@
           "condicao_alvo": "criatura_aliada",
           "quantidade": 2,
           "params": {
-            "atributos": ["health"],
+            "atributos": [
+              "health"
+            ],
             "duracao": "permanente",
             "limite_afetar_mesmo_alvo": 2
           }
@@ -29,6 +31,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "wyrm-hide"
   }
 }

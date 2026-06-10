@@ -1,5 +1,5 @@
 {
-  "id": "card_264",
+  "id": "stalks-death_r9",
   "nome": "Stalks Death",
   "tipo": "Character - Gaia",
   "modos": [
@@ -32,6 +32,7 @@
     "gnosis": 8,
     "health": 5,
     "requires": "",
-    "notas": "Philodox Gifts implementado via rules.pode_usar_gift(). +1 VP ao ser destruido via trigger."
+    "notas": "Philodox Gifts implementado via rules.pode_usar_gift(). +1 VP ao ser destruido via trigger.",
+    "slug": "stalks-death_r9"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1003",
+  "id": "messenger-s-fortitude",
   "nome": "Messenger's Fortitude",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": "Silent Striders"
+    "requires": "Silent Striders",
+    "slug": "messenger-s-fortitude"
   }
 }

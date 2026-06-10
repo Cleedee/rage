@@ -1,5 +1,5 @@
 {
-  "id": "card_880",
+  "id": "kirijama-the-hidden-foe",
   "nome": "Kirijama, 'The Hidden Foe'",
   "tipo": "Event",
   "requires": "Eater-of-Souls",
@@ -30,6 +30,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "kirijama-the-hidden-foe"
   }
 }

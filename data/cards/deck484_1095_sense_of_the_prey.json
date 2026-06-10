@@ -1,31 +1,33 @@
 {
-    "id": "card_1095",
-    "nome": "Sense of the Prey",
-    "tipo": "Gift",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 6,
-        "health": 0
-    },
-    "requires": "Black Fury - Ragabash - Ajaba",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "sense-of-the-prey",
+  "nome": "Sense of the Prey",
+  "tipo": "Gift",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 6,
+    "health": 0
+  },
+  "requires": "Black Fury - Ragabash - Ajaba",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Sentir a Presa",
+      "efeitos": [
         {
-            "descricao": "Sentir a Presa",
-            "efeitos": [
-                {
-                    "tipo": "ataque_imediato",
-                    "alvo": "self",
-                    "quantidade": 0
-                }
-            ]
+          "tipo": "ataque_imediato",
+          "alvo": "self",
+          "quantidade": 0
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Anexa. Fim do combate: descarta e ataca imediatamente outro participante."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Anexa. Fim do combate: descarta e ataca imediatamente outro participante.",
+    "slug": "sense-of-the-prey",
+    "card_id": 1095
+  }
 }

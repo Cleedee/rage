@@ -1,5 +1,5 @@
 {
-  "id": "card_788",
+  "id": "fast-shift",
   "nome": "Fast Shift",
   "tipo": "Action",
   "modos": [
@@ -26,6 +26,7 @@
     "gnosis": 0,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "fast-shift"
   }
 }

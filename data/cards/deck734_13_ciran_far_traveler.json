@@ -1,5 +1,5 @@
 {
-  "id": "card_13",
+  "id": "ciran-far-traveler_r10",
   "nome": "Ciran Far-Traveler",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 4,
     "gnosis": 6,
     "health": 5,
-    "requires": ""
+    "requires": "",
+    "slug": "ciran-far-traveler_r10"
   }
 }

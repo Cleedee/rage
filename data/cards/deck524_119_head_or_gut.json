@@ -1,45 +1,46 @@
 {
-    "id": "card_119",
-    "nome": "Head or Gut?",
-    "tipo": "Combat Action",
-    "modos": [
+  "id": "head-or-gut",
+  "nome": "Head or Gut?",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano",
+      "efeitos": [
         {
-            "descricao": "Causar 3 de dano",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "condicao_alvo": "criatura_inimiga",
-                    "quantidade": 3
-                }
-            ]
-        },
-        {
-            "descricao": "Se matar, +1 VP",
-            "efeitos": [
-                {
-                    "tipo": "combar_acao",
-                    "condicao_alvo": "criatura_inimiga",
-                    "quantidade": 0,
-                    "condicao_estado": "alvo_destruido",
-                    "se_sucesso": [
-                        {
-                            "tipo": "ganhar_vp",
-                            "condicao_alvo": "jogador_aliado",
-                            "quantidade": 1
-                        }
-                    ]
-                }
-            ]
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 119,
-        "texto_original": "You offer your opponent a choice as to where on his body he'd like to be slugged. If you kill your opponent with Head or Gut, place this card in your victory pile for +1 victory points.",
-        "damage": "3",
-        "rage": 5,
-        "gnosis": 0,
-        "health": 0,
-        "precisa_revisao": false
+      ]
+    },
+    {
+      "descricao": "Se matar, +1 VP",
+      "efeitos": [
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "condicao_estado": "alvo_destruido",
+          "se_sucesso": [
+            {
+              "tipo": "ganhar_vp",
+              "condicao_alvo": "jogador_aliado",
+              "quantidade": 1
+            }
+          ]
+        }
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 119,
+    "texto_original": "You offer your opponent a choice as to where on his body he'd like to be slugged. If you kill your opponent with Head or Gut, place this card in your victory pile for +1 victory points.",
+    "damage": "3",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false,
+    "slug": "head-or-gut"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_148",
+  "id": "ivan-korda_r2",
   "nome": "Ivan Korda",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "ivan-korda_r2"
   }
 }

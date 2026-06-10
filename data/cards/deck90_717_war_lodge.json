@@ -1,5 +1,5 @@
 {
-  "id": "card_717",
+  "id": "war-lodge",
   "nome": "War lodge",
   "tipo": "Equipment",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "war-lodge"
   }
 }

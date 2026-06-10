@@ -1,5 +1,5 @@
 {
-  "id": "card_1055",
+  "id": "spirit-drain",
   "nome": "Spirit Drain",
   "tipo": "Gift",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 8,
     "health": 0,
-    "requires": "Theurge"
+    "requires": "Theurge",
+    "slug": "spirit-drain"
   }
 }

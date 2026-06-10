@@ -1,5 +1,5 @@
 {
-  "id": "card_708",
+  "id": "the-silver-crown",
   "nome": "The Silver Crown",
   "tipo": "Equipment",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 10,
     "health": 0,
-    "requires": "Silver Fangs"
+    "requires": "Silver Fangs",
+    "slug": "the-silver-crown"
   }
 }

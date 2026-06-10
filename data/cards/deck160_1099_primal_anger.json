@@ -1,5 +1,5 @@
 {
-  "id": "card_1099",
+  "id": "primal-anger",
   "nome": "Primal Anger",
   "tipo": "Gift",
   "modos": [
@@ -28,6 +28,7 @@
     "rage": 0,
     "gnosis": 1,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "primal-anger"
   }
 }

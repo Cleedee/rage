@@ -1,5 +1,5 @@
 {
-  "id": "card_1066",
+  "id": "swift-reconnaissance",
   "nome": "Swift Reconnaissance",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Ragabash - Silent Striders"
+    "requires": "Ragabash - Silent Striders",
+    "slug": "swift-reconnaissance"
   }
 }

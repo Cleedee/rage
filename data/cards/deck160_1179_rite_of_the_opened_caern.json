@@ -1,5 +1,5 @@
 {
-  "id": "card_1179",
+  "id": "rite-of-the-opened-caern_r5",
   "nome": "Rite of the Opened Caern",
   "tipo": "Rite",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "rite-of-the-opened-caern_r5"
   }
 }

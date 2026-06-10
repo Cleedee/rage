@@ -1,33 +1,34 @@
 {
-    "id": "card_112",
-    "nome": "Frenzy",
-    "tipo": "Combat Event",
-    "modos": [
+  "id": "frenzy",
+  "nome": "Frenzy",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "Entrar em frenesi",
+      "efeitos": [
         {
-            "descricao": "Entrar em frenesi",
-            "efeitos": [
-                {
-                    "tipo": "restringir",
-                    "quantidade": 1,
-                    "condicao_alvo": "criatura_aliada",
-                    "params": {
-                        "restricao": "frenesi"
-                    }
-                }
-            ],
-            "condicao_uso": "antes_ou_entre_rounds_combate"
+          "tipo": "restringir",
+          "quantidade": 1,
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "restricao": "frenesi"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 112,
-        "texto_original": "Play this card on a character you control, either before the first round of a combat or between rounds of combat. The character immediately enters frenzy.",
-        "keywords": "Frenzy",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0,
-        "requires": "",
-        "precisa_revisao": false
+      ],
+      "condicao_uso": "antes_ou_entre_rounds_combate"
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 112,
+    "texto_original": "Play this card on a character you control, either before the first round of a combat or between rounds of combat. The character immediately enters frenzy.",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "",
+    "precisa_revisao": false,
+    "slug": "frenzy"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1341",
+  "id": "elethoi_r6",
   "nome": "Elethoi",
   "tipo": "Enemy",
   "modos": [
@@ -24,6 +24,7 @@
       "Nao pode ser vinculado/controlado (imune a certos efeitos)",
       "Imunidade implementada via 'imune_fora_umbra' restricao em _processar_ataque",
       "Uso de acoes umbrais contra nao-umbra requer logica especial em combate"
-    ]
+    ],
+    "slug": "elethoi_r6"
   }
 }

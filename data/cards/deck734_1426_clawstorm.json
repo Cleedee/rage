@@ -1,5 +1,5 @@
 {
-  "id": "card_1426",
+  "id": "clawstorm",
   "nome": "Clawstorm",
   "tipo": "Gift",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Bastet"
+    "requires": "Bastet",
+    "slug": "clawstorm"
   }
 }

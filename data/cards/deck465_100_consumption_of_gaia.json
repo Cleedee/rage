@@ -1,32 +1,34 @@
 {
-    "id": "card_100",
-    "nome": "Consumption of Gaia",
-    "tipo": "Gift",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 4,
-        "health": 0
-    },
-    "requires": "Eater-of-Souls",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "consumption-of-gaia",
+  "nome": "Consumption of Gaia",
+  "tipo": "Gift",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0
+  },
+  "requires": "Eater-of-Souls",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Consumir Gaia",
+      "efeitos": [
         {
-            "descricao": "Consumir Gaia",
-            "efeitos": [
-                {
-                    "tipo": "anular",
-                    "alvo": "gift",
-                    "quantidade": 0,
-                    "gnosis_max": 6
-                }
-            ]
+          "tipo": "anular",
+          "alvo": "gift",
+          "quantidade": 0,
+          "gnosis_max": 6
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Cancela qualquer Gift de Gnosis ≤6. Descarte apos uso."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Cancela qualquer Gift de Gnosis ≤6. Descarte apos uso.",
+    "slug": "consumption-of-gaia",
+    "card_id": 100
+  }
 }

@@ -1,51 +1,56 @@
 {
-    "id": "card_818",
-    "nome": "Beast-of-War",
-    "tipo": "Event",
-    "requires": "Black Spiral Dancer",
-    "keyword": "Pack Totem",
-    "modos": [
+  "id": "beast-of-war",
+  "nome": "Beast-of-War",
+  "tipo": "Event",
+  "requires": "Black Spiral Dancer",
+  "keyword": "Pack Totem",
+  "modos": [
+    {
+      "descricao": "Pack Totem +3 Rage -1 Gnosis",
+      "efeitos": [
         {
-            "descricao": "Pack Totem +3 Rage -1 Gnosis",
-            "efeitos": [
-                {
-                    "tipo": "modificar_atributo",
-                    "condicao_alvo": "criatura_aliada",
-                    "quantidade": 3,
-                    "params": {
-                        "atributos": ["rage"],
-                        "duracao": "permanente"
-                    }
-                },
-                {
-                    "tipo": "modificar_atributo",
-                    "condicao_alvo": "criatura_aliada",
-                    "quantidade": -1,
-                    "params": {
-                        "atributos": ["gnosis"],
-                        "duracao": "permanente",
-                        "minimo": 0
-                    }
-                }
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3,
+          "params": {
+            "atributos": [
+              "rage"
             ],
-            "condicao_uso": "",
-            "restricoes": [
-                {
-                    "tipo": "max_1_pack_totem",
-                    "descricao": "Pack nao pode ter mais de 1 Pack Totem"
-                }
-            ]
+            "duracao": "permanente"
+          }
+        },
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": -1,
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "duracao": "permanente",
+            "minimo": 0
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 818,
-        "texto_original": "All pack members gain 3 Rage and lose 1 Gnosis. This does not affect a character's transformation into Crinos or Battle form. A pack may not have more than 1 Pack Totem at any time.",
-        "expansion": "TheWyrm",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0,
-        "precisa_revisao": false
+      ],
+      "condicao_uso": "",
+      "restricoes": [
+        {
+          "tipo": "max_1_pack_totem",
+          "descricao": "Pack nao pode ter mais de 1 Pack Totem"
+        }
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 818,
+    "texto_original": "All pack members gain 3 Rage and lose 1 Gnosis. This does not affect a character's transformation into Crinos or Battle form. A pack may not have more than 1 Pack Totem at any time.",
+    "expansion": "TheWyrm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false,
+    "slug": "beast-of-war"
+  }
 }

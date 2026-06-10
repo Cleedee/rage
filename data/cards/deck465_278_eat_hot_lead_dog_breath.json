@@ -1,31 +1,33 @@
 {
-    "id": "card_278",
-    "nome": "Eat Hot Lead, Dog Breath",
-    "tipo": "Combat Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 7,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "(Firearm)",
-    "keyword": "Block - (Fast Striking)",
-    "damage": "4",
-    "modos": [
+  "id": "eat-hot-lead-dog-breath",
+  "nome": "Eat Hot Lead, Dog Breath",
+  "tipo": "Combat Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 7,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "(Firearm)",
+  "keyword": "Block - (Fast Striking)",
+  "damage": "4",
+  "modos": [
+    {
+      "descricao": "Comer chumbo quente",
+      "efeitos": [
         {
-            "descricao": "Comer chumbo quente",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "alvo": "inimigo",
-                    "quantidade": 4
-                }
-            ]
+          "tipo": "dano",
+          "alvo": "inimigo",
+          "quantidade": 4
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Fast Striking se alvo jogou Fast Striking. Requer Firearm."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Fast Striking se alvo jogou Fast Striking. Requer Firearm.",
+    "slug": "eat-hot-lead-dog-breath",
+    "card_id": 278
+  }
 }

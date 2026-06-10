@@ -1,5 +1,5 @@
 {
-  "id": "card_114",
+  "id": "gang-beating",
   "nome": "Gang Beating",
   "tipo": "Combat Event",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "gang-beating"
   }
 }

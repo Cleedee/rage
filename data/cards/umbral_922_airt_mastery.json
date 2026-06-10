@@ -1,5 +1,5 @@
 {
-  "id": "card_922",
+  "id": "airt-mastery",
   "nome": "Airt Mastery",
   "tipo": "Gift",
   "modos": [
@@ -26,6 +26,7 @@
     "gnosis": 4,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "airt-mastery"
   }
 }

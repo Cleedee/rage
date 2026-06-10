@@ -1,5 +1,5 @@
 {
-  "id": "card_1015",
+  "id": "parting-the-velvet-curtain",
   "nome": "Parting the Velvet Curtain",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": "Theurge"
+    "requires": "Theurge",
+    "slug": "parting-the-velvet-curtain"
   }
 }

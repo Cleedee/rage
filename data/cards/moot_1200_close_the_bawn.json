@@ -1,32 +1,34 @@
 {
-    "id": "card_1200",
-    "nome": "Close the Bawn",
-    "tipo": "Moot",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Homid",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "close-the-bawn_r5",
+  "nome": "Close the Bawn",
+  "tipo": "Moot",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Homid",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Fechar o Bawn",
+      "efeitos": [
         {
-            "descricao": "Fechar o Bawn",
-            "efeitos": [
-                {
-                    "tipo": "remover_do_jogo",
-                    "alvo": "qualquer_criatura",
-                    "quantidade": 0,
-                    "condicao_alvo": "spirit_ally"
-                }
-            ]
+          "tipo": "remover_do_jogo",
+          "alvo": "qualquer_criatura",
+          "quantidade": 0,
+          "condicao_alvo": "spirit_ally"
         }
-    ],
-    "_metadata": {
-        "deck": 0,
-        "precisa_revisao": false,
-        "nota_revisao": "Remove todos spirit allies do jogo."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 0,
+    "precisa_revisao": false,
+    "nota_revisao": "Remove todos spirit allies do jogo.",
+    "slug": "close-the-bawn_r5",
+    "card_id": 1200
+  }
 }

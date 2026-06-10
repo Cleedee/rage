@@ -1,5 +1,5 @@
 {
-  "id": "card_286",
+  "id": "bite",
   "nome": "Bite",
   "tipo": "Combat Action",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Not Homid form",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "bite"
   }
 }

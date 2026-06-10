@@ -29,7 +29,7 @@ def _check_json_coverage(result: ValidationResult,
 
     missing: list[tuple[Card, int]] = []
     for card, qty in cards_data:
-        modelo_key = f'card_{card.id}'
+        modelo_key = card.slug or f'card_{card.id}'
         if modelo_key not in CARTAS_EXEMPLO:
             missing.append((card, qty))
 
@@ -98,7 +98,7 @@ def auto_craft_deck(deck_id: int, dry_run: bool = False) -> list[dict]:
         if not card or card.id in seen:
             continue
         seen.add(card.id)
-        modelo_key = f'card_{card.id}'
+        modelo_key = card.slug or f'card_{card.id}'
         if modelo_key not in CARTAS_EXEMPLO:
             missing.append(card)
 

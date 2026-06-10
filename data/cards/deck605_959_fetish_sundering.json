@@ -1,5 +1,5 @@
 {
-  "id": "card_959",
+  "id": "fetish-sundering",
   "nome": "Fetish Sundering",
   "tipo": "Gift",
   "modos": [
@@ -27,6 +27,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Bane",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "fetish-sundering"
   }
 }

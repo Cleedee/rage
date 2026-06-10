@@ -1,5 +1,5 @@
 {
-  "id": "card_582",
+  "id": "caern-of-the-crescent-moon",
   "nome": "Caern of the Crescent Moon",
   "tipo": "Caern",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 2,
     "health": 0,
-    "requires": "Silver Fangs"
+    "requires": "Silver Fangs",
+    "slug": "caern-of-the-crescent-moon"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1061",
+  "id": "sticky-paws",
   "nome": "Sticky Paws",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": "Ragabash"
+    "requires": "Ragabash",
+    "slug": "sticky-paws"
   }
 }

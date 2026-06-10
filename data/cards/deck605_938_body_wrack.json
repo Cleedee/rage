@@ -1,5 +1,5 @@
 {
-  "id": "card_938",
+  "id": "body-wrack",
   "nome": "Body Wrack",
   "tipo": "Gift",
   "modos": [
@@ -30,6 +30,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Black Fury",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "body-wrack"
   }
 }

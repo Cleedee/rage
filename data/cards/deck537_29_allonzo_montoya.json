@@ -1,5 +1,5 @@
 {
-  "id": "card_29",
+  "id": "allonzo-montoya_r9",
   "nome": "Allonzo Montoya",
   "tipo": "Character - Wyrm",
   "renown": 9,
@@ -30,7 +30,11 @@
           "tipo": "usar_gifts_especiais",
           "descricao": "Pode usar gifts Shadow Lords, Metis e Black Spiral Dancer",
           "params": {
-            "tribos": ["shadow_lords", "metis", "black_spiral_dancer"]
+            "tribos": [
+              "shadow_lords",
+              "metis",
+              "black_spiral_dancer"
+            ]
           }
         }
       ]
@@ -41,6 +45,7 @@
     "card_id": 29,
     "texto_original": "Allonzo is a werewolf who has been turned into a vampire. Thoroughly insane, he now serves the Wyrm. Allonzo can use Shadow Lords, Metis and Black Spiral Dancer Gifts. He cannot be alpha 2 turns in a row.",
     "expansion": "TheWyrm",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "allonzo-montoya_r9"
   }
 }

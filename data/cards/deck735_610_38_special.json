@@ -1,5 +1,5 @@
 {
-  "id": "card_610",
+  "id": "38-special_unlimited",
   "nome": ".38 Special",
   "tipo": "Equipment - Non-Fetish - Weapon - Firearm",
   "modos": [
@@ -27,6 +27,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "38-special_unlimited"
   }
 }

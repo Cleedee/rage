@@ -1,5 +1,5 @@
 {
-  "id": "card_1362",
+  "id": "umbral-escape_leastwanted",
   "nome": "Umbral Escape",
   "tipo": "Combat Action",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "umbral-escape_leastwanted"
   }
 }

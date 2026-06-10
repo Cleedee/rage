@@ -1,25 +1,27 @@
 {
-    "id": "card_373",
-    "nome": "Njoki Scarface",
-    "tipo": "Character - Gaia",
-    "renown": 0,
-    "atributos": {
-        "rage": 1,
-        "gnosis": 1,
-        "health": 2
-    },
-    "requires": "",
-    "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Njoki Cara-Cortada",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "+1 dano extra pra morrer (passiva via register_card_passives)"
+  "id": "njoki-scarface_r2",
+  "nome": "Njoki Scarface",
+  "tipo": "Character - Gaia",
+  "renown": 0,
+  "atributos": {
+    "rage": 1,
+    "gnosis": 1,
+    "health": 2
+  },
+  "requires": "",
+  "keyword": "Ajaba - Ragabash - Hyaena - Gaia - Female",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Njoki Cara-Cortada",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "+1 dano extra pra morrer (passiva via register_card_passives)",
+    "slug": "njoki-scarface_r2",
+    "card_id": 373
+  }
 }

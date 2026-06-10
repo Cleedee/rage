@@ -1,5 +1,5 @@
 {
-  "id": "card_1021",
+  "id": "power-of-the-ways",
   "nome": "Power of the Ways",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 4,
     "health": 0,
-    "requires": "Philodox"
+    "requires": "Philodox",
+    "slug": "power-of-the-ways"
   }
 }

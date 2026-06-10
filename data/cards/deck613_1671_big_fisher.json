@@ -1,5 +1,5 @@
 {
-  "id": "card_1671",
+  "id": "big-fisher_r10",
   "nome": "Big Fisher",
   "tipo": "Character - Gaia",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 5,
     "renown": 10,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "big-fisher_r10"
   }
 }

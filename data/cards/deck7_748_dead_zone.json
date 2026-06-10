@@ -1,5 +1,5 @@
 {
-  "id": "card_748",
+  "id": "dead-zone",
   "nome": "Dead Zone",
   "tipo": "Territory",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "dead-zone"
   }
 }

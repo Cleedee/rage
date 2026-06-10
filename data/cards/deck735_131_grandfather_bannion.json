@@ -1,5 +1,5 @@
 {
-  "id": "card_131",
+  "id": "grandfather-bannion_r9",
   "nome": "Grandfather Bannion",
   "tipo": "Character - Gaia",
   "modos": [
@@ -28,6 +28,7 @@
     "rage": 3,
     "gnosis": 4,
     "health": 4,
-    "requires": ""
+    "requires": "",
+    "slug": "grandfather-bannion_r9"
   }
 }

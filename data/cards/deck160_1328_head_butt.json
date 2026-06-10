@@ -1,5 +1,5 @@
 {
-  "id": "card_1328",
+  "id": "head-butt",
   "nome": "Head Butt",
   "tipo": "Combat Action",
   "modos": [
@@ -28,6 +28,7 @@
       "Efeito 'bounce se bloqueado' implementado no _processar_ataque do combat_queue.py",
       "Excecao para Mokole (keywords contem 'mokole') verificada na resolucao",
       "Adicionado em ACOES_OFENSIVAS e COMBAT_ACTIONS"
-    ]
+    ],
+    "slug": "head-butt"
   }
 }

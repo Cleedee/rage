@@ -1,5 +1,5 @@
 {
-  "id": "card_927",
+  "id": "awe",
   "nome": "Awe",
   "tipo": "Gift",
   "modos": [
@@ -29,6 +29,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Silver Fangs",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "awe"
   }
 }

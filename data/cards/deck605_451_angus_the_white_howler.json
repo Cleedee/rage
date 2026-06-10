@@ -1,5 +1,5 @@
 {
-  "id": "card_451",
+  "id": "angus-the-white-howler_r12",
   "nome": "Angus, the White Howler",
   "tipo": "Victim",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 10,
     "renown": 12,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "angus-the-white-howler_r12"
   }
 }

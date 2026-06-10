@@ -1,5 +1,5 @@
 {
-  "id": "card_1754",
+  "id": "mountain-sentai",
   "nome": "Mountain Sentai",
   "tipo": "Event",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": "Gaia"
+    "requires": "Gaia",
+    "slug": "mountain-sentai"
   }
 }

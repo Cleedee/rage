@@ -1,5 +1,5 @@
 {
-  "id": "card_324",
+  "id": "flicker",
   "nome": "Flicker",
   "tipo": "Combat Action",
   "modos": [
@@ -26,6 +26,7 @@
     "gnosis": 6,
     "health": 0,
     "renown": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "flicker"
   }
 }

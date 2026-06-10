@@ -1,5 +1,5 @@
 {
-  "id": "card_1286",
+  "id": "off-balanced-attack",
   "nome": "Off-balanced Attack",
   "tipo": "Combat Action",
   "modos": [
@@ -34,6 +34,7 @@
     "rage": 1,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "off-balanced-attack"
   }
 }

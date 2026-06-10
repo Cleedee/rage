@@ -1,5 +1,5 @@
 {
-  "id": "card_222",
+  "id": "aegis",
   "nome": "Aegis",
   "tipo": "Gift",
   "modos": [
@@ -27,6 +27,7 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "requires": "Silver Fangs - Galliard"
+    "requires": "Silver Fangs - Galliard",
+    "slug": "aegis"
   }
 }

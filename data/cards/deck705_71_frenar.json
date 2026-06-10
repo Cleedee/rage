@@ -1,5 +1,5 @@
 {
-  "id": "card_71",
+  "id": "frenar_r1",
   "nome": "Frenar",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 1,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "frenar_r1"
   }
 }

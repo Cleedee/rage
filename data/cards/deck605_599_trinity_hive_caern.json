@@ -1,5 +1,5 @@
 {
-  "id": "card_599",
+  "id": "trinity-hive-caern",
   "nome": "Trinity Hive Caern",
   "tipo": "Caern",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 0,
     "renown": 0,
     "requires": "Black Spiral Dancer",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "trinity-hive-caern"
   }
 }

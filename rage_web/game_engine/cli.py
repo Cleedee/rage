@@ -1013,8 +1013,8 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                     continue
                 qtd = row.quantity
                 for _ in range(qtd):
-                    modelo_key = f'card_{card_model.id}'
-                    modelo_id = modelo_key if modelo_key in CARTAS_EXEMPLO else None
+                    slug = card_model.slug or f'card_{card_model.id}'
+                    modelo_id = slug if slug in CARTAS_EXEMPLO else None
 
                     ci = CardInstance(
                         card_id=card_model.id,
@@ -1083,7 +1083,7 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
     from rage_web.game_engine.effects import ResolvedorEfeitos, EfeitoTipo
     for p in g.players:
         for c in p.pack_home:
-            modelo_key = f'card_{c.card_id}'
+            modelo_key = c.modelo_id or f'card_{c.card_id}'
             from rage_web.game_engine.effects import CARTAS_EXEMPLO
             modelo = CARTAS_EXEMPLO.get(modelo_key)
             if modelo and modelo.modos:

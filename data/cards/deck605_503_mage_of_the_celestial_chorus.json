@@ -1,5 +1,5 @@
 {
-  "id": "card_503",
+  "id": "mage-of-the-celestial-chorus_r8",
   "nome": "Mage of the Celestial Chorus",
   "tipo": "Victim",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 7,
     "renown": 8,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "mage-of-the-celestial-chorus_r8"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1720",
+  "id": "blood-atami",
   "nome": "Blood Atami",
   "tipo": "Combat Action",
   "modos": [
@@ -35,6 +35,7 @@
     "rage": 0,
     "gnosis": 6,
     "health": 0,
-    "requires": "(Ananasi - Kuei Jin - Tzimisce Vampire)"
+    "requires": "(Ananasi - Kuei Jin - Tzimisce Vampire)",
+    "slug": "blood-atami"
   }
 }

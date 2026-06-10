@@ -1,5 +1,5 @@
 {
-  "id": "card_1488",
+  "id": "arms-of-the-abyss",
   "nome": "Arms of the Abyss",
   "tipo": "Gift",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": "Chulorviah - Vampire"
+    "requires": "Chulorviah - Vampire",
+    "slug": "arms-of-the-abyss"
   }
 }

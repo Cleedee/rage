@@ -1,5 +1,5 @@
 {
-  "id": "card_311",
+  "id": "improvised-weapon",
   "nome": "Improvised Weapon",
   "tipo": "Equipment",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "improvised-weapon"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_488",
+  "id": "glade-child_r7",
   "nome": "Glade Child",
   "tipo": "Victim",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 6,
     "renown": 7,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "glade-child_r7"
   }
 }

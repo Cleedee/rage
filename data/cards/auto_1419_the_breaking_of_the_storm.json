@@ -1,5 +1,5 @@
 {
-  "id": "card_1419",
+  "id": "the-breaking-of-the-storm",
   "nome": "The Breaking of the Storm",
   "tipo": "Event",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "the-breaking-of-the-storm"
   }
 }

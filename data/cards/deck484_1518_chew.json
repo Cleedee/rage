@@ -1,31 +1,33 @@
 {
-    "id": "card_1518",
-    "nome": "Chew",
-    "tipo": "Combat Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 3,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Not Homid",
-    "keyword": "Unblockable",
-    "damage": "3",
-    "modos": [
+  "id": "chew",
+  "nome": "Chew",
+  "tipo": "Combat Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Not Homid",
+  "keyword": "Unblockable",
+  "damage": "3",
+  "modos": [
+    {
+      "descricao": "Mastigar",
+      "efeitos": [
         {
-            "descricao": "Mastigar",
-            "efeitos": [
-                {
-                    "tipo": "dano",
-                    "alvo": "inimigo",
-                    "quantidade": 3
-                }
-            ]
+          "tipo": "dano",
+          "alvo": "inimigo",
+          "quantidade": 3
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Unblockable."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Unblockable.",
+    "slug": "chew",
+    "card_id": 1518
+  }
 }

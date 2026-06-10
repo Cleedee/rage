@@ -1,5 +1,5 @@
 {
-  "id": "card_1318",
+  "id": "surprise-ally",
   "nome": "Surprise Ally",
   "tipo": "Combat Event",
   "modos": [
@@ -28,6 +28,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "surprise-ally"
   }
 }

@@ -1,34 +1,39 @@
 {
-    "id": "card_1060",
-    "nome": "Stench of Death",
-    "tipo": "Gift",
-    "requires": "Iliad Fomori - Defiler",
-    "modos": [
+  "id": "stench-of-death",
+  "nome": "Stench of Death",
+  "tipo": "Gift",
+  "requires": "Iliad Fomori - Defiler",
+  "modos": [
+    {
+      "descricao": "So espiritos, Banes e Metis podem atacar usuario",
+      "efeitos": [
         {
-            "descricao": "So espiritos, Banes e Metis podem atacar usuario",
-            "efeitos": [
-                {
-                    "tipo": "restringir",
-                    "condicao_alvo": "criatura_inimiga",
-                    "quantidade": 0,
-                    "params": {
-                        "restricao": "nao_pode_atacar_usuario",
-                        "exceto": ["espirito", "bane", "metis"],
-                        "duracao": "permanente_ate_cancelar"
-                    }
-                }
-            ]
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "restricao": "nao_pode_atacar_usuario",
+            "exceto": [
+              "espirito",
+              "bane",
+              "metis"
+            ],
+            "duracao": "permanente_ate_cancelar"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 1060,
-        "texto_original": "Only spirits, Banes, and Metis can attack the user of this Gift. This Gift is permanent until canceled.",
-        "expansion": "TheWyrm",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 2,
-        "health": 0,
-        "precisa_revisao": false
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 1060,
+    "texto_original": "Only spirits, Banes, and Metis can attack the user of this Gift. This Gift is permanent until canceled.",
+    "expansion": "TheWyrm",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "precisa_revisao": false,
+    "slug": "stench-of-death"
+  }
 }

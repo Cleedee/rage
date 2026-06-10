@@ -1,5 +1,5 @@
 {
-  "id": "card_31",
+  "id": "amanda-withers-in-sun_r5",
   "nome": "Amanda Withers-in-Sun",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 4,
     "gnosis": 7,
     "health": 6,
-    "requires": ""
+    "requires": "",
+    "slug": "amanda-withers-in-sun_r5"
   }
 }

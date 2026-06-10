@@ -1,5 +1,5 @@
 {
-  "id": "card_417",
+  "id": "kinfolk-shaman_r4",
   "nome": "Kinfolk Shaman",
   "tipo": "Ally",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 6,
     "health": 2,
-    "requires": "Garou"
+    "requires": "Garou",
+    "slug": "kinfolk-shaman_r4"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_825",
+  "id": "city-father",
   "nome": "City Father",
   "tipo": "Event",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": "Bone Gnawers - Glass Walkers - Ratkin"
+    "requires": "Bone Gnawers - Glass Walkers - Ratkin",
+    "slug": "city-father"
   }
 }

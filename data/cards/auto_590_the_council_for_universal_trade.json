@@ -1,5 +1,5 @@
 {
-  "id": "card_590",
+  "id": "the-council-for-universal-trade",
   "nome": "The Council for Universal Trade",
   "tipo": "Caern",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "requires": "Glass Walkers"
+    "requires": "Glass Walkers",
+    "slug": "the-council-for-universal-trade"
   }
 }

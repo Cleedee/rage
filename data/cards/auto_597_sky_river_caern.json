@@ -1,5 +1,5 @@
 {
-  "id": "card_597",
+  "id": "sky-river-caern",
   "nome": "Sky River Caern",
   "tipo": "Caern",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": "Garou"
+    "requires": "Garou",
+    "slug": "sky-river-caern"
   }
 }

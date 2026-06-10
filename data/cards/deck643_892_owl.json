@@ -1,5 +1,5 @@
 {
-  "id": "card_892",
+  "id": "owl",
   "nome": "Owl",
   "tipo": "Event",
   "modos": [
@@ -28,6 +28,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": "Silent Striders"
+    "requires": "Silent Striders",
+    "slug": "owl"
   }
 }

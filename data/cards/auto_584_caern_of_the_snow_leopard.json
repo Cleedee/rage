@@ -1,5 +1,5 @@
 {
-  "id": "card_584",
+  "id": "caern-of-the-snow-leopard",
   "nome": "Caern of the Snow Leopard",
   "tipo": "Caern",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 2,
     "health": 0,
-    "requires": "Stargazers"
+    "requires": "Stargazers",
+    "slug": "caern-of-the-snow-leopard"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1624",
+  "id": "recycle",
   "nome": "Recycle",
   "tipo": "Action",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "recycle"
   }
 }

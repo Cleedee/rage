@@ -1,31 +1,33 @@
 {
-    "id": "card_1234",
-    "nome": "Ritual Challenge",
-    "tipo": "Moot",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "ritual-challenge_r2",
+  "nome": "Ritual Challenge",
+  "tipo": "Moot",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Desafio Ritualistico",
+      "efeitos": [
         {
-            "descricao": "Desafio Ritualistico",
-            "efeitos": [
-                {
-                    "tipo": "iniciar_combate",
-                    "alvo": "inimigo",
-                    "quantidade": 0
-                }
-            ]
+          "tipo": "iniciar_combate",
+          "alvo": "inimigo",
+          "quantidade": 0
         }
-    ],
-    "_metadata": {
-        "deck": 0,
-        "precisa_revisao": false,
-        "nota_revisao": "2 personagens entram em combate por 3 rounds."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 0,
+    "precisa_revisao": false,
+    "nota_revisao": "2 personagens entram em combate por 3 rounds.",
+    "slug": "ritual-challenge_r2",
+    "card_id": 1234
+  }
 }

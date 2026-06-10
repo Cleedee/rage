@@ -1,5 +1,5 @@
 {
-  "id": "card_600",
+  "id": "the-wheel-of-ptah",
   "nome": "The Wheel of Ptah",
   "tipo": "Caern",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 1,
     "health": 0,
-    "requires": "Silent Striders"
+    "requires": "Silent Striders",
+    "slug": "the-wheel-of-ptah"
   }
 }

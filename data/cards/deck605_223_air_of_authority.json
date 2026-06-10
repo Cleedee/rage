@@ -1,5 +1,5 @@
 {
-  "id": "card_223",
+  "id": "air-of-authority",
   "nome": "Air of Authority",
   "tipo": "Gift",
   "modos": [
@@ -25,6 +25,7 @@
     "health": 0,
     "renown": 0,
     "requires": "7th Generation",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "air-of-authority"
   }
 }

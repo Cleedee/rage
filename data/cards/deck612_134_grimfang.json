@@ -1,5 +1,5 @@
 {
-  "id": "card_134",
+  "id": "grimfang_r10",
   "nome": "Grimfang",
   "tipo": "Character - Gaia",
   "modos": [
@@ -19,6 +19,7 @@
     "health": 3,
     "renown": 10,
     "requires": "",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "grimfang_r10"
   }
 }

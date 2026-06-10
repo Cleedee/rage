@@ -1,5 +1,5 @@
 {
-  "id": "card_1662",
+  "id": "shadow-weaver_r2",
   "nome": "Shadow-Weaver",
   "tipo": "Character - Rogue",
   "modos": [
@@ -31,6 +31,7 @@
     "renown": 2,
     "requires": "",
     "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "shadow-weaver_r2"
   }
 }

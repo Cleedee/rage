@@ -1,5 +1,5 @@
 {
-  "id": "card_81",
+  "id": "roger-daly_r8",
   "nome": "Roger Daly",
   "tipo": "Character - Gaia",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 1,
     "gnosis": 9,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "roger-daly_r8"
   }
 }

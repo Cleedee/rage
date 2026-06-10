@@ -1,5 +1,5 @@
 {
-  "id": "card_418",
+  "id": "kinfolk-small-town-cop_r1",
   "nome": "Kinfolk Small Town Cop",
   "tipo": "Ally",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "kinfolk-small-town-cop_r1"
   }
 }

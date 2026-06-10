@@ -1,5 +1,5 @@
 {
-  "id": "card_1063",
+  "id": "subjugation-of-gaia",
   "nome": "Subjugation of Gaia",
   "tipo": "Gift",
   "requires": "Eater-of-Souls",
@@ -12,7 +12,12 @@
           "condicao_alvo": "alvo_especifico",
           "quantidade": 1,
           "params": {
-            "tipos_permitidos": ["pack_totem", "lunar_phase", "fetish_equipment", "bane_fetish"],
+            "tipos_permitidos": [
+              "pack_totem",
+              "lunar_phase",
+              "fetish_equipment",
+              "bane_fetish"
+            ],
             "inclui_bane_fetish": true
           }
         }
@@ -28,6 +33,7 @@
     "rage": 0,
     "gnosis": 7,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "subjugation-of-gaia"
   }
 }

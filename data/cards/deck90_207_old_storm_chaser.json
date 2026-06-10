@@ -1,5 +1,5 @@
 {
-  "id": "card_207",
+  "id": "old-storm-chaser_r7",
   "nome": "Old Storm-Chaser",
   "tipo": "Character - Gaia",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 3,
     "gnosis": 9,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "old-storm-chaser_r7"
   }
 }

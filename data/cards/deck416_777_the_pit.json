@@ -1,35 +1,36 @@
 {
-    "id": "card_777",
-    "nome": "The Pit",
-    "tipo": "Territory",
-    "modos": [
+  "id": "the-pit",
+  "nome": "The Pit",
+  "tipo": "Territory",
+  "modos": [
+    {
+      "descricao": "+1 VP por vitimas mortas",
+      "efeitos": [
         {
-            "descricao": "+1 VP por vitimas mortas",
-            "efeitos": [
-                {
-                    "tipo": "ganhar_vp",
-                    "quantidade": 1,
-                    "condicao_alvo": "jogador",
-                    "params": {
-                        "condicao": "quando_matar_vitima"
-                    }
-                }
-            ],
-            "condicao_uso": ""
+          "tipo": "ganhar_vp",
+          "quantidade": 1,
+          "condicao_alvo": "jogador",
+          "params": {
+            "condicao": "quando_matar_vitima"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "revisao_deck416",
-        "card_id": 777,
-        "texto_original": "The pack controlling The Pit gains +1 victory points for any Victims they kill.",
-        "keywords": "",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0,
-        "renown": 0,
-        "requires": "Black Spiral Dancer",
-        "precisa_revisao": false,
-        "nota_revisao": "The Pit bonus in check_kill_bonuses"
+      ],
+      "condicao_uso": ""
     }
+  ],
+  "_metadata": {
+    "fonte": "revisao_deck416",
+    "card_id": 777,
+    "texto_original": "The pack controlling The Pit gains +1 victory points for any Victims they kill.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "renown": 0,
+    "requires": "Black Spiral Dancer",
+    "precisa_revisao": false,
+    "nota_revisao": "The Pit bonus in check_kill_bonuses",
+    "slug": "the-pit"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_446",
+  "id": "oracle-of-sobek_r5",
   "nome": "Oracle of Sobek",
   "tipo": "Ally",
   "modos": [
@@ -31,6 +31,7 @@
       "Descarte direcionado por tipo de carta: requer interacao do usuario",
       "Pode usar Mokole Gifts: restricao de tribo",
       "Mecanica de 'escolher tipo' depende de UI do jogador"
-    ]
+    ],
+    "slug": "oracle-of-sobek_r5"
   }
 }

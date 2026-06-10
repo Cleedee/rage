@@ -1,5 +1,5 @@
 {
-  "id": "card_1016",
+  "id": "patagia",
   "nome": "Patagia",
   "tipo": "Gift",
   "requires": "Black Spiral Dancer",
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "patagia"
   }
 }

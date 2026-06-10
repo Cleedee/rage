@@ -19,6 +19,7 @@ deck_cards = Table(
 class Card(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
+    slug: Mapped[str] = mapped_column(default='', index=True)
     expansion: Mapped[str] = mapped_column(default='')
     image_file: Mapped[str] = mapped_column(default='')
     sealed: Mapped[str] = mapped_column(default='')

@@ -1,5 +1,5 @@
 {
-  "id": "card_520",
+  "id": "pentex-refinery_r14",
   "nome": "Pentex Refinery",
   "tipo": "Enemy",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 4,
     "gnosis": 6,
     "health": 15,
-    "requires": ""
+    "requires": "",
+    "slug": "pentex-refinery_r14"
   }
 }

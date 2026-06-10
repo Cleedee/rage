@@ -1,31 +1,33 @@
 {
-    "id": "card_1360",
-    "nome": "Dust Storm",
-    "tipo": "Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "Fera",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "dust-storm",
+  "nome": "Dust Storm",
+  "tipo": "Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "Fera",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Tempestade de Poeira",
+      "efeitos": [
         {
-            "descricao": "Tempestade de Poeira",
-            "efeitos": [
-                {
-                    "tipo": "descartar_mao_combate",
-                    "alvo": "inimigo",
-                    "quantidade": 0
-                }
-            ]
+          "tipo": "descartar_mao_combate",
+          "alvo": "inimigo",
+          "quantidade": 0
         }
-    ],
-    "_metadata": {
-        "deck": 484,
-        "precisa_revisao": false,
-        "nota_revisao": "Combat Phase apos alphas anunciados, antes da declaracao. Alvo descarta mao de combate."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 484,
+    "precisa_revisao": false,
+    "nota_revisao": "Combat Phase apos alphas anunciados, antes da declaracao. Alvo descarta mao de combate.",
+    "slug": "dust-storm",
+    "card_id": 1360
+  }
 }

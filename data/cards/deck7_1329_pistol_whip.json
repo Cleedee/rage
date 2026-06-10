@@ -1,5 +1,5 @@
 {
-  "id": "card_1329",
+  "id": "pistol-whip",
   "nome": "Pistol Whip",
   "tipo": "Combat Action",
   "modos": [
@@ -24,6 +24,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "pistol-whip"
   }
 }

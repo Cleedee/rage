@@ -1,5 +1,5 @@
 {
-  "id": "card_961",
+  "id": "gaia-s-favored-messenger",
   "nome": "Gaia's Favored Messenger",
   "tipo": "Gift",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 0,
     "gnosis": 8,
     "health": 0,
-    "requires": "Silent Striders"
+    "requires": "Silent Striders",
+    "slug": "gaia-s-favored-messenger"
   }
 }

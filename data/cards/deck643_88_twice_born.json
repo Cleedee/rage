@@ -1,5 +1,5 @@
 {
-  "id": "card_88",
+  "id": "twice-born_r2",
   "nome": "Twice-Born",
   "tipo": "Ally",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 0,
     "gnosis": 5,
     "health": 1,
-    "requires": "Silent Striders"
+    "requires": "Silent Striders",
+    "slug": "twice-born_r2"
   }
 }

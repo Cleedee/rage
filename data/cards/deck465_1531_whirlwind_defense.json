@@ -1,26 +1,28 @@
 {
-    "id": "card_1531",
-    "nome": "Whirlwind Defense",
-    "tipo": "Combat Action",
-    "renown": 0,
-    "atributos": {
-        "rage": 4,
-        "gnosis": 0,
-        "health": 0
-    },
-    "requires": "",
-    "keyword": "Block - Fast Striking",
-    "damage": "",
-    "modos": [
-        {
-            "descricao": "Defesa turbilhao",
-            "acao_combate": "block",
-            "efeitos": []
-        }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Fast Striking. Block acao. Bloqueia 1 de cada ataque contra user ou packmate. Comportamento nativo do sistema de combate."
+  "id": "whirlwind-defense",
+  "nome": "Whirlwind Defense",
+  "tipo": "Combat Action",
+  "renown": 0,
+  "atributos": {
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0
+  },
+  "requires": "",
+  "keyword": "Block - Fast Striking",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Defesa turbilhao",
+      "acao_combate": "block",
+      "efeitos": []
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Fast Striking. Block acao. Bloqueia 1 de cada ataque contra user ou packmate. Comportamento nativo do sistema de combate.",
+    "slug": "whirlwind-defense",
+    "card_id": 1531
+  }
 }

@@ -1,33 +1,35 @@
 {
-    "id": "card_1087",
-    "nome": "Whispering Campaign",
-    "tipo": "Gift",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 5,
-        "health": 0
-    },
-    "requires": "Pentex Executive - Eater-of-Souls - Government Caste",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "whispering-campaign",
+  "nome": "Whispering Campaign",
+  "tipo": "Gift",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 5,
+    "health": 0
+  },
+  "requires": "Pentex Executive - Eater-of-Souls - Government Caste",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Campanha de rumores",
+      "efeitos": [
         {
-            "descricao": "Campanha de rumores",
-            "efeitos": [
-                {
-                    "tipo": "impedir_acoes",
-                    "alvo": "inimigo",
-                    "quantidade": 0,
-                    "restricao": "nao_pode_pack_action",
-                    "duracao": "fim_do_turno"
-                }
-            ]
+          "tipo": "impedir_acoes",
+          "alvo": "inimigo",
+          "quantidade": 0,
+          "restricao": "nao_pode_pack_action",
+          "duracao": "fim_do_turno"
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Alvo nao pode pack action. Cancelado se matar alguem solo."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Alvo nao pode pack action. Cancelado se matar alguem solo.",
+    "slug": "whispering-campaign",
+    "card_id": 1087
+  }
 }

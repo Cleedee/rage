@@ -1,5 +1,5 @@
 {
-  "id": "card_420",
+  "id": "kinfolk-tv-reporter_r1",
   "nome": "Kinfolk TV Reporter",
   "tipo": "Ally",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 1,
-    "requires": "Homid"
+    "requires": "Homid",
+    "slug": "kinfolk-tv-reporter_r1"
   }
 }

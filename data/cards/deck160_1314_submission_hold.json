@@ -1,5 +1,5 @@
 {
-  "id": "card_1314",
+  "id": "submission-hold",
   "nome": "Submission Hold",
   "tipo": "Combat Action",
   "modos": [
@@ -30,6 +30,7 @@
       "Alvo frenzied: restricao 'nao_pode_esquivar' adicionada a criatura",
       "Restricao limpa no start_combat (novo combate)",
       "Condicao 'not frenzied' validada via COMBAT_ACTION_VALIDATORS"
-    ]
+    ],
+    "slug": "submission-hold"
   }
 }

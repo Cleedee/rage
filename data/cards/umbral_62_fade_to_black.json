@@ -1,5 +1,5 @@
 {
-  "id": "card_62",
+  "id": "fade-to-black_r5",
   "nome": "Fade-To-Black",
   "tipo": "Character - Gaia",
   "modos": [],
@@ -16,6 +16,7 @@
     "renown": 5,
     "requires": "",
     "expansion": "TheUmbra",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "fade-to-black_r5"
   }
 }

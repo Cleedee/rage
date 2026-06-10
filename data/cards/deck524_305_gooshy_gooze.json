@@ -1,37 +1,41 @@
 {
-    "id": "card_305",
-    "nome": "Gooshy Gooze",
-    "tipo": "Equipment",
-    "requires": "Bane Fetish",
-    "keyword": "Bane Fetish",
-    "atributos": {
-        "gnosis": 2
-    },
-    "modos": [
+  "id": "gooshy-gooze",
+  "nome": "Gooshy Gooze",
+  "tipo": "Equipment",
+  "requires": "Bane Fetish",
+  "keyword": "Bane Fetish",
+  "atributos": {
+    "gnosis": 2
+  },
+  "modos": [
+    {
+      "descricao": "Oponente perde 1 Rage e 1 Gnosis no combate",
+      "efeitos": [
         {
-            "descricao": "Oponente perde 1 Rage e 1 Gnosis no combate",
-            "efeitos": [
-                {
-                    "tipo": "modificar_atributo",
-                    "condicao_alvo": "criatura_inimiga",
-                    "quantidade": -1,
-                    "params": {
-                        "atributos": ["rage", "gnosis"],
-                        "minimo": 1,
-                        "duracao": "ate_fim_combate"
-                    }
-                }
-            ]
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -1,
+          "params": {
+            "atributos": [
+              "rage",
+              "gnosis"
+            ],
+            "minimo": 1,
+            "duracao": "ate_fim_combate"
+          }
         }
-    ],
-    "_metadata": {
-        "fonte": "deck524",
-        "card_id": 305,
-        "texto_original": "Opponents facing a character equipped with Gooshy Gooze lose 1 Rage and 1 Gnosis for the duration of the current combat. An opponent can never be reduced below 1 Rage or Gnosis as a result of Gooshy Gooze. A character cannot be equipped with more than 1 Gooshy Gooze.",
-        "damage": "",
-        "rage": 0,
-        "gnosis": 2,
-        "health": 0,
-        "precisa_revisao": false
+      ]
     }
+  ],
+  "_metadata": {
+    "fonte": "deck524",
+    "card_id": 305,
+    "texto_original": "Opponents facing a character equipped with Gooshy Gooze lose 1 Rage and 1 Gnosis for the duration of the current combat. An opponent can never be reduced below 1 Rage or Gnosis as a result of Gooshy Gooze. A character cannot be equipped with more than 1 Gooshy Gooze.",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 2,
+    "health": 0,
+    "precisa_revisao": false,
+    "slug": "gooshy-gooze"
+  }
 }

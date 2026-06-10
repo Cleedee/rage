@@ -1,5 +1,5 @@
 {
-  "id": "card_231",
+  "id": "rainpuddle_r2",
   "nome": "Rainpuddle",
   "tipo": "Character - Gaia",
   "modos": [
@@ -26,6 +26,7 @@
     "rage": 1,
     "gnosis": 4,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "rainpuddle_r2"
   }
 }

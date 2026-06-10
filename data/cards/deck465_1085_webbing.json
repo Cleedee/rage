@@ -1,32 +1,34 @@
 {
-    "id": "card_1085",
-    "nome": "Webbing",
-    "tipo": "Gift",
-    "renown": 0,
-    "atributos": {
-        "rage": 0,
-        "gnosis": 3,
-        "health": 0
-    },
-    "requires": "Ananasi - Iliad Fomori",
-    "keyword": "",
-    "damage": "",
-    "modos": [
+  "id": "webbing",
+  "nome": "Webbing",
+  "tipo": "Gift",
+  "renown": 0,
+  "atributos": {
+    "rage": 0,
+    "gnosis": 3,
+    "health": 0
+  },
+  "requires": "Ananasi - Iliad Fomori",
+  "keyword": "",
+  "damage": "",
+  "modos": [
+    {
+      "descricao": "Teia",
+      "efeitos": [
         {
-            "descricao": "Teia",
-            "efeitos": [
-                {
-                    "tipo": "remover_do_jogo",
-                    "alvo": "inimigo",
-                    "quantidade": 0,
-                    "duracao": "ate_moot"
-                }
-            ]
+          "tipo": "remover_do_jogo",
+          "alvo": "inimigo",
+          "quantidade": 0,
+          "duracao": "ate_moot"
         }
-    ],
-    "_metadata": {
-        "deck": 465,
-        "precisa_revisao": false,
-        "nota_revisao": "Se Rage alvo > user ou frenzied, combate termina. Alvo removido ate Moot."
+      ]
     }
+  ],
+  "_metadata": {
+    "deck": 465,
+    "precisa_revisao": false,
+    "nota_revisao": "Se Rage alvo > user ou frenzied, combate termina. Alvo removido ate Moot.",
+    "slug": "webbing",
+    "card_id": 1085
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_1331",
+  "id": "tail-lash",
   "nome": "Tail Lash",
   "tipo": "Combat Action",
   "modos": [
@@ -39,6 +39,7 @@
       "Bono de +4 dano modelado como modo separado com condicao_uso",
       "Restricao 'nao pode usar com arma' vai para sistema de validacao de equipamento",
       "Implementar condicao 'atacante_rokea_ou_mokole_nao_homid' no resolvedor quando necessario"
-    ]
+    ],
+    "slug": "tail-lash"
   }
 }

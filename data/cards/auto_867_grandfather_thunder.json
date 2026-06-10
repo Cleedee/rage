@@ -1,5 +1,5 @@
 {
-  "id": "card_867",
+  "id": "grandfather-thunder",
   "nome": "Grandfather Thunder",
   "tipo": "Event",
   "modos": [
@@ -29,6 +29,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "requires": "Shadow Lords"
+    "requires": "Shadow Lords",
+    "slug": "grandfather-thunder"
   }
 }

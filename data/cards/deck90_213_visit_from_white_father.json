@@ -1,5 +1,5 @@
 {
-  "id": "card_213",
+  "id": "visit-from-white-father_thewaroftheamazon",
   "nome": "Visit from White Father",
   "tipo": "Event",
   "modos": [
@@ -33,6 +33,7 @@
     "rage": 0,
     "gnosis": 0,
     "health": 0,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "visit-from-white-father_thewaroftheamazon"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "card_349",
+  "id": "whispers-in-pines_r4",
   "nome": "Whispers-in-Pines",
   "tipo": "Character - Gaia",
   "modos": [
@@ -23,6 +23,7 @@
     "rage": 2,
     "gnosis": 4,
     "health": 2,
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "whispers-in-pines_r4"
   }
 }

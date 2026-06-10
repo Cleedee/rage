@@ -1,5 +1,5 @@
 {
-  "id": "card_8",
+  "id": "cesare-sodalis_r3",
   "nome": "Cesare Sodalis",
   "tipo": "Character - Gaia",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 1,
     "gnosis": 3,
     "health": 1,
-    "requires": ""
+    "requires": "",
+    "slug": "cesare-sodalis_r3"
   }
 }

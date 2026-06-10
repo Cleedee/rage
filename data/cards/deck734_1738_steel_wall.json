@@ -1,5 +1,5 @@
 {
-  "id": "card_1738",
+  "id": "steel-wall",
   "nome": "Steel Wall",
   "tipo": "Combat Action",
   "modos": [
@@ -25,6 +25,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 0,
-    "requires": "(Klaive)"
+    "requires": "(Klaive)",
+    "slug": "steel-wall"
   }
 }

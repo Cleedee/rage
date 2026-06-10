@@ -1,5 +1,5 @@
 {
-  "id": "card_1722",
+  "id": "combat-reflexes",
   "nome": "Combat Reflexes",
   "tipo": "Combat Action",
   "modos": [
@@ -30,6 +30,7 @@
     "rage": 8,
     "gnosis": 0,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "combat-reflexes"
   }
 }

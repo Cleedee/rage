@@ -1,5 +1,5 @@
 {
-  "id": "card_642",
+  "id": "elder-stone",
   "nome": "Elder Stone",
   "tipo": "Equipment",
   "modos": [
@@ -22,6 +22,7 @@
     "rage": 0,
     "gnosis": 3,
     "health": 0,
-    "requires": ""
+    "requires": "",
+    "slug": "elder-stone"
   }
 }

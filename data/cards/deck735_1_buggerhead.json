@@ -1,5 +1,5 @@
 {
-  "id": "card_1",
+  "id": "buggerhead_r6",
   "nome": "Buggerhead",
   "tipo": "Character - Gaia",
   "modos": [
@@ -27,6 +27,7 @@
     "rage": 2,
     "gnosis": 6,
     "health": 3,
-    "requires": ""
+    "requires": "",
+    "slug": "buggerhead_r6"
   }
 }

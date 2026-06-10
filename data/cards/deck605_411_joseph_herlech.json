@@ -1,5 +1,5 @@
 {
-  "id": "card_411",
+  "id": "joseph-herlech_r8",
   "nome": "Joseph Herlech",
   "tipo": "Ally",
   "modos": [
@@ -28,6 +28,7 @@
     "health": 7,
     "renown": 8,
     "requires": "Any",
-    "precisa_revisao": false
+    "precisa_revisao": false,
+    "slug": "joseph-herlech_r8"
   }
 }
