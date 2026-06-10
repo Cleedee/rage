@@ -579,6 +579,10 @@ class PriorityBot:
             if drawn:
                 self.game.add_log(
                     f'[BOT] {me.name} comprou {len(drawn)} carta(s) de sept')
+            # Passa a vez apos descartar+comprar para evitar ciclo
+            # onde o bot descarta 1 carta, compra 1, e a engine o chama
+            # novamente para descartar mais.
+            self._pass_turn()
             return f'redraw_descarte_{len(descartadas)}'
 
         self._pass_turn()
