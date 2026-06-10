@@ -347,9 +347,20 @@
 - [x] **Último a declarar pode Feint** — `_handle_reveal_step()`
 - [x] **Reveal → Resolve → End** — Fluxo completo
 - [x] **Prey se defende automaticamente (Block)** — `reveal_all()`
+- [ ] **Pre-Combat Step** — Pack actions, redirect attack, combat cancelling, stepping in for Prey, defending Battlefield
+- [ ] **Targeting Step** — Atribuir targets às Combat Cards (devem estar no mesmo mundo/Gauntlet)
+- [ ] **Establish-Bluff Step** — Cartas ilegais descartadas (non-Rage requirements não atendidos)
 - [ ] **Between-rounds step** — Jogar Combat Actions entre rodadas
 - [ ] **Withdrawal step** — Criaturas podem se retirar
 - [ ] **Anatomy Lesson e efeitos de retirada** — Forçar retirada
+- [ ] **Attacker/Defender abilities during declaration** — Usar abilities/cards ao declarar ataque
+- [ ] **Pack attacks/defences** — Múltiplas criaturas de um lado vs outro
+- [ ] **Redirect attack target** — Mudar alvo do ataque (não cancela pack defences)
+- [ ] **Combat cancelling** — Cancelar combate inteiro
+- [ ] **Forced attacks** — Efeitos que forçam ataque contra alvo específico
+- [ ] **Attack restrictions** — Loyalty, Flower of Aphrodite, etc.
+- [ ] **Combat Events during declaration** — Hunting Party, etc.
+- [ ] **Shieldmate during attack declaration** — Única card que pode ser jogada pelo defensor na declaração
 
 ### Combat Actions
 - [x] **Fast Striking** — Age primeiro na batalha
