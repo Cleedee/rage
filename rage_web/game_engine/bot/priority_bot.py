@@ -10,7 +10,6 @@ Arvore de decisao:
 from __future__ import annotations
 
 import logging
-import random
 from typing import Optional
 
 from rage_web.game_engine.bot.evaluator import BoardEvaluator, TargetPrioritizer
@@ -835,9 +834,9 @@ class PriorityBot:
             actions.append('draw')
         actions.append('pass')
 
-        choice = random.choice(actions)
+        choice = self.game.rng.choice(actions)
         if choice == 'play':
-            idx = random.randrange(len(self.player.hand))
+            idx = self.game.rng.randrange(len(self.player.hand))
             self._play_card(idx)
             return f'play_{idx}'
         elif choice == 'attack':
@@ -1142,7 +1141,7 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
-                    action = random.choice(list(COMBAT_ACTIONS))
+                    action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     declare_action(g, cid, action)
                     return f'declare_{cid}_{action}'
             pendentes = [c for c in combatants
@@ -1170,7 +1169,7 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
-                    action = random.choice(list(COMBAT_ACTIONS))
+                    action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     declare_action(g, cid, action)
                     return f'play_{cid}_{action}'
             g.combat.step = 'targeting'
@@ -1193,7 +1192,7 @@ class PriorityBot:
                 else:
                     alvos = [a for a in g.combat.attackers if a != 'hg']
                 if alvos:
-                    alvo = random.choice(alvos)
+                    alvo = self.game.rng.choice(alvos)
                     g.combat.targets[cid] = alvo
                     return f'target_{cid}_{alvo}'
             g.combat.step = 'reveal'

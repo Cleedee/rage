@@ -566,8 +566,6 @@ def calcular_ordem_alfa(game: GameState) -> list[str]:
     Returns:
         Lista de card_ids na ordem de acao.
     """
-    import random
-
     def _get_renown(card_id: str) -> int:
         for p in game.players:
             for c in p.pack_home + p.umbra:
@@ -577,7 +575,7 @@ def calcular_ordem_alfa(game: GameState) -> list[str]:
 
     alphas = list(game.combat.alphas.values())
     # Ordena por Renome decrescente, desempatando aleatoriamente
-    random.shuffle(alphas)  # Embaralha para desempate aleatorio
+    game.rng.shuffle(alphas)  # Embaralha para desempate aleatorio
     alphas.sort(key=lambda cid: _get_renown(cid), reverse=True)
     game.combat.alpha_order = alphas
     game.combat.current_alpha_index = 0
@@ -1044,8 +1042,7 @@ def reveal_all(game: GameState) -> bool:
                 if dono and dono.id != owner_id:
                     # Descarta uma carta aleatoria da mao
                     if dono.hand:
-                        import random as rng
-                        idx = rng.randint(0, len(dono.hand) - 1)
+                        idx = game.rng.randint(0, len(dono.hand) - 1)
                         descartada = dono.hand.pop(idx)
                         descartada.zone = Zone.DISCARD_COMBAT
                         dono.discard_combat.append(descartada)
