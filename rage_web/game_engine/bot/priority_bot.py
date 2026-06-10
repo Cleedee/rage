@@ -860,7 +860,8 @@ class PriorityBot:
             return f'alpha_attack_hg_{meu_alpha_id}'
 
         # 1. Tenta desafiar nao-alfa de alto valor (6.5.2)
-        # Challenge: pode atacar criaturas nao-alfa
+        # P1: Antes de desafiar, calcula chance de aceitacao
+        # (so desafia se prob >= 50% e threat alto)
         from rage_web.game_engine.combat_queue import _tentar_desafio
         melhores_nao_alfa = []
         for opp in opponents:
@@ -877,27 +878,41 @@ class PriorityBot:
                 threat = self.prioritizer.rate_threat(c)
                 melhores_nao_alfa.append((c, threat, opp))
 
+        desafio_tentado = False
         if melhores_nao_alfa:
             melhores_nao_alfa.sort(key=lambda x: x[1], reverse=True)
             melhor_c, melhor_threat, melhor_opp = melhores_nao_alfa[0]
             if melhor_threat > 0:
-                # Desafia o nao-alfa de maior threat
-                # Se recusado, acao alpha termina (6.5.2)
-                aceito = _tentar_desafio(
-                    self.game, meu_alpha_id, str(melhor_c.card_id))
-                if aceito:
-                    self.game.add_log(
-                        f'[BOT] Alpha {alpha_card.name} desafiou '
-                        f'{melhor_c.name} ({melhor_opp.name})')
-                    return f'alpha_challenge_{meu_alpha_id}'
+                # P1: calcula chance de aceitacao ANTES de desafiar
+                prob_aceita = self._calcular_chance_aceitacao_desafio(
+                    alpha_card, melhor_c)
+                if prob_aceita >= 0.5:
+                    desafio_tentado = True
+                    aceito = _tentar_desafio(
+                        self.game, meu_alpha_id, str(melhor_c.card_id))
+                    if aceito:
+                        self.game.add_log(
+                            f'[BOT] Alpha {alpha_card.name} desafiou '
+                            f'{melhor_c.name} ({melhor_opp.name})')
+                        return f'alpha_challenge_{meu_alpha_id}'
+                    else:
+                        # P2: recusado -> NAO termina acao alpha.
+                        # Cai para ataque direto (alpha ou criatura).
+                        self.game.add_log(
+                            f'[BOT] Alpha {alpha_card.name} desafiou '
+                            f'{melhor_c.name}, mas foi RECUSADO. '
+                            'Segue para ataque direto...')
                 else:
-                    # Recusado: acao alpha encerrada (6.5.2)
-                    # Nao chama _pass_turn() — o match loop avanca
-                    # o alpha_index automaticamente.
                     self.game.add_log(
-                        f'[BOT] Alpha {alpha_card.name} desafiou '
-                        f'{melhor_c.name}, mas foi RECUSADO')
-                    return f'alpha_challenge_refused_{meu_alpha_id}'
+                        f'[BOT] Alpha {alpha_card.name} ignorou '
+                        f'{melhor_c.name} (chance de aceitar desafio: '
+                        f'{prob_aceita:.0%} — muito baixa). '
+                        'Segue para ataque direto...')
+
+        # P2: Se desafio nao foi tentado ou foi recusado,
+        # cai para ataque direto em vez de terminar a acao alpha.
+        # (Regra 6.5.2: desafio recusado encerra acao alpha,
+        #  mas ataque direto NAO e desafio — inicia combate normal)
 
         # 2. Tenta atacar alpha inimigo (prioriza lider em VP)
         alphas_inimigos = []
@@ -1601,6 +1616,87 @@ class PriorityBot:
                 return None  # Ainda nao ha mecanica de cura
 
         return None
+
+    # -------------------------------------------------------------------
+    # P1: Calcular chance de aceitacao de desafio (6.5.2)
+    # -------------------------------------------------------------------
+    def _calcular_chance_aceitacao_desafio(
+        self, desafiante: CardInstance,
+        alvo: CardInstance) -> float:
+        """Calcula a probabilidade do alvo aceitar um desafio.
+
+        Reusa a mesma logica de _desafiado_aceita_desafio()
+        para prever a decisao do oponente.
+
+        Args:
+            desafiante: Carta que esta desafiando.
+            alvo: Carta que seria desafiada.
+
+        Returns:
+            Float entre 0.0 e 1.0 representando a chance
+            de aceitacao.
+        """
+        rage_alvo = alvo.effective_rage
+        rage_des = desafiante.effective_rage
+        hp_alvo = alvo.health_current or alvo.health
+        dano_esperado = rage_des
+
+        # Score entre 0-100 (mesma logica de _desafiado_aceita_desafio)
+        score = 50  # Neutro
+
+        # 1. Vantagem de Rage
+        if rage_alvo >= rage_des + 2:
+            score += 30  # Confiante
+        elif rage_alvo >= rage_des:
+            score += 10  # Leve vantagem
+        elif rage_alvo < rage_des - 3:
+            score -= 30  # Desvantagem grande
+        else:
+            score -= 10  # Leve desvantagem
+
+        # 2. Risco de morte
+        if hp_alvo <= dano_esperado:
+            score -= 40  # Morte quase certa
+        elif hp_alvo <= dano_esperado * 2:
+            score -= 15  # Risco alto
+
+        # 3. Tem carta defensiva na mao de combate?
+        dono = None
+        for p in self.game.players:
+            if p.id == alvo.owner_id:
+                dono = p
+                break
+        if dono:
+            for card in dono.combat_hand:
+                nome = (card.name or '').lower()
+                ct = (card.card_type or '').lower()
+                if ('block' in nome or 'dodge' in nome
+                    or 'defend' in nome or 'evasion' in nome
+                    or 'flee' in nome
+                    or 'block and strike' in nome):
+                    score += 30
+                    break
+                if 'combat action' in ct or 'combat event' in ct:
+                    texto = (card.text or '').lower()
+                    if any(p in texto for p in ('block', 'dodge', 'flee',
+                                                  'evasion', 'defend')):
+                        score += 30
+                        break
+
+        # 4. Fator aleatorio (previsivel via seed)
+        score += self.game.rng.randint(-20, 20)
+
+        # 5. Desafiante com Rage muito alta: medo extra
+        if rage_des >= 7:
+            score -= 10
+        if rage_des >= 9:
+            score -= 10
+
+        # Converte para probabilidade (score 0-100)
+        prob = max(0.0, min(1.0, score / 100.0))
+        return prob
+
+    # -------------------------------------------------------------------
 
     def _pode_atacar(self, card: CardInstance) -> bool:
         """Verifica se uma carta pode atacar/combater.
