@@ -569,3 +569,45 @@ Beginning-of-Combat    → Open Play (gifts, frenzy pre-combate)
 10. 🔥 **Frenzy** — Complexo, requer base sólida
 11. 🎲 **Restrict/Forced/Random Play** — Detalhes finos
 12. 🎯 **Combat Declaration Options** — Battlefield, Territory, Bind
+
+## 🏟️ Área de Torneios (NOVO)
+
+Criar sistema de torneios onde jogadores (humanos) e bots podem competir.
+
+### Estrutura
+- **Cadastro de jogadores**: humanos (via web) e bots (seleção de deck + dificuldade)
+- **Inscrição em torneios**: escolher deck, confirmar presença
+- **Matchmaking automático**: rodadas são geradas pelo sistema
+
+### Formatos de Torneio
+| Formato | Descrição |
+|---|---|
+| **Suíço** | N rodadas sem eliminação; oponentes com mesma pontuação. Classificação por pontos (vitória=3, empate=1, derrota=0) + tiebreakers (SOS, etc.) |
+| **Single Elimination** | Mata-mata simples. Perdeu, está eliminado. Final decide campeão. |
+| **Double Elimination** | Dupla chave (winners + losers bracket). Perde duas vezes e está fora. |
+| **Torneio Duplo** | Dois torneios simultâneos (ex: um para cada alinhamento Gaia/Wyrm, ou dois formatos diferentes). |
+
+### Funcionalidades
+- **Dashboard de torneios**: lista de torneios ativos, inscrições abertas, resultados
+- **Tabela de classificação**: atualizada a cada rodada
+- **Histórico de partidas**: link para narração/narrativa de cada partida
+- **Submissão de bots**: interface para cadastrar bot com deck + dificuldade
+- **Notificações**: quando sua partida começar, resultado disponível
+- **Suporte a multijogador**: partidas com 2+ jogadores (free-for-all / pod)
+- **Replay**: assistir partidas anteriores frame a frame
+- **Estatísticas**: win rate, deck mais usado, melhor bot, etc.
+
+### Prioridade de Implementação
+1. ⚙️ **Motor de torneio suíço** — backend puro (gerar rodadas, calcular pontos)
+2. 🖥️ **Interface web** — cadastro, inscrição, tabela
+3. 🤖 **Submissão de bots** — registrar bot com deck
+4. 🏆 **Single Elimination** — chaves, bracket, final
+5. 🔄 **Double Elimination** — winners/losers bracket
+6. 🏟️ **Torneio Duplo** — dois torneios simultâneos
+7. 📊 **Estatísticas e Replay** — análise pós-torneio
+
+### UI/UX
+- Bulma CSS + HTMX (consistente com o resto do app)
+- Bracket visual com SVG/Canvas
+- Atualizações em tempo real via HTMX polling
+- Design responsivo (mobile-friendly)
