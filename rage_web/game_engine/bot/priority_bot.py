@@ -1136,7 +1136,7 @@ class PriorityBot:
         # Caern: verificacoes especiais
         if card.card_type == 'Caern':
             from rage_web.game_engine.rules import pode_jogar_caern
-            if not pode_jogar_caern(self.player, card):
+            if not pode_jogar_caern(self.player, card, self.game):
                 return False
 
         # Rage

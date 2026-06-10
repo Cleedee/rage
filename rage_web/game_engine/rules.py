@@ -920,13 +920,20 @@ def _simplificar_req_caern(req: str) -> str:
 
 
 def pode_jogar_caern(play: 'PlayerState',
-                      caern_card: 'CardInstance') -> bool:
+                      caern_card: 'CardInstance',
+                      game: Optional['GameState'] = None) -> bool:
     """Verifica se o jogador pode jogar um Caern.
 
     Regras:
     - Apenas um Caern por pack.
+    - Named Caerns sao Unique (globais, vale para todos os packs).
     - Requer personagem que atenda o requisito (requires).
     - Caern pode ser descartado se quiser trocar.
+
+    Args:
+        play: Estado do jogador.
+        caern_card: O Caern sendo jogado.
+        game: Estado da partida (para verificar unicidade global).
 
     Returns:
         True se pode jogar.
@@ -936,7 +943,26 @@ def pode_jogar_caern(play: 'PlayerState',
         if c.card_type == 'Caern' and id(c) != id(caern_card):
             return False
 
-    # 2. Verifica requisito de personagem
+    # 2. Named Caerns sao Unique globalmente
+    #    Se o Caern tem um nome (nao generico), ninguem mais pode
+    #    ter o mesmo nome em jogo
+    if game is not None and caern_card.name:
+        for p in game.players:
+            for c in (p.pack_home + p.hunting_grounds + p.discard_sept
+                       + p.discard_combat):
+                if (c.card_type == 'Caern'
+                    and c.name == caern_card.name
+                    and id(c) != id(caern_card)):
+                    # Permite substituir o proprio Caern do mesmo jogador
+                    # (descartando o antigo e jogando outro)
+                    if p.id != play.id:
+                        return False
+                    # Mesmo jogador: permite se o antigo esta sendo descartado
+                    # (ou seja, ainda esta no pack_home mas sera removido)
+                    # Permitimos porque a troca e valida
+                    pass
+
+    # 3. Verifica requisito de personagem
     req = (caern_card.requires or '').strip()
     if not req:
         return True  # Sem requisito, pode jogar
