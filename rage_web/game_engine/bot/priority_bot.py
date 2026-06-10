@@ -141,70 +141,207 @@ class PriorityBot:
         return taxa < 0.8
 
     def _agir_recurso(self) -> str:
-        """Age na fase de Resource."""
+        """Age na fase de Resource.
+
+        P7: Otimizacao da fase de Resource.
+        Avalia cada carta por pontuacao estrategica:
+        - Personagens tem prioridade maxima
+        - Cartas que compram (card draw) sao jogadas PRIMEIRO
+        - Buffs sao jogados DEPOIS dos personagens
+        - Cartas sem alvo viavel sao ignoradas
+        - Max 3 cartas por turno (preservar mao)
+        """
         me = self.player
 
-        # Heuristica: max 3 cartas por turno (nao queimar mao)
         if self._cards_played_this_turn >= 3:
             self._pass_turn()
             return 'pass_resource_limit'
 
-        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
-        TIPOS_STUB = {'combar_acao'}
-        # Cartas que vao para o Hunting Grounds (precisam ser jogadas cedo)
-        # Usa zona_da_carta para detectar corretamente subtipos como 'Ally - Enemy'
         from rage_web.game_engine.rules import zona_da_carta
 
-        # 1. Prioridade maxima: jogar personagens
-        for i, card in enumerate(me.hand):
-            if card.card_type == 'Character':
-                if self._pode_pagar_custos(card):
-                    self._play_card(i)
-                    self._cards_played_this_turn += 1
-                    return f'play_character_{card.card_id}'
+        # ── P7: Pontua cada carta viavel ──
+        # Primeiro, identifica o que ja tem em jogo
+        tem_character = any(
+            'character' in (c.card_type or '').lower()
+            for c in me.pack_home
+        )
+        tem_caern = any(
+            (c.card_type or '') == 'Caern'
+            for c in me.pack_home
+        )
+        tem_hg = bool(me.hunting_grounds)
 
-        # 1.5 Prioridade alta: jogar Caern (habilita acesso a Umbra)
+        # TIPOS que NAO sao de recurso
+        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
+
+        scored = []
         for i, card in enumerate(me.hand):
-            ct = card.card_type or ''
+            ct = (card.card_type or '')
+            if ct in TIPOS_NAO_RECURSO:
+                continue
+
+            score = 0
+            zona = zona_da_carta(ct)
+
+            # Nao joga se nao pode pagar
+            if not self._pode_pagar_custos(card):
+                score -= 50
+
+            # 1. Character: prioridade maxima (precisa de combatentes)
+            if ct == 'Character':
+                score += 100
+                if not tem_character:
+                    score += 50  # Primeiro character e critico
+                # Se ja tem personagens, ainda vale (mais = melhor)
+                score += card.rage * 3 + card.gnosis * 2 + card.health * 2
+
+            # 2. Card Draw (comprar cartas): jogar PRIMEIRO
+            #    (identifica por efeito 'comprar' no modelo)
+            elif card.modelo_id:
+                from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                if modelo and modelo.modos:
+                    for modo in modelo.modos:
+                        for efeito in (modo.efeitos or []):
+                            if getattr(efeito, 'tipo', '') == 'comprar':
+                                score += 80  # Card draw e sempre bom
+                            elif getattr(efeito, 'tipo', '') in (
+                                'modificar_atributo', 'modificar_rage',
+                                'modificar_gnosis', 'inspiration',
+                            ):
+                                if tem_character:
+                                    score += 60  # Buff util se tem chars
+                                else:
+                                    score -= 20  # Buff sem char e inutil
+
+            # 3. Caern: alta prioridade se nao tem
             if ct == 'Caern':
-                if self._pode_pagar_custos(card):
-                    from rage_web.game_engine.rules import pode_jogar_caern
-                    if pode_jogar_caern(me, card, self.game):
-                        self._play_card(i)
-                        self._cards_played_this_turn += 1
-                        self.game.add_log(
-                            f'[BOT] {me.name}: jogou Caern {card.name}')
-                        return f'play_caern_{card.card_id}'
+                if not tem_caern:
+                    score += 90
+                else:
+                    score += 30  # Segundo Caern ainda util
+                from rage_web.game_engine.rules import pode_jogar_caern
+                if not pode_jogar_caern(me, card, self.game):
+                    score -= 100  # Unico por nome
 
-        # 2. Jogar cartas de HG (Victim/Enemy/Battlefield + subtipos) — essenciais
-        #    para ter alvos no Hunting Grounds
-        for i, card in enumerate(me.hand):
-            if zona_da_carta(card.card_type or '') == 'hunting_grounds':
-                if self._pode_pagar_custos(card):
+            # 4. Hunting Grounds cards: uteis se nao tem alvos
+            elif zona == 'hunting_grounds':
+                score += 40
+                if not tem_hg:
+                    score += 30  # Precisa de alvos no HG
+                # Verifica VP: Gaia nao ganha VP por Victim
+                ct_lower = ct.lower()
+                from rage_web.game_engine.combat_queue import _eh_pack_gaia
+                if _eh_pack_gaia(me) and 'victim' in ct_lower:
+                    score -= 20  # Gaia nao ganha VP por Victim
+                from rage_web.game_engine.combat_queue import _eh_pack_wyrm
+                if _eh_pack_wyrm(me) and 'enemy' in ct_lower:
+                    score -= 20  # Wyrm nao ganha VP por Enemy
+
+            # 5. Ally: util se tem personagens
+            elif 'ally' in ct.lower() and zona == 'pack_home':
+                from rage_web.game_engine.rules import pode_recrutar_ally
+                if pode_recrutar_ally(me, card):
+                    score += 50 if tem_character else 20
+                else:
+                    score -= 30  # Nao pode recrutar ainda
+
+            # 6. Territory: util
+            elif ct == 'Territory':
+                score += 35
+
+            # 7. Equipment: util se tem personagens para equipar
+            elif 'equipment' in ct.lower():
+                if tem_character:
+                    # Verifica se tem alvo viavel
+                    from rage_web.game_engine.effects import ResolvedorEfeitos
+                    resolvedor = ResolvedorEfeitos(self.game)
+                    tem_alvo = any(
+                        resolvedor._validar_restricoes_equipamento(card, c)
+                        for c in me.pack_home
+                        if 'character' in (c.card_type or '').lower()
+                    )
+                    if tem_alvo:
+                        score += 45
+                    else:
+                        score -= 30  # Nao tem quem equipe
+                else:
+                    score -= 20  # Equipment sem personagem e inutil
+
+            # 8. Rite: util se tem personagens com Renown
+            elif ct == 'Rite':
+                from rage_web.game_engine.rules import (pode_usar_rite,
+                                                         validar_timing_rite)
+                if (validar_timing_rite(card, self.game.phase)
+                    and pode_usar_rite(me, card)):
+                    score += 40
+                else:
+                    score -= 20
+
+            # 9. Quest / Past Life: util se tem personagens
+            elif ct in ('Quest', 'Past Life'):
+                if tem_character and card.modelo_id:
+                    score += 30
+                else:
+                    score -= 10
+
+            # 10. Gift / Event: util se tem personagens
+            elif ct == 'Gift':
+                if tem_character:
+                    score += 35
+                else:
+                    score -= 10
+            elif ct in ('Event', 'Action'):
+                score += 20
+
+            # 11. Cartas sem modelo_id: inuteis
+            if not card.modelo_id and score < 50:
+                score -= 30
+
+            scored.append((i, score, card))
+
+        # Ordena por pontuacao (melhores primeiro)
+        scored.sort(key=lambda x: x[1], reverse=True)
+
+        for i, score, card in scored:
+            if score <= 0:
+                continue  # Nao joga cartas com pontuacao negativa
+
+            ct = (card.card_type or '')
+            zona = zona_da_carta(ct)
+
+            if ct == 'Character':
+                self._play_card(i)
+                self._cards_played_this_turn += 1
+                return f'play_character_{card.card_id}'
+
+            elif ct == 'Caern':
+                from rage_web.game_engine.rules import pode_jogar_caern
+                if pode_jogar_caern(me, card, self.game):
                     self._play_card(i)
                     self._cards_played_this_turn += 1
-                    return f'play_hg_{card.card_id}'
+                    return f'play_caern_{card.card_id}'
 
-        # 3. Tenta jogar Ally (incluindo subtipos), Equipment, Territory, Caern
-        for i, card in enumerate(me.hand):
-            ct = card.card_type or ''
-            eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
-            if eh_ally:
-                # Verifica requisito de recrutamento (4.4.1)
+            elif zona == 'hunting_grounds':
+                self._play_card(i)
+                self._cards_played_this_turn += 1
+                return f'play_hg_{card.card_id}'
+
+            elif 'ally' in ct.lower() and zona == 'pack_home':
                 from rage_web.game_engine.rules import pode_recrutar_ally
-                if not pode_recrutar_ally(me, card):
-                    continue  # Nao pode recrutar este Ally ainda
-            if (eh_ally
-                or ct in ('Equipment', 'Territory', 'Caern')
-                or ct == 'Equipment - Fetish - Bane Fetish'):
-                if not self._pode_pagar_custos(card):
-                    continue
-                # Equipment com modelo_id E efeito equipar deve ser
-                # equipado via efeito, nao apenas jogado no pack_home.
-                # Equipment com modelo_id sem equipar (ex: Gooshy Gooze
-                # que aplica modificador diretamente) usa play normal.
-                if 'equipment' in ct.lower() and card.modelo_id:
-                    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                if pode_recrutar_ally(me, card):
+                    self._play_card(i)
+                    self._cards_played_this_turn += 1
+                    return f'play_ally_{card.card_id}'
+
+            elif ct in ('Territory',):
+                self._play_card(i)
+                self._cards_played_this_turn += 1
+                return f'play_territory_{card.card_id}'
+
+            elif 'equipment' in ct.lower():
+                from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                if card.modelo_id:
                     modelo = CARTAS_EXEMPLO.get(card.modelo_id)
                     if modelo and modelo.modos:
                         tem_equipar = any(
@@ -216,20 +353,15 @@ class PriorityBot:
                             modo_idx = self._escolher_melhor_modo(card.modelo_id)
                             self._cards_played_this_turn += 1
                             return self._usar_carta_efeito(i, modo_idx, card)
-                # Equipment sem modelo_id, sem equipar: play normal
                 self._play_card(i)
                 self._cards_played_this_turn += 1
-                return f'play_{card.card_type.lower()}_{card.card_id}'
+                return f'play_equipment_{card.card_id}'
 
-        # 3.5 Joga Rites (Renown validation, so fora de combate)
-        for i, card in enumerate(me.hand):
-            ct = card.card_type or ''
-            if ct == 'Rite':
+            elif ct == 'Rite':
                 from rage_web.game_engine.rules import (pode_usar_rite,
                                                          validar_timing_rite)
                 if (validar_timing_rite(card, self.game.phase)
-                    and pode_usar_rite(me, card)
-                    and self._pode_pagar_custos(card)):
+                    and pode_usar_rite(me, card)):
                     if card.modelo_id:
                         modo_idx = self._escolher_melhor_modo(card.modelo_id)
                         self._cards_played_this_turn += 1
@@ -239,14 +371,25 @@ class PriorityBot:
                         self._cards_played_this_turn += 1
                         return f'play_rite_{card.card_id}'
 
-        # 4. Joga Quest / Past Life
-        for i, card in enumerate(me.hand):
-            ct = card.card_type or ''
-            if ct in ('Quest', 'Past Life'):
-                if card.modelo_id and self._pode_pagar_custos(card):
+            elif ct in ('Quest', 'Past Life'):
+                if card.modelo_id:
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
+
+            elif ct in ('Gift', 'Event', 'Action'):
+                # Usa via efeito
+                if card.modelo_id:
+                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                    self._cards_played_this_turn += 1
+                    return self._usar_carta_efeito(i, modo_idx, card)
+                else:
+                    self._play_card(i)
+                    self._cards_played_this_turn += 1
+                    return f'play_{ct.lower()}_{card.card_id}'
+
+        self._pass_turn()
+        return 'pass_resource_no_valid_card'
 
         # 4.5 Joga Eventos / Totems (permanecem em jogo, efeitos globais)
         for i, card in enumerate(me.hand):
