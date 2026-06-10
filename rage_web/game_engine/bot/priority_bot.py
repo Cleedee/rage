@@ -1051,6 +1051,32 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
+
+                    # 6.6.6c: Random Play — escolhe carta aleatoria
+                    # da mao de combate do jogador.
+                    if g.combat.has_random_play(cid):
+                        mao_combate = self.player.combat_hand
+                        if mao_combate:
+                            carta_rand = g.rng.choice(mao_combate)
+                            # Tenta usar o nome da carta como acao
+                            nome_acao = (carta_rand.name or '').lower().replace(' ', '_')
+                            # Mapeia nomes de cartas para acoes conhecidas
+                            from rage_web.game_engine.combat_queue import (
+                                COMBAT_ACTIONS, COMBAT_ACTION_PROPS)
+                            if nome_acao in COMBAT_ACTIONS:
+                                result = declare_action(g, cid, nome_acao)
+                                if result:
+                                    return f'play_{cid}_{nome_acao}'
+                            # Fallback: acao aleatoria viavel
+                            acoes = list(COMBAT_ACTIONS)
+                            g.rng.shuffle(acoes)
+                            for a in acoes:
+                                result = declare_action(g, cid, a)
+                                if result:
+                                    return f'play_{cid}_{a}'
+                        self._pass_turn()
+                        return 'combat_wait'
+
                     # Tenta jogar CE face-down como blefe
                     from rage_web.game_engine.combat_queue import \
                         _jogar_ce_face_down
@@ -1067,6 +1093,14 @@ class PriorityBot:
                                 if result:
                                     action = fallback
                                     break
+                    # 6.6.6b: Forced Play — se tem carta e nao conseguiu,
+                    # tenta qualquer acao viavel (mesmo ilegal)
+                    if not result and g.combat.has_forced_play(cid):
+                        for acao_forcada in COMBAT_ACTIONS:
+                            result = declare_action(g, cid, acao_forcada)
+                            if result:
+                                action = acao_forcada
+                                break
                     if not result:
                         # Ainda falhou: passa a vez
                         self._pass_turn()
@@ -2054,6 +2088,10 @@ class PriorityBot:
         # Criatura propria: escolhe acao ofensiva de maior dano viavel
         from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS
 
+        # 6.6.6a: Restricted Play — filtra por nivel maximo de Rage
+        nivel_restrito = self.game.combat.get_restricted_level(
+            str(card.card_id))
+
         opp = self._get_opponent()
         melhor_acao = 'strike'
         melhor_dano = -1
@@ -2064,6 +2102,9 @@ class PriorityBot:
             req = props.get('rage_requirement', 0)
             if card.effective_rage < req:
                 continue  # Nao atende requisito de Rage
+            # 6.6.6a: Restricted Play
+            if nivel_restrito is not None and req > nivel_restrito:
+                continue  # Restricao impede esta acao
             # Verifica validadores especificos (ex: Tail Lash so Rokea/Mokole)
             from rage_web.game_engine.combat_queue import COMBAT_ACTION_VALIDATORS
             validators = COMBAT_ACTION_VALIDATORS.get(acao, [])

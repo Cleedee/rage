@@ -1493,6 +1493,18 @@ def _processar_bluff(game: GameState) -> bool:
                          f'face-down -> ILEGAL (6.9.1)')
             continue
 
+        # 6.6.6a: Restricted Play — se a carta nao atende a
+        # restricao, e considerada ilegal.
+        nivel_restrito = game.combat.get_restricted_level(cid)
+        if nivel_restrito is not None:
+            if rage_req > nivel_restrito:
+                game.combat.illegal_cards.add(cid)
+                game.add_log(
+                    f'  [Bluff] {card.name}: {action} requer Rage '
+                    f'{rage_req} > {nivel_restrito} (Restricted Play) '
+                    f'-> ILEGAL (6.6.6a)')
+                continue
+
         # 6.9.2: Verificar blefe (Rage requirement > Rage)
         if card.effective_rage < rage_req:
             game.combat.bluff_cards.add(cid)

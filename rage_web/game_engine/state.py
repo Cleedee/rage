@@ -648,6 +648,53 @@ class CombatState:
     # weapon_declarations: card_id -> weapon_card_id (armas usadas)
     weapon_declarations: dict[str, str] = field(default_factory=dict)
 
+    # --- Restricted / Forced / Random Play (6.6.6) ---
+    # restricoes_round[card_id] = dict com regras para esta rodada
+    # Ex: {'restricted': 'rage_2', 'forced': True, 'random': True}
+    restricoes_round: dict[str, dict] = field(default_factory=dict)
+
+    def get_restricoes(self, card_id: str) -> dict:
+        """Retorna as restricoes de uma criatura para esta rodada."""
+        return self.restricoes_round.get(card_id, {})
+
+    def has_forced_play(self, card_id: str) -> bool:
+        """6.6.6b: Criatura e forcada a jogar carta de combate."""
+        return self.restricoes_round.get(card_id, {}).get('forced', False)
+
+    def has_random_play(self, card_id: str) -> bool:
+        """6.6.6c: Criatura joga carta aleatoria."""
+        return self.restricoes_round.get(card_id, {}).get('random', False)
+
+    def get_restricted_level(self, card_id: str) -> Optional[int]:
+        """6.6.6a: Retorna o nivel maximo de Rage permitido (ex: 2).
+        None = sem restricao."""
+        res = self.restricoes_round.get(card_id, {})
+        r = res.get('restricted')
+        if r is not None:
+            return int(r) if str(r).isdigit() else None
+        return None
+
+    def reset_restricoes_round(self):
+        """Limpa restricoes ao fim de cada round de combate."""
+        self.restricoes_round.clear()
+
+    def aplicar_restricao_round(self, card_id: str, **kwargs):
+        """Aplica restricoes a uma criatura para esta rodada.
+
+        Args:
+            card_id: ID da criatura.
+            **kwargs: 'restricted'=int, 'forced'=bool, 'random'=bool
+
+        Exemplo:
+            combat.aplicar_restricao_round('123', restricted=2)
+            combat.aplicar_restricao_round('456', forced=True)
+            combat.aplicar_restricao_round('789', random=True)
+        """
+        if card_id not in self.restricoes_round:
+            self.restricoes_round[card_id] = {}
+        for k, v in kwargs.items():
+            self.restricoes_round[card_id][k] = v
+
     @property
     def last_to_declare(self) -> Optional[str]:
         if self.declaration_order:
@@ -705,6 +752,7 @@ class CombatState:
         self.face_down_order.clear()
         self.targets.clear()
         self.illegal_cards.clear()
+        self.reset_restricoes_round()  # 6.6.6: restricoes sao por rodada
         self.bluff_cards.clear()
         self.bluff_failed.clear()
         self.damage_queue.clear()
