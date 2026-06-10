@@ -2182,10 +2182,20 @@ class PriorityBot:
             f'[BOT] {self.player.name} atacou {defender_id} com {attacker_id}')
 
     def _pass_turn(self):
-        """Passa a vez."""
+        """Passa a vez.
+
+        Durante combate com step machine ativo, passar a vez NAO
+        avanca a fase — apenas rotaciona o jogador atual.
+        A fase de combate so termina quando end_combat() for chamado
+        e todos os jogadores passarem.
+        """
         me = self.player
         me.pass_turn()
         all_passed = all(p.has_passed for p in self.game.players)
+        # Durante combate ativo: nao avanca fase (so rotaciona)
+        if all_passed and self.game.combat.is_active:
+            self.game.next_player()
+            return True
         if all_passed:
             self.game.next_phase()
             for p in self.game.players:
