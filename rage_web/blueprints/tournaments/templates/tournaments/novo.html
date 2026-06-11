@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{{ url_for('tournaments.listar') }}">Torneios</a></li>
+        <li class="is-active"><a href="#">Novo Torneio</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title">🏟️ Novo Torneio</h1>
+
+    <div class="box">
+      <form method="POST">
+        <div class="field">
+          <label class="label">Nome do Torneio</label>
+          <div class="control">
+            <input class="input" type="text" name="nome" required
+                   placeholder="Ex: Campeonato Gaia 2026">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Formato</label>
+          <div class="control">
+            <div class="select">
+              <select name="formato">
+                <option value="swiss">Suíço</option>
+                <option value="single_elim">Mata-mata (Single Elimination)</option>
+                <option value="double_elim">Dupla Eliminação</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Máximo de Rodadas</label>
+          <div class="control">
+            <input class="input" type="number" name="max_rounds" value="0" min="0" max="20">
+          </div>
+          <p class="help">0 = automático (ceil(log2(N)) para suíço)</p>
+        </div>
+
+        <div class="field">
+          <label class="label">VP para Vencer</label>
+          <div class="control">
+            <input class="input" type="number" name="vp_to_win" value="0" min="0">
+          </div>
+          <p class="help">0 = usar renown padrão do jogo (20)</p>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <i class="bi bi-check-circle"></i>&nbsp; Criar Torneio
+            </button>
+          </div>
+          <div class="control">
+            <a href="{{ url_for('tournaments.listar') }}" class="button is-light">
+              Cancelar
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

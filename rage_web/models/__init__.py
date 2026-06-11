@@ -2,3 +2,4 @@
 from rage_web.models.card import Card, deck_cards
 from rage_web.models.deck import Deck
 from rage_web.models.picture import Picture
+from rage_web.models.tournament import Tournament, TournamentPlayer, TournamentMatch

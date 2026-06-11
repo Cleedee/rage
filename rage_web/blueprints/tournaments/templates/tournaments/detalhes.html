@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{{ url_for('tournaments.listar') }}">Torneios</a></li>
+        <li class="is-active"><a href="#">{{ torneio.name }}</a></li>
+      </ul>
+    </nav>
+
+    <!-- Header -->
+    <div class="level">
+      <div class="level-left">
+        <div>
+          <h1 class="title">🏟️ {{ torneio.name }}</h1>
+          <p class="subtitle">
+            {% if torneio.formato == 'swiss' %} Suíço
+            {% elif torneio.formato == 'single_elim' %} Mata-mata
+            {% elif torneio.formato == 'double_elim' %} Dupla Eliminação
+            {% else %} {{ torneio.formato }}
+            {% endif %}
+            · Rodada {{ torneio.current_round }}/{{ torneio.max_rounds or '—' }}
+            · {{ torneio.players|length }} jogador(es)
+          </p>
+          {% if torneio.description %}
+          <p class="has-text-grey">{{ torneio.description }}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="level-right">
+        {% if torneio.status == 'open' %}
+        <a href="{{ url_for('tournaments.inscrever', tournament_id=torneio.id) }}"
+           class="button is-success">
+          <i class="bi bi-person-plus"></i>&nbsp; Inscrever Jogador
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Ações de Admin -->
+    {% if torneio.status != 'completed' %}
+    <div class="buttons mb-5">
+      {% if torneio.status == 'open' and torneio.players|length >= 2 %}
+      <form method="POST" action="{{ url_for('tournaments.iniciar', tournament_id=torneio.id) }}"
+            style="display:inline">
+        <button type="submit" class="button is-primary">
+          <i class="bi bi-play-fill"></i>&nbsp; Iniciar Torneio
+        </button>
+      </form>
+      {% endif %}
+
+      {% if torneio.status == 'active' %}
+      <form method="POST"
+            action="{{ url_for('tournaments.proxima_rodada', tournament_id=torneio.id) }}"
+            style="display:inline">
+        <button type="submit" class="button is-link">
+          <i class="bi bi-skip-forward"></i>&nbsp; Próxima Rodada
+        </button>
+      </form>
+
+      <form method="POST"
+            action="{{ url_for('tournaments.executar', tournament_id=torneio.id) }}"
+            style="display:inline">
+        <button type="submit" class="button is-warning">
+          <i class="bi bi-cpu"></i>&nbsp; Executar Partidas (Bot)
+        </button>
+      </form>
+
+      <form method="POST"
+            action="{{ url_for('tournaments.encerrar', tournament_id=torneio.id) }}"
+            style="display:inline"
+            onsubmit="return confirm('Encerrar o torneio?')">
+        <button type="submit" class="button is-danger">
+          <i class="bi bi-stop-fill"></i>&nbsp; Encerrar Torneio
+        </button>
+      </form>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="columns">
+      <!-- Classificação -->
+      <div class="column is-half">
+        <div class="box">
+          <h3 class="title is-4">🏆 Classificação</h3>
+          {% if ranking %}
+          <div class="table-container">
+            <table class="table is-fullwidth is-hoverable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Jogador</th>
+                  <th>Pts</th>
+                  <th>SOS</th>
+                  <th>V</th>
+                  <th>D</th>
+                  <th>E</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in ranking %}
+                <tr>
+                  <td><strong>{{ r.posicao }}</strong></td>
+                  <td>
+                    {{ r.nome }}
+                    {% if r.is_bot %}
+                    <span class="tag is-light is-small">🤖</span>
+                    {% else %}
+                    <span class="tag is-light is-small">🧑</span>
+                    {% endif %}
+                  </td>
+                  <td><strong>{{ "%.1f"|format(r.score) }}</strong></td>
+                  <td><small>{{ "%.2f"|format(r.sos) }}</small></td>
+                  <td>{{ r.wins }}</td>
+                  <td>{{ r.losses }}</td>
+                  <td>{{ r.draws }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="has-text-grey">Nenhum jogador inscrito.</p>
+          {% endif %}
+        </div>
+
+        <!-- Jogadores inscritos -->
+        <div class="box">
+          <h3 class="title is-4">👥 Jogadores</h3>
+          {% if torneio.players %}
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Deck</th>
+                <th>Dif.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in torneio.players %}
+              <tr>
+                <td>{{ p.player_name }}</td>
+                <td>
+                  {% if p.is_bot %}
+                  <span class="tag is-info is-light">🤖 Bot</span>
+                  {% else %}
+                  <span class="tag is-success is-light">🧑 Humano</span>
+                  {% endif %}
+                </td>
+                <td>{% if p.deck_id %}Deck #{{ p.deck_id }}{% else %}—{% endif %}</td>
+                <td>{{ p.difficulty }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="has-text-grey">Nenhum jogador inscrito ainda.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Partidas -->
+      <div class="column is-half">
+        <div class="box">
+          <h3 class="title is-4">⚔️ Partidas</h3>
+          {% if matches %}
+          {% set rodadas = matches|groupby('round_number') %}
+          {% for round_num, round_matches in rodadas %}
+          <div class="mb-4">
+            <h4 class="title is-5 has-text-grey">
+              Rodada {{ round_num }}
+              {% if round_num == torneio.current_round %}<span class="tag is-link is-light">Atual</span>{% endif %}
+            </h4>
+            <table class="table is-fullwidth is-narrow">
+              <thead>
+                <tr>
+                  <th>Jogador 1</th>
+                  <th></th>
+                  <th>Jogador 2</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for m in round_matches %}
+                {% set p1 = torneio.players|selectattr('id', 'equalto', m.player1_id)|first if m.player1_id else none %}
+                {% set p2 = torneio.players|selectattr('id', 'equalto', m.player2_id)|first if m.player2_id else none %}
+                <tr>
+                  <td>{{ p1.player_name if p1 else 'BYE' }}</td>
+                  <td>vs</td>
+                  <td>{{ p2.player_name if p2 else 'BYE' }}</td>
+                  <td>
+                    {% if m.status == 'pending' %}
+                    <span class="tag is-warning is-light">⏳ Pendente</span>
+                    {% elif m.status == 'completed' %}
+                      {% if m.is_draw %}
+                      <span class="tag is-info is-light">🤝 Empate</span>
+                      {% elif m.winner_id == m.player1_id %}
+                      <span class="tag is-success">{{ p1.player_name if p1 else '—' }} venceu</span>
+                      {% elif m.winner_id == m.player2_id %}
+                      <span class="tag is-success">{{ p2.player_name if p2 else '—' }} venceu</span>
+                      {% else %}
+                      <span class="tag is-light">—</span>
+                      {% endif %}
+                    {% else %}
+                    <span class="tag is-light">{{ m.status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endfor %}
+          {% else %}
+          <p class="has-text-grey">Nenhuma partida ainda.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

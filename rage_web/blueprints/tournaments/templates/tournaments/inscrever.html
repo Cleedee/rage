@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{{ url_for('tournaments.listar') }}">Torneios</a></li>
+        <li><a href="{{ url_for('tournaments.detalhes', tournament_id=torneio.id) }}">{{ torneio.name }}</a></li>
+        <li class="is-active"><a href="#">Inscrever</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title">📝 Inscrever Jogador</h1>
+    <h2 class="subtitle">{{ torneio.name }}</h2>
+
+    <div class="box">
+      <form method="POST">
+        <div class="field">
+          <label class="label">Nome do Jogador</label>
+          <div class="control">
+            <input class="input" type="text" name="player_name" required
+                   placeholder="Ex: Alpha Wolf Bot">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Tipo</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="tipo" value="bot" checked>
+              🤖 Bot
+            </label>
+            <label class="radio">
+              <input type="radio" name="tipo" value="human">
+              🧑 Humano
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Deck</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="deck_id">
+                <option value="">— Selecione um deck —</option>
+                {% for d in decks %}
+                <option value="{{ d.id }}">{{ d.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <p class="help">Obrigatório para bots.</p>
+        </div>
+
+        <div class="field">
+          <label class="label">Dificuldade</label>
+          <div class="control">
+            <div class="select">
+              <select name="difficulty">
+                <option value="easy">Fácil</option>
+                <option value="medium" selected>Médio</option>
+                <option value="hard">Difícil</option>
+              </select>
+            </div>
+          </div>
+          <p class="help">Apenas para bots.</p>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <i class="bi bi-person-plus"></i>&nbsp; Inscrever
+            </button>
+          </div>
+          <div class="control">
+            <a href="{{ url_for('tournaments.detalhes', tournament_id=torneio.id) }}"
+               class="button is-light">Cancelar</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

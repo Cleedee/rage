@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="level">
+      <div class="level-left">
+        <h1 class="title">🏟️ Torneios</h1>
+      </div>
+      <div class="level-right">
+        <a href="{{ url_for('tournaments.novo') }}" class="button is-primary">
+          <i class="bi bi-plus-circle"></i>&nbsp; Novo Torneio
+        </a>
+      </div>
+    </div>
+
+    {% if torneios %}
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Formato</th>
+            <th>Status</th>
+            <th>Rodada</th>
+            <th>Jogadores</th>
+            <th>Criado em</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in torneios %}
+          <tr>
+            <td>
+              <a href="{{ url_for('tournaments.detalhes', tournament_id=t.id) }}">
+                <strong>{{ t.name }}</strong>
+              </a>
+            </td>
+            <td>
+              {% if t.formato == 'swiss' %}
+                <span class="tag is-info">Suíço</span>
+              {% elif t.formato == 'single_elim' %}
+                <span class="tag is-danger">Mata-mata</span>
+              {% elif t.formato == 'double_elim' %}
+                <span class="tag is-warning">Dupla Eliminação</span>
+              {% else %}
+                <span class="tag">{{ t.formato }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if t.status == 'open' %}
+                <span class="tag is-success">Inscrições Abertas</span>
+              {% elif t.status == 'active' %}
+                <span class="tag is-link">Em Andamento</span>
+              {% elif t.status == 'completed' %}
+                <span class="tag">Encerrado</span>
+              {% endif %}
+            </td>
+            <td>{{ t.current_round }}/{{ t.max_rounds or '—' }}</td>
+            <td>{{ t.players|length }}</td>
+            <td>{{ t.created_at.strftime('%d/%m/%Y') }}</td>
+            <td>
+              <a href="{{ url_for('tournaments.detalhes', tournament_id=t.id) }}"
+                 class="button is-small is-outlined">
+                Detalhes
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="notification is-info is-light">
+      <i class="bi bi-info-circle"></i>&nbsp;
+      Nenhum torneio cadastrado. <a href="{{ url_for('tournaments.novo') }}">Crie o primeiro!</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
