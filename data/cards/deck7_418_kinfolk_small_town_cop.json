@@ -7,8 +7,14 @@
       "descricao": "Prender personagem",
       "efeitos": [
         {
-          "tipo": "restricao",
-          "condicao_alvo": "criatura_inimiga"
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "filtro": "forma=Homid",
+            "duracao": "ate_regen",
+            "uma_vez_por_turno": true
+          }
         }
       ]
     }
@@ -22,7 +28,7 @@
     "rage": 3,
     "gnosis": 0,
     "health": 2,
-    "precisa_revisao": false,
+    "precisa_revisao": true,
     "slug": "kinfolk-small-town-cop_r1"
   }
 }

@@ -7,9 +7,10 @@
       "descricao": "Entrar em qualquer conflito de Battlefield",
       "efeitos": [
         {
-          "tipo": "ataque_imediato",
+          "tipo": "registrar_trigger_combate",
           "condicao_alvo": "criatura_aliada",
           "params": {
+            "trigger": "passivo_battlefield",
             "any_battlefield": true,
             "nao_conta_limite": true
           }
