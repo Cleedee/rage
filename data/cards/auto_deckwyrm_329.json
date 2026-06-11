@@ -1,0 +1,28 @@
+{
+  "id": "tf-macneil",
+  "nome": "T. F. MacNeil",
+  "tipo": "Character - Wyrm (Pentex)",
+  "modos": [
+    {
+      "descricao": "Pack attack/defend com TODOS Team #21",
+      "efeitos": [
+        {
+          "tipo": "registrar_trigger_combate",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "trigger": "pack_action",
+            "filtro": "keyword=First Team #21",
+            "incluir_todos": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_wyrm",
+    "card_id": 329,
+    "texto_original": "The Leader of First Team #21. He can pack attack or defend with any and all other Team #21 members in his pack.",
+    "precisa_revisao": true,
+    "slug": "tf-macneil"
+  }
+}

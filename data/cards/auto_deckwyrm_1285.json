@@ -1,0 +1,24 @@
+{
+  "id": "no-escape",
+  "nome": "No Escape",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "Atacante não pode sair do combate",
+      "efeitos": [
+        {
+          "tipo": "impedir_retirada",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_wyrm",
+    "card_id": 1285,
+    "texto_original": "Play when attacker announces that he will not continue combat. Your defending Garou has trapped him.",
+    "precisa_revisao": true,
+    "slug": "no-escape"
+  }
+}

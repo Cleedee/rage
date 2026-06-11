@@ -1,0 +1,28 @@
+{
+  "id": "cleft-in-twain",
+  "nome": "Cleft in Twain",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Ataque com arma, não pode ser esquivado",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3,
+          "params": {
+            "requer_arma": true,
+            "ignora_esquiva": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_wyrm",
+    "card_id": 296,
+    "texto_original": "The character cleaving his opponent in twain must have a weapon. This Combat Action may not be dodged.",
+    "precisa_revisao": true,
+    "slug": "cleft-in-twain"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "experimental-cybernetics",
+  "nome": "Experimental Cybernetics",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "+2 Rage, não pode ser roubado",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "boni": {
+              "rage": 2
+            },
+            "anti_roubo": true,
+            "filtro": "tipo=Wyrm|Glass Walker"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_wyrm",
+    "card_id": 644,
+    "texto_original": "Only equippable by Wyrm creatures and Glass Walkers. The equipped character gains 2 Rage and the Equipment cannot be stolen.",
+    "precisa_revisao": true,
+    "slug": "experimental-cybernetics"
+  }
+}
