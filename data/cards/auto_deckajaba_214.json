@@ -1,0 +1,30 @@
+{
+  "id": "weasel-totem",
+  "nome": "Weasel",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Agilidade em batalha",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1,
+            "duracao": "ate_fim_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_ajaba",
+    "card_id": 214,
+    "texto_original": "Weasel is a cunning totem of war, granting his children agility in battle.",
+    "precisa_revisao": true,
+    "slug": "weasel-totem"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "cellular-phone",
+  "nome": "Cellular Phone",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Pack attack/defend com qualquer um",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "allow_pack_anyone": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 627,
+    "texto_original": "A character equipped with a Cellular Phone can pack attack or defend with any other character, regardless of distance or other restrictions.",
+    "precisa_revisao": true,
+    "slug": "cellular-phone"
+  }
+}

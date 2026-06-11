@@ -1,0 +1,30 @@
+{
+  "id": "mtupeni",
+  "nome": "Mtupeni",
+  "tipo": "Character - Ajaba",
+  "modos": [
+    {
+      "descricao": "+2 Rage contra Renome 1",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 2,
+            "condicao": "alvo_renown_1"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_ajaba",
+    "card_id": 371,
+    "texto_original": "Mtupeni is a terrible bully and acts at +2 Rage if she is facing a creature in combat with Renown 1 or less.",
+    "precisa_revisao": true,
+    "slug": "mtupeni"
+  }
+}
