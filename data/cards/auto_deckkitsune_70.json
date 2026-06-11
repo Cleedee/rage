@@ -1,0 +1,30 @@
+{
+  "id": "freide-counts-the-scalps",
+  "nome": "Freide Counts-the-Scalps",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Once per game, double 1 statistic",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 0,
+            "filtro": "nome=Freide Counts-the-Scalps"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 70,
+    "texto_original": "Freide has inherited the madness of Gaia's sister Luna. Once per game, she may double any 1 of her statistics (Rage, Gnosis, or Health) for 1 full turn as she looks to the moon for insight.",
+    "precisa_revisao": true,
+    "slug": "freide-counts-the-scalps"
+  }
+}

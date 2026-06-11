@@ -1,0 +1,30 @@
+{
+  "id": "morgan-the-unworthy",
+  "nome": "Morgan the Unworthy",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Gifts e Rites podem falhar aleatoriamente",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1,
+            "filtro": "nome=Morgan the Unworthy"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 193,
+    "texto_original": "Born mad as a hatter, Morgan has embraced the half moon of his birth sign. Every time Morgan uses a Gift or Rite decide randomly whether it works or is discarded (equal chance for each).",
+    "precisa_revisao": true,
+    "slug": "morgan-the-unworthy"
+  }
+}

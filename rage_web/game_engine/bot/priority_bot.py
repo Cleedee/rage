@@ -1355,6 +1355,26 @@ class PriorityBot:
                         self._pass_turn()
                         return 'combat_wait'
 
+                    # Se for Presa e nao-atacante: tenta jogar Gift para ela
+                    # Regra: Prey pode usar Gifts que correspondam ao seu tipo
+                    if _eh_prey_no_hg(g, cid) and not _eh_atacante_da_presa(g, cid, self.player_id):
+                        from rage_web.game_engine.rules import pode_usar_gift_para_presa
+                        for i, gift_card in enumerate(self.player.hand):
+                            ct = (gift_card.card_type or '').lower()
+                            if 'gift' not in ct and ct != 'gift':
+                                continue
+                            if not gift_card.modelo_id:
+                                continue
+                            if not self._pode_pagar_custos(gift_card):
+                                continue
+                            if pode_usar_gift_para_presa(card, gift_card):
+                                modo_idx = self._escolher_melhor_modo(gift_card.modelo_id)
+                                g.add_log(
+                                    f'[BOT] {self.player.name} usou '
+                                    f'{gift_card.name} para {card.name}'
+                                )
+                                return self._usar_carta_efeito(i, modo_idx, gift_card)
+
                     # Tenta jogar CE face-down como blefe
                     from rage_web.game_engine.combat_queue import \
                         _jogar_ce_face_down
