@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{{ url_for('tournaments.listar') }}">Torneios</a></li>
+        <li><a href="{{ url_for('tournaments.detalhes', tournament_id=torneio.id) }}">{{ torneio.name }}</a></li>
+        <li class="is-active"><a href="#">Importar Jogadores</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title">📥 Importar Jogadores</h1>
+    <h2 class="subtitle">Importar para: {{ torneio.name }}</h2>
+
+    <div class="box">
+      <form method="POST">
+        <div class="field">
+          <label class="label">Torneio de Origem</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="origem_id" required>
+                <option value="">— Selecione um torneio —</option>
+                {% for t in torneios %}
+                <option value="{{ t.id }}">
+                  {{ t.name }}
+                  ({{ t.players|selectattr('active')|list|length }} jogadores ativos,
+                  {{ t.status }},
+                  {{ t.formato }})
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          {% if not torneios %}
+          <p class="help has-text-warning">Nenhum outro torneio encontrado.</p>
+          {% else %}
+          <p class="help">Serão copiados apenas os jogadores ativos. Torneios de qualquer status (inclusive concluídos) podem ser usados como origem.</p>
+          {% endif %}
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <i class="bi bi-download"></i>&nbsp; Importar
+            </button>
+          </div>
+          <div class="control">
+            <a href="{{ url_for('tournaments.detalhes', tournament_id=torneio.id) }}"
+               class="button is-light">Cancelar</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

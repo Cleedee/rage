@@ -44,9 +44,9 @@
            class="button is-success">
           <i class="bi bi-person-plus"></i>&nbsp; Inscrever Jogador
         </a>
-        <a href="{{ url_for('tournaments.exportar_jogadores', tournament_id=torneio.id) }}"
+        <a href="{{ url_for('tournaments.importar_jogadores', tournament_id=torneio.id) }}"
            class="button is-info">
-          <i class="bi bi-export"></i>&nbsp; Exportar Jogadores
+          <i class="bi bi-download"></i>&nbsp; Importar Jogadores
         </a>
         {% endif %}
       </div>

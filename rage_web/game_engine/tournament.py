@@ -267,18 +267,39 @@ def executar_rodada(tournament_id: int) -> int:
             continue
 
         # Executa partida bot vs bot
-        try:
-            vencedor = run_match(
-                seed=match.seed,
-                deck1_id=p1.deck_id,
-                deck2_id=p2.deck_id,
-                difficulty_p1=p1.difficulty,
-                difficulty_p2=p2.difficulty,
-                delay=0,
-            )
-        except Exception as e:
-            print(f'[TORNEIO] Erro na partida {match.id}: {e}')
-            vencedor = 'error'
+        # Se der empate, tenta novamente com seeds diferentes
+        vencedor = None
+        tentativas = 0
+        max_tentativas = 10
+        seed_atual = match.seed
+
+        while tentativas < max_tentativas:
+            try:
+                vencedor = run_match(
+                    seed=seed_atual,
+                    deck1_id=p1.deck_id,
+                    deck2_id=p2.deck_id,
+                    difficulty_p1=p1.difficulty,
+                    difficulty_p2=p2.difficulty,
+                    delay=0,
+                )
+            except Exception as e:
+                print(f'[TORNEIO] Erro na partida {match.id} '
+                      f'(seed={seed_atual}): {e}')
+                vencedor = 'error'
+
+            # Se nao for empate, aceita
+            if vencedor not in ('draw', 'timeout', 'stuck', 'error'):
+                break
+
+            # Empate: tenta proximo seed
+            tentativas += 1
+            seed_atual += 1
+            print(f'[TORNEIO] Partida {match.id} ({p1.player_name} vs '
+                  f'{p2.player_name}) empatou (seed={seed_atual - 1}). '
+                  f'Tentativa {tentativas}/{max_tentativas}...')
+
+        match.seed = seed_atual
 
         # Registra resultado
         if vencedor == 'p1':
@@ -296,7 +317,7 @@ def executar_rodada(tournament_id: int) -> int:
             match.score_p2 = PTS_EMPATE
             match.is_draw = True
         else:
-            # error / timeout: empate técnico
+            # error / timeout / stuck: empate tecnico apos N tentativas
             match.score_p1 = PTS_EMPATE
             match.score_p2 = PTS_EMPATE
             match.is_draw = True

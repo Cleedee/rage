@@ -173,59 +173,49 @@ def alterar_deck(player_id: int):
 
 
 # ---------------------------------------------------------------------------
-# Exportar jogadores para outro torneio
+# Importar jogadores de outro torneio
 # ---------------------------------------------------------------------------
 
-@tournaments_bp.route('/<int:tournament_id>/exportar', methods=['GET', 'POST'])
-def exportar_jogadores(tournament_id: int):
-    """Exporta jogadores (com decks) para outro torneio.
+@tournaments_bp.route('/<int:tournament_id>/importar', methods=['GET', 'POST'])
+def importar_jogadores(tournament_id: int):
+    """Importa jogadores (com decks) de outro torneio.
 
-    GET: mostra formulário com select de torneio destino.
-    POST: copia jogadores para o torneio destino.
+    O fluxo e: estou editando um torneio e quero trazer jogadores
+    de um torneio anterior (incluindo concluidos).
+
+    GET: mostra formulario com select de torneio origem.
+    POST: copia jogadores da origem para este torneio.
     """
     t: Tournament = db.session.get(Tournament, tournament_id)
     if not t:
         return render_template('404.html'), 404
 
+    if t.status != 'open':
+        flash('So e possivel importar jogadores para torneios abertos.', 'warning')
+        return redirect(url_for('tournaments.detalhes', tournament_id=tournament_id))
+
     if request.method == 'POST':
-        destino_id = request.form.get('destino_id', type=int)
-        criar_novo = request.form.get('criar_novo')
+        origem_id = request.form.get('origem_id', type=int)
+        if not origem_id:
+            flash('Selecione um torneio de origem.', 'danger')
+            return redirect(url_for('tournaments.importar_jogadores', tournament_id=tournament_id))
 
-        if criar_novo:
-            # Cria um novo torneio com o mesmo formato
-            nome = request.form.get('novo_nome', '').strip()
-            if not nome:
-                flash('Nome do novo torneio é obrigatório.', 'danger')
-                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
-            destino = criar_torneio(
-                nome,
-                t.formato,
-                t.max_rounds,
-                t.vp_to_win,
-            )
-            if t.formato == 'groups_knockout':
-                destino.num_groups = t.num_groups
-                destino.advance_per_group = t.advance_per_group
-            db.session.flush()
-        else:
-            if not destino_id:
-                flash('Selecione um torneio de destino.', 'danger')
-                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
-            destino: Tournament = db.session.get(Tournament, destino_id)
-            if not destino:
-                flash('Torneio de destino não encontrado.', 'danger')
-                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
-            if destino.status != 'open':
-                flash('O torneio de destino precisa estar aberto.', 'warning')
-                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
+        origem: Tournament = db.session.get(Tournament, origem_id)
+        if not origem:
+            flash('Torneio de origem nao encontrado.', 'danger')
+            return redirect(url_for('tournaments.importar_jogadores', tournament_id=tournament_id))
 
-        # Copia jogadores
+        if origem.id == tournament_id:
+            flash('Nao pode importar de si mesmo.', 'warning')
+            return redirect(url_for('tournaments.importar_jogadores', tournament_id=tournament_id))
+
+        # Copia jogadores ativos da origem para este torneio
         copiados = 0
-        for tp_orig in t.players:
+        for tp_orig in origem.players:
             if not tp_orig.active:
                 continue
             tp_novo = TournamentPlayer(
-                tournament_id=destino.id,
+                tournament_id=t.id,
                 player_name=tp_orig.player_name,
                 deck_id=tp_orig.deck_id,
                 difficulty=tp_orig.difficulty,
@@ -235,19 +225,17 @@ def exportar_jogadores(tournament_id: int):
             copiados += 1
 
         db.session.commit()
-        nome_destino = destino.name if not criar_novo else nome
-        flash(f'{copiados} jogador(es) exportados para "{nome_destino}"!', 'success')
-        return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
+        flash(f'{copiados} jogador(es) importados de "{origem.name}"!', 'success')
+        return redirect(url_for('tournaments.detalhes', tournament_id=tournament_id))
 
-    # GET: lista torneios abertos como destino
+    # GET: lista todos os outros torneios como origem (qualquer status)
     torneios = Tournament.query.filter(
         Tournament.id != tournament_id,
-        Tournament.status == 'open',
     ).order_by(Tournament.created_at.desc()).all()
 
     decks = Deck.query.order_by(Deck.name).all()
     return render_template(
-        'tournaments/exportar.html',
+        'tournaments/importar.html',
         torneio=t,
         torneios=torneios,
         decks=decks,
