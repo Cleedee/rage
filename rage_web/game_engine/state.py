@@ -1412,6 +1412,7 @@ class GameState:
             card: A carta que entrou em jogo.
             owner: O jogador dono.
         """
+        slug = card.modelo_id or ''
         if card.card_id == 573:  # Dream Hunter
             trigger = DeathTrigger(
                 trigger_card_uid=id(card),
@@ -1457,6 +1458,16 @@ class GameState:
             self.game_modifiers.append(modifier)
             self.add_log(
                 f'{card.name}: bonus de +1 VP por vitima no HG ativado')
+
+        elif slug == 'elethoi_r6':  # Elethoi
+            # Só pode ser afetado por Gifts e ataques Umbrais
+            if 'imune_fora_umbra' not in card.restricoes:
+                card.restricoes.append('imune_fora_umbra')
+            # Não pode ser vinculado
+            if 'nao_pode_ser_vinculado' not in card.restricoes:
+                card.restricoes.append('nao_pode_ser_vinculado')
+            self.add_log(
+                f'{card.name}: imune a ataques nao-umbrais e nao pode ser vinculado')
 
         elif card.card_id == 630:  # Chronicle of the Black Labyrinth
             modifier = GameModifier(

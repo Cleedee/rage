@@ -2169,6 +2169,20 @@ def resolve_combat(game: GameState) -> bool:
 
         # Morte (usa _processar_morte para logica unificada)
         if alvo_card.health_current <= 0:
+            # Verifica se o alvo pode ser vinculado (Elethoi: nao pode)
+            if ('nao_pode_ser_vinculado' in alvo_card.restricoes
+                    and game.combat.attack_type == 'bind'
+                    and str(alvo_card.card_id) == game.combat.bind_target):
+                # Bind falha: alvo morre normalmente
+                dono_alvo = _find_owner(game, alvo_card)
+                if dono_alvo:
+                    game.add_log(
+                        f'  [Bind] {alvo_card.name} nao pode ser vinculado! '
+                        f'Morrendo normalmente...')
+                _processar_morte(game, alvo_card, origem_card,
+                                 dono_origem, em_combate=True)
+                return
+
             # 6.5.5: Attacking to Bind — em vez de matar o Spirit,
             # cura todo dano e ele se torna um Ally
             if (game.combat.attack_type == 'bind'

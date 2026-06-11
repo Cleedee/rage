@@ -19,15 +19,10 @@
     "health": 4,
     "precisa_revisao": false,
     "notas": [
-      "Existe apenas na Umbra",
-      "Pode usar Mokole e Get of Fenris Gifts",
-      "Se morto por Mokole: busca Quest/Rite/Junta do deck para mao"
+      "Trigger de morte registrado via register_card_passives (state.py)",
+      "killed_by_type:Mokole -> search_deck_type:Quest/Rite/Moot"
     ],
-    "sistemas_usados": [
-      "death_trigger",
-      "umbra_only",
-      "search_deck"
-    ],
+    "sistemas_usados": ["death_trigger", "search_deck"],
     "slug": "dream-hunter_r4"
   }
 }

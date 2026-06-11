@@ -5,7 +5,18 @@
   "modos": [
     {
       "descricao": "Inimigo em jogo",
-      "efeitos": []
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "restricao": "imune_fora_umbra",
+          "descricao": "So pode ser afetado por Gifts e ataques Umbrais"
+        },
+        {
+          "tipo": "restringir",
+          "restricao": "nao_pode_ser_vinculado",
+          "descricao": "Nao pode ser vinculado ou controlado"
+        }
+      ]
     }
   ],
   "_metadata": {
@@ -19,12 +30,11 @@
     "health": 7,
     "precisa_revisao": false,
     "notas": [
-      "So afetado por Gifts e ataques Umbrais (imune a ataques normais)",
-      "Pode usar Combat Actions Umbrais contra oponentes fora da Umbra",
-      "Nao pode ser vinculado/controlado (imune a certos efeitos)",
-      "Imunidade implementada via 'imune_fora_umbra' restricao em _processar_ataque",
-      "Uso de acoes umbrais contra nao-umbra requer logica especial em combate"
+      "imune_fora_umbra: so Gifts/ataques Umbrais afetam",
+      "nao_pode_ser_vinculado: bind nao funciona",
+      "Pode usar Combat Actions Umbrais contra nao-Umbra (pendente)"
     ],
+    "sistemas_usados": ["restricao", "imune_fora_umbra"],
     "slug": "elethoi_r6"
   }
 }
