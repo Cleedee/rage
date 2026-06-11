@@ -130,6 +130,22 @@ def delete_deck(id):
     return redirect(url_for('decks.search'))
 
 
+@bp.route('/delete-empty', methods=['POST'])
+def delete_empty():
+    """Apaga todos os decks que não têm nenhuma carta."""
+    decks = rep.find_all_decks()
+    apagados = 0
+    for deck in decks:
+        if len(deck.cards) == 0:
+            rep.delete_deck(deck)
+            apagados += 1
+    if apagados:
+        flash(f'{apagados} deck(s) vazio(s) removido(s).', 'success')
+    else:
+        flash('Nenhum deck vazio encontrado.', 'info')
+    return redirect(url_for('decks.search'))
+
+
 # --- Rotas para gerenciar cartas no deck ---
 
 @bp.post('/<id>/add-card')
