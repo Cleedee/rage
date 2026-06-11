@@ -1317,10 +1317,13 @@ class PriorityBot:
 
                 card = _find_card(g, cid)
                 if card:
-                    if card.owner_id != self.player_id:
-                        continue
+                    # Se for Presa no HG: qualquer jogador exceto o atacante pode declarar
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
+                            continue  # Atacante nao pode declarar pela Presa
+                    else:
+                        # Criatura normal: so o dono declara
+                        if card.owner_id != self.player_id:
                             continue
 
                     # 6.6.6c: Random Play — escolhe carta aleatoria
@@ -1373,7 +1376,8 @@ class PriorityBot:
                                       f'{carta_combate.name} como {carta_acao}')
                             return f'declare_{cid}_{carta_acao}'
 
-                    action = self._choose_combat_action(card, card.owner_id)
+                    owner = card.owner_id or self.player_id
+                    action = self._choose_combat_action(card, owner)
                     result = declare_action(g, cid, action)
                     if not result:
                         # Fallback: tenta acoes mais seguras
@@ -1422,7 +1426,11 @@ class PriorityBot:
                     continue
                 # So atribui alvo para criaturas do proprio bot
                 card = _find_card(g, cid)
-                if not card or card.owner_id != self.player_id:
+                # Presa: qualquer jogador (exceto atacante) pode escolher alvo
+                if _eh_prey_no_hg(g, cid):
+                    if _eh_atacante_da_presa(g, cid, self.player_id):
+                        continue
+                elif card.owner_id != self.player_id:
                     continue
                 acao = g.combat.declarations.get(cid, 'strike')
                 if acao in ('block', 'dodge', 'flee'):
@@ -1479,12 +1487,15 @@ class PriorityBot:
 
                 card = _find_card(g, cid)
                 if card:
-                    if card.owner_id != self.player_id:
-                        continue
+                    # Se for Presa no HG: qualquer jogador exceto o atacante pode declarar
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
+                            continue  # Atacante nao pode declarar pela Presa
+                    else:
+                        if card.owner_id != self.player_id:
                             continue
-                    action = self._choose_combat_action(card, card.owner_id)
+                    owner = card.owner_id or self.player_id
+                    action = self._choose_combat_action(card, owner)
                     declare_action(g, cid, action)
                     return f'declare_{cid}_{action}'
 
@@ -2634,13 +2645,28 @@ class PriorityBot:
         de Rage, e condicao da criatura.
 
         P4: Fallback quando _escolher_carta_combate_como_acao()
-        nao encontra carta viavel na mao de combate.
+        nao encontra carta viavel nao mao de combate.
 
         Se for criatura do oponente, escolhe acao defensiva ou
         previsivel (block/dodge/strike). Se for do proprio bot,
         escolhe a acao ofensiva de maior dano viavel.
+
+        Se for Presa (Enemy/Victim) sem dono, o interventor escolhe
+        acao defensiva (block/dodge) para proteger a Presa.
         """
         me = self.player
+
+        # Presa em HG: defender em vez de atacar
+        ct = (card.card_type or '').lower()
+        is_prey = any(t in ct for t in ('enemy', 'victim'))
+        if is_prey and not card.owner_id:
+            # Presa sem dono: qualquer interventor defende
+            if card.health_current < card.health * 0.5:
+                return 'dodge'
+            # Block reduz dano pela Rage da presa
+            if card.rage >= 2:
+                return 'block'
+            return 'dodge'
 
         if owner_id != self.player_id:
             # Criatura do oponente: reage de forma defensiva
@@ -2758,6 +2784,89 @@ class PriorityBot:
                       f'face-down como blefe')
             return f'play_{card.card_id}_ce_{ce_card.card_id}'
         return None
+
+    def _tentar_stepping_prey(self) -> bool:
+        """Tenta intervir (step in) para ajudar uma Presa no pre_combat.
+
+        Regra (6.5.3): qualquer jogador exceto o atacante pode "step in"
+        para ajudar uma Presa (Victim/Enemy/Battlefield) no HG que esta
+        sendo atacada. O jogador pode:
+        - Jogar um CE face-down em defesa da Presa
+        - Usar uma carta de combate da mao como acao para a Presa
+
+        Returns:
+            True se interveio com alguma acao.
+        """
+        from rage_web.game_engine.combat_queue import (_eh_prey_no_hg,
+            _eh_atacante_da_presa, _find_card, _jogar_ce_face_down)
+        g = self.game
+
+        if not g.combat.is_active:
+            return False
+        if g.combat.step not in ('pre_combat', 'beginning_of_combat'):
+            return False
+
+        # Verifica se ha Presa sendo atacada
+        for dfd in g.combat.defenders:
+            if not _eh_prey_no_hg(g, dfd):
+                continue
+            if _eh_atacante_da_presa(g, dfd, self.player_id):
+                continue  # O atacante nao pode intervir
+
+            # Tenta jogar CE face-down em defesa da Presa
+            card = _find_card(g, dfd)
+            if not card:
+                continue
+
+            ce_card = None
+            for c in self.player.combat_hand:
+                ct = (c.card_type or '').lower()
+                if 'combat event' in ct or ct == 'combat_event':
+                    ce_card = c
+                    break
+            if not ce_card:
+                for c in self.player.hand:
+                    ct = (c.card_type or '').lower()
+                    if 'combat event' in ct or ct == 'combat_event':
+                        ce_card = c
+                        break
+
+            if ce_card:
+                if _jogar_ce_face_down(g, dfd, str(ce_card.card_id)):
+                    g.add_log(
+                        f'[BOT] {self.player.name} interveio: jogou '
+                        f'{ce_card.name} face-down para {card.name}'
+                    )
+                    return True
+
+            # Tenta usar carta de combate da mao como acao
+            from rage_web.game_engine.combat_queue import (
+                COMBAT_ACTIONS, declare_action)
+            for c in self.player.combat_hand:
+                nome_acao = (c.name or '').lower().replace(' ', '_')
+                if nome_acao in COMBAT_ACTIONS:
+                    if declare_action(g, dfd, nome_acao):
+                        c.zone = Zone.DISCARD_COMBAT
+                        self.player.discard_combat.append(c)
+                        if c in self.player.combat_hand:
+                            self.player.combat_hand.remove(c)
+                        g.add_log(
+                            f'[BOT] {self.player.name} interveio: usou '
+                            f'{c.name} como {nome_acao} para {card.name}'
+                        )
+                        return True
+
+            # Intervencao basica: declara block para a Presa
+            from rage_web.game_engine.combat_queue import declare_action
+            if dfd not in g.combat.declarations:
+                if declare_action(g, dfd, 'block'):
+                    g.add_log(
+                        f'[BOT] {self.player.name} interveio: '
+                        f'{card.name} usa block'
+                    )
+                    return True
+
+        return False
 
     def _escolher_alvo_pack(self, cid: str) -> Optional[str]:
         """Escolhe um alvo para uma criatura em pack combat.
