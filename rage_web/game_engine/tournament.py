@@ -542,9 +542,12 @@ def iniciar_fase_grupos(tournament_id: int) -> list[TournamentMatch]:
 
     t.current_round = 1
 
-    # Distribui jogadores nos grupos
-    if all(p.group == 0 for p in t.players if p.active):
-        distribuir_grupos(tournament_id)
+    # Distribui jogadores nos grupos (sempre redistribui,
+    # ignorando grupos anteriores de importacao)
+    for p in t.players:
+        if p.active:
+            p.group = 0
+    distribuir_grupos(tournament_id)
 
     matches_criados = []
     match_id_counter = [1]  # mutable para closure
