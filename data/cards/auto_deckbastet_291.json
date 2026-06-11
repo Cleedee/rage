@@ -1,0 +1,27 @@
+{
+  "id": "body-slam",
+  "nome": "Body Slam",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Body Slam (+2 se sem ação no round anterior)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2,
+          "params": {
+            "bônus_sem_acao_anterior": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 291,
+    "texto_original": "If the creature playing Body Slam did not play a combat action last round, Body Slam does +2 damage.",
+    "precisa_revisao": true,
+    "slug": "body-slam"
+  }
+}

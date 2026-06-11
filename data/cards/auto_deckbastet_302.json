@@ -1,0 +1,27 @@
+{
+  "id": "flower-of-aprhodite",
+  "nome": "Flower of Aphrodite",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Protege de ataques",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "tipo_impedido": "ataques_desafios"
+          }
+        }
+      ],
+      "condicao_uso": "enquanto_nao_atacar"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 302,
+    "texto_original": "No one may challenge or attack the owner of this fetish. The Flower of Aphrodite is discarded the moment its owner attacks.",
+    "precisa_revisao": true,
+    "slug": "flower-of-aprhodite"
+  }
+}

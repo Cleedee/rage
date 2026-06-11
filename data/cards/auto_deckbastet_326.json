@@ -1,0 +1,27 @@
+{
+  "id": "forceful-wind",
+  "nome": "Forceful Wind",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Kailindo: combate termina após dano",
+      "efeitos": [
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ],
+      "params": {
+        "kailindo": true
+      }
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 326,
+    "texto_original": "Kailindo. Combat immediately ends after both sides have dealt damage.",
+    "precisa_revisao": true,
+    "slug": "forceful-wind"
+  }
+}

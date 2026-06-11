@@ -1,0 +1,27 @@
+{
+  "id": "fetal-position",
+  "nome": "Fetal Position",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Bloqueia 1 ataque de dano 6 ou menos",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "filtro_dano_max": 6
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 322,
+    "texto_original": "This action blocks 1 attack of damage 6 or less.",
+    "precisa_revisao": true,
+    "slug": "fetal-position"
+  }
+}

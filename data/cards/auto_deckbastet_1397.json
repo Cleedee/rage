@@ -1,0 +1,28 @@
+{
+  "id": "tongue-biter",
+  "nome": "Tongue-Biter",
+  "tipo": "Character - Bastet",
+  "modos": [
+    {
+      "descricao": "Bastet perde 2 Renome para votação",
+      "efeitos": [
+        {
+          "tipo": "moot_restricao_global",
+          "condicao_alvo": "jogador_inimigo",
+          "params": {
+            "filtro": "tipo=Bastet",
+            "penalidade_renown": 2
+          }
+        }
+      ],
+      "condicao_uso": "uma_vez_por_turno"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1397,
+    "texto_original": "Once per turn, Tongue-Biter can cause a Bastet to lose 2 Renown for voting purposes.",
+    "precisa_revisao": true,
+    "slug": "tongue-biter"
+  }
+}

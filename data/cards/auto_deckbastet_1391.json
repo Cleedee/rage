@@ -1,0 +1,25 @@
+{
+  "id": "treerose",
+  "nome": "Treerose",
+  "tipo": "Character - Bastet",
+  "modos": [
+    {
+      "descricao": "Forçar revelação de alpha alheio",
+      "efeitos": [
+        {
+          "tipo": "forcar_bluff",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ],
+      "condicao_uso": "antes_combate"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1391,
+    "texto_original": "If another Bastet is your Alpha, target a player. The target must state whom his Alpha will attack during that Combat Phase.",
+    "precisa_revisao": true,
+    "slug": "treerose"
+  }
+}

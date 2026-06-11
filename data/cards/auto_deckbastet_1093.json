@@ -1,0 +1,25 @@
+{
+  "id": "feral-grin",
+  "nome": "Feral Grin",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Remover oponente do combate por 1 round",
+      "efeitos": [
+        {
+          "tipo": "remover_do_combate",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ],
+      "condicao_uso": "antes_revelar"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1093,
+    "texto_original": "Play on an opponent in combat with less Rage than the Gift user. The target is removed from play for one round of combat.",
+    "precisa_revisao": true,
+    "slug": "feral-grin"
+  }
+}

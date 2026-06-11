@@ -1,0 +1,30 @@
+{
+  "id": "mapute",
+  "nome": "Mapute",
+  "tipo": "Character - Bastet",
+  "modos": [
+    {
+      "descricao": "Bastet no pack +2 Rage e pack attack",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 2,
+            "filtro": "tipo=Bastet"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1386,
+    "texto_original": "Mapute petitioned his tribe to form a war party. Bastet in his pack have +2 Rage and may pack attack with anyone.",
+    "precisa_revisao": true,
+    "slug": "mapute"
+  }
+}

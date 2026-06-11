@@ -1,0 +1,31 @@
+{
+  "id": "black-claw",
+  "nome": "Black Claw",
+  "tipo": "Character - Bastet",
+  "modos": [
+    {
+      "descricao": "Dobrar Gnosis para Gifts (ação alpha)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": null,
+            "duracao": "ate_fim_turno"
+          }
+        }
+      ],
+      "condicao_uso": "alpha_action"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 44,
+    "texto_original": "Black Claw is practised in many mystical Rites. As his alpha action he may double his Gnosis for the purposes of using Gifts.",
+    "precisa_revisao": true,
+    "slug": "black-claw"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "bane-arrow",
+  "nome": "Bane Arrow",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Descartar para 3 de dano em Enemy",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3,
+          "params": {
+            "filtro": "tipo=Enemy",
+            "auto_descarte": true
+          }
+        }
+      ],
+      "condicao_uso": "during_withdrawal"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 613,
+    "texto_original": "Weapon. During the Withdrawal step the owner of the Bane Arrow may discard Bane Arrow to do 3 damage to an Enemy she is fighting.",
+    "precisa_revisao": true,
+    "slug": "bane-arrow"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "gaias-breath",
+  "nome": "Gaia's Breath",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Curar todo dano de um personagem",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 99
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 856,
+    "texto_original": "Heal all damage to a single character.",
+    "slug": "gaias-breath"
+  }
+}

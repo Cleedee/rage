@@ -1,0 +1,26 @@
+{
+  "id": "zari",
+  "nome": "Zari",
+  "tipo": "Character - Bastet",
+  "modos": [
+    {
+      "descricao": "Quests +1 VP",
+      "efeitos": [
+        {
+          "tipo": "quest_check",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "valor_extra": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1396,
+    "texto_original": "Quests played on Zari are worth +1 VP when placed in your Victory Pile. Loyalty: Bastet.",
+    "precisa_revisao": true,
+    "slug": "zari"
+  }
+}

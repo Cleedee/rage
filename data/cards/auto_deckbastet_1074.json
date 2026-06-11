@@ -1,0 +1,31 @@
+{
+  "id": "toxic-claws",
+  "nome": "Toxic Claws",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Próximo ataque de garra +1 dano agravado",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "dano_proximo_ataque"
+            ],
+            "valor": 1,
+            "agravado": true,
+            "duracao": "proximo_ataque"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1074,
+    "texto_original": "The character's next claw attack that damages an opponent does +1 aggravated damage.",
+    "precisa_revisao": true,
+    "slug": "toxic-claws"
+  }
+}

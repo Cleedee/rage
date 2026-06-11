@@ -1,0 +1,27 @@
+{
+  "id": "blood-of-witches",
+  "nome": "Blood-of-Witches",
+  "tipo": "Character - Bastet",
+  "modos": [
+    {
+      "descricao": "Recrutar aliados Uktena",
+      "efeitos": [
+        {
+          "tipo": "buscar_copias",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "filtro": "tipo=Ally&keyword=Uktena"
+          }
+        }
+      ],
+      "condicao_uso": "uma_vez_por_turno"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1398,
+    "texto_original": "Blood-of-Witches may recruit allies with Uktena prerequisites. Rivalry: Black Spiral Dancers.",
+    "precisa_revisao": true,
+    "slug": "blood-of-witches"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "razor-claws",
+  "nome": "Razor Claws",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 dano no próximo ataque de garra",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "dano_proximo_ataque"
+            ],
+            "valor": 2,
+            "duracao": "proximo_ataque"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 1025,
+    "texto_original": "The character's next claw attack that connects does +2 damage.",
+    "precisa_revisao": true,
+    "slug": "razor-claws"
+  }
+}

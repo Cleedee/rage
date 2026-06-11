@@ -1,0 +1,29 @@
+{
+  "id": "flamethrower",
+  "nome": "Flamethrower",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Usar Flamethrower",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "boni": {
+              "rage": 2
+            },
+            "allow_combat_actions": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 273,
+    "texto_original": "Weapon. While equipped with the Flamethrower, the user may play Combat Actions at +2 Rage.",
+    "precisa_revisao": true,
+    "slug": "flamethrower"
+  }
+}

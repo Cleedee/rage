@@ -1,0 +1,28 @@
+{
+  "id": "bum-rush",
+  "nome": "Bum Rush",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "Packmates atacam antes das ações de combate",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3,
+          "params": {
+            "antes_acoes": true
+          }
+        }
+      ],
+      "condicao_uso": "inicio_round_combate"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_bastet",
+    "card_id": 294,
+    "texto_original": "Play at the beginning of any combat round before combat action cards are exchanged. Each member of character's pack may make a single attack.",
+    "precisa_revisao": true,
+    "slug": "bum-rush"
+  }
+}
