@@ -585,7 +585,8 @@ Criar sistema de torneios onde jogadores (humanos) e bots podem competir.
 | **Suíço** | N rodadas sem eliminação; oponentes com mesma pontuação. Classificação por pontos (vitória=3, empate=1, derrota=0) + tiebreakers (SOS, etc.) |
 | **Single Elimination** | Mata-mata simples. Perdeu, está eliminado. Final decide campeão. |
 | **Double Elimination** | Dupla chave (winners + losers bracket). Perde duas vezes e está fora. |
-| **Torneio Duplo** | Dois torneios simultâneos (ex: um para cada alinhamento Gaia/Wyrm, ou dois formatos diferentes). |
+| **Torneio Duplo** | Eliminação dupla (mata-mata com repescagem) reduzida para exatamente 4 equipes, onde o objetivo não é definir um campeão, mas sim classificar os 2 melhores times de um grupo |
+| **Fase de Grupo + Sistema Eliminatório Simples** | Sistema misto conhecido como fase de grupos seguido de mata-mata (ou sistema eliminatório simples) |
 
 ### Funcionalidades
 - **Dashboard de torneios**: lista de torneios ativos, inscrições abertas, resultados
