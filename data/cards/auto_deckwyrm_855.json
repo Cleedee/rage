@@ -1,0 +1,26 @@
+{
+  "id": "g-louogh-dance-of-corruption",
+  "nome": "\"G'louogh, 'Dance of Corruption'",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 855,
+    "texto_original": "G'louogh grants its children the Gift of maddened wisdom. Characters with this personal totem gain 2 Gnosis and can look at the top card of their sept or combat deck before choosing to discard and redraw (during normal redraw times).  A character can only",
+    "precisa_revisao": true,
+    "slug": "g-louogh-dance-of-corruption"
+  }
+}

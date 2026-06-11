@@ -1,0 +1,29 @@
+{
+  "id": "while-in-crinos-packmembers-may-use-equipment-as-if-they-were-in-homid-form",
+  "nome": "While in Crinos, packmembers may use Equipment as if they were in Homid form.�",
+  "tipo": "",
+  "modos": [
+    {
+      "descricao": "Efeito passivo",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 827,
+    "texto_original": "",
+    "precisa_revisao": true,
+    "slug": "while-in-crinos-packmembers-may-use-equipment-as-if-they-were-in-homid-form"
+  }
+}

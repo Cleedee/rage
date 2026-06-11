@@ -1,0 +1,26 @@
+{
+  "id": "distracting-spirits",
+  "nome": "Distracting Spirits",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 837,
+    "texto_original": "Reduce the engaging Renown of all Battlefields in play by 2. Distracting Spirits lasts for 1 full turn. No more than 1 Distracting Spirits Event may be in play at a time.",
+    "precisa_revisao": true,
+    "slug": "distracting-spirits"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "spirit-backlash",
+  "nome": "Spirit Backlash",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 907,
+    "texto_original": "Spirits bound into fetishes and Bane fetishes revolt and break free. All fetish and Bane fetish Equipment requiring Gnosis 5 or greater to equip are immediately discarded. Only 1 Spirit Backlash can be played per game. Discard the Event after its effect t",
+    "precisa_revisao": true,
+    "slug": "spirit-backlash"
+  }
+}

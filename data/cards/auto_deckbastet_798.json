@@ -1,0 +1,29 @@
+{
+  "id": "while-your-pack-has-more-firearms-in-combat-than-opposing-creatures-do-your-opponents-in-combat-may-not-take-actions-other-than-combat-actions-and-may-not-redirect-damage-discard-o",
+  "nome": "While your pack has more Firearms in combat than opposing creatures do, your opponents in combat may not take actions other than Combat Actions and may not redirect damage. Discard O",
+  "tipo": "",
+  "modos": [
+    {
+      "descricao": "Efeito passivo",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 798,
+    "texto_original": "",
+    "precisa_revisao": true,
+    "slug": "while-your-pack-has-more-firearms-in-combat-than-opposing-creatures-do-your-opponents-in-combat-may-not-take-actions-other-than-combat-actions-and-may-not-redirect-damage-discard-o"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "pack-defense",
+  "nome": "Pack Defense",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "Ataque imediato",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 1290,
+    "texto_original": "Play before one of your defending characters begins combat. You may pull members from your pack into the combat, up to 15 Renown worth of characters (including the original character). You may draw 1 additional combat card per additional pack member.",
+    "precisa_revisao": true,
+    "slug": "pack-defense"
+  }
+}

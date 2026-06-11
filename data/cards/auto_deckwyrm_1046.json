@@ -1,0 +1,29 @@
+{
+  "id": "sense-wyrm",
+  "nome": "Sense Wyrm",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 1046,
+    "texto_original": "Target a player; that player reveals the top five cards from his Sept deck. If any are Enemies, they are immediately placed in the Hunting Grounds. Reshuffle the player's Sept deck. Discard this Gift after use.",
+    "precisa_revisao": true,
+    "slug": "sense-wyrm"
+  }
+}

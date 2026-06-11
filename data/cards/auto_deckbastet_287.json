@@ -1,0 +1,31 @@
+{
+  "id": "block",
+  "nome": "Block",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 287,
+    "texto_original": "Reduces the damage of any one attack by up to 4 points.",
+    "precisa_revisao": true,
+    "slug": "block"
+  }
+}

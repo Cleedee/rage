@@ -1,0 +1,26 @@
+{
+  "id": "gibbous-moon",
+  "nome": "Gibbous Moon",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 865,
+    "texto_original": "Play at the beginning of any turn or to cancel and supersede any Half or Full Moon just played. All Garou play damage cards at +1 Rage when fighting enemies in the Hunting Grounds and all Galliards gain 1 Gnosis while Gibbous Moon is in effect. Discard th",
+    "precisa_revisao": true,
+    "slug": "gibbous-moon"
+  }
+}

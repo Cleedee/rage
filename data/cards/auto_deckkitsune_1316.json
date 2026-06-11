@@ -1,0 +1,29 @@
+{
+  "id": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+  "nome": "You unexpectedly lash out at your opponent, catching him by surprise. This attack can not be Dodged. Sucker Punch does +2 damage if it is a bluff.",
+  "tipo": "",
+  "modos": [
+    {
+      "descricao": "Efeito passivo",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 1316,
+    "texto_original": "",
+    "precisa_revisao": true,
+    "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff"
+  }
+}

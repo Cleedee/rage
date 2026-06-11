@@ -1,0 +1,29 @@
+{
+  "id": "purity-of-spirit",
+  "nome": "Purity of Spirit",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 1024,
+    "texto_original": "The Ahroun protects himself from aggravated damage for one complete turn when in the Umbra. The Ahroun still takes any wounds, they simply are not aggravated injuries. This Gift is discarded after its effect takes place.",
+    "precisa_revisao": true,
+    "slug": "purity-of-spirit"
+  }
+}

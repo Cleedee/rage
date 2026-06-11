@@ -1,0 +1,26 @@
+{
+  "id": "alaskan-wolf-hunt",
+  "nome": "Alaskan Wolf Hunt",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 815,
+    "texto_original": "Humans are exterminating native wolves. Red Talons are caught in the hunt. All Red Talons characters must go into the Hunting Grounds until the next Regeneration Phase. Only 1 Alaskan Wolf Hunt may be played per game.",
+    "precisa_revisao": true,
+    "slug": "alaskan-wolf-hunt"
+  }
+}

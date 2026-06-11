@@ -1,0 +1,31 @@
+{
+  "id": "block-and-strike",
+  "nome": "Block and Strike",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 289,
+    "texto_original": "You may block up to 2 points of damage from any 1 attack. You may play any damage-dealing Combat Action simultaneously with Block and Strike, though attacks that exceed your Rage are still considered bluffs.",
+    "precisa_revisao": true,
+    "slug": "block-and-strike"
+  }
+}

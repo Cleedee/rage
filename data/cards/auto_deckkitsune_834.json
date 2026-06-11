@@ -1,0 +1,26 @@
+{
+  "id": "crescent-moon",
+  "nome": "Crescent Moon",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 834,
+    "texto_original": "Play at the beginning of any turn or to cancel and supersede any New or Half Moon just played. All spirits gain 1 Rage and all Theurges gain 1 Gnosis while Crescent Moon is in effect. Discard this card when a new Lunar Phase is played.",
+    "precisa_revisao": true,
+    "slug": "crescent-moon"
+  }
+}

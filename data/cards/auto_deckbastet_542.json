@@ -1,0 +1,18 @@
+{
+  "id": "sidhe-knight_r9",
+  "nome": "Sidhe Knight",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Vítima passiva",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 542,
+    "texto_original": "At the end of each Combat Phase, this fey spirit attacks the highest Renown Wyrm character for 3 rounds. The Knight can use any Ragabash Gifts or Ragabash Actions.",
+    "precisa_revisao": true,
+    "slug": "sidhe-knight_r9"
+  }
+}

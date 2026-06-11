@@ -1,0 +1,18 @@
+{
+  "id": "pentex-patrol_r3",
+  "nome": "Pentex Patrol",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo sem efeito ativo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 519,
+    "texto_original": "No Wyrm-defended Battlefield may be engaged while a Pentex Patrol is in play.",
+    "precisa_revisao": true,
+    "slug": "pentex-patrol_r3"
+  }
+}

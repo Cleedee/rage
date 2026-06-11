@@ -1,0 +1,26 @@
+{
+  "id": "full-moon",
+  "nome": "Full Moon",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 854,
+    "texto_original": "Play at the beginning of any turn or to cancel and supersede any Gibbous Moon just played. Any Garou can freely enter Crinos form, and all Ahroun gain 1 Gnosis while Full Moon is in effect. Discard this card when a new Lunar Phase is played.",
+    "precisa_revisao": true,
+    "slug": "full-moon"
+  }
+}

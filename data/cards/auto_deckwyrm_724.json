@@ -1,0 +1,27 @@
+{
+  "id": "wyrm-skin",
+  "nome": "Wyrm Skin",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipamento de combate",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "bonus_rage": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 724,
+    "texto_original": "Armor. Enemies in the Hunting Grounds fight at -2 Rage when in combat against the owner of this fetish.",
+    "precisa_revisao": true,
+    "slug": "wyrm-skin"
+  }
+}

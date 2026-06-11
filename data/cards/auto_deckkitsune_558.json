@@ -1,0 +1,18 @@
+{
+  "id": "unlucky-lune_r6",
+  "nome": "Unlucky Lune",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Vítima passiva",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 558,
+    "texto_original": "A Lune is a fragment of the great Incarna Luna. A Lune can use any Auspice Gifts. If a Full Moon is in play, the Lune's Rage becomes 6.",
+    "precisa_revisao": true,
+    "slug": "unlucky-lune_r6"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "moon-bridge-escape",
+  "nome": "Moon Bridge Escape",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 1008,
+    "texto_original": "The Gift user gives any 1 willing character or pack passage over a Moon Bridge. Characters are immediately removed from play until the next Redraw Phase. Discard this Gift after its effect takes place.",
+    "precisa_revisao": true,
+    "slug": "moon-bridge-escape"
+  }
+}

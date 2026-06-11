@@ -1,0 +1,31 @@
+{
+  "id": "evade-and-strike",
+  "nome": "Evade and Strike",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 316,
+    "texto_original": "Kailindo. You can dodge all attacks this round, except those that normally ignore dodges.",
+    "precisa_revisao": true,
+    "slug": "evade-and-strike"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "fur-gnarl",
+  "nome": "Fur Gnarl",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 113,
+    "texto_original": "If the victim takes this wound in Crinos form, this damage is aggravated.",
+    "precisa_revisao": true,
+    "slug": "fur-gnarl"
+  }
+}

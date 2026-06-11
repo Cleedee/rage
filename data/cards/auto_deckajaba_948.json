@@ -1,0 +1,29 @@
+{
+  "id": "dragon-s-breath",
+  "nome": "Dragon's Breath",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 948,
+    "texto_original": "The Gift user can do 2 points of aggravated damage to any opponent she's in combat against. Once used, this card becomes a damage card.",
+    "precisa_revisao": true,
+    "slug": "dragon-s-breath"
+  }
+}

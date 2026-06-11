@@ -1,0 +1,18 @@
+{
+  "id": "pentex-forestry-team_r4",
+  "nome": "Pentex Forestry Team",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo sem efeito ativo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 518,
+    "texto_original": "The Pentex Forestry Team will automatically destroy 1 caern in play each Regeneration Phase.  If there is more than 1 caern in play, decide randomly which caern is destroyed. The Forestry Team can play 2 combat cards per round.",
+    "precisa_revisao": true,
+    "slug": "pentex-forestry-team_r4"
+  }
+}

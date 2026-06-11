@@ -1,0 +1,29 @@
+{
+  "id": "command-spirit",
+  "nome": "Command Spirit",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 99,
+    "texto_original": "The user may take control of any 1 spirit in play for 1 full turn. The Gift user's Gnosis must exceed the spirit's. Discard this Gift after its effect takes place.",
+    "precisa_revisao": true,
+    "slug": "command-spirit"
+  }
+}

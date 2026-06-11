@@ -1,0 +1,31 @@
+{
+  "id": "block-and-roll",
+  "nome": "Block and Roll",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 288,
+    "texto_original": "Fast Striking. This creature flings himself to the ground and rolls out of the way. He may block up to 3 damage between all incoming attacks. He may not play cards of Rage 3 or higher next round.",
+    "precisa_revisao": true,
+    "slug": "block-and-roll"
+  }
+}

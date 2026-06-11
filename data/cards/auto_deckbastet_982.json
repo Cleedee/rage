@@ -1,0 +1,29 @@
+{
+  "id": "heightened-senses",
+  "nome": "Heightened Senses",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 982,
+    "texto_original": "The user of this Gift can refuse any challenges, even those that normally cannot be refused. If attacked outside the Combat Phase, the Gift user may draw one additional combat card at the start of combat.  This Gift is permanent until canceled.",
+    "precisa_revisao": true,
+    "slug": "heightened-senses"
+  }
+}

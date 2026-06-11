@@ -1,0 +1,27 @@
+{
+  "id": "oil-of-corruption",
+  "nome": "Oil of Corruption",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipamento de combate",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "bonus_rage": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 681,
+    "texto_original": "A character with Oil of Corruption can equip with any piece of fetish Equipment providing she can still meet the Gnosis requirements of the fetish.",
+    "precisa_revisao": true,
+    "slug": "oil-of-corruption"
+  }
+}

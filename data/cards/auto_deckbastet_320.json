@@ -1,0 +1,31 @@
+{
+  "id": "fast-strike",
+  "nome": "Fast Strike",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 320,
+    "texto_original": "This card deals damage before your opponent's combat card takes effect. The special effect of Fast Strike is ignored if the character cannot meet the Rage requirements of this card.",
+    "precisa_revisao": true,
+    "slug": "fast-strike"
+  }
+}

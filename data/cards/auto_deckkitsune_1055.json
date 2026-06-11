@@ -1,0 +1,29 @@
+{
+  "id": "spirit-drain",
+  "nome": "Spirit Drain",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 1055,
+    "texto_original": "The user drains all energy from any 1 spirit in play. The user regains full health and the spirit is discarded and worth no victory points. The user's Gnosis must exceed the Gnosis of the spirit. Discard this Gift after its effect takes place.",
+    "precisa_revisao": true,
+    "slug": "spirit-drain"
+  }
+}

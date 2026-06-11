@@ -1,0 +1,31 @@
+{
+  "id": "planned-strike",
+  "nome": "Planned Strike",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 1293,
+    "texto_original": "The damage from this card cannot be redirected to a different target by any means.",
+    "precisa_revisao": true,
+    "slug": "planned-strike"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "victim-4_r4",
+  "nome": "Victim 4",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Vítima passiva",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 564,
+    "texto_original": "Playtesting info available online at http://www.rainydaypaperback.com/rage.html",
+    "precisa_revisao": true,
+    "slug": "victim-4_r4"
+  }
+}

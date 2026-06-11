@@ -1,0 +1,18 @@
+{
+  "id": "enemy-5_r5",
+  "nome": "Enemy 5",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo sem efeito ativo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 476,
+    "texto_original": "Playtesting info available online at http://www.rainydaypaperback.com/rage.html",
+    "precisa_revisao": true,
+    "slug": "enemy-5_r5"
+  }
+}

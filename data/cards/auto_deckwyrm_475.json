@@ -1,0 +1,18 @@
+{
+  "id": "enemy-4_r4",
+  "nome": "Enemy 4",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo sem efeito ativo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 475,
+    "texto_original": "Playtesting info available online at http://www.rainydaypaperback.com/rage.html",
+    "precisa_revisao": true,
+    "slug": "enemy-4_r4"
+  }
+}

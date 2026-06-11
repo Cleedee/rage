@@ -1,0 +1,29 @@
+{
+  "id": "trick-shot",
+  "nome": "Trick Shot",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 1077,
+    "texto_original": "Attach to user.�",
+    "precisa_revisao": true,
+    "slug": "trick-shot"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "kiss-of-the-wyrm",
+  "nome": "Kiss of the Wyrm",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 993,
+    "texto_original": "Removes any 1 damage card (up to damage 7) from the target. Discard this Gift after its effect takes place.",
+    "precisa_revisao": true,
+    "slug": "kiss-of-the-wyrm"
+  }
+}

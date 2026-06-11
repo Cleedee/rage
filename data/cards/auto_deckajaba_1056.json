@@ -1,0 +1,29 @@
+{
+  "id": "spirit-of-the-fray",
+  "nome": "Spirit of the Fray",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 1056,
+    "texto_original": "For the duration of the battle, the user of this Gift strikes first, playing and resolving his Combat Action before all others in the combat. Though the user's Combat Actions strike first, his opponents are not necessarily considered to be bluffing. Disca",
+    "precisa_revisao": true,
+    "slug": "spirit-of-the-fray"
+  }
+}

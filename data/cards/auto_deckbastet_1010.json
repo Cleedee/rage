@@ -1,0 +1,29 @@
+{
+  "id": "night-terror",
+  "nome": "Night terror",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 1010,
+    "texto_original": "The Gift user may force any 1 pack to skip its next Redraw Phase. Discard this Gift once its effects have taken place.",
+    "precisa_revisao": true,
+    "slug": "night-terror"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "moon-bridge-assault",
+  "nome": "Moon Bridge Assault",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 1007,
+    "texto_original": "The character can 'sneak attack' any other character or ally in play, providing they and their target both have Caerns. This sneak attack can also cross the Gauntlet, allowing a physical character to attack an Umbral one. This attack can be played at any",
+    "precisa_revisao": true,
+    "slug": "moon-bridge-assault"
+  }
+}

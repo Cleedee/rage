@@ -1,0 +1,26 @@
+{
+  "id": "thrall-of-the-wyrm",
+  "nome": "Thrall of the Wyrm",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Compra cartas",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 1420,
+    "texto_original": "Restricted. Play when a creature frenzies. Each time it reveals a Combat Action that is not a bluff, decide randomly if becomes a bluff.  Cards which may not be bluffed are discarded instead.",
+    "precisa_revisao": true,
+    "slug": "thrall-of-the-wyrm"
+  }
+}

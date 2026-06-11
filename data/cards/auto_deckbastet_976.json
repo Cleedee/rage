@@ -1,0 +1,29 @@
+{
+  "id": "gift-of-the-porcupine",
+  "nome": "Gift of the Porcupine",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 976,
+    "texto_original": "The user's fur becomes sharp and bristled. The next opponent who hits the character will take 2 damage. Transfer this card to the opponent to record damage.",
+    "precisa_revisao": true,
+    "slug": "gift-of-the-porcupine"
+  }
+}

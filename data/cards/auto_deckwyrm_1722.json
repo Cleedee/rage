@@ -1,0 +1,31 @@
+{
+  "id": "combat-reflexes",
+  "nome": "Combat Reflexes",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 1722,
+    "texto_original": "Instinctive. If played instinctively, Combat Reflexes gains Fast Striking and blocks 4 damage from each attack that targets you this round.",
+    "precisa_revisao": true,
+    "slug": "combat-reflexes"
+  }
+}

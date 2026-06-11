@@ -1,0 +1,18 @@
+{
+  "id": "pentex-first-team-43_r8",
+  "nome": "Pentex First Team 43",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Inimigo sem efeito ativo",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 517,
+    "texto_original": "First Team 43 is efficient and effective. They may play 2 Combat Actions per round of combat. If an attacker chooses to break off combat before killing the First Team, they will take a randomly selected piece of non-Fetish Equipment from him. The pack whi",
+    "precisa_revisao": true,
+    "slug": "pentex-first-team-43_r8"
+  }
+}

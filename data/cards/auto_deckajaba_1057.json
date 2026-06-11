@@ -1,0 +1,29 @@
+{
+  "id": "spirit-of-the-tiger",
+  "nome": "Spirit of the Tiger",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 1057,
+    "texto_original": "The Gift user can draw 1 additional combat card for any Battlefield combat she is involved in. This Gift is permanent until canceled.",
+    "precisa_revisao": true,
+    "slug": "spirit-of-the-tiger"
+  }
+}

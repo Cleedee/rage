@@ -1,0 +1,26 @@
+{
+  "id": "gang-beating",
+  "nome": "Gang Beating",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "Ataque imediato",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 114,
+    "texto_original": "Play when a single character of yours is fighting 2 or more opponents. The single character draws 1 additional combat card per opponent he's facing and can play up to 3 Combat Actions per round of combat. Gang Beating cannot be played for a character who",
+    "precisa_revisao": true,
+    "slug": "gang-beating"
+  }
+}

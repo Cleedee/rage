@@ -1,0 +1,29 @@
+{
+  "id": "roar-of-the-wyrm",
+  "nome": "Roar of the Wyrm",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Bênção +1 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 1032,
+    "texto_original": "1 opponent facing the Gift user in combat cannot play a Combat Action in the upcoming round. Discard this Gift after its effect takes place.",
+    "precisa_revisao": true,
+    "slug": "roar-of-the-wyrm"
+  }
+}

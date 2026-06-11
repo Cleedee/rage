@@ -1,0 +1,27 @@
+{
+  "id": "fang-dagger",
+  "nome": "Fang Dagger",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Equipamento de combate",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "bonus_rage": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckajaba",
+    "card_id": 647,
+    "texto_original": "Weapon. The Fang Dagger allows its user to play 2 damage cards per round of combat.",
+    "precisa_revisao": true,
+    "slug": "fang-dagger"
+  }
+}

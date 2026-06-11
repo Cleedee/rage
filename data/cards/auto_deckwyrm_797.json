@@ -1,0 +1,29 @@
+{
+  "id": "play-in-combat-draw-a-combat-card",
+  "nome": "Play in combat. Draw a combat card.",
+  "tipo": "",
+  "modos": [
+    {
+      "descricao": "Efeito passivo",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckwyrm",
+    "card_id": 797,
+    "texto_original": "",
+    "precisa_revisao": true,
+    "slug": "play-in-combat-draw-a-combat-card"
+  }
+}

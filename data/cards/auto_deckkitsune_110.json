@@ -1,0 +1,31 @@
+{
+  "id": "disembowelment",
+  "nome": "Disembowelment",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Reduz Rage da vítima",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "ate_fim_combate",
+            "condicao": "se_dano_aplicado"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckkitsune",
+    "card_id": 110,
+    "texto_original": "Your victim plays Combat Actions at -1 Rage until this wound is healed.",
+    "precisa_revisao": true,
+    "slug": "disembowelment"
+  }
+}
