@@ -1,0 +1,23 @@
+{
+  "id": "prey_465",
+  "nome": "Cultist",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 465,
+    "precisa_revisao": false,
+    "slug": "cultist"
+  }
+}

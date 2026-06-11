@@ -1,0 +1,23 @@
+{
+  "id": "prey_544",
+  "nome": "Skull Pig",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 544,
+    "precisa_revisao": false,
+    "slug": "skull-pig"
+  }
+}

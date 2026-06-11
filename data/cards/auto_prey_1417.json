@@ -1,0 +1,23 @@
+{
+  "id": "prey_1417",
+  "nome": "Soul Drinker",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 1417,
+    "precisa_revisao": false,
+    "slug": "soul-drinker"
+  }
+}

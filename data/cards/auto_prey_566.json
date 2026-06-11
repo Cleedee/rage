@@ -1,0 +1,23 @@
+{
+  "id": "prey_566",
+  "nome": "Voracious Spectre",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 4
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 566,
+    "precisa_revisao": false,
+    "slug": "voracious-spectre"
+  }
+}

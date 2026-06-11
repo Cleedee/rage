@@ -1,0 +1,23 @@
+{
+  "id": "prey_522",
+  "nome": "Pentex Supply Lines",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 522,
+    "precisa_revisao": false,
+    "slug": "pentex-supply-lines"
+  }
+}

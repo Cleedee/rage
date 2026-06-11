@@ -1,0 +1,23 @@
+{
+  "id": "prey_521",
+  "nome": "Pentex Strip Miners",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 521,
+    "precisa_revisao": false,
+    "slug": "pentex-strip-miners"
+  }
+}

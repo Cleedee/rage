@@ -1,0 +1,23 @@
+{
+  "id": "prey_484",
+  "nome": "Fomori (2)",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "valor": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 484,
+    "precisa_revisao": false,
+    "slug": "fomori-(2)"
+  }
+}
