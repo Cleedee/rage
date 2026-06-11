@@ -154,22 +154,22 @@ def alterar_deck(player_id: int):
     t: Tournament = db.session.get(Tournament, tp.tournament_id)
     if t.status != 'open':
         flash('Só é possível alterar o deck antes do torneio iniciar.', 'warning')
-        return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
 
     deck_id = request.form.get('deck_id', type=int)
     if not deck_id:
         flash('Selecione um deck.', 'warning')
-        return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
 
     deck = db.session.get(Deck, deck_id)
     if not deck:
         flash('Deck não encontrado.', 'danger')
-        return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
 
     tp.deck_id = deck_id
     db.session.commit()
     flash(f'Deck de {tp.player_name} alterado para "{deck.name}"!', 'success')
-    return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+    return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
 
 
 # ---------------------------------------------------------------------------
