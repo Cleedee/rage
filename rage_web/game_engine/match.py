@@ -311,13 +311,17 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 body = entry_body[5:].strip()  # Remove '[BOT] '
                 # Mostra acoes do bot que nao sao duplicadas
                 if not body.startswith(('pagou', 'passou', 'selecionou', 'comprou')):
-                    print(f'    🤖 {body}')
+                    if not (('(Rage ' in body or '(Gnosis ' in body) and '):' in body):
+                        print(f'    🤖 {body}')
                 continue
             if ' passou' in entry_body or entry_body.startswith('Todos passaram'):
                 continue
             if ' selecionou ' in entry_body and ' como alpha' in entry_body:
                 continue
             if 'comprou ' in entry_body and 'carta' in entry_body:
+                continue
+            # Requisito de Rage/Gnosis (nao e pagamento, e prerequisito)
+            if ('(Rage ' in entry_body or '(Gnosis ' in entry_body) and '):' in entry_body:
                 continue
             if 'pagou' in entry_body and ('Rage' in entry_body or 'Gnosis' in entry_body):
                 continue

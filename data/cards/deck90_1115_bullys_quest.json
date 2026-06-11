@@ -7,8 +7,9 @@
       "descricao": "Matar vitima de Renome 3 ou menos",
       "efeitos": [
         {
-          "tipo": "destruir",
-          "condicao_alvo": "criatura_inimiga"
+          "tipo": "matar_vitima",
+          "condicao_alvo": "vitima_renome_3",
+          "quantidade": 2
         }
       ]
     }

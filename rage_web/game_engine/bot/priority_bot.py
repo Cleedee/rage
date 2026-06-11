@@ -111,6 +111,19 @@ class PriorityBot:
                 if len(self._vp_history) >= 4:
                     ultimos = self._vp_history[-4:]
                     self._vp_rate = (ultimos[-1] - ultimos[0]) / len(ultimos)
+            # Tenta jogar Bully's Quest (carta do tipo Quest que pode ser
+            # jogada na Regeneration Phase para matar vitima de Renown <= 3)
+            from rage_web.game_engine.effects import CARTAS_EXEMPLO
+            for i, card in enumerate(self.player.hand):
+                ct = card.card_type or ''
+                if ct == 'Quest' and card.modelo_id:
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        for mi, modo in enumerate(modelo.modos):
+                            for ef in modo.efeitos:
+                                if ef.tipo.value == 'matar_vitima':
+                                    if self._pode_pagar_custos(card):
+                                        return self._usar_carta_efeito(i, mi, card)
             self._pass_turn()
             return 'pass_regen'
 
@@ -1275,12 +1288,12 @@ class PriorityBot:
             # Declaration Step: ja foi configurado em start_combat
             # Avanca para pre_combat
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step in ('pre_combat', 'beginning_of_combat'):
             # Auto-advance (sem pack actions por enquanto)
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'play_card':
             # Play Card Step: jogar combat cards face-down
@@ -1313,14 +1326,14 @@ class PriorityBot:
                             if nome_acao in COMBAT_ACTIONS:
                                 result = declare_action(g, cid, nome_acao)
                                 if result:
-                                    return f'play_{cid}_{nome_acao}'
+                                    return f'declare_{cid}_{nome_acao}'
                             # Fallback: acao aleatoria viavel
                             acoes = list(COMBAT_ACTIONS)
                             g.rng.shuffle(acoes)
                             for a in acoes:
                                 result = declare_action(g, cid, a)
                                 if result:
-                                    return f'play_{cid}_{a}'
+                                    return f'declare_{cid}_{a}'
                         self._pass_turn()
                         return 'combat_wait'
 
@@ -1347,7 +1360,7 @@ class PriorityBot:
                             self._usou_carta_combate = True
                             g.add_log(f'{self.player.name} usou carta de combate '
                                       f'{carta_combate.name} como {carta_acao}')
-                            return f'play_{cid}_{carta_acao}'
+                            return f'declare_{cid}_{carta_acao}'
 
                     action = self._choose_combat_action(card, card.owner_id)
                     result = declare_action(g, cid, action)
@@ -1371,7 +1384,7 @@ class PriorityBot:
                         # Ainda falhou: passa a vez
                         self._pass_turn()
                         return 'combat_wait'
-                    return f'play_{cid}_{action}'
+                    return f'declare_{cid}_{action}'
 
             # Todos os combatentes do bot jogaram
             combatants = get_combatants(g)
@@ -1409,7 +1422,7 @@ class PriorityBot:
                     g.combat.targets[cid] = alvo
                     return f'target_{cid}_{alvo}'
             g.combat.step = 'reveal'
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'reveal':
             return self._handle_reveal_step()
@@ -1420,7 +1433,7 @@ class PriorityBot:
         if step == 'bluff':
             # Bluff Step: verificar requisitos
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'resolution':
             # Resolution Step: aplicar dano
@@ -1430,7 +1443,7 @@ class PriorityBot:
         if step == 'withdrawal':
             # Withdrawal Step: verificar se atacante retira
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'between_rounds':
             # Between-rounds: verificar se continua
@@ -1438,7 +1451,7 @@ class PriorityBot:
                 g.combat.step = 'end'
                 return 'combat_end'
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'end':
             end_combat(g)
@@ -1507,7 +1520,7 @@ class PriorityBot:
         """
         g = self.game
         g.combat.step = 'feint'
-        return 'combat_progress'
+        return f'combat_to_{g.combat.step}'
 
     def _handle_feint_step(self) -> str:
         """Feint Step (6.8.1): decide se alguma criatura deve feintar.
@@ -1562,7 +1575,7 @@ class PriorityBot:
 
         # Nenhum feint desejado/possivel -> avanca para bluff
         g.combat.step = 'bluff'
-        return 'combat_progress'
+        return f'combat_to_{g.combat.step}'
 
     def _melhor_acao_feint(self, criatura: CardInstance,
                            acao_atual: str,
@@ -1639,7 +1652,7 @@ class PriorityBot:
         # ---- NOVOS STEPS ----
         if step in ('declaration', 'pre_combat', 'beginning_of_combat'):
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'play_card':
             for cid in combatants:
@@ -1673,7 +1686,7 @@ class PriorityBot:
                                         self.player.combat_hand.remove(carta_combate)
                                         carta_combate.zone = Zone.DISCARD_COMBAT
                                         self.player.discard_combat.append(carta_combate)
-                                return f'play_{cid}_{carta_acao}'
+                                return f'declare_{cid}_{carta_acao}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     result = declare_action(g, cid, action)
                     if not result:
@@ -1686,9 +1699,9 @@ class PriorityBot:
                     if not result:
                         self._pass_turn()
                         return 'combat_wait'
-                    return f'play_{cid}_{action}'
+                    return f'declare_{cid}_{action}'
             g.combat.step = 'targeting'
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'targeting':
             # Random: atribui alvos aleatorios
@@ -1711,17 +1724,17 @@ class PriorityBot:
                     g.combat.targets[cid] = alvo
                     return f'target_{cid}_{alvo}'
             g.combat.step = 'reveal'
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'reveal':
             return self._handle_reveal_step()
 
         if step == 'feint':
             g.combat.step = 'bluff'
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
         if step in ('bluff', 'withdrawal', 'between_rounds'):
             advance_combat_step(g)
-            return 'combat_progress'
+            return f'combat_to_{g.combat.step}'
 
         if step == 'resolution':
             resolve_combat(g)
@@ -1799,6 +1812,10 @@ class PriorityBot:
 
         # Se for Gift, verifica requisitos de keyword + timing
         if card.card_type == 'Gift':
+            # (6.11.1) Frenzied nao pode jogar Gifts
+            for c in self.player.pack_home:
+                if c.is_frenzied:
+                    return False
             # Valida timing
             if not validar_timing_gift(card, self.game.phase):
                 return False
@@ -2185,10 +2202,24 @@ class PriorityBot:
                         return f'play_rite_{card.card_id}'
 
         # 4. Joga Quest / Past Life
+        # Pula cartas que sao jogadas exclusivamente na Regeneration Phase
+        # (ex: Bully's Quest com efeito matar_vitima)
+        QUEST_REGENERATION = {'matar_vitima'}
         for i, card in enumerate(me.hand):
             ct = card.card_type or ''
             if ct in ('Quest', 'Past Life'):
                 if card.modelo_id and self._pode_pagar_custos(card):
+                    from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        # Pula se carta so pode ser jogada na Regeneration
+                        tem_efeito_regen = any(
+                            ef.tipo.value in QUEST_REGENERATION
+                            for modo in modelo.modos
+                            for ef in modo.efeitos
+                        )
+                        if tem_efeito_regen:
+                            continue
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     return self._usar_carta_efeito(i, modo_idx, card)
 
@@ -2278,24 +2309,27 @@ class PriorityBot:
             pagador = self.player.pagar_custo_rage(custo_rage)
             if pagador:
                 self.game.add_log(
-                    f'[BOT] {self.player.name} pagou Rage {custo_rage} '
-                    f'com {pagador} para {card.name}')
+                    f'[BOT] {self.player.name} {pagador} (Rage {custo_rage}): '
+                    f'{card.name}')
         if card.gnosis and card.gnosis > 0:
             pagador = self.player.pagar_custo_gnosis(card.gnosis)
             if pagador:
                 self.game.add_log(
-                    f'[BOT] {self.player.name} pagou Gnosis {card.gnosis} '
-                    f'com {pagador} para {card.name}')
+                    f'[BOT] {self.player.name} {pagador} (Gnosis {card.gnosis}): '
+                    f'{card.name}')
 
         # Remove da mao e aplica (passa card real para equipamentos)
         card_real = self.player.hand.pop(hand_index)
-        logs = aplicar_carta(self.game, modelo, self.player_id,
-                              modo_idx=modo_idx, card_origem=card_real)
 
         modo = modelo.modos[modo_idx]
         desc = f'use_{card.modelo_id}_modo{modo_idx}'
+        # Log do uso ANTES de aplicar o efeito, para que a sequencia
+        # fique: pagou → usou → sofreu dano → foi destruido
         self.game.add_log(
             f'[BOT] {self.player.name} usou {card.name} ({modo.descricao})')
+
+        logs = aplicar_carta(self.game, modelo, self.player_id,
+                              modo_idx=modo_idx, card_origem=card_real)
         return desc
 
     def _try_prey_gift(self) -> Optional[str]:

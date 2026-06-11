@@ -110,6 +110,123 @@ def _flipar_para_crinos(game: GameState, card: CardInstance) -> bool:
     return True
 
 
+def _entrar_em_frenesi(game: GameState, card: CardInstance,
+                        jogador: PlayerState) -> bool:
+    """Faz uma criatura entrar em estado de frenesi.
+
+    Regra (6.11.3 - Full Frenzy):
+    - Flipa para forma Crinos
+    - Define is_frenzied = True
+    - Compra cartas do combate = Rage da forma atual
+    - Adiciona restricao 'frenesi'
+
+    Args:
+        game: Estado da partida.
+        card: A criatura que vai frenzir.
+        jogador: O jogador que controla a criatura.
+
+    Returns:
+        True se entrou em frenesi.
+    """
+    if card.is_frenzied:
+        return False
+
+    # Nao pode frenzir se impedido
+    if 'impede_frenzy' in game.game_modifiers:
+        return False
+    if 'nao_pode_frenzy' in card.restricoes:
+        return False
+
+    # Flipa para Crinos
+    flipou = _flipar_para_crinos(game, card)
+
+    # Marca como frenzied
+    card.is_frenzied = True
+    if 'frenesi' not in card.restricoes:
+        card.restricoes.append('frenesi')
+
+    # Compra cartas do combate = Rage efetivo (6.11.3)
+    rage_efetivo = card.effective_rage
+    compradas = 0
+    if rage_efetivo > 0:
+        compradas_lista = jogador.draw_combat(rage_efetivo)
+        compradas = len(compradas_lista)
+        if compradas > 0:
+            game.add_log(
+                f'  {card.name} frenzied! Comprou {compradas} '
+                f'carta(s) de combate (Rage {rage_efetivo})'
+            )
+
+    # Armazena metadados do frenzy no card
+    # (usando atributos dinâmicos, CardInstance nao e frozen)
+    card.frenzy_cards_drawn = compradas
+    # Hacked apart threshold = Health + Rage no momento do frenzy
+    # (6.11.3: determinado quando o frenzy comeca, apos flipar para Crinos)
+    card.frenzy_hack_threshold = card.health_current + card.effective_rage
+    # Marca o health no inicio do frenzy para Hacked Apart
+    card.frenzy_starting_health = card.health_current
+
+    game.add_log(
+        f'  🔥 {card.name} entrou em frenesi! '
+        f'{"(Crinos)" if flipou else ""}'
+        f' | Hacked apart: {card.frenzy_hack_threshold} de dano'
+    )
+    return True
+
+
+def _sair_do_frenesi(game: GameState, card: CardInstance) -> bool:
+    """Remove o estado de frenesi de uma criatura.
+
+    Regra (6.11.2): Frenzy termina quando:
+    - O combate termina
+    - Um efeito cancela o frenzy
+    - A criatura fica sem acoes viaveis
+
+    Ao terminar, descarta aleatoriamente da mao de combate
+    um numero de cartas igual as que foram compradas no frenzy.
+
+    Args:
+        game: Estado da partida.
+        card: A criatura.
+
+    Returns:
+        True se saiu do frenesi.
+    """
+    if not card.is_frenzied:
+        return False
+
+    # (6.11.2) Descarta cartas do combat hand = cards drawn
+    cards_drawn = getattr(card, 'frenzy_cards_drawn', 0)
+    if cards_drawn > 0:
+        dono = _find_owner(game, card)
+        if dono:
+            combat_hand = dono._cartas_combate()
+            descartar = min(cards_drawn, len(combat_hand))
+            if descartar > 0:
+                # Seleciona aleatoriamente (usa rng do jogo para deterministico)
+                descarte = game.rng.sample(combat_hand, descartar)
+                for c in descarte:
+                    c.zone = Zone.DISCARD_COMBAT
+                    dono.hand.remove(c)
+                    dono.discard_combat.append(c)
+                game.add_log(
+                    f'  Fim de frenesi: {card.name} descartou '
+                    f'{descartar} carta(s) da mao de combate'
+                )
+
+    card.is_frenzied = False
+    if 'frenesi' in card.restricoes:
+        card.restricoes.remove('frenesi')
+    # Limpa metadados
+    for attr in ('frenzy_cards_drawn', 'frenzy_hack_threshold',
+                 'frenzy_starting_health'):
+        if hasattr(card, attr):
+            delattr(card, attr)
+
+    game.add_log(f'  {card.name} saiu do frenesi')
+    return True
+
+
 def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
                       dono_origem: Optional[PlayerState],
                       em_combate: bool = False) -> bool:
@@ -142,6 +259,16 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
     dono_alvo = _find_owner(game, alvo)
 
     # Descarta anexos (damage cards + equipamentos)
+    # Hacked Apart (6.11.3): criatura frenzied continua lutando
+    # mesmo morta, ate o fim do combate/frenzy ou ate atingir
+    # o threshold de dano = Health + Rage (medido no inicio do frenzy).
+    eh_hacked_apart = False
+    if alvo.is_frenzied and em_combate:
+        hack_threshold = getattr(alvo, 'frenzy_hack_threshold', 0)
+        dano_total = alvo.health - alvo.health_current
+        if dano_total >= hack_threshold:
+            eh_hacked_apart = True  # Dano suficiente: morre de vez
+    
     if dono_alvo:
         descartar_anexos(alvo, dono_alvo)
     else:
@@ -169,21 +296,41 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
             vp = 0
         if vp > 0:
             dono_origem.victory_points += vp
-        alvo.zone = Zone.VICTORY_PILE
-        _remove_creature(game, alvo)
-        dono_origem.victory_pile.append(alvo)
-        if vp > 0:
+        # Hacked Apart: marca morte mas NAO remove do jogo ainda
+        if eh_hacked_apart:
+            alvo.zone = Zone.VICTORY_PILE
+            _remove_creature(game, alvo)
+            dono_origem.victory_pile.append(alvo)
             game.add_log(
-                f'  {alvo.name} foi destruido! '
+                f'  Hacked Apart! {alvo.name} foi despedacado! '
                 f'{dono_origem.name} ganhou {vp} VP '
                 f'(total: {dono_origem.victory_points})'
             )
-        else:
+        elif alvo.is_frenzied:
+            # Frenzied mas abaixo do threshold: morto mas continua
+            # Nao move para VP, nao remove do jogo ainda
+            alvo.frenzy_dead_but_fighting = True
             game.add_log(
-                f'  {alvo.name} foi destruido! '
-                f'{dono_origem.name} ganhou 0 VP'
+                f'  {alvo.name} foi morto mas continua lutando '
+                f'(frenesi)! {dono_origem.name} ganhou {vp} VP '
+                f'(total: {dono_origem.victory_points})'
             )
-        # Death triggers
+        else:
+            alvo.zone = Zone.VICTORY_PILE
+            _remove_creature(game, alvo)
+            dono_origem.victory_pile.append(alvo)
+            if vp > 0:
+                game.add_log(
+                    f'  {alvo.name} foi destruido! '
+                    f'{dono_origem.name} ganhou {vp} VP '
+                    f'(total: {dono_origem.victory_points})'
+                )
+            else:
+                game.add_log(
+                    f'  {alvo.name} foi destruido! '
+                    f'{dono_origem.name} ganhou 0 VP'
+                )
+        # Death triggers (disparam mesmo se Hacked Apart / frenzied)
         game.check_death_triggers(alvo, origem, dono_origem)
         game.check_kill_bonuses(alvo, dono_origem)
         # Tracking para Vigilante (565): registra quem matou a vitima
@@ -2454,6 +2601,25 @@ def end_combat(game: GameState) -> bool:
 
     # Executa ataques automaticos de presas no HG
     game._check_victim_attacks()
+
+    # Limpa estado de frenesi de todas as criaturas (6.11.2)
+    for p in game.players:
+        for c in p.pack_home + p.hunting_grounds + p.umbra:
+            if c.is_frenzied:
+                _sair_do_frenesi(game, c)
+                # Se estava morto mas lutando (Hacked Apart),
+                # agora e finalmente removido (6.11.3)
+                if getattr(c, 'frenzy_dead_but_fighting', False):
+                    c.zone = Zone.VICTORY_PILE
+                    _remove_creature(game, c)
+                    dono = _find_owner(game, c)
+                    if dono:
+                        dono.victory_pile.append(c)
+                    game.add_log(
+                        f'  {c.name} finalmente sucumbiu aos ferimentos '
+                        f'(fim do frenesi)')
+            elif 'frenesi' in c.restricoes:
+                c.restricoes.remove('frenesi')
 
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')

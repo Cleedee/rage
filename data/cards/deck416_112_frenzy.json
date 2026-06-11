@@ -7,12 +7,9 @@
       "descricao": "Entrar em frenesi",
       "efeitos": [
         {
-          "tipo": "restringir",
+          "tipo": "entrar_em_frenesi",
           "quantidade": 1,
-          "condicao_alvo": "criatura_aliada",
-          "params": {
-            "restricao": "frenesi"
-          }
+          "condicao_alvo": "criatura_aliada"
         }
       ],
       "condicao_uso": "antes_ou_entre_rounds_combate"

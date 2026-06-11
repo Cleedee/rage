@@ -106,6 +106,8 @@ def describe_action(acao: str, game=None) -> str:
         return 'Revelar ações'
     elif acao in ('end_combat', 'combat_end'):
         return 'Encerrar combate'
+    elif acao.startswith('combat_to_'):
+        return _describe_combat_transition(acao)
     elif acao == 'combat_wait':
         return 'Aguardando combate'
     elif acao == 'draw':
@@ -312,6 +314,33 @@ def _describe_pass(acao: str) -> str:
         fase_human = PHASE_HUMAN.get(fase, fase)
         return f'Passou ({fase_human})'
     return 'Passou'
+
+
+# Nomes amigaveis para steps de combate
+COMBAT_STEP_NAMES = {
+    'pre_combat': 'Pré-Combate',
+    'beginning_of_combat': 'Início do Combate',
+    'play_card': 'Jogar Carta',
+    'targeting': 'Atribuir Alvos',
+    'reveal': 'Revelar',
+    'feint': 'Finta',
+    'bluff': 'Blefe',
+    'resolution': 'Resolução',
+    'withdrawal': 'Retirada',
+    'between_rounds': 'Entre Rodadas',
+    'end': 'Fim do Combate',
+}
+
+
+def _describe_combat_transition(acao: str) -> str:
+    """Descreve transicoes de step de combate.
+
+    Acao: combat_to_pre_combat, combat_to_play_card, etc.
+    """
+    # Extrai o nome do step apos 'combat_to_'
+    step_name = acao[len('combat_to_'):]
+    nome = COMBAT_STEP_NAMES.get(step_name, step_name.replace('_', ' '))
+    return f'→ {nome}'
 
 
 def _format_fallback(acao: str) -> str:

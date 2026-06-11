@@ -80,6 +80,7 @@ class EfeitoTipo(str, Enum):
     OLHAR_TOPO_DECK = 'olhar_topo_deck'  # Olhar topo do deck do oponente
     DESCARTAR_MAO_COMBATE = 'descartar_mao_combate'  # Oponente descarta toda mao de combate
     REGISTRAR_TRIGGER_COMBATE = 'registrar_trigger_combate'  # Registrar trigger de combate (ex: Tzinzie)
+    ENTRAR_FRENESI = 'entrar_em_frenesi'  # Entrar em estado de frenesi
     # Efeitos de setup / passivos
     EQUIPAR_INICIAL = 'equipar_inicial'  # Comeca o jogo com equipamento (Bannion)
     FILTRAR_REDRAW = 'filtrar_redraw'  # Fim do Redraw: descarta + compra (Buggerhead)
@@ -92,6 +93,7 @@ class EfeitoTipo(str, Enum):
     MODIFICAR_ATRIBUTO_PASSIVO = 'modificar_atributo_passivo'  # Buff passivo persistente (John)
     MODIFICAR_GAUNTLET = 'modificar_gauntlet'  # Modifica o Gauntlet (Shadow-Weaver)
     MODIFICAR_HAND_SIZE = 'modificar_hand_size'  # Modifica hand size (Old Storm Chaser)
+    MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
     MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
@@ -225,15 +227,17 @@ class ResolvedorEfeitos:
         # Armazena ultimo alvo para condicao_estado
         self._ultimo_alvo = alvo if not isinstance(alvo, list) else (alvo[0] if alvo else None)
 
+        # Log do efeito ANTES de executar o resolvedor, para que apareca
+        # antes dos logs internos do resolvedor (dano, destruicao, etc.)
+        if isinstance(alvo, list):
+            nome_alvo = f'{len(alvo)} cartas'
+        else:
+            nome_alvo = getattr(alvo, 'name', str(alvo or jogador.name))
+        self.log.append(
+            f'{origem.name}: {efeito.tipo.value} em {nome_alvo}'
+        )
+
         resultado = resolvedor(efeito, origem, jogador, alvo)
-        if resultado:
-            if isinstance(alvo, list):
-                nome_alvo = f'{len(alvo)} cartas'
-            else:
-                nome_alvo = getattr(alvo, 'name', str(alvo or jogador.name))
-            self.log.append(
-                f'{origem.name}: {efeito.tipo.value} em {nome_alvo}'
-            )
         return resultado
 
     def _get_resolvedor(self, tipo: EfeitoTipo
@@ -266,6 +270,7 @@ class ResolvedorEfeitos:
     EfeitoTipo.REMOVER_DO_COMBATE: self._resolver_remover_do_combate,
     EfeitoTipo.FORCAR_BLUFF: self._resolver_forcar_bluff,
     EfeitoTipo.IMPEDIR_FRENZY: self._resolver_impedir_frenzy,
+    EfeitoTipo.ENTRAR_FRENESI: self._resolver_entrar_frenesi,
     EfeitoTipo.OLHAR_TOPO_DECK: self._resolver_olhar_topo_deck,
     EfeitoTipo.DESCARTAR_MAO_COMBATE: self._resolver_descartar_mao_combate,
     EfeitoTipo.REGISTRAR_TRIGGER_COMBATE: self._resolver_registrar_trigger_combate,
@@ -284,6 +289,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MODIFICAR_ATRIBUTO_PASSIVO: self._resolver_modificar_atributo_passivo,
             EfeitoTipo.MODIFICAR_GAUNTLET: self._resolver_modificar_gauntlet,
             EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
+            EfeitoTipo.MATAR_VITIMA: self._resolver_matar_vitima,
             # Efeitos de Moot
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
             EfeitoTipo.MOOT_GANHAR_VP: self._resolver_moot_ganhar_vp,
@@ -405,6 +411,10 @@ class ResolvedorEfeitos:
             ),
             'vitima': lambda: self._escolher_criatura(
                 _vitimas_inimigas()
+            ),
+            'vitima_renome_3': lambda: self._escolher_criatura(
+                [c for op in oponentes for c in op.pack_home + op.hunting_grounds
+                 if c.renown <= 3 and c.owner_id != jogador.id]
             ),
             'ally_inimigo': lambda: self._escolher_criatura(
                 [c for op in oponentes for c in op.pack_home
@@ -569,6 +579,12 @@ class ResolvedorEfeitos:
         qtd = efeito.quantidade or 2
         if isinstance(alvo, CardInstance):
             anexar_dano(alvo, origem, qtd, jogador.id)
+            # Registra o dano no log ANTES de processar morte
+            # para manter ordem cronologica: dano → destruicao
+            self.game.add_log(
+                f'{alvo.name} sofreu {qtd} de dano '
+                f'({alvo.health_current}/{alvo.health})'
+            )
             # Verifica flip para Crinos
             from rage_web.game_engine.combat_queue import _flipar_para_crinos
             _flipar_para_crinos(self.game, alvo)
@@ -582,10 +598,6 @@ class ResolvedorEfeitos:
                         break
                 _processar_morte(self.game, alvo, origem,
                                  dono_origem, em_combate=False)
-            self.game.add_log(
-                f'{alvo.name} sofreu {qtd} de dano '
-                f'({alvo.health_current}/{alvo.health})'
-            )
             return True
         elif isinstance(alvo, PlayerState):
             self.game.add_log(
@@ -982,6 +994,81 @@ class ResolvedorEfeitos:
         self.game.add_log(
             f'{jogador.name} ganhou {qtd} VP ({jogador.victory_points})'
         )
+        return True
+
+    def _resolver_matar_vitima(self, efeito: Efeito, origem: CardInstance,
+                               jogador: PlayerState, alvo) -> bool:
+        """Quest: matar vitima de Renome 3 ou menos sem ser ferido.
+
+        Regra (Bully's Quest):
+        - Play during the Regeneration Phase
+        - If the character can kill 1 victim of Renown 3 or less
+          without that opponent wounding the character
+        - That kill is worth +2 victory points
+
+        O efeito já recebe o alvo (vitima) resolvido pelo sistema
+        de alvos. Verificamos:
+        1. Alvo tem Renown <= 3 (qualquer criatura inimiga)
+        2. Jogador tem pelo menos um character que pode matar
+           (Rage do character >= Health do alvo)
+        """
+        if not isinstance(alvo, CardInstance):
+            self.game.add_log(
+                f'[QUEST] {jogador.name} usou Bully\'s Quest sem alvo valido'
+            )
+            return False
+
+        # Verifica Renown <= 3 (redundante com o filtro do target, mas seguro)
+        if alvo.renown > 3:
+            self.game.add_log(
+                f'[QUEST] Bully\'s Quest falhou: {alvo.name} '
+                f'Renown {alvo.renown} > 3'
+            )
+            return False
+
+        # Verifica se jogador tem character com Rage suficiente
+        personagens = [c for c in jogador.pack_home
+                       if c.card_type and 'Character' in c.card_type]
+        if not personagens:
+            self.game.add_log(
+                f'[QUEST] Bully\'s Quest falhou: {jogador.name} sem personagens'
+            )
+            return False
+
+        # Melhor personagem para o trabalho (maior Rage)
+        melhor = max(personagens, key=lambda c: c.rage)
+        if melhor.rage < alvo.health:
+            self.game.add_log(
+                f'[QUEST] Bully\'s Quest falhou: {melhor.name} '
+                f'(Rage {melhor.rage}) < {alvo.name} HP {alvo.health}'
+            )
+            return False
+
+        # Sucesso: mata a vitima sem ser ferido
+        dono_alvo = self._find_player(alvo.owner_id)
+        if dono_alvo:
+            if alvo in dono_alvo.pack_home:
+                dono_alvo.pack_home.remove(alvo)
+            elif alvo in dono_alvo.hunting_grounds:
+                dono_alvo.hunting_grounds.remove(alvo)
+            elif alvo in dono_alvo.umbra:
+                dono_alvo.umbra.remove(alvo)
+        alvo.zone = Zone.VICTORY_PILE
+        jogador.victory_pile.append(alvo)
+
+        # VP = Renown do alvo + 2 bonus
+        vp_base = alvo.renown
+        vp_bonus = 2
+        vp_total = vp_base + vp_bonus
+        jogador.victory_points += vp_total
+        self.game.add_log(
+            f'[QUEST] {melhor.name} matou {alvo.name} '
+            f'(Renown {alvo.renown})! '
+            f'{jogador.name} ganhou {vp_base}+{vp_bonus} = {vp_total} VP '
+            f'({jogador.victory_points})'
+        )
+
+        self.game.check_death_triggers(alvo, melhor, jogador)
         return True
 
     def _resolver_perder_vp(self, efeito: Efeito, origem: CardInstance,
@@ -1795,6 +1882,51 @@ class ResolvedorEfeitos:
                             f'{c.name} +1 Gnosis (Ragabash - New Moon)'
                         )
         self.game.add_log(f'{origem.name}: ninguem pode frenzir (New Moon)')
+        return True
+
+    def _resolver_entrar_frenesi(self, efeito: Efeito,
+                                   origem: CardInstance,
+                                   jogador: PlayerState, alvo) -> bool:
+        """Faz uma criatura entrar em estado de frenesi.
+
+        Regra (6.11):
+        - Flipa para forma Crinos (se possivel)
+        - Compra N cartas do combate = Rage da forma Crinos
+        - Personagem nao pode retirar do combate
+        - Forced Play: deve declarar ataque se possivel
+        - Hacked Apart: se dano >= Health + Rage, morre mas continua
+          lutando ate o fim do combate/frenesi
+
+        Usado por: Frenzy (#112), The Whole Nine Yards (#1413),
+        Cornered Rat (#1414).
+        """
+        from rage_web.game_engine.combat_queue import _entrar_em_frenesi
+
+        if not isinstance(alvo, CardInstance):
+            return False
+
+        # Verifica se ja esta em frenesi
+        if alvo.is_frenzied:
+            self.game.add_log(f'{alvo.name} ja esta em frenesi')
+            return False
+
+        # Verifica se frenzy esta bloqueado globalmente
+        if 'impede_frenzy' in self.game.game_modifiers:
+            self.game.add_log(f'{alvo.name} nao pode frenzir (impedido)')
+            return False
+
+        # Verifica se a criatura pode frenzir (Allies/Prey nao frenzam)
+        keywords = (alvo.keywords or '').lower()
+        card_type = (alvo.card_type or '').lower()
+        if any(k in keywords for k in ['ally', 'victim', 'enemy', 'battlefield']):
+            self.game.add_log(f'{alvo.name} nao pode frenzir (tipo: {card_type})')
+            return False
+        if 'ally' in card_type or 'enemy' in card_type or 'victim' in card_type:
+            self.game.add_log(f'{alvo.name} nao pode frenzir (tipo: {card_type})')
+            return False
+
+        # Entra em frenesi
+        _entrar_em_frenesi(self.game, alvo, jogador)
         return True
 
     # ──────────────────────────────────────────────

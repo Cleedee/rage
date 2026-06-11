@@ -355,7 +355,7 @@ def api_use_card(game_id: str):
                 'error': f'Custo de Rage {custo_rage} nao pode ser pago. '
                          f'Nenhum personagem destapped com Rage >= {custo_rage}.'
             }), 400
-        game.add_log(f'{cp.name} pagou Rage {custo_rage} com {pagador}')
+        game.add_log(f'{cp.name} {pagador} (Rage {custo_rage}): {card.name}')
     custo_gnosis = card.gnosis
     if custo_gnosis and custo_gnosis > 0:
         pagador = cp.pagar_custo_gnosis(custo_gnosis)
@@ -364,7 +364,7 @@ def api_use_card(game_id: str):
                 'error': f'Custo de Gnosis {custo_gnosis} nao pode ser pago. '
                          f'Nenhum personagem destapped com Gnosis >= {custo_gnosis}.'
             }), 400
-        game.add_log(f'{cp.name} pagou Gnosis {custo_gnosis} com {pagador}')
+        game.add_log(f'{cp.name} {pagador} (Gnosis {custo_gnosis}): {card.name}')
 
     # Remove da mao
     cp.hand.pop(idx)
