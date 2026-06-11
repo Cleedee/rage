@@ -1,0 +1,23 @@
+{
+  "id": "prey_452",
+  "nome": "Arkady",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 452,
+    "texto_original": "If you defeat Arkady, you can make him a pack ally instead of killing him. If you do this, you gain no victory points, but instead gain an ally. If recruited, Arkady will still be wounded from all but",
+    "precisa_revisao": true,
+    "slug": "arkady"
+  }
+}

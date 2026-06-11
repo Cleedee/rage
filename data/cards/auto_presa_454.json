@@ -1,0 +1,23 @@
+{
+  "id": "prey_454",
+  "nome": "Bane Morphling",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 454,
+    "texto_original": "Kailindo. The Bane Morphling is highly flexible. It may use Beast-of-War Gifts. The Bane Morphling may not be bound or controlled.",
+    "precisa_revisao": true,
+    "slug": "bane-morphling"
+  }
+}

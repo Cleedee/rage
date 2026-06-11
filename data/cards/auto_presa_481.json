@@ -1,0 +1,23 @@
+{
+  "id": "prey_481",
+  "nome": "Family Pet",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 481,
+    "texto_original": "The Family Pet will automatically pack defend with the Family of Five or the Playground Full of Kids, if either of them are attacked.",
+    "precisa_revisao": true,
+    "slug": "family-pet"
+  }
+}

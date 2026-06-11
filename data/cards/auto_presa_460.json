@@ -1,0 +1,23 @@
+{
+  "id": "prey_460",
+  "nome": "Bunyip Spirit",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 460,
+    "texto_original": "Embittered by their betrayal at the hands of the Garou, these restless spirits now hunt their foes.",
+    "precisa_revisao": true,
+    "slug": "bunyip-spirit"
+  }
+}

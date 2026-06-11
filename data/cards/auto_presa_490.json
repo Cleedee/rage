@@ -1,0 +1,23 @@
+{
+  "id": "prey_490",
+  "nome": "Granola Pete",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 490,
+    "texto_original": "",
+    "precisa_revisao": true,
+    "slug": "granola-pete"
+  }
+}

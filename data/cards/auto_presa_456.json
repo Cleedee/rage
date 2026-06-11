@@ -1,0 +1,23 @@
+{
+  "id": "prey_456",
+  "nome": "Beat Cop",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 456,
+    "texto_original": "Police. The Beat Cop is armed with a .38 Pistol. If disarmed, his Rage becomes 1.",
+    "precisa_revisao": true,
+    "slug": "beat-cop"
+  }
+}

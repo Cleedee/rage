@@ -49,6 +49,8 @@ class PriorityBot:
         self._vp_rate: float = 0.0  # VP/turn medio
         # Ataques por fase de combate
         self._ataques_feitos: set[str] = set()
+        self._turno_ultimo_kill: int = 0
+        self._ataques_sem_morte: int = 0
 
     @property
     def player(self) -> PlayerState:
@@ -98,6 +100,11 @@ class PriorityBot:
             self._last_turn_heuristic = g.turn_number
             self._umbra_agiu = False
             self._ataques_feitos.clear()
+            # Se passou turno sem matar ninguem, incrementa contador
+            if g.turn_number > self._turno_ultimo_kill + 1:
+                self._ataques_sem_morte += 1
+            else:
+                self._ataques_sem_morte = 0
 
         # --- Acoes por fase ---
 
@@ -111,6 +118,10 @@ class PriorityBot:
                 if len(self._vp_history) >= 4:
                     ultimos = self._vp_history[-4:]
                     self._vp_rate = (ultimos[-1] - ultimos[0]) / len(ultimos)
+            # Atualiza turno do ultimo kill
+            if self._vp_history and len(self._vp_history) >= 2:
+                if self._vp_history[-1] > self._vp_history[-2]:
+                    self._turno_ultimo_kill = g.turn_number
             # Tenta jogar Bully's Quest (carta do tipo Quest que pode ser
             # jogada na Regeneration Phase para matar vitima de Renown <= 3)
             from rage_web.game_engine.effects import CARTAS_EXEMPLO
@@ -2105,7 +2116,12 @@ class PriorityBot:
         if vp_presa >= 3 and alpha_rage >= alvo_hg.health_current:
             return True
 
-        # 6. Cenario normal: tenta matar inimigo primeiro
+        # 6. Ja tentou atacar 2+ vezes sem sucesso: muda para presa
+        #    (evita loop de combates que nao matam ninguem)
+        if len(self._ataques_feitos) >= 2:
+            return True
+
+        # 7. Cenario normal: tenta matar inimigo primeiro
         return False
 
     def _try_eliminate_threat(self) -> Optional[str]:

@@ -1,0 +1,23 @@
+{
+  "id": "prey_462",
+  "nome": "Cityboy Kinfolk",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 462,
+    "texto_original": "Invigorated by the war in the jungle, this fool has traveled down to join the cause. Unfortunately he's more of a burden than an asset.",
+    "precisa_revisao": true,
+    "slug": "cityboy-kinfolk"
+  }
+}

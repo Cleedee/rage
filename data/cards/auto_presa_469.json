@@ -1,0 +1,23 @@
+{
+  "id": "prey_469",
+  "nome": "Drunken Vandals",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 469,
+    "texto_original": "Vandals roar through the area, breaking and burning things. At the end of every Combat Phase that they are in play, they will destroy 1 randomly determined Territory.",
+    "precisa_revisao": true,
+    "slug": "drunken-vandals"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "prey_450",
+  "nome": "Anaconda Gafflings",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 450,
+    "texto_original": "The Anaconda Gafflings can use Defiler and Bane Gifts.",
+    "precisa_revisao": true,
+    "slug": "anaconda-gafflings"
+  }
+}

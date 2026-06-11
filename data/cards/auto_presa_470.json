@@ -1,0 +1,23 @@
+{
+  "id": "prey_470",
+  "nome": "El Guapo",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 470,
+    "texto_original": "El Guapo, infamous leader of a South American paramilitary group, may play 2 Combat Actions per round, but may never play a Dodge, Evasion, or Fancy Footwork. Only 1 El Guapo can be played per game.",
+    "precisa_revisao": true,
+    "slug": "el-guapo"
+  }
+}

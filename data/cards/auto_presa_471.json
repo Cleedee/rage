@@ -1,0 +1,23 @@
+{
+  "id": "prey_471",
+  "nome": "Elder Vampire",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 471,
+    "texto_original": "This ancient creature exists upon the blood of the living and spreads a network of deceit and destruction. The Elder Vampire is not affected by Rage 1 damage cards and can use any Philodox and Shadow ",
+    "precisa_revisao": true,
+    "slug": "elder-vampire"
+  }
+}

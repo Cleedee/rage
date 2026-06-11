@@ -1,0 +1,23 @@
+{
+  "id": "prey_468",
+  "nome": "Drattosi",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Presa para VP",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "adicionar_presa",
+    "card_id": 468,
+    "texto_original": "These spirit creatures cannot be attacked from the physical world. They live in the Umbra and are surrounded by toxic pits. Because of this, anyone attacking them can only play Rage 1 and 2 combat act",
+    "precisa_revisao": true,
+    "slug": "drattosi"
+  }
+}
