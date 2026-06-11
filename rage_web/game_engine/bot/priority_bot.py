@@ -1302,7 +1302,11 @@ class PriorityBot:
             return f'combat_to_{g.combat.step}'
 
         if step in ('pre_combat', 'beginning_of_combat'):
-            # Auto-advance (sem pack actions por enquanto)
+            # Pre-Combat: stepping in for Prey, gifts, pack actions
+            # Processado via advance_combat_step (auto-advance) que
+            # chama _preparar_stepping_in para stepping in.
+            # Gifts para Presa sao tratados em _tentar_stepping_prey
+            # durante a fase resource (quando combat esta ativo).
             advance_combat_step(g)
             return f'combat_to_{g.combat.step}'
 
@@ -2793,12 +2797,15 @@ class PriorityBot:
         sendo atacada. O jogador pode:
         - Jogar um CE face-down em defesa da Presa
         - Usar uma carta de combate da mao como acao para a Presa
+        - Jogar Gifts que correspondam ao tipo da Presa
 
         Returns:
             True se interveio com alguma acao.
         """
         from rage_web.game_engine.combat_queue import (_eh_prey_no_hg,
-            _eh_atacante_da_presa, _find_card, _jogar_ce_face_down)
+            _eh_atacante_da_presa, _find_card, _jogar_ce_face_down,
+            COMBAT_ACTIONS, declare_action)
+        from rage_web.game_engine.rules import pode_usar_gift_para_presa
         g = self.game
 
         if not g.combat.is_active:
@@ -2813,11 +2820,27 @@ class PriorityBot:
             if _eh_atacante_da_presa(g, dfd, self.player_id):
                 continue  # O atacante nao pode intervir
 
-            # Tenta jogar CE face-down em defesa da Presa
             card = _find_card(g, dfd)
             if not card:
                 continue
 
+            # 1. Tenta jogar Gift para a Presa (regra: Prey pode usar Gifts
+            #    que correspondam ao seu tipo de criatura)
+            for i, gift_card in enumerate(self.player.hand):
+                if (gift_card.card_type == 'Gift'
+                        and gift_card.modelo_id
+                        and self._pode_pagar_custos(gift_card)
+                        and pode_usar_gift_para_presa(card, gift_card)):
+                    modo_idx = self._escolher_melhor_modo(gift_card.modelo_id)
+                    action = self._usar_carta_efeito(i, modo_idx, gift_card)
+                    if action:
+                        g.add_log(
+                            f'[BOT] {self.player.name} interveio: usou '
+                            f'{gift_card.name} para {card.name}'
+                        )
+                        return True
+
+            # 2. Tenta jogar CE face-down em defesa da Presa
             ce_card = None
             for c in self.player.combat_hand:
                 ct = (c.card_type or '').lower()
@@ -2839,9 +2862,7 @@ class PriorityBot:
                     )
                     return True
 
-            # Tenta usar carta de combate da mao como acao
-            from rage_web.game_engine.combat_queue import (
-                COMBAT_ACTIONS, declare_action)
+            # 3. Tenta usar carta de combate da mao como acao
             for c in self.player.combat_hand:
                 nome_acao = (c.name or '').lower().replace(' ', '_')
                 if nome_acao in COMBAT_ACTIONS:
@@ -2856,8 +2877,7 @@ class PriorityBot:
                         )
                         return True
 
-            # Intervencao basica: declara block para a Presa
-            from rage_web.game_engine.combat_queue import declare_action
+            # 4. Intervencao basica: declara block para a Presa
             if dfd not in g.combat.declarations:
                 if declare_action(g, dfd, 'block'):
                     g.add_log(
