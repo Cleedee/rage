@@ -110,10 +110,13 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
     """Gera empareamentos da próxima rodada (Suíço).
 
     Algoritmo:
-    1. Ordena jogadores por score (desc), depois SOS (desc).
-    2. Agrupa por score.
-    3. Emparelha adjacentes dentro de cada grupo.
-    4. Evita repetir confrontos já ocorridos.
+    1. Ordena jogadores por score (desc), SOS (desc), id (asc).
+    2. Percorre a lista ordenada e emparelha cada jogador com o
+       próximo disponível mais próximo na classificação,
+       evitando rematches quando houver alternativa.
+    3. Se todos os oponentes possíveis já enfrentaram o jogador,
+       permite rematch como último recurso.
+    4. Se sobrar um jogador (número ímpar), recebe BYE.
 
     Returns:
         Lista de TournamentMatch criados (status='pending').
@@ -136,7 +139,7 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
     if t.status == 'open':
         t.status = 'active'
 
-    # Coleta jogadores ativos e ordena
+    # Coleta jogadores ativos e ordena por score (desc), SOS (desc), id
     ativos = [p for p in t.players if p.active]
     ativos.sort(key=lambda p: (-p.score, -p.sos, p.id))
 
@@ -147,34 +150,47 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
             confrontos.setdefault(m.player1_id, set()).add(m.player2_id)
             confrontos.setdefault(m.player2_id, set()).add(m.player1_id)
 
-    # Emparelha por grupos de mesmo score
-    grupos: dict[float, list[TournamentPlayer]] = {}
-    for p in ativos:
-        grupos.setdefault(p.score, []).append(p)
-
     matches_criados = []
-    emparelhados = set()
+    emparelhados: set[int] = set()
     pares: list[tuple[TournamentPlayer, TournamentPlayer]] = []
 
-    for score in sorted(grupos.keys(), reverse=True):
-        grupo = grupos[score]
-        # Tenta emparelhar dentro do grupo, evitando rematches
-        for p in grupo[:]:
-            if p.id in emparelhados:
-                continue
-            for q in grupo:
-                if q.id == p.id or q.id in emparelhados:
-                    continue
-                # Evita rematch (se possível)
-                if (p.id in confrontos and q.id in confrontos.get(p.id, set())):
-                    continue
-                pares.append((p, q))
-                emparelhados.add(p.id)
-                emparelhados.add(q.id)
-                break
+    # Emparelha sequencialmente: cada jogador busca o próximo
+    # disponível na ordem, pulando rematches (mas permitindo
+    # como último recurso se não houver alternativa.)
+    for i, p in enumerate(ativos):
+        if p.id in emparelhados:
+            continue
 
-    # Jogadores não emparelhados viram BYE (vitória automática)
-    nao_emparelhados = [p for p in ativos if p.id not in emparelhados]
+        candidato: TournamentPlayer | None = None
+        candidato_rematch: TournamentPlayer | None = None
+
+        for j in range(i + 1, len(ativos)):
+            q = ativos[j]
+            if q.id in emparelhados:
+                continue
+
+            ja_se_encontraram = (
+                p.id in confrontos and q.id in confrontos.get(p.id, set())
+            )
+            if not ja_se_encontraram:
+                # Primeira opção: oponente que nunca enfrentou
+                candidato = q
+                break
+            # Guarda fallback (rematch) se ainda não temos um
+            if candidato_rematch is None:
+                candidato_rematch = q
+
+        # Se não achou oponente inédito, permite rematch
+        if candidato is None:
+            candidato = candidato_rematch
+
+        if candidato is not None:
+            pares.append((p, candidato))
+            emparelhados.add(p.id)
+            emparelhados.add(candidato.id)
+        else:
+            # Número ímpar de jogadores: este fica de BYE
+            pass
 
     # Cria matches no banco
     for p1, p2 in pares:
@@ -190,6 +206,7 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
         matches_criados.append(match)
 
     # BYE: jogador sem oponente ganha 3 pontos
+    nao_emparelhados = [p for p in ativos if p.id not in emparelhados]
     for p in nao_emparelhados:
         p.score += PTS_VITORIA
         match = TournamentMatch(
