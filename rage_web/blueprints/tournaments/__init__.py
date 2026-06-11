@@ -9,6 +9,8 @@ from rage_web.models.tournament import (
 from rage_web.game_engine.tournament import (
     criar_torneio, inscrever_jogador, gerar_empareamentos,
     executar_rodada, encerrar_torneio, classificacao,
+    iniciar_fase_grupos, avancar_para_mata_mata, gerar_rodada_mata_mata,
+    _classificacao_grupo,
 )
 
 tournaments_bp = Blueprint(
@@ -50,11 +52,24 @@ def detalhes(tournament_id: int):
         TournamentMatch.id,
     ).all()
 
+    # Dados para formato grupos + mata-mata
+    grupos_data = []
+    bracket_classificados = []
+    if t.formato == 'groups_knockout' and t.num_groups > 0:
+        for g in range(1, t.num_groups + 1):
+            grp = _classificacao_grupo(tournament_id, g)
+            grupos_data.append({'numero': g, 'jogadores': grp})
+        if t.bracket_json:
+            import json as _json
+            bracket_classificados = _json.loads(t.bracket_json)
+
     return render_template(
         'tournaments/detalhes.html',
         torneio=t,
         ranking=ranking,
         matches=matches,
+        grupos_data=grupos_data,
+        bracket_classificados=bracket_classificados,
     )
 
 
@@ -76,6 +91,13 @@ def novo():
         vp_to_win = int(request.form.get('vp_to_win', 0))
 
         t = criar_torneio(nome, formato, max_rounds, vp_to_win)
+
+        # Configuração específica para grupos + mata-mata
+        if formato == 'groups_knockout':
+            t.num_groups = int(request.form.get('num_groups', 2))
+            t.advance_per_group = int(request.form.get('advance_per_group', 2))
+
+        db.session.commit()
         flash(f'Torneio "{nome}" criado com sucesso!', 'success')
         return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
 
@@ -121,11 +143,22 @@ def inscrever(tournament_id: int):
 @tournaments_bp.route('/<int:tournament_id>/iniciar', methods=['POST'])
 def iniciar(tournament_id: int):
     """Inicia o torneio: gera a primeira rodada."""
-    matches = gerar_empareamentos(tournament_id)
-    if not matches:
-        flash('Não foi possível gerar a primeira rodada.', 'warning')
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t:
+        return render_template('404.html'), 404
+
+    if t.formato == 'groups_knockout':
+        matches = iniciar_fase_grupos(tournament_id)
+        if not matches:
+            flash('Não foi possível gerar a fase de grupos.', 'warning')
+        else:
+            flash(f'Fase de grupos gerada com {len(matches)} partida(s)!', 'success')
     else:
-        flash(f'Rodada 1 gerada com {len(matches)} partida(s)!', 'success')
+        matches = gerar_empareamentos(tournament_id)
+        if not matches:
+            flash('Não foi possível gerar a primeira rodada.', 'warning')
+        else:
+            flash(f'Rodada 1 gerada com {len(matches)} partida(s)!', 'success')
     return redirect(url_for('tournaments.detalhes', tournament_id=tournament_id))
 
 
@@ -144,6 +177,38 @@ def proxima_rodada(tournament_id: int):
 # ---------------------------------------------------------------------------
 # Executar rodada (bots)
 # ---------------------------------------------------------------------------
+
+@tournaments_bp.route('/<int:tournament_id>/avancar-mata-mata', methods=['POST'])
+def avancar_mata_mata(tournament_id: int):
+    """Avança da fase de grupos para o mata-mata."""
+    matches = avancar_para_mata_mata(tournament_id)
+    if not matches:
+        flash('Não foi possível gerar o mata-mata.', 'warning')
+    else:
+        flash(f'Mata-mata gerado com {len(matches)} partida(s)!', 'success')
+    return redirect(url_for('tournaments.detalhes', tournament_id=tournament_id))
+
+
+@tournaments_bp.route('/<int:tournament_id>/proxima-rodada-mata-mata', methods=['POST'])
+def proxima_rodada_mata_mata(tournament_id: int):
+    """Gera a próxima rodada do mata-mata."""
+    matches = gerar_rodada_mata_mata(tournament_id)
+    if not matches:
+        t: Tournament = db.session.get(Tournament, tournament_id)
+        if t and t.formato == 'groups_knockout':
+            # Pode ser que o torneio acabou
+            vencedor = encerrar_torneio(tournament_id)
+            if vencedor:
+                flash(f'🏆 Torneio encerrado! Vencedor: {vencedor.player_name}', 'success')
+            else:
+                flash('Mata-mata concluído!', 'info')
+        else:
+            flash('Todas as rodadas concluídas!', 'info')
+    else:
+        r = matches[0].round_number
+        flash(f'Rodada {r} do mata-mata gerada com {len(matches)} partida(s)!', 'success')
+    return redirect(url_for('tournaments.detalhes', tournament_id=tournament_id))
+
 
 @tournaments_bp.route('/<int:tournament_id>/executar', methods=['POST'])
 def executar(tournament_id: int):

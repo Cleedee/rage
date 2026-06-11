@@ -416,3 +416,416 @@ def classificacao(tournament_id: int) -> list[dict]:
             'active': p.active,
         })
     return result
+
+
+# ===================================================================
+# Formato: Grupos + Mata-mata
+# ===================================================================
+
+
+def distribuir_grupos(tournament_id: int) -> None:
+    """Distribui jogadores ativos uniformemente entre os grupos.
+
+    Usa distribuição em serpentina para balancear: o jogador mais
+    bem ranqueado vai para o grupo 1, o segundo para o grupo 2,
+    etc., invertendo a ordem a cada volta.
+    """
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t or t.num_groups < 2:
+        return
+
+    ativos = [p for p in t.players if p.active]
+    # Na primeira distribuição, ordena aleatoriamente
+    # (não há score ainda). Em redistribuições, ordena por score.
+    if t.current_round == 0:
+        random.shuffle(ativos)
+    else:
+        ativos.sort(key=lambda p: (-p.score, p.id))
+
+    # Distribuição em serpentina
+    grupo = 0
+    direcao = 1
+    for p in ativos:
+        p.group = grupo + 1
+        grupo += direcao
+        if grupo >= t.num_groups:
+            grupo = t.num_groups - 1
+            direcao = -1
+        elif grupo < 0:
+            grupo = 0
+            direcao = 1
+
+    db.session.commit()
+
+
+def _pairings_round_robin(jogadores: list[TournamentPlayer]) -> list[tuple]:
+    """Gera pares de uma rodada de round-robin usando o método círculo.
+
+    O algoritmo fixa o primeiro jogador e rotaciona os demais.
+    Para número ímpar, o último jogador fica de BYE.
+
+    Retorna lista de (p1, p2, is_bye).
+    """
+    ids = [p.id for p in jogadores]
+    n = len(ids)
+
+    # Se ímpar, adiciona um dummy (BYE)
+    if n % 2 != 0:
+        ids.append(None)
+        n += 1
+
+    # Método círculo: fixa o primeiro, rotaciona os outros
+    metade = n // 2
+    pares = []
+    for rodada in range(n - 1):
+        for i in range(metade):
+            p1 = ids[i]
+            p2 = ids[n - 1 - i]
+            if p1 is not None and p2 is not None:
+                pares.append((p1, p2, False))
+            elif p1 is not None:
+                pares.append((p1, None, True))
+            elif p2 is not None:
+                pares.append((p2, None, True))
+        # Rotaciona: mantém o primeiro fixo, rotaciona o resto
+        ultimo = ids.pop()
+        ids.insert(1, ultimo)
+
+    return pares
+
+
+def _buscar_jogador_por_id(players: list, pid: int) -> Optional[TournamentPlayer]:
+    """Busca um TournamentPlayer pelo ID na lista."""
+    for p in players:
+        if p.id == pid:
+            return p
+    return None
+
+
+def iniciar_fase_grupos(tournament_id: int) -> list[TournamentMatch]:
+    """Gera TODAS as partidas de round-robin dentro de cada grupo.
+
+    Cada grupo joga todos contra todos. Para N jogadores, são
+    N*(N-1)/2 partidas por grupo. Todas são geradas de uma vez
+    para simplificar o fluxo.
+
+    Returns:
+        Lista de todos os TournamentMatch da fase de grupos.
+    """
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t or t.formato != 'groups_knockout':
+        return []
+
+    if t.status == 'open':
+        t.status = 'active'
+
+    t.current_round = 1
+
+    # Distribui jogadores nos grupos
+    if all(p.group == 0 for p in t.players if p.active):
+        distribuir_grupos(tournament_id)
+
+    matches_criados = []
+    match_id_counter = [1]  # mutable para closure
+
+    for grupo_num in range(1, t.num_groups + 1):
+        jogadores = [p for p in t.players if p.active and p.group == grupo_num]
+        if len(jogadores) < 2:
+            continue
+
+        ids = [p.id for p in jogadores]
+        n = len(ids)
+
+        # Gera todos os pares únicos (round-robin completo)
+        # Usa método círculo: N-1 rodadas, cada uma com N/2 pares
+        if n % 2 != 0:
+            ids.append(None)  # dummy BYE
+            n += 1
+
+        metade = n // 2
+        ja_criados: set[tuple[int, int]] = set()
+
+        for _ in range(n - 1):
+            for i in range(metade):
+                p1 = ids[i]
+                p2 = ids[n - 1 - i]
+                if p1 is not None and p2 is not None:
+                    # Evita duplicatas (p1, p2) e (p2, p1)
+                    par = (min(p1, p2), max(p1, p2))
+                    if par not in ja_criados:
+                        ja_criados.add(par)
+                        match = TournamentMatch(
+                            tournament_id=tournament_id,
+                            round_number=1,
+                            player1_id=p1,
+                            player2_id=p2,
+                            seed=random.randint(0, 2**31),
+                            status='pending',
+                        )
+                        db.session.add(match)
+                        matches_criados.append(match)
+            # Rotaciona: mantém primeiro fixo, move o último para depois do primeiro
+            ultimo = ids.pop()
+            ids.insert(1, ultimo)
+
+    db.session.commit()
+    return matches_criados
+
+
+def _classificacao_grupo(tournament_id: int, grupo: int) -> list[dict]:
+    """Retorna classificação dos jogadores em um grupo específico."""
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t:
+        return []
+
+    jogadores = [p for p in t.players if p.group == grupo]
+    jogadores.sort(key=lambda p: (-p.score, -p.sos, p.id))
+
+    result = []
+    for pos, p in enumerate(jogadores, 1):
+        result.append({
+            'posicao': pos,
+            'id': p.id,
+            'nome': p.player_name,
+            'score': p.score,
+            'sos': round(p.sos, 2),
+            'wins': p.wins,
+            'losses': p.losses,
+            'draws': p.draws,
+        })
+    return result
+
+
+def _group_stage_complete(tournament_id: int) -> bool:
+    """Verifica se todas as partidas da fase de grupos foram concluídas."""
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t:
+        return False
+
+    # Descobre quantos jogadores por grupo
+    for grupo_num in range(1, t.num_groups + 1):
+        jogadores = [p for p in t.players if p.group == grupo_num]
+        n = len(jogadores)
+        if n < 2:
+            continue
+
+        # Total de partidas necessárias: n*(n-1)/2
+        total_necessario = n * (n - 1) // 2
+        if n % 2 != 0:
+            # Número ímpar: ainda n*(n-1)/2, mas algumas rodadas têm BYE
+            pass
+
+        # Partidas realizadas neste grupo
+        realizadas = 0
+        for m in t.matches:
+            if m.status != 'completed':
+                continue
+            p1_grupo = 0
+            p2_grupo = 0
+            for p in t.players:
+                if p.id == m.player1_id:
+                    p1_grupo = p.group
+                if p.id == m.player2_id:
+                    p2_grupo = p.group
+            if p1_grupo == grupo_num and p2_grupo == grupo_num:
+                realizadas += 1
+
+        if realizadas < total_necessario:
+            return False
+
+    return True
+
+
+def avancar_para_mata_mata(tournament_id: int) -> list[TournamentMatch]:
+    """Gera o bracket do mata-mata com base na classificação dos grupos.
+
+    1. Pega os melhores de cada grupo (top N).
+    2. Cria chaveamento cruzado: 1º Grupo A vs 2º Grupo B, etc.
+    3. Gera as partidas da primeira rodada do mata-mata.
+
+    Returns:
+        Lista de TournamentMatch da primeira rodada do mata-mata.
+    """
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t:
+        return []
+
+    t.group_stage_finished = True
+    t.current_round += 1
+    prox_round = t.current_round
+
+    # Coleta os classificados de cada grupo
+    classificados: list[dict] = []  # cada dict: {player, grupo, posicao}
+    for grupo_num in range(1, t.num_groups + 1):
+        ranking = _classificacao_grupo(tournament_id, grupo_num)
+        for pos, r in enumerate(ranking, 1):
+            if pos <= t.advance_per_group:
+                player = _buscar_jogador_por_id(t.players, r['id'])
+                if player:
+                    classificados.append({
+                        'player': player,
+                        'grupo': grupo_num,
+                        'posicao': pos,
+                    })
+
+    # Para 2 grupos: chaveamento cruzado padrão
+    # A1 vs B2, B1 vs A2, A3 vs B4, B3 vs A4...
+    matches_criados = []
+    n_avancam = len(classificados)
+
+    if n_avancam < 2:
+        db.session.commit()
+        return []
+
+    # Garante que n_avancam é potência de 2
+    import math
+    prox_pot2 = 2 ** math.ceil(math.log2(n_avancam))
+    n_byes = prox_pot2 - n_avancam
+
+    # Ordena classificados por (grupo, posicao)
+    # Para chaveamento padrão: intercala 1os vs 2os de grupos opostos
+    # A1, B1, A2, B2, A3, B3, A4, B4...
+    grupos_pares = t.num_groups // 2
+    bracket_order = []
+    for pos in range(1, t.advance_per_group + 1):
+        for g in range(1, t.num_groups + 1):
+            for c in classificados:
+                if c['grupo'] == g and c['posicao'] == pos:
+                    bracket_order.append(c)
+                    break
+
+    # Intercala: 1o vs último, 2o vs penúltimo... (padrão torneios)
+    matches_data = []
+    usados = set()
+    i, j = 0, len(bracket_order) - 1
+    while i < j:
+        if i in usados:
+            i += 1
+            continue
+        if j in usados:
+            j -= 1
+            continue
+        matches_data.append((bracket_order[i]['player'], bracket_order[j]['player']))
+        usados.add(i)
+        usados.add(j)
+        i += 1
+        j -= 1
+
+    # Se sobrou 1 (n_avancam ímpar), ganha BYE
+    restantes = [c for idx, c in enumerate(bracket_order) if idx not in usados]
+    for c in restantes:
+        c['player'].score += PTS_VITORIA
+        match = TournamentMatch(
+            tournament_id=tournament_id,
+            round_number=prox_round,
+            player1_id=c['player'].id,
+            player2_id=None,
+            score_p1=PTS_VITORIA,
+            score_p2=0.0,
+            winner_id=c['player'].id,
+            is_draw=False,
+            status='completed',
+        )
+        db.session.add(match)
+        matches_criados.append(match)
+
+    # BYEs para completar potência de 2
+    # (já tratado pelo chaveamento acima)
+
+    for p1, p2 in matches_data:
+        match = TournamentMatch(
+            tournament_id=tournament_id,
+            round_number=prox_round,
+            player1_id=p1.id,
+            player2_id=p2.id,
+            seed=random.randint(0, 2**31),
+            status='pending',
+        )
+        db.session.add(match)
+        matches_criados.append(match)
+
+    # Salva bracket JSON
+    bracket_info = []
+    for c in classificados:
+        bracket_info.append({
+            'player_id': c['player'].id,
+            'player_name': c['player'].player_name,
+            'grupo': c['grupo'],
+            'posicao': c['posicao'],
+        })
+    t.bracket_json = json.dumps(bracket_info)
+
+    db.session.commit()
+    return matches_criados
+
+
+def gerar_rodada_mata_mata(tournament_id: int) -> list[TournamentMatch]:
+    """Gera a próxima rodada do mata-mata (single elimination).
+
+    Emparelha vencedores da rodada anterior.
+    Se só resta 1 partida pendente (final), retorna vazio.
+
+    Returns:
+        Lista de TournamentMatch da próxima rodada, ou lista vazia
+        se o torneio deve encerrar.
+    """
+    from rage_web.game_engine.match import run_match
+
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t:
+        return []
+
+    t.current_round += 1
+    prox_round = t.current_round
+
+    # Pega vencedores da rodada anterior (matches completed da última rodada)
+    rodada_anterior = t.current_round - 1
+    matches_anteriores = [
+        m for m in t.matches
+        if m.round_number == rodada_anterior and m.status == 'completed'
+    ]
+
+    vencedores = []
+    for m in matches_anteriores:
+        if m.winner_id:
+            vencedores.append(m.winner_id)
+
+    # Se só tem 1 vencedor, é o campeão
+    if len(vencedores) <= 1:
+        return []
+
+    # Emparelha vencedores
+    matches_criados = []
+    for i in range(0, len(vencedores), 2):
+        if i + 1 < len(vencedores):
+            match = TournamentMatch(
+                tournament_id=tournament_id,
+                round_number=prox_round,
+                player1_id=vencedores[i],
+                player2_id=vencedores[i + 1],
+                seed=random.randint(0, 2**31),
+                status='pending',
+            )
+            db.session.add(match)
+            matches_criados.append(match)
+        else:
+            # Número ímpar: BYE (não deve ocorrer com potência de 2)
+            p = db.session.get(TournamentPlayer, vencedores[i])
+            if p:
+                p.score += PTS_VITORIA
+                match = TournamentMatch(
+                    tournament_id=tournament_id,
+                    round_number=prox_round,
+                    player1_id=vencedores[i],
+                    player2_id=None,
+                    score_p1=PTS_VITORIA,
+                    score_p2=0.0,
+                    winner_id=vencedores[i],
+                    is_draw=False,
+                    status='completed',
+                )
+                db.session.add(match)
+                matches_criados.append(match)
+
+    db.session.commit()
+    return matches_criados

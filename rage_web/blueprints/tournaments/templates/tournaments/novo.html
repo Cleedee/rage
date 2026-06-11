@@ -25,14 +25,51 @@
           <label class="label">Formato</label>
           <div class="control">
             <div class="select">
-              <select name="formato">
+              <select name="formato" id="formato-select">
                 <option value="swiss">Suíço</option>
+                <option value="groups_knockout">Grupos + Mata-mata</option>
                 <option value="single_elim">Mata-mata (Single Elimination)</option>
                 <option value="double_elim">Dupla Eliminação</option>
               </select>
             </div>
           </div>
         </div>
+
+        <div id="groups-config" class="is-hidden">
+          <div class="field">
+            <label class="label">Número de Grupos</label>
+            <div class="control">
+              <input class="input" type="number" name="num_groups" value="2" min="2" max="16">
+            </div>
+            <p class="help">Jogadores serão distribuídos uniformemente entre os grupos.</p>
+          </div>
+
+          <div class="field">
+            <label class="label">Classificados por Grupo</label>
+            <div class="control">
+              <input class="input" type="number" name="advance_per_group" value="2" min="1" max="8">
+            </div>
+            <p class="help">Quantos do topo de cada grupo avançam para o mata-mata.</p>
+          </div>
+        </div>
+
+        {% block extra_scripts %}
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var sel = document.getElementById('formato-select');
+          var cfg = document.getElementById('groups-config');
+          function toggle() {
+            if (sel.value === 'groups_knockout') {
+              cfg.classList.remove('is-hidden');
+            } else {
+              cfg.classList.add('is-hidden');
+            }
+          }
+          sel.addEventListener('change', toggle);
+          toggle();
+        });
+        </script>
+        {% endblock %}
 
         <div class="field">
           <label class="label">Máximo de Rodadas</label>

@@ -27,6 +27,12 @@ class Tournament(db.Model):
         DateTime, default=lambda: datetime.now(timezone.utc))
     description: Mapped[str] = mapped_column(Text, default='')
 
+    # Configuração do formato grupos + mata-mata
+    num_groups: Mapped[int] = mapped_column(Integer, default=0)
+    advance_per_group: Mapped[int] = mapped_column(Integer, default=0)
+    group_stage_finished: Mapped[bool] = mapped_column(Boolean, default=False)
+    bracket_json: Mapped[str] = mapped_column(Text, default='')
+
     players: Mapped[List['TournamentPlayer']] = relationship(
         back_populates='tournament', cascade='all, delete-orphan')
     matches: Mapped[List['TournamentMatch']] = relationship(
@@ -49,6 +55,9 @@ class TournamentPlayer(db.Model):
     ext_sos: Mapped[float] = mapped_column(Float, default=0.0)  # Extended SOS
     active: Mapped[bool] = mapped_column(Boolean, default=True)
     eliminated_round: Mapped[int] = mapped_column(Integer, default=0)
+
+    # Grupo (para formato grupos + mata-mata)
+    group: Mapped[int] = mapped_column(Integer, default=0)
 
     tournament: Mapped['Tournament'] = relationship(back_populates='players')
 

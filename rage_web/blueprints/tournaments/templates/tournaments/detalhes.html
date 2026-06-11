@@ -16,12 +16,22 @@
           <h1 class="title">🏟️ {{ torneio.name }}</h1>
           <p class="subtitle">
             {% if torneio.formato == 'swiss' %} Suíço
+            {% elif torneio.formato == 'groups_knockout' %} Grupos + Mata-mata
             {% elif torneio.formato == 'single_elim' %} Mata-mata
             {% elif torneio.formato == 'double_elim' %} Dupla Eliminação
             {% else %} {{ torneio.formato }}
             {% endif %}
+            {% if torneio.formato != 'groups_knockout' %}
             · Rodada {{ torneio.current_round }}/{{ torneio.max_rounds or '—' }}
+            {% elif not torneio.group_stage_finished %}
+            · Fase de Grupos
+            {% else %}
+            · Mata-mata · Rodada {{ torneio.current_round }}
+            {% endif %}
             · {{ torneio.players|length }} jogador(es)
+            {% if torneio.formato == 'groups_knockout' and torneio.num_groups > 0 %}
+            · {{ torneio.num_groups }} grupos · top {{ torneio.advance_per_group }} avançam
+            {% endif %}
           </p>
           {% if torneio.description %}
           <p class="has-text-grey">{{ torneio.description }}</p>
@@ -45,73 +55,124 @@
       <form method="POST" action="{{ url_for('tournaments.iniciar', tournament_id=torneio.id) }}"
             style="display:inline">
         <button type="submit" class="button is-primary">
-          <i class="bi bi-play-fill"></i>&nbsp; Iniciar Torneio
+          <i class="bi bi-play-fill"></i>&nbsp;
+          {% if torneio.formato == 'groups_knockout' %}
+            Iniciar Fase de Grupos
+          {% else %}
+            Iniciar Torneio
+          {% endif %}
         </button>
       </form>
       {% endif %}
 
       {% if torneio.status == 'active' %}
-      <form method="POST"
-            action="{{ url_for('tournaments.proxima_rodada', tournament_id=torneio.id) }}"
-            style="display:inline">
-        <button type="submit" class="button is-link">
-          <i class="bi bi-skip-forward"></i>&nbsp; Próxima Rodada
-        </button>
-      </form>
+        {% if torneio.formato == 'groups_knockout' and not torneio.group_stage_finished %}
+          <!-- Fase de grupos -->
+          <form method="POST"
+                action="{{ url_for('tournaments.executar', tournament_id=torneio.id) }}"
+                style="display:inline">
+            <button type="submit" class="button is-warning">
+              <i class="bi bi-cpu"></i>&nbsp; Executar Partidas (Bot)
+            </button>
+          </form>
 
-      <form method="POST"
-            action="{{ url_for('tournaments.executar', tournament_id=torneio.id) }}"
-            style="display:inline">
-        <button type="submit" class="button is-warning">
-          <i class="bi bi-cpu"></i>&nbsp; Executar Partidas (Bot)
-        </button>
-      </form>
+          <form method="POST"
+                action="{{ url_for('tournaments.avancar_mata_mata', tournament_id=torneio.id) }}"
+                style="display:inline">
+            <button type="submit" class="button is-link">
+              <i class="bi bi-arrow-right-circle"></i>&nbsp; Avançar para Mata-mata
+            </button>
+          </form>
 
-      <form method="POST"
-            action="{{ url_for('tournaments.encerrar', tournament_id=torneio.id) }}"
-            style="display:inline"
-            onsubmit="return confirm('Encerrar o torneio?')">
-        <button type="submit" class="button is-danger">
-          <i class="bi bi-stop-fill"></i>&nbsp; Encerrar Torneio
-        </button>
-      </form>
+        {% elif torneio.formato == 'groups_knockout' and torneio.group_stage_finished %}
+          <!-- Mata-mata -->
+          <form method="POST"
+                action="{{ url_for('tournaments.executar', tournament_id=torneio.id) }}"
+                style="display:inline">
+            <button type="submit" class="button is-warning">
+              <i class="bi bi-cpu"></i>&nbsp; Executar Partidas (Bot)
+            </button>
+          </form>
+
+          <form method="POST"
+                action="{{ url_for('tournaments.proxima_rodada_mata_mata', tournament_id=torneio.id) }}"
+                style="display:inline">
+            <button type="submit" class="button is-link">
+              <i class="bi bi-skip-forward"></i>&nbsp; Próxima Rodada (Mata-mata)
+            </button>
+          </form>
+
+          <form method="POST"
+                action="{{ url_for('tournaments.encerrar', tournament_id=torneio.id) }}"
+                style="display:inline"
+                onsubmit="return confirm('Encerrar o torneio?')">
+            <button type="submit" class="button is-danger">
+              <i class="bi bi-stop-fill"></i>&nbsp; Encerrar Torneio
+            </button>
+          </form>
+
+        {% else %}
+          <!-- Formato suíço / eliminação simples -->
+          <form method="POST"
+                action="{{ url_for('tournaments.proxima_rodada', tournament_id=torneio.id) }}"
+                style="display:inline">
+            <button type="submit" class="button is-link">
+              <i class="bi bi-skip-forward"></i>&nbsp; Próxima Rodada
+            </button>
+          </form>
+
+          <form method="POST"
+                action="{{ url_for('tournaments.executar', tournament_id=torneio.id) }}"
+                style="display:inline">
+            <button type="submit" class="button is-warning">
+              <i class="bi bi-cpu"></i>&nbsp; Executar Partidas (Bot)
+            </button>
+          </form>
+
+          <form method="POST"
+                action="{{ url_for('tournaments.encerrar', tournament_id=torneio.id) }}"
+                style="display:inline"
+                onsubmit="return confirm('Encerrar o torneio?')">
+            <button type="submit" class="button is-danger">
+              <i class="bi bi-stop-fill"></i>&nbsp; Encerrar Torneio
+            </button>
+          </form>
+        {% endif %}
       {% endif %}
     </div>
     {% endif %}
 
     <div class="columns">
-      <!-- Classificação -->
+      <!-- Coluna esquerda: Classificação / Grupos -->
       <div class="column is-half">
-        <div class="box">
-          <h3 class="title is-4">🏆 Classificação</h3>
-          {% if ranking %}
-          <div class="table-container">
+        {% if torneio.formato == 'groups_knockout' and grupos_data %}
+          <!-- Tabelas dos grupos -->
+          {% for g in grupos_data %}
+          <div class="box">
+            <h3 class="title is-4">📊 Grupo {{ g.numero }}</h3>
+            {% if g.jogadores %}
             <table class="table is-fullwidth is-hoverable">
               <thead>
                 <tr>
                   <th>#</th>
                   <th>Jogador</th>
                   <th>Pts</th>
-                  <th>SOS</th>
                   <th>V</th>
                   <th>D</th>
                   <th>E</th>
                 </tr>
               </thead>
               <tbody>
-                {% for r in ranking %}
+                {% for r in g.jogadores %}
                 <tr>
                   <td><strong>{{ r.posicao }}</strong></td>
                   <td>
                     {{ r.nome }}
-                    {% if r.is_bot %}
-                    <span class="tag is-light is-small">🤖</span>
-                    {% else %}
-                    <span class="tag is-light is-small">🧑</span>
+                    {% if r.posicao <= torneio.advance_per_group %}
+                    <span class="tag is-success is-light">✅ Classificado</span>
                     {% endif %}
                   </td>
                   <td><strong>{{ "%.1f"|format(r.score) }}</strong></td>
-                  <td><small>{{ "%.2f"|format(r.sos) }}</small></td>
                   <td>{{ r.wins }}</td>
                   <td>{{ r.losses }}</td>
                   <td>{{ r.draws }}</td>
@@ -119,11 +180,82 @@
                 {% endfor %}
               </tbody>
             </table>
+            {% else %}
+            <p class="has-text-grey">Nenhum jogador neste grupo.</p>
+            {% endif %}
           </div>
-          {% else %}
-          <p class="has-text-grey">Nenhum jogador inscrito.</p>
+          {% endfor %}
+
+          <!-- Bracket do mata-mata -->
+          {% if bracket_classificados %}
+          <div class="box">
+            <h3 class="title is-4">🏆 Chaveamento do Mata-mata</h3>
+            <table class="table is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Jogador</th>
+                  <th>Grupo</th>
+                  <th>Pos.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in bracket_classificados %}
+                <tr>
+                  <td>{{ c.player_name }}</td>
+                  <td>Grupo {{ c.grupo }}</td>
+                  <td>{{ c.posicao }}º</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
           {% endif %}
-        </div>
+
+        {% else %}
+          <!-- Classificação geral (formatos que não grupos+knockout) -->
+          <div class="box">
+            <h3 class="title is-4">🏆 Classificação</h3>
+            {% if ranking %}
+            <div class="table-container">
+              <table class="table is-fullwidth is-hoverable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Jogador</th>
+                    <th>Pts</th>
+                    <th>SOS</th>
+                    <th>V</th>
+                    <th>D</th>
+                    <th>E</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in ranking %}
+                  <tr>
+                    <td><strong>{{ r.posicao }}</strong></td>
+                    <td>
+                      {{ r.nome }}
+                      {% if r.is_bot %}
+                      <span class="tag is-light is-small">🤖</span>
+                      {% else %}
+                      <span class="tag is-light is-small">🧑</span>
+                      {% endif %}
+                    </td>
+                    <td><strong>{{ "%.1f"|format(r.score) }}</strong></td>
+                    <td><small>{{ "%.2f"|format(r.sos) }}</small></td>
+                    <td>{{ r.wins }}</td>
+                    <td>{{ r.losses }}</td>
+                    <td>{{ r.draws }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <p class="has-text-grey">Nenhum jogador inscrito.</p>
+            {% endif %}
+          </div>
+        {% endif %}
 
         <!-- Jogadores inscritos -->
         <div class="box">
@@ -135,6 +267,7 @@
                 <th>Nome</th>
                 <th>Tipo</th>
                 <th>Deck</th>
+                {% if torneio.formato == 'groups_knockout' %}<th>Grupo</th>{% endif %}
                 <th>Dif.</th>
               </tr>
             </thead>
@@ -150,6 +283,7 @@
                   {% endif %}
                 </td>
                 <td>{% if p.deck_id %}Deck #{{ p.deck_id }}{% else %}—{% endif %}</td>
+                {% if torneio.formato == 'groups_knockout' %}<td>{{ p.group if p.group else '—' }}</td>{% endif %}
                 <td>{{ p.difficulty }}</td>
               </tr>
               {% endfor %}
@@ -161,7 +295,7 @@
         </div>
       </div>
 
-      <!-- Partidas -->
+      <!-- Coluna direita: Partidas -->
       <div class="column is-half">
         <div class="box">
           <h3 class="title is-4">⚔️ Partidas</h3>
@@ -170,7 +304,11 @@
           {% for round_num, round_matches in rodadas %}
           <div class="mb-4">
             <h4 class="title is-5 has-text-grey">
-              Rodada {{ round_num }}
+              {% if torneio.formato == 'groups_knockout' and not torneio.group_stage_finished %}
+                Grupo {{ round_num }}
+              {% else %}
+                Rodada {{ round_num }}
+              {% endif %}
               {% if round_num == torneio.current_round %}<span class="tag is-link is-light">Atual</span>{% endif %}
             </h4>
             <table class="table is-fullwidth is-narrow">
