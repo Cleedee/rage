@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{{ url_for('tournaments.listar') }}">Torneios</a></li>
+        <li><a href="{{ url_for('tournaments.detalhes', tournament_id=torneio.id) }}">{{ torneio.name }}</a></li>
+        <li class="is-active"><a href="#">Exportar Jogadores</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title">📤 Exportar Jogadores</h1>
+    <h2 class="subtitle">{{ torneio.name }} · {{ torneio.players|length }} jogador(es)</h2>
+
+    <div class="box">
+      <form method="POST">
+        <div class="field">
+          <label class="label">Jogadores a exportar</label>
+          <div class="control">
+            <table class="table is-fullwidth is-narrow">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Deck</th>
+                  <th>Dificuldade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in torneio.players %}
+                {% if p.active %}
+                <tr>
+                  <td>
+                    {% if p.is_bot %}
+                    <span class="tag is-info is-light">🤖</span>
+                    {% else %}
+                    <span class="tag is-success is-light">🧑</span>
+                    {% endif %}
+                    {{ p.player_name }}
+                  </td>
+                  <td>
+                    {% if p.deck_id %}
+                      {% set deck = decks|selectattr('id', 'equalto', p.deck_id)|first %}
+                      {{ deck.name if deck else 'Deck #' ~ p.deck_id }}
+                    {% else %}—{% endif %}
+                  </td>
+                  <td>{{ p.difficulty }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <p class="help">{{ torneio.players|selectattr('active')|list|length }} jogador(es) ativo(s) serão copiados.</p>
+        </div>
+
+        <hr>
+
+        <div class="field">
+          <label class="label">Destino</label>
+          <div class="control">
+            <div class="tabs is-toggle is-small mb-3" id="tabDestino">
+              <ul>
+                <li class="is-active" data-tab="existente">
+                  <a onclick="switchTab('existente')">📂 Torneio Existente</a>
+                </li>
+                <li data-tab="novo">
+                  <a onclick="switchTab('novo')">✨ Criar Novo Torneio</a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Torneio existente -->
+            <div id="panel-existente">
+              <div class="select is-fullwidth">
+                <select name="destino_id">
+                  <option value="">— Selecione —</option>
+                  {% for t in torneios %}
+                  <option value="{{ t.id }}">
+                    {{ t.name }} ({{ t.players|length }} jogadores, {{ t.formato }})
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% if not torneios %}
+              <p class="help has-text-warning">Nenhum torneio aberto disponível. Crie um novo torneio primeiro.</p>
+              {% endif %}
+            </div>
+
+            <!-- Novo torneio -->
+            <div id="panel-novo" style="display:none">
+              <div class="field">
+                <label class="label">Nome do Novo Torneio</label>
+                <div class="control">
+                  <input class="input" type="text" name="novo_nome"
+                         placeholder="Ex: {{ torneio.name }} (cópia)"
+                         value="{{ torneio.name }} — Cópia">
+                </div>
+              </div>
+              <input type="hidden" name="criar_novo" value="1">
+              <p class="help">O novo torneio terá o mesmo formato ({{ torneio.formato }}), rodadas e VP.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <i class="bi bi-export"></i>&nbsp; Exportar
+            </button>
+          </div>
+          <div class="control">
+            <a href="{{ url_for('tournaments.detalhes', tournament_id=torneio.id) }}"
+               class="button is-light">Cancelar</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('#tabDestino li').forEach(li => li.classList.remove('is-active'));
+  document.querySelector(`#tabDestino li[data-tab="${tab}"]`).classList.add('is-active');
+  document.getElementById('panel-existente').style.display = tab === 'existente' ? 'block' : 'none';
+  document.getElementById('panel-novo').style.display = tab === 'novo' ? 'block' : 'none';
+  // Toggle criar_novo hidden input
+  document.querySelector('input[name="criar_novo"]').value = tab === 'novo' ? '1' : '';
+  // Disable select when creating new
+  document.querySelector('select[name="destino_id"]').disabled = tab !== 'existente';
+  document.querySelector('input[name="novo_nome"]').disabled = tab !== 'novo';
+}
+</script>
+{% endblock %}

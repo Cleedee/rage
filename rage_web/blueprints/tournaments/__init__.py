@@ -1,6 +1,6 @@
 """Blueprint de Torneios — interface web para o sistema de torneios."""
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 
 from rage_web.ext.database import db
 from rage_web.models.tournament import (
@@ -12,6 +12,7 @@ from rage_web.game_engine.tournament import (
     iniciar_fase_grupos, avancar_para_mata_mata, gerar_rodada_mata_mata,
     _classificacao_grupo,
 )
+from rage_web.models.deck import Deck
 
 tournaments_bp = Blueprint(
     'tournaments', __name__,
@@ -63,6 +64,8 @@ def detalhes(tournament_id: int):
             import json as _json
             bracket_classificados = _json.loads(t.bracket_json)
 
+    decks = Deck.query.order_by(Deck.name).all()
+
     return render_template(
         'tournaments/detalhes.html',
         torneio=t,
@@ -70,6 +73,7 @@ def detalhes(tournament_id: int):
         matches=matches,
         grupos_data=grupos_data,
         bracket_classificados=bracket_classificados,
+        decks=decks,
     )
 
 
@@ -131,9 +135,123 @@ def inscrever(tournament_id: int):
         flash(f'{player_name} inscrito com sucesso!', 'success')
         return redirect(url_for('tournaments.detalhes', tournament_id=tournament_id))
 
-    from rage_web.models.deck import Deck
     decks = Deck.query.order_by(Deck.name).all()
     return render_template('tournaments/inscrever.html', torneio=t, decks=decks)
+
+
+# ---------------------------------------------------------------------------
+# Alterar deck do jogador (antes do torneio iniciar)
+# ---------------------------------------------------------------------------
+
+@tournaments_bp.route('/jogador/<int:player_id>/alterar-deck', methods=['POST'])
+def alterar_deck(player_id: int):
+    """Altera o deck de um jogador enquanto o torneio estiver aberto."""
+    tp: TournamentPlayer = db.session.get(TournamentPlayer, player_id)
+    if not tp:
+        flash('Jogador não encontrado.', 'danger')
+        return redirect(url_for('tournaments.listar'))
+
+    t: Tournament = db.session.get(Tournament, tp.tournament_id)
+    if t.status != 'open':
+        flash('Só é possível alterar o deck antes do torneio iniciar.', 'warning')
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+
+    deck_id = request.form.get('deck_id', type=int)
+    if not deck_id:
+        flash('Selecione um deck.', 'warning')
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+
+    deck = db.session.get(Deck, deck_id)
+    if not deck:
+        flash('Deck não encontrado.', 'danger')
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+
+    tp.deck_id = deck_id
+    db.session.commit()
+    flash(f'Deck de {tp.player_name} alterado para "{deck.name}"!', 'success')
+    return redirect(url_for('tournaments.detalhes', tournament_id=t.tournament_id))
+
+
+# ---------------------------------------------------------------------------
+# Exportar jogadores para outro torneio
+# ---------------------------------------------------------------------------
+
+@tournaments_bp.route('/<int:tournament_id>/exportar', methods=['GET', 'POST'])
+def exportar_jogadores(tournament_id: int):
+    """Exporta jogadores (com decks) para outro torneio.
+
+    GET: mostra formulário com select de torneio destino.
+    POST: copia jogadores para o torneio destino.
+    """
+    t: Tournament = db.session.get(Tournament, tournament_id)
+    if not t:
+        return render_template('404.html'), 404
+
+    if request.method == 'POST':
+        destino_id = request.form.get('destino_id', type=int)
+        criar_novo = request.form.get('criar_novo')
+
+        if criar_novo:
+            # Cria um novo torneio com o mesmo formato
+            nome = request.form.get('novo_nome', '').strip()
+            if not nome:
+                flash('Nome do novo torneio é obrigatório.', 'danger')
+                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
+            destino = criar_torneio(
+                nome,
+                t.formato,
+                t.max_rounds,
+                t.vp_to_win,
+            )
+            if t.formato == 'groups_knockout':
+                destino.num_groups = t.num_groups
+                destino.advance_per_group = t.advance_per_group
+            db.session.flush()
+        else:
+            if not destino_id:
+                flash('Selecione um torneio de destino.', 'danger')
+                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
+            destino: Tournament = db.session.get(Tournament, destino_id)
+            if not destino:
+                flash('Torneio de destino não encontrado.', 'danger')
+                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
+            if destino.status != 'open':
+                flash('O torneio de destino precisa estar aberto.', 'warning')
+                return redirect(url_for('tournaments.exportar_jogadores', tournament_id=tournament_id))
+
+        # Copia jogadores
+        copiados = 0
+        for tp_orig in t.players:
+            if not tp_orig.active:
+                continue
+            tp_novo = TournamentPlayer(
+                tournament_id=destino.id,
+                player_name=tp_orig.player_name,
+                deck_id=tp_orig.deck_id,
+                difficulty=tp_orig.difficulty,
+                is_bot=tp_orig.is_bot,
+            )
+            db.session.add(tp_novo)
+            copiados += 1
+
+        db.session.commit()
+        nome_destino = destino.name if not criar_novo else nome
+        flash(f'{copiados} jogador(es) exportados para "{nome_destino}"!', 'success')
+        return redirect(url_for('tournaments.detalhes', tournament_id=t.id))
+
+    # GET: lista torneios abertos como destino
+    torneios = Tournament.query.filter(
+        Tournament.id != tournament_id,
+        Tournament.status == 'open',
+    ).order_by(Tournament.created_at.desc()).all()
+
+    decks = Deck.query.order_by(Deck.name).all()
+    return render_template(
+        'tournaments/exportar.html',
+        torneio=t,
+        torneios=torneios,
+        decks=decks,
+    )
 
 
 # ---------------------------------------------------------------------------

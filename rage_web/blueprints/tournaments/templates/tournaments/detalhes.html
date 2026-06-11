@@ -44,6 +44,10 @@
            class="button is-success">
           <i class="bi bi-person-plus"></i>&nbsp; Inscrever Jogador
         </a>
+        <a href="{{ url_for('tournaments.exportar_jogadores', tournament_id=torneio.id) }}"
+           class="button is-info">
+          <i class="bi bi-export"></i>&nbsp; Exportar Jogadores
+        </a>
         {% endif %}
       </div>
     </div>
@@ -269,6 +273,9 @@
                 <th>Deck</th>
                 {% if torneio.formato == 'groups_knockout' %}<th>Grupo</th>{% endif %}
                 <th>Dif.</th>
+                {% if torneio.status == 'open' %}
+                <th>Ações</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -282,9 +289,30 @@
                   <span class="tag is-success is-light">🧑 Humano</span>
                   {% endif %}
                 </td>
-                <td>{% if p.deck_id %}Deck #{{ p.deck_id }}{% else %}—{% endif %}</td>
+                <td>
+                  {% if p.deck_id %}
+                    {% set deck = decks|selectattr('id', 'equalto', p.deck_id)|first %}
+                    {{ deck.name if deck else 'Deck #' ~ p.deck_id }}
+                  {% else %}—{% endif %}
+                </td>
                 {% if torneio.formato == 'groups_knockout' %}<td>{{ p.group if p.group else '—' }}</td>{% endif %}
                 <td>{{ p.difficulty }}</td>
+                {% if torneio.status == 'open' %}
+                <td>
+                  <form method="POST"
+                        action="{{ url_for('tournaments.alterar_deck', player_id=p.id) }}"
+                        style="display:inline-flex; gap:4px; align-items:center;">
+                    <div class="select is-small">
+                      <select name="deck_id" onchange="this.form.submit()">
+                        <option value="">— Deck —</option>
+                        {% for d in decks %}
+                        <option value="{{ d.id }}" {{ 'selected' if d.id == p.deck_id }}>{{ d.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </form>
+                </td>
+                {% endif %}
               </tr>
               {% endfor %}
             </tbody>
