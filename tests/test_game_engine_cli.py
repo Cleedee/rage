@@ -128,12 +128,18 @@ class TestRageCLI:
         cli.onecmd('REVEAL')
         assert cli.game.combat.step == 'reveal'
 
-        # Resolve (agora avanca ate end automaticamente)
+        # Resolve (agora avanca ate play_card - multi-round)
         cli.onecmd('RESOLVE')
-        assert cli.game.combat.step == 'end'
+        # O ataque foi ao HG, entao a presa (se houver) defendeu.
+        # O alvo default 'hg' continua vivo, entao round 2 comeca.
+        # Se o combate foi contra uma criatura que morreu, termina.
+        step = cli.game.combat.step
+        # Pode ser 'play_card' (multi-round) ou 'end' (se alvo morreu)
+        assert step in ('play_card', 'end'), f'Esperado play_card ou end, obteve {step}'
 
         # Encerra
-        cli.onecmd('ENDCOMBAT')
+        if cli.game.combat.is_active:
+            cli.onecmd('ENDCOMBAT')
         assert not cli.game.combat.is_active
 
     def test_feint_cycle(self, cli):

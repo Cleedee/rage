@@ -756,17 +756,20 @@ class RageCLI(cmd.Cmd):
 
     def do_RESOLVE(self, arg):
         """RESOLVE - Resolve o combate atual.
-        Avanca por withdrawal -> between_rounds -> end.
+        Avanca por withdrawal -> between_rounds (multi-round loop se necessario).
         """
         g = self.game
         if resolve_combat(g):
             print('  Dano aplicado!')
-            # Avanca steps de auto-advance ate end
+            # Avanca steps de auto-advance ate um step que exija acao
             from rage_web.game_engine.combat_queue import advance_combat_step
             while g.combat.is_active and g.combat.step not in ('end',):
                 if not advance_combat_step(g):
                     break
-            print('  Combate resolvido!')
+            if g.combat.is_active and g.combat.step == 'play_card':
+                print('  Proxima rodada de combate!')
+            else:
+                print('  Combate resolvido!')
         else:
             print('  Nao foi possivel resolver o combate.')
 

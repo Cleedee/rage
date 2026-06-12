@@ -245,17 +245,21 @@ class TestCombatQueue:
         assert summary['declarations'][c2] == 'block'
         assert summary['last_to_declare'] == c2
 
-        # Resolver (novo fluxo: resolution -> withdrawal -> between_rounds -> end)
+        # Resolver (novo fluxo: resolution -> withdrawal -> between_rounds -> loop)
         assert resolve_combat(game)
         assert game.combat.step == 'withdrawal'
 
-        # Avanca steps de auto-advance ate end
         from rage_web.game_engine.combat_queue import advance_combat_step
         assert advance_combat_step(game)  # withdrawal -> between_rounds
-        assert advance_combat_step(game)  # between_rounds -> end
-        assert game.combat.step == 'end'
 
-        # Encerrar
+        # Multi-round (6.2): como ambos os combatentes sobreviveram,
+        # o combate prossegue para a segunda rodada
+        assert advance_combat_step(game)  # between_rounds -> play_card (rodada 2)
+        assert game.combat.step == 'play_card'
+        assert game.combat.round_number == 2
+
+        # Encerra manualmente
+        game.combat.step = 'end'
         assert end_combat(game)
         assert not game.combat.is_active
 
@@ -356,8 +360,11 @@ class TestCombatQueue:
         assert game.combat.step == 'withdrawal'
         from rage_web.game_engine.combat_queue import advance_combat_step
         advance_combat_step(game)  # withdrawal -> between_rounds
-        advance_combat_step(game)  # between_rounds -> end
-        assert game.combat.step == 'end'
+        # Multi-round (6.2): ambos sobreviveram, combate continua
+        advance_combat_step(game)  # between_rounds -> play_card (rodada 2)
+        assert game.combat.step == 'play_card'
+        assert game.combat.round_number == 2
+        game.combat.step = 'end'  # encerra manualmente
 
     def test_get_combatants(self, game):
         start_combat(game, ['c1', 'c2'], ['c3'])

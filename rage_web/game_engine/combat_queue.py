@@ -1009,10 +1009,31 @@ def advance_combat_step(game: GameState) -> bool:
             game.add_log('  Sem atacantes ou defensores - fim do combate')
             game.combat.step = 'end'
             return True
-        # Por enquanto, sempre encerra apos 1 rodada
-        # (multi-round sera implementado posteriormente)
-        game.add_log('  Fim da rodada - encerrando combate')
-        game.combat.step = 'end'
+
+        # ── Multi-round combat (6.2): loop back to play_card ──
+        if combat.round_number >= 10:
+            # Limite de seguranca: max 10 rounds
+            game.add_log('  Limite de 10 rodadas atingido - encerrando combate')
+            game.combat.step = 'end'
+            return True
+
+        game.combat.round_number += 1
+        # Reseta estado da rodada anterior
+        game.combat.declarations.clear()
+        game.combat.declaration_order.clear()
+        game.combat.played_cards.clear()
+        game.combat.face_down_order.clear()
+        game.combat.targets.clear()
+        game.combat.ce_face_down.clear()
+        game.combat.illegal_cards.clear()
+        game.combat.bluff_cards.clear()
+        game.combat.bluff_failed.clear()
+        game.combat.damage_queue.clear()
+        game.combat.attacker_withdrew = False
+        # Nova rodada
+        game.combat.step = 'play_card'
+        game.add_log(
+            f'  ⏳ Rodada {combat.round_number} - ')
         return True
 
     # Steps que precisam de acao do jogador: retorna False
@@ -1092,6 +1113,7 @@ def start_combat(game: GameState, attackers: list[str],
         defenders=defenders,
         original_attackers=list(attackers),
         original_defenders=list(defenders),
+        round_number=1,  # Primeira rodada
         alphas=alphas_anteriores,
         attack_type=attack_type,
         territory_target=target_card_id if attack_type == 'territory'
