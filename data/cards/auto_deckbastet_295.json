@@ -9,7 +9,7 @@
       "condicao_alvo": "criatura_inimiga",
       "params": {
         "valor": 0,
-        "nao_pode_ser_esquivado": True,
+        "nao_pode_ser_esquivado": true,
         "descricao": "Careful Strike: dano = Rage, nao pode ser dodged"
       }
     }]

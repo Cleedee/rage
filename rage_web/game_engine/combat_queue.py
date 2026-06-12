@@ -420,6 +420,29 @@ COMBAT_ACTIONS = {
     'anatomy_lesson',   # Anatomy Lesson (dano 4, unblockable, retira)
     'savage_beatdown',  # Savage Beatdown (dano 3, descarte se frenzied)
     'submission_hold',  # Submission Hold (dano 1, remove ou anti-dodge)
+    'careful_strike',   # Careful Strike (nao pode ser esquivado)
+    'block_and_roll',   # Block and Roll (fast strike, block + counter)
+    'block_and_strike', # Block and Strike (block + ataque)
+    'evade_and_strike', # Evade and Strike (Kailindo, dodge + ataque)
+    'fast_strike',      # Fast Strike (ataque rapido)
+    'planned_strike',   # Planned Strike (dano nao pode ser redirecionado)
+    'stunning_strike',  # Stunning Strike (fast, remove frenesi)
+    'aggressive_bite',  # Aggressive Bite (nao Homid, impede fuga)
+    'mitey_bitey',      # Mitey Bitey (vs alvo com Rage 2x+)
+    'spirited_strike',  # Spirited Strike (Klaive bonus)
+    'fetal_position',   # Fetal Position (block ataque <=6)
+    'forceful_wind',    # Forceful Wind (Kailindo, encerra combate)
+    'body_slam',        # Body Slam (+2 dano se sem acao anterior)
+    'bum_rush',         # Bum Rush (evento, pack ataca)
+    'pack_defense',     # Pack Defense (evento, puxa pack)
+    'lucky_blow',       # Lucky Blow (dano 1)
+    'off_balanced',     # Off-balanced Attack (-1 Rage prox rodada)
+    'overextended',     # Overextended Attack (sem acao prox rodada)
+    'reckless_swing',   # Reckless Swing (se esquivado, sem acao prox)
+    'sap_spirit',       # Sap Spirit (so Umbra, unblockable)
+    'stinging_wound',   # Stinging Wound (+1 Rage oponente se danificado)
+    'surprise_attack',  # Surprise Attack (se danificar 1a rodada, vitima nao causa dano)
+    'blood_atami',      # Blood Atami (-2 R/G enquanto danificado)
 }
 
 
@@ -584,6 +607,145 @@ COMBAT_ACTION_PROPS: dict[str, dict] = {
         'speed': 'normal',
         'retira_se_nao_frenetico': True,
         'nao_pode_esquivar_se_frenetico': True,
+    },
+    # Acoes de combate adicionais
+    'careful_strike': {
+        'damage': None,           # Dano = Rage do atacante
+        'rage_requirement': 3,
+        'speed': 'normal',
+        'nao_pode_esquivar': True,
+    },
+    'block_and_roll': {
+        'damage': 1,              # Contra-ataque de 1
+        'rage_requirement': 0,
+        'speed': 'fast',
+        'block_value': 2,         # Bloqueia ate 2
+    },
+    'block_and_strike': {
+        'damage': None,           # Dano = Rage
+        'rage_requirement': 4,
+        'speed': 'normal',
+        'block_value': 2,
+    },
+    'evade_and_strike': {
+        'damage': None,           # Dano = Rage
+        'rage_requirement': 3,
+        'speed': 'normal',
+        'dodge_all': True,        # Esquiva todos os ataques
+    },
+    'fast_strike': {
+        'damage': None,
+        'rage_requirement': 5,
+        'speed': 'fast',
+    },
+    'planned_strike': {
+        'damage': None,
+        'rage_requirement': 4,
+        'speed': 'normal',
+        'nao_pode_redirecionar': True,
+    },
+    'stunning_strike': {
+        'damage': None,
+        'rage_requirement': 5,
+        'speed': 'fast',
+        'remove_frenesi': True,
+    },
+    'aggressive_bite': {
+        'damage': None,
+        'rage_requirement': 4,
+        'speed': 'normal',
+        'requer_nao_homod': True,
+        'impede_fuga': True,
+    },
+    'mitey_bitey': {
+        'damage': None,
+        'rage_requirement': 2,
+        'speed': 'normal',
+        'vs_alto_rage': True,
+    },
+    'spirited_strike': {
+        'damage': None,
+        'rage_requirement': 3,
+        'speed': 'normal',
+        'cancela_actions_inimigas': True,
+    },
+    'fetal_position': {
+        'damage': 0,
+        'rage_requirement': 2,
+        'speed': 'normal',
+        'block_value': 6,         # Bloqueia ataque <=6
+    },
+    'forceful_wind': {
+        'damage': 0,
+        'rage_requirement': 4,
+        'speed': 'normal',
+        'encerra_combate': True,
+    },
+    'body_slam': {
+        'damage': None,
+        'rage_requirement': 4,
+        'speed': 'normal',
+        'bonus_sem_acao_anterior': 2,
+    },
+    'bum_rush': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'pack_attack': True,
+    },
+    'pack_defense': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'puxa_pack': True,
+    },
+    'lucky_blow': {
+        'damage': 1,
+        'rage_requirement': 2,
+        'speed': 'normal',
+    },
+    'off_balanced': {
+        'damage': None,
+        'rage_requirement': 1,
+        'speed': 'normal',
+        'penalidade_rage_prox': -1,
+    },
+    'overextended': {
+        'damage': None,
+        'rage_requirement': 2,
+        'speed': 'normal',
+        'sem_acao_prox': True,
+    },
+    'reckless_swing': {
+        'damage': None,
+        'rage_requirement': 2,
+        'speed': 'normal',
+        'sem_acao_se_esquivado': True,
+    },
+    'sap_spirit': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'unblockable': True,
+        'so_umbra': True,
+    },
+    'stinging_wound': {
+        'damage': 1,
+        'rage_requirement': 1,
+        'speed': 'normal',
+        'bonus_rage_oponente': 1,
+    },
+    'surprise_attack': {
+        'damage': None,
+        'rage_requirement': 2,
+        'speed': 'normal',
+        'vitima_nao_causa_dano_1a': True,
+    },
+    'blood_atami': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'penalidade_rg': -2,
     },
 }
 

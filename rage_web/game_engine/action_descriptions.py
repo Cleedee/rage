@@ -97,7 +97,7 @@ def describe_action(acao: str, game=None) -> str:
     card_type = _find_card_type(acao, game)
 
     # Padroes de acao
-    if acao.startswith('use_card_'):
+    if acao.startswith('use_card_') or acao.startswith('use_'):
         return _describe_use_card(acao, card_name, card_type, game)
     elif acao.startswith('play_'):
         return _describe_play_card(acao, card_name, card_type, game)
@@ -146,59 +146,112 @@ def _find_card_name(acao: str, game=None) -> Optional[str]:
        de log nao relacionadas).
     2. Fallback: ultima entrada 'jogou'/'usou' do log.
     """
-    # 1. Tentar extrair ID da carta da acao (mais preciso)
-    card_id = _extract_card_id(acao)
+    # 1. Tentar extrair ID da carta da acao e buscar nas zonas
+    card_id = _extract_card_id(acao, game)
     if card_id and game:
         for p in game.players:
             for zone in (p.pack_home, p.hand, p.discard_combat, p.discard_sept,
-                         p.hunting_grounds, p.umbra):
+                         p.hunting_grounds, p.umbra, p.victory_pile):
                 for c in zone:
                     if c.card_id == card_id:
                         return c.name
+    # 1b. Fallback: buscar pelo nome do banco usando o slug
+    if not card_id:
+        slug = _extract_action_name(acao)
+        if slug:
+            from rage_web.models.card import Card as CardModel
+            try:
+                slug_normalized = slug.lower().replace(' ', '-')
+                card_banco = CardModel.query.filter_by(slug=slug_normalized).first()
+                if card_banco:
+                    return card_banco.name
+            except Exception:
+                pass
 
-    # 2. Fallback: extrair do log do jogo
-    if game and game.log:
-        for log_entry in reversed(game.log):
-            if 'jogou ' in log_entry:
-                partes = log_entry.split('jogou ')
-                if len(partes) > 1:
-                    return partes[1].strip()
-            elif 'usou ' in log_entry:
-                partes = log_entry.split('usou ')
-                if len(partes) > 1:
-                    nome = partes[1].strip()
-                    # Remover parenteses extras
-                    if ' (' in nome:
-                        nome = nome[:nome.index(' (')]
-                    return nome
+    # 2. Fallback: usar o nome da action string
+    # Extrai o slug da action (ex: use_careful-strike_modo0 -> Careful Strike)
+    action_name = _extract_action_name(acao)
+    if action_name:
+        return action_name
 
     return None
 
 
 def _find_card_type(acao: str, game=None) -> Optional[str]:
     """Tenta extrair o tipo da carta."""
-    card_id = _extract_card_id(acao)
+    # 1. Buscar nas zonas do jogo
+    card_id = _extract_card_id(acao, game)
     if card_id and game:
         for p in game.players:
             for zone in (p.pack_home, p.hand, p.discard_combat, p.discard_sept,
-                         p.hunting_grounds, p.umbra):
+                         p.hunting_grounds, p.umbra, p.victory_pile):
                 for c in zone:
                     if c.card_id == card_id:
                         return c.card_type
+    # 2. Fallback: buscar pelo slug no CARTAS_EXEMPLO (em memoria, sem banco)
+    slug = _extract_action_name(acao)
+    if slug:
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO
+        slug_norm = slug.lower().replace(' ', '-')
+        modelo = CARTAS_EXEMPLO.get(slug_norm)
+        if modelo:
+            return modelo.tipo
     return None
 
 
-def _extract_card_id(acao: str) -> Optional[int]:
+_slug_to_id_cache: dict[str, int] = {}
+
+
+def _extract_card_id(acao: str, game=None) -> Optional[int]:
     """Extrai o ID da carta de uma string de acao."""
     # Padroes: use_card_790_modo0, play_character_123, umbra_step_134, etc.
     match = re.search(r'(?:card_|step_|back_|play_|declare_|attack_|eliminate_|feint_|alpha_)(\d+)', acao)
     if match:
         return int(match.group(1))
+    # Formato alternativo: use_<slug>_modo<N>
+    # Extrai o slug e busca no cache ou no banco
+    if acao.startswith('use_'):
+        rest = acao[4:]
+        if '_modo' in rest:
+            slug = rest[:rest.index('_modo')]
+            if slug in _slug_to_id_cache:
+                return _slug_to_id_cache[slug]
+            try:
+                from rage_web.models.card import Card
+                card = Card.query.filter_by(slug=slug).first()
+                if card:
+                    _slug_to_id_cache[slug] = card.id
+                    return card.id
+            except Exception:
+                pass
+    return None
+
+
+def _extract_action_name(acao: str) -> Optional[str]:
+    """Extrai o nome da carta da propria string de acao.
+
+    Ex: use_careful-strike_modo0 -> Careful Strike
+        use_razor-claws_modo0 -> Razor Claws
+    """
+    # Formato: use_<slug>_modo<N> ou play_<slug>
+    for prefix in ('use_', 'play_', 'declare_'):
+        if acao.startswith(prefix):
+            rest = acao[len(prefix):]
+            # Remover modo
+            if '_modo' in rest:
+                rest = rest[:rest.index('_modo')]
+            # Remover card_id (declare_12345_acao)
+            parts = rest.split('_')
+            if parts and parts[0].isdigit():
+                parts = parts[1:]
+            slug = '_'.join(parts)
+            # Converter slug para nome legivel
+            return slug.replace('-', ' ').replace('_', ' ').title()
     return None
 
 
 def _describe_use_card(acao: str, card_name: Optional[str], card_type: Optional[str], game=None) -> str:
-    """Descreve acoes de uso de carta (use_card_XXX_modoY)."""
+    """Descreve acoes de uso de carta (use_card_XXX_modoY ou use_XXX_modoY)."""
     # Extrair modo
     modo_match = re.search(r'modo(\d+)', acao)
     modo = modo_match.group(1) if modo_match else None
@@ -206,8 +259,29 @@ def _describe_use_card(acao: str, card_name: Optional[str], card_type: Optional[
     nome = card_name or 'Carta desconhecida'
     tipo = card_type or ''
 
+    # Se o nome veio do log (pode estar errado), usar o slug da acao
+    if nome and nome != 'Carta desconhecida':
+        slug_name = _extract_action_name(acao)
+        if slug_name and nome != slug_name:
+            nome = slug_name
+
+    # Buscar o tipo pelo slug (mais confiavel que o card_type do CardInstance)
+    slug = _extract_action_name(acao)
+    if slug:
+        from rage_web.models.card import Card as CardModel
+        try:
+            slug_norm = slug.lower().replace(' ', '-')
+            card_banco = CardModel.query.filter_by(slug=slug_norm).first()
+            if card_banco:
+                tipo = card_banco.tipo
+        except Exception:
+            pass
+
     if tipo:
         tipo_human = CARD_TYPE_HUMAN.get(tipo, tipo)
+        if 'careful' in acao.lower():
+            import sys as _sys
+            print(f'[DBG] nome={nome}, tipo={tipo}, tipo_human={tipo_human}, modo={modo}', file=_sys.stderr)
         if modo and modo != '0':
             return f'Usou {nome} ({tipo_human}, modo {modo})'
         return f'Usou {nome} ({tipo_human})'
@@ -256,10 +330,10 @@ def _extract_moot_name(acao: str) -> str:
 def _describe_umbra(acao: str, card_name: Optional[str], game=None) -> str:
     """Descreve acoes de Umbra."""
     if 'step' in acao:
-        nome = card_name or f'Personagem #{_extract_card_id(acao)}'
+        nome = card_name or f'Personagem #{_extract_card_id(acao, game)}'
         return f'{nome} entrou na Umbra'
     elif 'back' in acao:
-        nome = card_name or f'Personagem #{_extract_card_id(acao)}'
+        nome = card_name or f'Personagem #{_extract_card_id(acao, game)}'
         return f'{nome} voltou da Umbra'
     return f'Ação de Umbra'
 
@@ -268,7 +342,7 @@ def _describe_declare(acao: str, card_name: Optional[str], game=None) -> str:
     """Descreve acoes de declaracao de combate."""
     # declare_1469_block -> Personagem 1469 declarou Block
     # declare_1469_head_butt -> Personagem 1469 declarou Head Butt
-    card_id = _extract_card_id(acao)
+    card_id = _extract_card_id(acao, game)
     # Extrair acao de combate (tudo apos o card_id)
     # Formato: declare_<card_id>_<acao> onde acao pode ter underscores
     prefix = f'declare_{card_id}_'
@@ -290,16 +364,16 @@ def _describe_attack(acao: str, card_name: Optional[str], game=None) -> str:
     if 'hg' in acao:
         return 'Atacou Hunting Grounds'
     elif 'alpha' in acao:
-        nome = card_name or f'Personagem #{_extract_card_id(acao)}'
+        nome = card_name or f'Personagem #{_extract_card_id(acao, game)}'
         return f'{nome} atacou (Alpha)'
     else:
-        nome = card_name or f'Personagem #{_extract_card_id(acao)}'
+        nome = card_name or f'Personagem #{_extract_card_id(acao, game)}'
         return f'{nome} atacou'
 
 
 def _describe_feint(acao: str, card_name: Optional[str], game=None) -> str:
     """Descreve acoes de Feint."""
-    card_id = _extract_card_id(acao)
+    card_id = _extract_card_id(acao, game)
     parts = acao.split('_')
     nova_acao = parts[-1] if parts else ''
     nova_human = COMBAT_ACTIONS_HUMAN.get(nova_acao, nova_acao)
