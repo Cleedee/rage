@@ -456,9 +456,10 @@ def distribuir_grupos(tournament_id: int) -> None:
         return
 
     ativos = [p for p in t.players if p.active]
-    # Na primeira distribuição, ordena aleatoriamente
-    # (não há score ainda). Em redistribuições, ordena por score.
-    if t.current_round == 0:
+    # Na primeira distribuicao (round 0 ou 1 - fase de grupos),
+    # ordena aleatoriamente para evitar grupos deterministicos.
+    # Em redistribuicoes, ordena por score.
+    if t.current_round <= 1:
         random.shuffle(ativos)
     else:
         ativos.sort(key=lambda p: (-p.score, p.id))
