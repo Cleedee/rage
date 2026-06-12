@@ -247,10 +247,15 @@ def _describe_umbra(acao: str, card_name: Optional[str], game=None) -> str:
 def _describe_declare(acao: str, card_name: Optional[str], game=None) -> str:
     """Descreve acoes de declaracao de combate."""
     # declare_1469_block -> Personagem 1469 declarou Block
+    # declare_1469_head_butt -> Personagem 1469 declarou Head Butt
     card_id = _extract_card_id(acao)
-    # Extrair acao de combate
-    parts = acao.split('_')
-    combat_action = parts[-1] if parts else ''
+    # Extrair acao de combate (tudo apos o card_id)
+    # Formato: declare_<card_id>_<acao> onde acao pode ter underscores
+    prefix = f'declare_{card_id}_'
+    if acao.startswith(prefix):
+        combat_action = acao[len(prefix):]
+    else:
+        combat_action = acao.split('_')[-1] if '_' in acao else acao
     combat_human = COMBAT_ACTIONS_HUMAN.get(combat_action, combat_action)
 
     if card_name:
