@@ -537,7 +537,7 @@
         </div>
       </div>
 
-      <!-- Vitórias (accordion) -->
+      <!-- Vitórias (accordion, ordem reversa: mais recente primeiro) -->
       <div class="zone-box accordion" onclick="toggleAccordion(this)">
         <h3 class="accordion-header">
           <span class="icon"><i class="bi bi-chevron-right"></i></span>
@@ -545,8 +545,12 @@
         </h3>
         <div class="accordion-body">
           {% if p.victory_pile %}
+          <div style="font-size:0.7rem;color:#888;margin-bottom:6px">
+            Cartas conquistadas por {{ p.name }} ao derrotar oponentes.
+            <span style="float:right">🏆 {{ p.victory_points }} VP</span>
+          </div>
           <div class="hg-grid">
-            {% for card in p.victory_pile %}
+            {% for card in p.victory_pile | reverse %}
             <div class="card-img-cell"
                  data-card-name="{{ card.name }}"
                  data-card-text="{{ card.text|e }}"
@@ -563,7 +567,7 @@
             {% endfor %}
           </div>
           {% else %}
-          <div class="empty-zone">— Vazio —</div>
+          <div class="empty-zone">— Nenhuma carta conquistada —</div>
           {% endif %}
         </div>
       </div>
