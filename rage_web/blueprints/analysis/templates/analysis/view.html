@@ -1,0 +1,656 @@
+{% extends "base.html" %}
+{% block title %}Análise: Turno {{ state.turn }} {{ state.phase }} - Rage CCG{% endblock %}
+
+{% block head %}
+<style>
+  .card-img-cell {
+    display: inline-block;
+    width: 120px;
+    margin: 4px;
+    vertical-align: top;
+    text-align: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .card-img-cell img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    transition: box-shadow 0.15s;
+  }
+  .card-img-cell:hover img {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .card-img-cell .card-name {
+    display: block;
+    font-weight: 600;
+    margin-top: 2px;
+    line-height: 1.1;
+    font-size: 0.7rem;
+  }
+  .card-img-cell .card-stats {
+    display: block;
+    font-size: 0.65rem;
+    color: #666;
+  }
+  .card-img-cell .card-dmg {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #f14668;
+    color: #fff;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .card-img-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .health-bar {
+    display: inline-block;
+    height: 4px;
+    border-radius: 2px;
+    background: #ddd;
+    width: 100%;
+    margin-top: 2px;
+  }
+  .health-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: #48c774;
+  }
+  .health-bar-fill.low { background: #f14668; }
+  .health-bar-fill.mid { background: #ffe08a; }
+  .zone-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #fafafa;
+  }
+  .zone-box h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .zone-box h3 .count {
+    font-weight: 400;
+    color: #888;
+    font-size: 0.75rem;
+  }
+  .nav-bar {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .nav-bar .turn-info {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .nav-bar .phase-tag {
+    font-size: 0.85rem;
+    padding: 2px 12px;
+    border-radius: 12px;
+  }
+  .nav-bar .progress-text {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+  }
+  .accordion-header {
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 0;
+  }
+  .accordion-header:hover { color: #3273dc; }
+  .accordion-body { display: none; }
+  .accordion-body.is-open { display: block; }
+  .vp-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  .empty-zone {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.8rem;
+    padding: 8px;
+    text-align: center;
+  }
+  .hg-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .player-header {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .player-header .name { font-size: 1rem; font-weight: 700; }
+
+  /* ── Tooltip ── */
+  #card-tooltip {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    display: none;
+    width: 300px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    padding: 12px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  #card-tooltip img.tooltip-img {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    border-radius: 6px;
+    margin: 0 auto 10px;
+    display: block;
+    border: 1px solid #ddd;
+  }
+  #card-tooltip .tooltip-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  #card-tooltip .tooltip-subtitle {
+    font-size: 0.75rem;
+    color: #888;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  #card-tooltip .tooltip-text {
+    white-space: pre-wrap;
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  #card-tooltip .tooltip-text-empty {
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+    padding: 8px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Navegação -->
+<div class="nav-bar">
+  <div class="is-flex is-align-items-center" style="gap:12px">
+    <span class="turn-info">⚔️ Turno {{ state.turn }}</span>
+    <span class="tag phase-tag 
+      {% if state.phase == 'combat' %}is-danger
+      {% elif state.phase == 'redraw' %}is-info
+      {% elif state.phase == 'regeneration' %}is-success
+      {% elif state.phase == 'resource' %}is-warning
+      {% elif state.phase == 'umbra' %}is-dark
+      {% elif state.phase == 'moot' %}is-primary
+      {% else %}is-light{% endif %}">
+      {{ state.phase|upper }}
+    </span>
+    {% if state.combat.is_active %}
+    <span class="tag is-danger is-light">⚔️ Combate ativo</span>
+    {% endif %}
+  </div>
+
+  <div class="is-flex is-align-items-center" style="gap:8px">
+    <a href="{{ url_for('analysis.prev_state', game_id=game_id, state_index=state_index) }}"
+       class="button is-small is-inverted {% if state_index == 0 %}is-disabled{% endif %}"
+       {% if state_index == 0 %}disabled{% endif %}>
+      <span class="icon"><i class="bi bi-chevron-left"></i></span>
+      <span>Anterior</span>
+    </a>
+    <span class="progress-text">{{ state_index + 1 }} / {{ total_states }}</span>
+    <a href="{{ url_for('analysis.next_state', game_id=game_id, state_index=state_index) }}"
+       class="button is-small is-inverted {% if state_index >= total_states - 1 %}is-disabled{% endif %}"
+       {% if state_index >= total_states - 1 %}disabled{% endif %}>
+      <span>Próximo</span>
+      <span class="icon"><i class="bi bi-chevron-right"></i></span>
+    </a>
+  </div>
+</div>
+
+<!-- Informações da partida -->
+<div class="box is-small mb-4" style="padding:8px 12px">
+  <div class="is-flex is-flex-wrap-wrap" style="gap:16px;font-size:0.85rem">
+    <span><strong>Seed:</strong> {{ meta.seed }}</span>
+    <span><strong>Turnos máx:</strong> {{ meta.max_turns }}</span>
+    <span><strong>{{ meta.p1_name }}:</strong> <code>{{ deck1_name }}</code></span>
+    <span><strong>{{ meta.p2_name }}:</strong> <code>{{ deck2_name }}</code></span>
+  </div>
+</div>
+
+<!-- Tooltip único -->
+<div id="card-tooltip"></div>
+
+<!-- Hunting Grounds (sempre visível) -->
+<div class="zone-box mb-4" style="background:#f0f5f0;border-color:#b5d8b5">
+  <h3>🌍 Hunting Grounds <span class="count">({{ state.hunting_grounds_cards|length }})</span></h3>
+  {% if state.hunting_grounds_cards %}
+  <div class="hg-grid">
+    {% for card in state.hunting_grounds_cards %}
+    <div class="card-img-cell"
+         data-card-name="{{ card.name }}"
+         data-card-text="{{ card.text|e }}"
+         data-card-type="{{ card.card_type }}"
+         data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+      <div class="card-img-wrap">
+        <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+             alt="{{ card.name }}"
+             loading="lazy"
+             onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+        {% if card.health > 0 and card.health_current is defined %}
+        <div class="card-dmg">{{ card.health_current }}/{{ card.health }}</div>
+        {% endif %}
+      </div>
+      <span class="card-name">{{ card.name }}</span>
+      <span class="card-stats">
+        {% if card.rage %}R{{ card.rage }}{% endif %}
+        {% if card.gnosis %} G{{ card.gnosis }}{% endif %}
+        {% if card.renown %} ⭐{{ card.renown }}{% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-zone">— Vazio —</div>
+  {% endif %}
+</div>
+
+<!-- Jogadores -->
+<div class="columns is-multiline">
+  {% for p in state.players %}
+  {% set p_idx = loop.index0 %}
+  <div class="column is-half">
+    <div class="box">
+      <!-- Header do jogador -->
+      <div class="player-header">
+        <span class="name">
+          {% if p_idx == 0 %}🔵{% else %}🔴{% endif %}
+          {{ p.name }}
+        </span>
+        <span class="vp-badge" style="background:#e8f5e9;color:#2e7d32">
+          🏆 {{ p.victory_points }} VP
+        </span>
+        <span class="tag is-light">{{ p.deck_combat_count }}C / {{ p.deck_sept_count }}S</span>
+      </div>
+
+      <!-- Pack Home -->
+      <div class="zone-box">
+        <h3>🏠 Pack Home <span class="count">({{ p.pack_home|length }})</span></h3>
+        {% if p.pack_home %}
+        <div class="hg-grid">
+          {% for card in p.pack_home %}
+          <div class="card-img-cell"
+               data-card-name="{{ card.name }}"
+               data-card-text="{{ card.text|e }}"
+               data-card-type="{{ card.card_type }}"
+               data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+            <div class="card-img-wrap">
+              <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                   alt="{{ card.name }}" loading="lazy"
+                   onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')"
+                   style="{% if card.tapped %}opacity:0.6;filter:grayscale(0.5){% endif %}">
+              {% if card.health > 0 and card.health_current is defined %}
+              <div class="card-dmg">{{ card.health_current }}/{{ card.health }}</div>
+              {% endif %}
+            </div>
+            <span class="card-name">{{ card.name }}</span>
+            <span class="card-stats">
+              {% if card.rage %}R{{ card.rage }}{% endif %}
+              {% if card.gnosis %} G{{ card.gnosis }}{% endif %}
+              {% if card.renown %} ⭐{{ card.renown }}{% endif %}
+            </span>
+            {% if card.health > 0 and card.health_current is defined and card.health > 0 %}
+            <div class="health-bar">
+              <div class="health-bar-fill {% if card.health_current / card.health < 0.3 %}low{% elif card.health_current / card.health < 0.6 %}mid{% endif %}"
+                   style="width:{{ (card.health_current / card.health * 100)|int }}%"></div>
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-zone">— Vazio —</div>
+        {% endif %}
+      </div>
+
+      <!-- Umbra -->
+      <div class="zone-box">
+        <h3>🌙 Umbra <span class="count">({{ p.umbra|length }})</span></h3>
+        {% if p.umbra %}
+        <div class="hg-grid">
+          {% for card in p.umbra %}
+          <div class="card-img-cell"
+               data-card-name="{{ card.name }}"
+               data-card-text="{{ card.text|e }}"
+               data-card-type="{{ card.card_type }}"
+               data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+            <div class="card-img-wrap">
+              <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                   alt="{{ card.name }}" loading="lazy"
+                   onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+              {% if card.health > 0 and card.health_current is defined %}
+              <div class="card-dmg">{{ card.health_current }}/{{ card.health }}</div>
+              {% endif %}
+            </div>
+            <span class="card-name">{{ card.name }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-zone">— Ninguém na Umbra —</div>
+        {% endif %}
+      </div>
+
+      <!-- Mão (accordion) -->
+      <div class="zone-box accordion" onclick="toggleAccordion(this)">
+        <h3 class="accordion-header">
+          <span class="icon"><i class="bi bi-chevron-right"></i></span>
+          🃏 Mão <span class="count">({{ p.hand|length }})</span>
+        </h3>
+        <div class="accordion-body">
+          {% if p.hand %}
+          <div class="hg-grid">
+            {% for card in p.hand %}
+            <div class="card-img-cell"
+                 data-card-name="{{ card.name }}"
+                 data-card-text="{{ card.text|e }}"
+                 data-card-type="{{ card.card_type }}"
+                 data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+              <div class="card-img-wrap">
+                <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                     alt="{{ card.name }}" loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+              </div>
+              <span class="card-name">{{ card.name }}</span>
+              <span class="card-stats">{{ card.card_type }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-zone">— Vazio —</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Descarte de Combate (accordion) -->
+      <div class="zone-box accordion" onclick="toggleAccordion(this)">
+        <h3 class="accordion-header">
+          <span class="icon"><i class="bi bi-chevron-right"></i></span>
+          🗑️ Descarte (Combate) <span class="count">({{ p.discard_combat|length }})</span>
+        </h3>
+        <div class="accordion-body">
+          {% if p.discard_combat %}
+          <div class="hg-grid">
+            {% for card in p.discard_combat %}
+            <div class="card-img-cell"
+                 data-card-name="{{ card.name }}"
+                 data-card-text="{{ card.text|e }}"
+                 data-card-type="{{ card.card_type }}"
+                 data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+              <div class="card-img-wrap">
+                <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                     alt="{{ card.name }}" loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+              </div>
+              <span class="card-name">{{ card.name }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-zone">— Vazio —</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Descarte de Sept (accordion) -->
+      <div class="zone-box accordion" onclick="toggleAccordion(this)">
+        <h3 class="accordion-header">
+          <span class="icon"><i class="bi bi-chevron-right"></i></span>
+          🗑️ Descarte (Sept) <span class="count">({{ p.discard_sept|length }})</span>
+        </h3>
+        <div class="accordion-body">
+          {% if p.discard_sept %}
+          <div class="hg-grid">
+            {% for card in p.discard_sept %}
+            <div class="card-img-cell"
+                 data-card-name="{{ card.name }}"
+                 data-card-text="{{ card.text|e }}"
+                 data-card-type="{{ card.card_type }}"
+                 data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+              <div class="card-img-wrap">
+                <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                     alt="{{ card.name }}" loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+              </div>
+              <span class="card-name">{{ card.name }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-zone">— Vazio —</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Vitórias (accordion) -->
+      <div class="zone-box accordion" onclick="toggleAccordion(this)">
+        <h3 class="accordion-header">
+          <span class="icon"><i class="bi bi-chevron-right"></i></span>
+          🏆 Pilha de Vitória <span class="count">({{ p.victory_pile|length }})</span>
+        </h3>
+        <div class="accordion-body">
+          {% if p.victory_pile %}
+          <div class="hg-grid">
+            {% for card in p.victory_pile %}
+            <div class="card-img-cell"
+                 data-card-name="{{ card.name }}"
+                 data-card-text="{{ card.text|e }}"
+                 data-card-type="{{ card.card_type }}"
+                 data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+              <div class="card-img-wrap">
+                <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                     alt="{{ card.name }}" loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+              </div>
+              <span class="card-name">{{ card.name }}</span>
+              {% if card.renown %}<span class="card-stats">⭐{{ card.renown }}</span>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-zone">— Vazio —</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Out of Play (accordion) -->
+      <div class="zone-box accordion" onclick="toggleAccordion(this)">
+        <h3 class="accordion-header">
+          <span class="icon"><i class="bi bi-chevron-right"></i></span>
+          🚫 Fora de Jogo <span class="count">({{ p.out_of_play|length }})</span>
+        </h3>
+        <div class="accordion-body">
+          {% if p.out_of_play %}
+          <div class="hg-grid">
+            {% for card in p.out_of_play %}
+            <div class="card-img-cell"
+                 data-card-name="{{ card.name }}"
+                 data-card-text="{{ card.text|e }}"
+                 data-card-type="{{ card.card_type }}"
+                 data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+              <div class="card-img-wrap">
+                <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                     alt="{{ card.name }}" loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+              </div>
+              <span class="card-name">{{ card.name }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-zone">— Vazio —</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Scripts -->
+<script>
+function toggleAccordion(el) {
+  const header = el.querySelector('.accordion-header');
+  const body = el.querySelector('.accordion-body');
+  const icon = header?.querySelector('.bi');
+  if (body) {
+    body.classList.toggle('is-open');
+    if (icon) {
+      icon.classList.toggle('bi-chevron-right');
+      icon.classList.toggle('bi-chevron-down');
+    }
+  }
+}
+
+// ── Tooltip hover ──
+const tooltip = document.getElementById('card-tooltip');
+let tooltipTimer = null;
+
+document.addEventListener('mouseover', function(e) {
+  const cell = e.target.closest('.card-img-cell');
+  if (!cell) {
+    hideTooltip();
+    return;
+  }
+  showTooltip(cell, e);
+});
+
+document.addEventListener('mouseout', function(e) {
+  const cell = e.target.closest('.card-img-cell');
+  if (!cell) {
+    hideTooltip();
+  }
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (tooltip.style.display === 'block') {
+    positionTooltip(e);
+  }
+});
+
+function showTooltip(cell, event) {
+  clearTimeout(tooltipTimer);
+  const name = cell.dataset.cardName || '?';
+  const text = cell.dataset.cardText || '';
+  const type = cell.dataset.cardType || '';
+  const img = cell.dataset.cardImg || '';
+
+  tooltip.innerHTML = '';
+  const imgEl = document.createElement('img');
+  imgEl.className = 'tooltip-img';
+  imgEl.src = img || 'https://via.placeholder.com/260x361?text=' + encodeURIComponent(name.slice(0, 2));
+  imgEl.alt = name;
+  imgEl.onerror = function() {
+    this.src = 'https://via.placeholder.com/260x361?text=' + encodeURIComponent(name.slice(0, 2));
+  };
+  tooltip.appendChild(imgEl);
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'tooltip-name';
+  nameEl.textContent = name;
+  tooltip.appendChild(nameEl);
+
+  if (type) {
+    const subEl = document.createElement('div');
+    subEl.className = 'tooltip-subtitle';
+    subEl.textContent = type;
+    tooltip.appendChild(subEl);
+  }
+
+  const textEl = document.createElement('div');
+  if (text && text.trim()) {
+    textEl.className = 'tooltip-text';
+    textEl.textContent = text;
+  } else {
+    textEl.className = 'tooltip-text-empty';
+    textEl.textContent = '— sem texto —';
+  }
+  tooltip.appendChild(textEl);
+
+  tooltip.style.display = 'block';
+  positionTooltip(event);
+}
+
+function hideTooltip() {
+  tooltipTimer = setTimeout(function() {
+    tooltip.style.display = 'none';
+  }, 80);
+}
+
+function positionTooltip(e) {
+  const x = e.clientX + 16;
+  const y = e.clientY + 8;
+  const tw = tooltip.offsetWidth;
+  const th = tooltip.offsetHeight;
+  const ww = window.innerWidth;
+  const wh = window.innerHeight;
+
+  let left = x;
+  let top = y;
+
+  // Se passar da borda direita, mostra à esquerda
+  if (left + tw > ww - 8) {
+    left = e.clientX - tw - 16;
+  }
+  // Se passar da borda de baixo, sobe
+  if (top + th > wh - 8) {
+    top = wh - th - 8;
+  }
+  // Se passou da esquerda também, força no canto
+  if (left < 4) left = 4;
+  if (top < 4) top = 4;
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+}
+</script>
+{% endblock %}

@@ -38,6 +38,7 @@ def create_app(name_config='production'):
     from rage_web.blueprints.game import bp as game_bp
     from rage_web.blueprints.tutorial import tutorial_bp
     from rage_web.blueprints.tournaments import tournaments_bp
+    from rage_web.blueprints.analysis import bp as analysis_bp
 
     app.register_blueprint(raiz)
     app.register_blueprint(cards)
@@ -46,6 +47,7 @@ def create_app(name_config='production'):
     app.register_blueprint(game_bp)
     app.register_blueprint(tutorial_bp)
     app.register_blueprint(tournaments_bp)
+    app.register_blueprint(analysis_bp)
 
     # Error handlers
     app.register_error_handler(404, page_not_found)

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Análise de Partidas - Rage CCG{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">🔬 Análise de Partidas</h1>
+    <p class="subtitle">Configure uma partida entre bots e navegue turno a turno.</p>
+
+    <form method="POST" action="{{ url_for('analysis.run_analysis') }}">
+      <div class="columns is-multiline">
+        <!-- Jogador 1 -->
+        <div class="column is-half">
+          <div class="box">
+            <h2 class="subtitle">
+              <span class="tag is-info is-medium" style="width:2rem;text-align:center">1</span>
+              Jogador 1
+            </h2>
+            <div class="field">
+              <label class="label">Nome</label>
+              <input class="input" name="p1_name" value="Jogador 1" required>
+            </div>
+            <div class="field">
+              <label class="label">Deck</label>
+              <div class="select is-fullwidth">
+                <select name="deck1" required>
+                  <option value="">— Selecione —</option>
+                  {% for d in decks %}
+                  <option value="{{ d.id }}">{{ d.label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jogador 2 -->
+        <div class="column is-half">
+          <div class="box">
+            <h2 class="subtitle">
+              <span class="tag is-danger is-medium" style="width:2rem;text-align:center">2</span>
+              Jogador 2
+            </h2>
+            <div class="field">
+              <label class="label">Nome</label>
+              <input class="input" name="p2_name" value="Jogador 2" required>
+            </div>
+            <div class="field">
+              <label class="label">Deck</label>
+              <div class="select is-fullwidth">
+                <select name="deck2" required>
+                  <option value="">— Selecione —</option>
+                  {% for d in decks %}
+                  <option value="{{ d.id }}">{{ d.label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configurações -->
+      <div class="box">
+        <div class="columns">
+          <div class="column is-narrow">
+            <div class="field">
+              <label class="label">Seed</label>
+              <input class="input" name="seed" type="number" value="42" style="width:100px">
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="field">
+              <label class="label">Turnos Máx</label>
+              <input class="input" name="max_turns" type="number" value="20" style="width:100px">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <button class="button is-primary is-large">
+          <span class="icon"><i class="bi bi-play-fill"></i></span>
+          <span>Iniciar Análise</span>
+        </button>
+        <a href="{{ url_for('home.index') }}" class="button is-light is-large">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
