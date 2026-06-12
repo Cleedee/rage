@@ -2338,35 +2338,56 @@ class ResolvedorEfeitos:
                                               origem: CardInstance,
                                               jogador: PlayerState,
                                               alvo) -> bool:
-        """Adiciona buff passivo persistente.
+        """Adiciona buff passivo persistente em criaturas do jogador.
 
         Usado por John Hidden-Moon: packmates +1 Rage em pack attacks.
+        Outros exemplos: Spirit of the Tiger (+1 Gnosis permanente)
+
         params:
-        - 'atributos': lista de atributos
-        - 'valor': valor do bonus
-        - 'condicao': condicao para ativar ('pack_attack', etc)
-        - 'alvos': 'packmates' (padrao) ou 'self'
+        - 'atributos': lista de atributos (ex: ['rage'], ['rage', 'gnosis'])
+        - 'valor': valor do bonus (int)
+        - 'condicao': condicao para ativar ('pack_attack', 'permanente', etc)
+        - 'alvos': 'packmates' (padrao), 'self', ou 'all_allies'
+        - 'duracao': 'permanente_ate_cancelar' (padrao) ou '1_rodada'
         """
         params = efeito.params or {}
         atributos = params.get('atributos', ['rage'])
         valor = params.get('valor', 1)
-        condicao = params.get('condicao', 'pack_attack')
-        alvos = params.get('alvos', 'packmates')
-        duracao = 'permanente_ate_cancelar'
+        condicao = params.get('condicao', 'permanente')
+        alvos = params.get('alvos', 'self')
 
-        # Registra o modifier global (modelo simplificado)
+        # Determina quais criaturas recebem o buff
+        alvos_crit = []
+        if alvos == 'self':
+            alvos_crit = [origem]
+        elif alvos == 'packmates':
+            alvos_crit = [c for c in jogador.pack_home if c.health_current > 0]
+        elif alvos == 'all_allies':
+            alvos_crit = ([c for c in jogador.pack_home if c.health_current > 0]
+                         + [c for c in jogador.hunting_grounds if c.health_current > 0])
+        else:
+            alvos_crit = [origem]
+
+        # Aplica o buff em cada criatura alvo
+        aplicados = 0
+        for criatura in alvos_crit:
+            for attr in atributos:
+                criatura.aplicar_buff(attr, valor)
+            aplicados += 1
+
+        # Registra o modifier para tracking
         mod_name = f'passivo_{condicao}_{id(origem)}'
         for m in self.game.game_modifiers:
             if m.card_uid == id(origem) and m.modifier == mod_name:
                 return True
-
         self.game.game_modifiers.append(GameModifier(
             card_uid=id(origem),
             modifier=mod_name,
         ))
 
+        attr_str = ','.join(f'{a}+{valor}' for a in atributos)
         self.game.add_log(
-            f'{origem.name}: buff passivo {atributos}+{valor} ({condicao})'
+            f'{origem.name}: buff passivo {attr_str} em {aplicados} criatura(s) ({condicao})'
         )
         return True
 

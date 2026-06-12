@@ -1419,7 +1419,9 @@ def _find_player(game: GameState, player_id: str) -> Optional[PlayerState]:
 
 
 def _remove_creature(game: GameState, card: CardInstance):
-    """Remove uma criatura de sua zona atual."""
+    """Remove uma criatura de sua zona atual e limpa buffs."""
+    # Limpa buffs da criatura
+    _limpar_buffs(game, card)
     # Tenta remover das zonas dos jogadores
     for p in game.players:
         for zone_list in (p.pack_home, p.hunting_grounds, p.umbra):
@@ -1430,6 +1432,19 @@ def _remove_creature(game: GameState, card: CardInstance):
     if card in game.hunting_grounds_cards:
         game.hunting_grounds_cards.remove(card)
         return
+
+
+def _limpar_buffs(game: GameState, card: CardInstance):
+    """Limpa todos os buffs de uma criatura quando ela morre/sai de jogo."""
+    # Reverte buff_rage
+    if card.buff_rage != 0:
+        card.buff_rage = 0
+    if card.buff_gnosis != 0:
+        card.buff_gnosis = 0
+    if card.buff_health != 0:
+        card.buff_health = 0
+    if card.buff_reducao_dano != 0:
+        card.buff_reducao_dano = 0
 
 
 def _retirar_do_combate(game: GameState, criatura: CardInstance) -> bool:

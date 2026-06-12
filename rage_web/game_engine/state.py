@@ -113,6 +113,12 @@ class CardInstance:
     keywords: str = ''
     tags: str = ''
     is_tapped: bool = False  # @DEPRECATED: nao usado no Rage CCG oficial
+
+    # Buffs temporarios de efeitos passivos (modificar_atributo_passivo)
+    buff_rage: int = 0
+    buff_gnosis: int = 0
+    buff_health: int = 0
+    buff_reducao_dano: int = 0  # Reducao de dano adicional (ex: Fetal Position)
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
     modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
@@ -155,28 +161,54 @@ class CardInstance:
 
     @property
     def effective_rage(self) -> int:
-        """Rage efetivo da criatura, considerando modificadores.
-
-        Se a criatura tem a restricao 'rage_breed', usa o rage_morph
-        como Rage efetivo em todas as formas.
-        """
+        """Rage efetivo da criatura, considerando modificadores e buffs."""
+        base = self.rage
         if 'rage_breed' in self.restricoes:
-            return self.rage_morph if self.rage_morph > 0 else self.rage
-        return self.rage
+            base = self.rage_morph if self.rage_morph > 0 else self.rage
+        return max(0, base + self.buff_rage)
 
     @property
     def effective_gnosis(self) -> int:
-        """Gnosis efetivo da criatura, considerando modificadores."""
+        """Gnosis efetivo da criatura, considerando modificadores e buffs."""
+        base = self.gnosis
         if 'gnosis_breed' in self.restricoes:
-            return self.gnosis_morph if self.gnosis_morph > 0 else self.gnosis
-        return self.gnosis
+            base = self.gnosis_morph if self.gnosis_morph > 0 else self.gnosis
+        return max(0, base + self.buff_gnosis)
 
     @property
     def effective_health(self) -> int:
-        """Vida maxima efetiva da criatura, considerando modificadores."""
+        """Vida maxima efetiva da criatura, considerando buffs."""
+        base = self.health
         if 'health_breed' in self.restricoes:
-            return self.health_morph if self.health_morph > 0 else self.health
-        return self.health
+            base = self.health_morph if self.health_morph > 0 else self.health
+        return max(0, base + self.buff_health)
+
+    @property
+    def effective_reducao_dano(self) -> int:
+        """Reducao de dano efetiva (base + buff)."""
+        return self.reducao_dano + self.buff_reducao_dano
+
+    def aplicar_buff(self, atributo: str, valor: int):
+        """Aplica um buff temporario a esta criatura."""
+        if atributo == 'rage':
+            self.buff_rage += valor
+        elif atributo == 'gnosis':
+            self.buff_gnosis += valor
+        elif atributo == 'health':
+            self.buff_health += valor
+        elif atributo == 'reducao_dano':
+            self.buff_reducao_dano += valor
+
+    def remover_buff(self, atributo: str, valor: int):
+        """Remove um buff (reverte o delta)."""
+        if atributo == 'rage':
+            self.buff_rage = max(0, self.buff_rage - valor)
+        elif atributo == 'gnosis':
+            self.buff_gnosis = max(0, self.buff_gnosis - valor)
+        elif atributo == 'health':
+            self.buff_health = max(0, self.buff_health - valor)
+        elif atributo == 'reducao_dano':
+            self.buff_reducao_dano = max(0, self.buff_reducao_dano - valor)
 
 
 def criar_carta_dano(origem: CardInstance, valor: int,
