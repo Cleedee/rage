@@ -2,30 +2,23 @@
   "id": "careful-strike",
   "nome": "Careful Strike",
   "tipo": "Combat Action",
-  "modos": [
-    {
-      "descricao": "Reduz Rage da vítima",
-      "efeitos": [
-        {
-          "tipo": "modificar_atributo",
-          "condicao_alvo": "criatura_inimiga",
-          "params": {
-            "atributos": [
-              "rage"
-            ],
-            "valor": -1,
-            "duracao": "ate_fim_combate",
-            "condicao": "se_dano_aplicado"
-          }
-        }
-      ]
-    }
-  ],
+  "modos": [{
+    "descricao": "Ataque que nao pode ser esquivado",
+    "efeitos": [{
+      "tipo": "dano",
+      "condicao_alvo": "criatura_inimiga",
+      "params": {
+        "valor": 0,
+        "nao_pode_ser_esquivado": True,
+        "descricao": "Careful Strike: dano = Rage, nao pode ser dodged"
+      }
+    }]
+  }],
   "_metadata": {
     "fonte": "deckbastet",
     "card_id": 295,
     "texto_original": "This attack cannot be dodged.",
-    "precisa_revisao": true,
+    "precisa_revisao": false,
     "slug": "careful-strike"
   }
 }
