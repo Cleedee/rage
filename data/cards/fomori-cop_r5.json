@@ -1,0 +1,27 @@
+{
+  "id": "fomori-cop_r5",
+  "nome": "Fomori Cop",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Policial com Firearm. Descarta equipamento nao-fetich",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "descricao": "Fomori Cop ataca com Firearm"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "umbral_wardens",
+    "card_id": 485,
+    "texto_original": "Police. The Fomori Cop is armed with a firearm. If disarmed, his Rage becomes 3. At the end of the Combat Phase, the Cop discards a piece of non-fetish Equipment equipped by a Gaia creature (chosen by a random player).",
+    "precisa_revisao": true,
+    "slug": "fomori-cop_r5",
+    "notas": "Descarte de equipamento e disarm requerem implementacao no motor."
+  }
+}

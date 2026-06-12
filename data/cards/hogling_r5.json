@@ -1,0 +1,29 @@
+{
+  "id": "hogling_r5",
+  "nome": "Hogling",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Spirit. Usa Gifts Metis. Imune a equipamentos nao-fetiche",
+      "efeitos": [
+        {
+          "tipo": "adicionar_modifier",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "modifier": "imune_equipamento_nao_fetich",
+            "alvos": "self",
+            "descricao": "Hogling imune a equipamentos nao-fetiche"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "umbral_wardens",
+    "card_id": 496,
+    "texto_original": "A spirit elemental of smog infests the area. Hoglings may use any Metis Gifts and are unaffected by non-fetish Equipment attacks.",
+    "precisa_revisao": true,
+    "slug": "hogling_r5",
+    "notas": "Imunidade a equipamentos nao-fetiche requer implementacao no calculo de dano."
+  }
+}

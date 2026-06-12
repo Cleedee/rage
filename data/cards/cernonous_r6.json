@@ -1,0 +1,19 @@
+{
+  "id": "cernonous_r6",
+  "nome": "Cernonous",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Theurge Metis, -1 Renown para votacao em Moot",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "umbral_wardens",
+    "card_id": 7,
+    "texto_original": "Cernonous is considered -1 Renown for moot voting due to his Metis disfigurement.",
+    "precisa_revisao": false,
+    "slug": "cernonous_r6",
+    "notas": "Efeito de moot voting nao implementado no motor. Personagem com stats solidos (R5/G7/V7)."
+  }
+}

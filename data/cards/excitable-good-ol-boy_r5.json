@@ -1,0 +1,27 @@
+{
+  "id": "excitable-good-ol-boy_r5",
+  "nome": "Excitable Good Ol' Boy",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Ataca o alpha de menor Renome antes das acoes",
+      "efeitos": [
+        {
+          "tipo": "auto_pack_attack",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "descricao": "Good Ol' Boy ataca alpha de menor Renome"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "umbral_wardens",
+    "card_id": 479,
+    "texto_original": "The Good Ol' Boy will run amok and attack the lowest Renown alpha before any alphas can act at the beginning of each Combat Phase. If alphas are tied, the Good Ol' Boy will attack a Gaia alpha before attacking a Wyrm alpha.",
+    "precisa_revisao": true,
+    "slug": "excitable-good-ol-boy_r5",
+    "notas": "Ataque pre-alpha requer implementacao no ciclo de combate."
+  }
+}

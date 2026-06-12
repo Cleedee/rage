@@ -1,0 +1,29 @@
+{
+  "id": "modi-votishal_r9",
+  "nome": "Modi Votishal",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Silver Pack. Gifts auto-alvo nunca podem ser cancelados.",
+      "efeitos": [
+        {
+          "tipo": "adicionar_modifier",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "modifier": "gift_autoalvo_incancelavel",
+            "alvos": "self",
+            "descricao": "Gifts que afetam Modi nunca podem ser cancelados"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "umbral_wardens",
+    "card_id": 191,
+    "texto_original": "Silver Pack. If Modi uses a Gift that affects himself, that Gift may never be canceled.",
+    "precisa_revisao": true,
+    "slug": "modi-votishal_r9",
+    "notas": "Efeito anti-cancelamento requer implementacao no sistema de anulacao de efeitos (anunciador.py)."
+  }
+}

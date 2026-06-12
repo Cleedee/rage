@@ -1,0 +1,27 @@
+{
+  "id": "massive-wound",
+  "nome": "Massive Wound",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Dano 5, Rage requerida 7",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "valor": 5,
+            "descricao": "Massive Wound: dano 5"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "umbral_wardens",
+    "card_id": 1283,
+    "texto_original": "Usually only one combatant walks away from a Massive Wound - the one who dealt it.",
+    "precisa_revisao": false,
+    "slug": "massive-wound"
+  }
+}
