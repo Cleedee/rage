@@ -55,14 +55,18 @@ class Snapshot:
                 'name': p.name,
                 'victory_points': p.victory_points,
                 'hand': [_card_info(c) for c in p.hand],
-                # Separa Events como efeitos ativos
+                # Separa Events e Gifts como efeitos ativos
                 'active_effects': [
                     _card_info(c) for c in p.pack_home
                     if (c.card_type or '') == 'Event'
                 ],
+                'active_gifts': [
+                    _card_info(c) for c in p.pack_home
+                    if (c.card_type or '') == 'Gift'
+                ],
                 'pack_home': [
                     _card_info(c) for c in p.pack_home
-                    if (c.card_type or '') != 'Event'
+                    if (c.card_type or '') not in ('Event', 'Gift')
                 ],
                 'umbra': [_card_info(c) for c in p.umbra],
                 'hunting_grounds': [_card_info(c) for c in p.hunting_grounds],
