@@ -1552,6 +1552,9 @@ def reveal_all(game: GameState) -> bool:
                         )
                     break
 
+    # ── Pack Combat (6.5.8): processa efeitos de pack attack/defense ──
+    _process_pack_combat(game)
+
     return True
 
 
@@ -1902,6 +1905,113 @@ def _desafiado_aceita_desafio(game: GameState,
     return score >= 50
 
 
+def _process_pack_combat(game: GameState) -> None:
+    """Processa Pack Combat (6.5.8).
+
+    Escaneia acoes reveladas em busca de Combat Events com
+    propriedade 'pack_attack' (Bum Rush) ou 'puxa_pack'
+    (Pack Defense). Quando encontrada, expande os combatentes
+    adicionando todos os personagens vivos do pack do dono.
+
+    Regras:
+    - Só pode trazer criaturas do próprio pack
+    - Criaturas no Hunting Grounds não entram (salvo exceção em carta)
+    - Ao fim da rodada, os extras são removidos
+    - Pack defending no Hunting Grounds funciona igual
+    """
+    if not game.combat.is_active:
+        return
+
+    combatants_list = get_combatants(game)
+    pack_actions_processed = set()
+
+    for cid, action in list(game.combat.declarations.items()):
+        if action is None:
+            continue
+        if not action.startswith('ce_'):
+            # Só Combat Events podem ter pack_attack/puxa_pack
+            props = COMBAT_ACTION_PROPS.get(action, {})
+            is_pack_attack = props.get('pack_attack', False)
+            is_puxa_pack = props.get('puxa_pack', False)
+            if not is_pack_attack and not is_puxa_pack:
+                continue
+        else:
+            # Combat Events: busca no ce_face_down qual carta foi jogada
+            ce_card_id = game.combat.ce_face_down.get(cid)
+            if not ce_card_id:
+                continue
+            # Mapeia o nome do CE para ver se tem props conhecidas
+            ce_card = _find_card(game, ce_card_id)
+            if not ce_card:
+                continue
+            nome_slug = (ce_card.name or '').lower().replace(' ', '_').replace('-', '_')
+            props = COMBAT_ACTION_PROPS.get(nome_slug, {})
+            if not props.get('pack_attack') and not props.get('puxa_pack'):
+                continue
+            action = nome_slug
+            # Registra a acao nas declarations para que a resolucao
+            # possa identificar o pack combat
+            game.combat.declarations[cid] = nome_slug
+            is_pack_attack = props.get('pack_attack', False)
+            is_puxa_pack = props.get('puxa_pack', False)
+
+        if cid in pack_actions_processed:
+            continue
+        pack_actions_processed.add(cid)
+
+        card = _find_card(game, cid)
+        if not card:
+            continue
+
+        dono = _find_owner(game, card)
+        if not dono:
+            continue
+
+        # Encontra todos os personagens vivos no Pack Home do dono
+        # Regra: só pode trazer criaturas do próprio pack
+        for c in dono.pack_home:
+            if c.health_current <= 0:
+                continue
+            cid_str = str(c.card_id)
+
+            # Pula quem já está no combate
+            if cid_str in combatants_list:
+                continue
+
+            # Verifica se é um combatente válido
+            if not _eh_combatente_valido(game, cid_str):
+                continue
+
+            if is_pack_attack:
+                if cid_str not in game.combat.attackers:
+                    game.combat.attackers.append(cid_str)
+                    game.combat.pack_added_attackers.append(cid_str)
+                    game.add_log(
+                        f'  [Pack Attack] {c.name} juntou-se ao ataque!'
+                    )
+            if is_puxa_pack:
+                if cid_str not in game.combat.defenders:
+                    game.combat.defenders.append(cid_str)
+                    game.combat.pack_added_defenders.append(cid_str)
+                    game.add_log(
+                        f'  [Pack Defense] {c.name} juntou-se a defesa!'
+                    )
+
+        if is_pack_attack:
+            game.add_log(
+                f'  [Pack Combat] {card.name} iniciou ataque em pack!'
+            )
+        elif is_puxa_pack:
+            game.add_log(
+                f'  [Pack Combat] {card.name} iniciou defesa em pack!'
+            )
+
+    # Remove de ilegais as acoes de pack que acabamos de processar
+    # (ainda serao descartadas como ilegais, mas o efeito ja ocorreu)
+    for cid in pack_actions_processed:
+        game.combat.illegal_cards.discard(cid)
+
+
 def _processar_bluff(game: GameState) -> bool:
     """Processa Bluff Step (6.9).
 
@@ -1965,6 +2075,9 @@ def _processar_bluff(game: GameState) -> bool:
             game.combat.bluff_cards.add(cid)
             game.add_log(f'  [Bluff] {card.name} esta blefando com {action} '
                          f'(Rage {card.effective_rage} < {rage_req})')
+
+    # ── Pack Combat (6.5.8): processa pack_attack/puxa_pack ANTES de descartar ilegais ──
+    _process_pack_combat(game)
 
     # Descartar ilegais ANTES de verificar blefes (6.9.1 ordem)
     for cid in list(game.combat.illegal_cards):
@@ -2524,6 +2637,23 @@ def resolve_combat(game: GameState) -> bool:
     # Clan of Hyenas (96): foge do combate se tomou >=3 dano neste round
     _check_hyenas_escape(game)
 
+    # ── Pack Combat cleanup (6.5.8): remove combatentes adicionados via pack ──
+    removidos = 0
+    for cid in list(game.combat.pack_added_attackers):
+        if cid in game.combat.attackers:
+            game.combat.attackers.remove(cid)
+            removidos += 1
+    for cid in list(game.combat.pack_added_defenders):
+        if cid in game.combat.defenders:
+            game.combat.defenders.remove(cid)
+            removidos += 1
+    game.combat.pack_added_attackers.clear()
+    game.combat.pack_added_defenders.clear()
+    if removidos:
+        game.add_log(
+            f'  [Pack Combat] {removidos} combatente(s) extra(s) '
+            f'retornaram ao pack')
+
     # Avanca para withdrawal step (novo sistema)
     game.combat.step = 'withdrawal'
     game.add_log('━ Resolucao concluida, aguardando withdrawal...')
@@ -2784,6 +2914,10 @@ def end_combat(game: GameState) -> bool:
                             f'  [Battlefield] Defensor varreu! '
                             f'{bf_card.name} concedeu '
                             f'{bf_renown} VP a {dono_defensor.name}')
+
+    # Limpa tracking de pack combat
+    game.combat.pack_added_attackers.clear()
+    game.combat.pack_added_defenders.clear()
 
     # Restaura debuff do Caern of the Unwashed Child
     if 'unwashed_child_debuff' in game.combat_triggers:

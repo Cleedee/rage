@@ -732,6 +732,12 @@ class CombatState:
     # battlefield_self_defense[card_id] = dict com rage, gnosis, health, keywords
     battlefield_self_defense: dict[str, dict] = field(default_factory=dict)
 
+    # Pack combat (6.5.8): combatentes adicionados via pack_attack/puxa_pack
+    pack_added_attackers: list[str] = field(default_factory=list)
+    """IDs dos combatentes adicionados como atacantes via pack combat."""
+    pack_added_defenders: list[str] = field(default_factory=list)
+    """IDs dos combatentes adicionados como defensores via pack combat."""
+
     # Metadados de compatibilidade com o sistema anterior
     # declarations: mapeia card_id -> action (antigo declare_action)
     declarations: dict[str, Optional[str]] = field(default_factory=dict)
