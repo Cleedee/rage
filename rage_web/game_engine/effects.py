@@ -2239,9 +2239,9 @@ class ResolvedorEfeitos:
         if not isinstance(getattr(self.game, '_auto_pack_triggers', None), dict):
             self.game._auto_pack_triggers = {}
 
-        trigger_id = f'auto_pack_{origem.card_uid}_{origem.card_id}'
+        trigger_id = f'auto_pack_{id(origem)}_{origem.card_id}'
         self.game._auto_pack_triggers[trigger_id] = {
-            'card_uid': origem.card_uid,
+            'card_uid': id(origem),
             'card_id': str(getattr(origem, 'card_id', '')),
             'player_id': jogador.id,
         }
@@ -2263,7 +2263,7 @@ class ResolvedorEfeitos:
         params = efeito.params or {}
         max_rage = params.get('max_rage', 2)
         qtd = params.get('qtd_acoes', 1)
-        usado_key = f'{origem.card_uid}_acao_extra_rodada'
+        usado_key = f'{id(origem)}_acao_extra_rodada'
 
         # Marca disponibilidade no personagem equipado
         rodada_atual = getattr(self.game, 'combat_round', 0)
@@ -2293,7 +2293,7 @@ class ResolvedorEfeitos:
         max_rage = params.get('max_rage', 1)
 
         # Adiciona modifier de reducao de dano
-        modifier_id = f'imune_rg{max_rage}_{origem.card_uid}'
+        modifier_id = f'imune_rg{max_rage}_{id(origem)}'
         modifier = GameModifier(
             modifier_id=modifier_id,
             attribute='damage_reduction',
@@ -2354,22 +2354,16 @@ class ResolvedorEfeitos:
         alvos = params.get('alvos', 'packmates')
         duracao = 'permanente_ate_cancelar'
 
-        modifier_id = f'passivo_{condicao}_{origem.card_uid}'
-
-        # Verifica se ja existe
-        for m in jogador.modifiers:
-            if m.modifier_id == modifier_id:
+        # Registra o modifier global (modelo simplificado)
+        mod_name = f'passivo_{condicao}_{id(origem)}'
+        for m in self.game.game_modifiers:
+            if m.card_uid == id(origem) and m.modifier == mod_name:
                 return True
 
-        modifier = GameModifier(
-            modifier_id=modifier_id,
-            attribute=','.join(atributos),
-            value=valor,
-            condition=condicao,
-            duration=duracao,
-            source=f'{origem.name}: {params.get("descricao", "buff passivo")}',
-        )
-        jogador.modifiers.append(modifier)
+        self.game.game_modifiers.append(GameModifier(
+            card_uid=id(origem),
+            modifier=mod_name,
+        ))
 
         self.game.add_log(
             f'{origem.name}: buff passivo {atributos}+{valor} ({condicao})'
@@ -2388,9 +2382,9 @@ class ResolvedorEfeitos:
         valor = params.get('valor', 1)
         duracao = params.get('duracao', 'permanente_ate_cancelar')
 
-        modifier_id = f'gauntlet_{origem.card_uid}'
+        modifier_id = f'gauntlet_{id(origem)}'
 
-        for m in jogador.modifiers:
+        for m in self.game.game_modifiers:
             if m.modifier_id == modifier_id:
                 return True
 
@@ -2401,7 +2395,7 @@ class ResolvedorEfeitos:
             duration=duracao,
             source=origem.name,
         )
-        jogador.modifiers.append(modifier)
+        self.game.game_modifiers.append(modifier)
 
         self.game.add_log(
             f'{origem.name}: Gauntlet ajustado para {valor}'

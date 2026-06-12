@@ -2,30 +2,13 @@
   "id": "dodge",
   "nome": "Dodge",
   "tipo": "Combat Action",
-  "modos": [
-    {
-      "descricao": "Reduz Rage da vítima",
-      "efeitos": [
-        {
-          "tipo": "modificar_atributo",
-          "condicao_alvo": "criatura_inimiga",
-          "params": {
-            "atributos": [
-              "rage"
-            ],
-            "valor": -1,
-            "duracao": "ate_fim_combate",
-            "condicao": "se_dano_aplicado"
-          }
-        }
-      ]
-    }
-  ],
+  "acao_combate": "dodge",
+  "modos": [],
   "_metadata": {
     "fonte": "deckbastet",
     "card_id": 312,
     "texto_original": "Avoids one attack. Choose one damage card played this round on the character who has dodged and discard it.",
-    "precisa_revisao": true,
+    "precisa_revisao": false,
     "slug": "dodge"
   }
 }
