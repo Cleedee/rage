@@ -1,0 +1,29 @@
+{
+  "id": "cassandra-shadow-watcher",
+  "nome": "Cassandra Shadow-watcher",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Combat Actions com +2 Rage contra Get of Fenris",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": ["rage"],
+            "valor": 2,
+            "condicao": "vs_get_of_fenris",
+            "descricao": "+2 Rage em Combat Actions contra Get of Fenris"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deckbastet",
+    "card_id": 6,
+    "texto_original": "Cassandra plays combat actions at +2 Rage when fighting Get of Fenris.",
+    "precisa_revisao": false,
+    "slug": "cassandra-shadow-watcher"
+  }
+}

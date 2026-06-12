@@ -9,6 +9,39 @@ import rage_web.ext.repository as rep
 
 logger = logging.getLogger(__name__)
 
+# Tipos que vao para sept deck vs combat deck
+_DECK_SEPT_TYPES = {
+    'Event', 'Action', 'Territory', 'Caern', 'Quest',
+    'Battlefield', 'Rite', 'Moot', 'Board Meeting',
+    'Gift', 'Ally', 'Ally - Victim', 'Ally - Enemy', 'Ally - Caern',
+    'Victim', 'Enemy',
+    'Equipment', 'Equipment - Fetish - Bane Fetish',
+}
+
+COMBAT_DECK_MIN = 20
+SEPT_DECK_MIN = 30
+
+
+def _calcular_validade_deck(deck):
+    """Retorna dict com contagem e validade do deck."""
+    n_sept = 0
+    n_combat = 0
+    for card in deck.cards:
+        ct = (card.tipo or '').strip()
+        if 'Character' in ct or 'character' in ct.lower():
+            continue
+        if ct in _DECK_SEPT_TYPES:
+            n_sept += 1
+        else:
+            n_combat += 1
+    return {
+        'n_sept': n_sept,
+        'n_combat': n_combat,
+        'sept_ok': n_sept >= SEPT_DECK_MIN,
+        'combat_ok': n_combat >= COMBAT_DECK_MIN,
+        'valido': n_sept >= SEPT_DECK_MIN and n_combat >= COMBAT_DECK_MIN,
+    }
+
 bp = Blueprint(
     "decks",
     __name__,
@@ -21,12 +54,15 @@ bp = Blueprint(
 def search():
     form = DeckForm()
     decks = rep.find_all_decks()
-    # Conta cartas por deck
+    # Conta cartas e validade por deck
     deck_card_counts = {}
+    deck_validade = {}
     for deck in decks:
         deck_card_counts[deck.id] = len(deck.cards)
+        deck_validade[deck.id] = _calcular_validade_deck(deck)
     return render_template('decks/search.html', decks=decks,
-                           deck_card_counts=deck_card_counts, form=form)
+                           deck_card_counts=deck_card_counts,
+                           deck_validade=deck_validade, form=form)
 
 
 @bp.get('/<id>')

@@ -33,22 +33,40 @@
     <tr>
       <th>Nome</th>
       <th>Cartas</th>
+      <th>Status</th>
       <th>Descrição</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
     {% for deck in decks %}
-    <tr class="deck-row">
+    {% set v = deck_validade.get(deck.id, {}) %}
+    <tr class="deck-row {% if not v.get('valido', False) %}has-background-warning-light{% endif %}">
       <td>
         <a href="{{ url_for('decks.read_deck', id=deck.id) }}">
+          {% if not v.get('valido', False) %}
+          <i class="bi bi-exclamation-triangle-fill has-text-warning"
+             title="Deck inválido"></i>
+          {% endif %}
           <strong>{{ deck.name }}</strong>
         </a>
       </td>
       <td>
-        <span class="tag is-info is-light">
+        <span class="tag {% if v.get('valido', False) %}is-info{% else %}is-warning{% endif %} is-light">
           {{ deck_card_counts.get(deck.id, 0) }}
         </span>
+      </td>
+      <td>
+        {% if v.get('valido', False) %}
+          <span class="tag is-success is-light">✓ Válido</span>
+        {% else %}
+          <span class="tag is-warning is-light">
+            ⚠ Sept: {{ v.get('n_sept', 0) }}/30
+          </span>
+          <span class="tag is-warning is-light">
+            Combat: {{ v.get('n_combat', 0) }}/20
+          </span>
+        {% endif %}
       </td>
       <td class="has-text-grey is-size-7">
         {{ deck.description or '' }}
