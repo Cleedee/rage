@@ -23,17 +23,23 @@ SEPT_DECK_MIN = 30
 
 
 def _calcular_validade_deck(deck):
-    """Retorna dict com contagem e validade do deck."""
+    """Retorna dict com contagem e validade do deck.
+
+    Usa deck_get_cards para considerar quantity de cada carta.
+    """
+    cartas = rep.deck_get_cards(deck)
     n_sept = 0
     n_combat = 0
-    for card in deck.cards:
+    for entry in cartas:
+        card = entry['card']
+        qty = entry['quantity']
         ct = (card.tipo or '').strip()
         if 'Character' in ct or 'character' in ct.lower():
             continue
         if ct in _DECK_SEPT_TYPES:
-            n_sept += 1
+            n_sept += qty
         else:
-            n_combat += 1
+            n_combat += qty
     return {
         'n_sept': n_sept,
         'n_combat': n_combat,
