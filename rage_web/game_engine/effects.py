@@ -1810,11 +1810,11 @@ class ResolvedorEfeitos:
                                       jogador: PlayerState, alvo) -> bool:
         """Remove criaturas do combate em andamento.
 
-        Usado por: Whole Nine Yards (remove packmates).
-        Spring the Trap (inverte: adiciona packmate ao combate).
+        Usado por: Whole Nine Yards, Spring the Trap, Feral Grin.
         """
-        if efeito.params.get('acao') == 'entrar':
-            # Spring the Trap: packmate entra no combate
+        params = efeito.params or {}
+
+        if params.get('acao') == 'entrar':
             if isinstance(alvo, CardInstance):
                 alvo.restricoes.append('entrou_no_combate')
                 self.game.add_log(
@@ -1829,21 +1829,33 @@ class ResolvedorEfeitos:
                 )
             return True
 
-        # Whole Nine Yards: packmates removidos ate fim do combate
+        # Feral Grin: filtra alvo com menor Rage
+        if params.get('condicao') == 'alvo_menor_rage' and isinstance(alvo, list):
+            rage_origem = origem.effective_rage if hasattr(origem, 'effective_rage') else 0
+            validos = [c for c in alvo if getattr(c, 'effective_rage', 0) < rage_origem]
+            if not validos:
+                self.game.add_log(f'{origem.name}: sem alvo com menor Rage')
+                return False
+            validos.sort(key=lambda c: c.effective_rage)
+            alvo = validos[0]
+
+        duracao = params.get('duracao', 'ate_fim_combate')
+
         if isinstance(alvo, list):
             for c in alvo:
                 if hasattr(c, 'zone'):
                     c.zone = Zone.OUT_OF_PLAY
+                    if duracao == '1_rodada':
+                        c.restricoes.append('voltar_proxima_rodada')
             self.game.add_log(
-                f'{origem.name}: {len(alvo)} packmate(s) removido(s) '
-                f'do combate'
+                f'{origem.name}: {len(alvo)} criatura(s) removida(s) ({duracao})'
             )
             return True
         if isinstance(alvo, CardInstance):
             alvo.zone = Zone.OUT_OF_PLAY
-            self.game.add_log(
-                f'{origem.name}: {alvo.name} removido do combate'
-            )
+            if duracao == '1_rodada':
+                alvo.restricoes.append('voltar_proxima_rodada')
+            self.game.add_log(f'{origem.name}: {alvo.name} removido ({duracao})')
             return True
         return False
 
