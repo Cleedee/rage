@@ -119,6 +119,8 @@ class CardInstance:
     buff_gnosis: int = 0
     buff_health: int = 0
     buff_reducao_dano: int = 0  # Reducao de dano adicional (ex: Fetal Position)
+    buff_dano_proximo_ataque: int = 0  # Bonus de dano no proximo ataque (ex: Razor Claws)
+    buff_dano_agravado: int = 0  # Dano agravado adicional (ex: Toxic Claws)
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
     modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
@@ -188,6 +190,11 @@ class CardInstance:
         """Reducao de dano efetiva (base + buff)."""
         return self.reducao_dano + self.buff_reducao_dano
 
+    @property
+    def buff_dano_ataque(self) -> int:
+        """Bonus de dano no proximo ataque (Razor Claws, etc)."""
+        return self.buff_dano_proximo_ataque
+
     def aplicar_buff(self, atributo: str, valor: int):
         """Aplica um buff temporario a esta criatura."""
         if atributo == 'rage':
@@ -198,6 +205,14 @@ class CardInstance:
             self.buff_health += valor
         elif atributo == 'reducao_dano':
             self.buff_reducao_dano += valor
+        elif atributo == 'dano_proximo_ataque':
+            self.buff_dano_proximo_ataque += valor
+        elif atributo == 'dano_agravado':
+            self.buff_dano_agravado += valor
+
+    def aplicar_attr_buff(self, attr: str, valor: int):
+        """Aplica buff de atributo (usado pelo resolvedor de efeitos)."""
+        self.aplicar_buff(attr, valor)
 
     def remover_buff(self, atributo: str, valor: int):
         """Remove um buff (reverte o delta)."""
@@ -205,6 +220,14 @@ class CardInstance:
             self.buff_rage = max(0, self.buff_rage - valor)
         elif atributo == 'gnosis':
             self.buff_gnosis = max(0, self.buff_gnosis - valor)
+        elif atributo == 'health':
+            self.buff_health = max(0, self.buff_health - valor)
+        elif atributo == 'reducao_dano':
+            self.buff_reducao_dano = max(0, self.buff_reducao_dano - valor)
+        elif atributo == 'dano_proximo_ataque':
+            self.buff_dano_proximo_ataque = max(0, self.buff_dano_proximo_ataque - valor)
+        elif atributo == 'dano_agravado':
+            self.buff_dano_agravado = max(0, self.buff_dano_agravado - valor)
         elif atributo == 'health':
             self.buff_health = max(0, self.buff_health - valor)
         elif atributo == 'reducao_dano':

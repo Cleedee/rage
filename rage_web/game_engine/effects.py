@@ -1402,7 +1402,7 @@ class ResolvedorEfeitos:
         - trocar_forma: bool — para Shapeshift
         """
         atributos = efeito.params.get('atributos', ['rage'])
-        quantidade = efeito.quantidade or 1
+        quantidade = efeito.params.get('valor', efeito.quantidade) or 1
         minimo = int(efeito.params.get('minimo', 0))
         duracao = efeito.params.get('duracao', 'ate_fim_combate')
         escolha = efeito.params.get('escolha', '')
@@ -1481,6 +1481,9 @@ class ResolvedorEfeitos:
                     delta = novo - c.health
                     c.health = novo
                     c.health_current = max(1, c.health_current + delta)
+                elif attr in ('dano_proximo_ataque', 'dano_agravado'):
+                    c.aplicar_attr_buff(attr, quantidade)
+                    delta = quantidade
                 else:
                     continue
 
@@ -1496,10 +1499,18 @@ class ResolvedorEfeitos:
                         fase_aplicada=self.game.phase,
                     ))
 
-                self.game.add_log(
-                    f'{c.name}: {attr} {"+" if delta >= 0 else ""}{delta} '
-                    f'= {getattr(c, attr)} ({duracao})'
-                )
+                # Para buffs especiais, mostra o valor do buff em vez do atributo direto
+                if attr in ('dano_proximo_ataque', 'dano_agravado'):
+                    buff_val = getattr(c, f'buff_{attr}', '?')
+                    self.game.add_log(
+                        f'{c.name}: {attr} +{delta} '
+                        f'(buff={buff_val}, {duracao})'
+                    )
+                else:
+                    self.game.add_log(
+                        f'{c.name}: {attr} {"+" if delta >= 0 else ""}{delta} '
+                        f'= {getattr(c, attr)} ({duracao})'
+                    )
 
         return True
 

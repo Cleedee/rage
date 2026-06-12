@@ -2072,6 +2072,15 @@ def resolve_combat(game: GameState) -> bool:
                 else:
                     dano_base = origem_card.effective_rage
 
+            # Buff de dano no proximo ataque (Razor Claws, etc)
+            if origem_card.buff_dano_proximo_ataque > 0:
+                bonus = origem_card.buff_dano_proximo_ataque
+                dano_base += bonus
+                origem_card.buff_dano_proximo_ataque = 0  # Consume o buff
+                game.add_log(
+                    f'  {origem_card.name}: +{bonus} dano '
+                    f'(buff proximo ataque)')
+
             # Grand Klaive (306): +1 Rage em Crinos
             if origem_card.is_crinos:
                 for eq in origem_card.attached_equipment:

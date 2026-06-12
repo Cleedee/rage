@@ -4,27 +4,27 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "+2 dano no próximo ataque de garra",
+      "descricao": "+2 dano no proximo ataque de claw",
       "efeitos": [
         {
           "tipo": "modificar_atributo",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "dano_proximo_ataque"
-            ],
+            "atributos": ["dano_proximo_ataque"],
             "valor": 2,
-            "duracao": "proximo_ataque"
+            "duracao": "proximo_ataque",
+            "filtro_acao": "claw",
+            "descricao": "+2 dano no proximo ataque de claw"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "novo_deck_bastet",
+    "fonte": "deckbastet",
     "card_id": 1025,
-    "texto_original": "The character's next claw attack that connects does +2 damage.",
-    "precisa_revisao": true,
+    "texto_original": "The character's next claw attack that connects does +2 damage. Place the Razor Claws card with the combat card for the purpose of recording damage.",
+    "precisa_revisao": false,
     "slug": "razor-claws"
   }
 }
