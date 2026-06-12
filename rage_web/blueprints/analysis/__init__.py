@@ -39,8 +39,13 @@ bp = Blueprint('analysis', __name__, template_folder='templates',
 
 
 class Snapshot:
-    """Estado congelado de uma partida num dado turno/fase."""
-    def __init__(self, game: GameState, turn: int, phase: str):
+    """Estado congelado de uma partida num dado turno/fase.
+
+    O log contém APENAS as entradas desde o snapshot anterior
+    (log_offset controla o ponto de corte).
+    """
+    def __init__(self, game: GameState, turn: int, phase: str,
+                 log_offset: int = 0):
         self.turn = turn
         self.phase = phase
         self.players = []
@@ -76,8 +81,9 @@ class Snapshot:
             'declarations': dict(game.combat.declarations),
             'last_to_declare': game.combat.last_to_declare,
         }
-        # Log entries since last snapshot
-        self.log = list(game.log) if hasattr(game, 'log') else []
+        # Log entries APENAS desde o snapshot anterior
+        log_full = list(game.log) if hasattr(game, 'log') else []
+        self.log = log_full[log_offset:]
 
 
 def _card_info(c) -> dict:
@@ -189,7 +195,7 @@ def run_analysis():
 
     game_id = str(uuid.uuid4())[:8]
     states = []
-    logs_collected = []
+    log_offset = 0
 
     # Cria bots
     bots = {}
@@ -197,7 +203,7 @@ def run_analysis():
         bots[p.id] = PriorityBot(game, p.id, difficulty='hard')
 
     # Snapshots iniciais: cada fase do turno 1
-    _capture_state(game, states, logs_collected)
+    log_offset = _capture_state(game, states, log_offset)
 
     # Loop principal para avançar a partida
     stale = 0
@@ -211,9 +217,6 @@ def run_analysis():
     _alpha_phase = False
 
     while step < max_steps:
-        # Salva log atual
-        logs_collected = list(game.log)
-
         # Gerenciamento de alphas (mesma lógica do match.py)
         if game.phase == 'combat' and game.combat.alpha_order and not _alpha_order:
             _alpha_order = list(game.combat.alpha_order)
@@ -257,7 +260,7 @@ def run_analysis():
                 _alpha_map.clear()
                 _alpha_phase = False
             # Captura snapshot ao mudar de fase
-            _capture_state(game, states, logs_collected)
+            log_offset = _capture_state(game, states, log_offset)
         else:
             stale += 1
         last_phase = game.phase
@@ -277,12 +280,12 @@ def run_analysis():
         jogadores_ativos = [p for p in game.players
                             if not getattr(p, 'eliminado', False)]
         if len(jogadores_ativos) <= 1:
-            _capture_state(game, states, logs_collected)
+            _capture_state(game, states, log_offset)
             break
 
         for p in jogadores_ativos:
             if p.victory_points >= p.renown_level:
-                _capture_state(game, states, logs_collected)
+                _capture_state(game, states, log_offset)
                 break
         else:
             step += 1
@@ -291,7 +294,7 @@ def run_analysis():
 
         # Verifica limite de turnos
         if game.turn_number > max_turns:
-            _capture_state(game, states, logs_collected)
+            _capture_state(game, states, log_offset)
             break
 
         step += 1
@@ -314,10 +317,11 @@ def run_analysis():
                             game_id=game_id, state_index=0))
 
 
-def _capture_state(game, states, logs):
-    """Cria um snapshot do estado atual e adiciona à lista."""
-    snap = Snapshot(game, game.turn_number, game.phase)
+def _capture_state(game, states, log_offset: int) -> int:
+    """Cria um snapshot do estado atual e retorna o novo offset do log."""
+    snap = Snapshot(game, game.turn_number, game.phase, log_offset)
     states.append(snap)
+    return len(game.log)
 
 
 @bp.route('/<game_id>/<int:state_index>')
