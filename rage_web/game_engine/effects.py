@@ -93,6 +93,7 @@ class EfeitoTipo(str, Enum):
     MODIFICAR_ATRIBUTO_PASSIVO = 'modificar_atributo_passivo'  # Buff passivo persistente (John)
     MODIFICAR_GAUNTLET = 'modificar_gauntlet'  # Modifica o Gauntlet (Shadow-Weaver)
     MODIFICAR_HAND_SIZE = 'modificar_hand_size'  # Modifica hand size (Old Storm Chaser)
+    ADICIONAR_MODIFIER = 'adicionar_modifier'  # Adicionar modifier string a uma criatura (Heightened Senses)
     MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
@@ -289,6 +290,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MODIFICAR_ATRIBUTO_PASSIVO: self._resolver_modificar_atributo_passivo,
             EfeitoTipo.MODIFICAR_GAUNTLET: self._resolver_modificar_gauntlet,
             EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
+            EfeitoTipo.ADICIONAR_MODIFIER: self._resolver_adicionar_modifier,
             EfeitoTipo.MATAR_VITIMA: self._resolver_matar_vitima,
             # Efeitos de Moot
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
@@ -2388,6 +2390,48 @@ class ResolvedorEfeitos:
         attr_str = ','.join(f'{a}+{valor}' for a in atributos)
         self.game.add_log(
             f'{origem.name}: buff passivo {attr_str} em {aplicados} criatura(s) ({condicao})'
+        )
+        return True
+
+    def _resolver_adicionar_modifier(self, efeito: Efeito,
+                                     origem: CardInstance,
+                                     jogador: PlayerState, alvo) -> bool:
+        """Adiciona um modifier string a uma criatura.
+
+        Usado por Heightened Senses: adiciona modifier que permite
+        recusar qualquer desafio.
+
+        params:
+        - modifier: str — nome do modifier (ex: 'heightened_senses')
+        - alvos: str — 'self' (padrao), 'packmates', 'all_allies'
+        """
+        params = efeito.params or {}
+        modifier_name = params.get('modifier', '')
+        alvos = params.get('alvos', 'self')
+
+        if not modifier_name:
+            return False
+
+        # Determina criaturas alvo
+        if alvos == 'self':
+            alvos_crit = [origem]
+        elif alvos == 'packmates':
+            alvos_crit = [c for c in jogador.pack_home if c.health_current > 0]
+        else:
+            alvos_crit = [origem]
+
+        aplicados = 0
+        for criatura in alvos_crit:
+            # Adiciona modifier na carta
+            modifier = GameModifier(
+                card_uid=id(criatura),
+                modifier=modifier_name,
+            )
+            self.game.game_modifiers.append(modifier)
+            aplicados += 1
+
+        self.game.add_log(
+            f'{origem.name}: modifier "{modifier_name}" em {aplicados} criatura(s)'
         )
         return True
 

@@ -1646,20 +1646,27 @@ def _tentar_desafio(game: GameState, alpha_id: str,
         return False
 
 
+def _tem_modifier(game: GameState, card_uid: int, modifier_name: str) -> bool:
+    """Verifica se uma criatura tem um modifier específico ativo."""
+    for m in game.game_modifiers:
+        if m.card_uid == card_uid and m.modifier == modifier_name and m.ativo:
+            return True
+    return False
+
+
 def _desafiado_aceita_desafio(game: GameState,
                                 alvo: CardInstance,
                                 desafiante: CardInstance) -> bool:
     """Decide se o desafiado aceita o desafio (6.5.2).
 
     Criterios:
-    1. Se Rage do alvo >= Rage do desafiante + 2: aceita
-       (confianca em revidar)
-    2. Se HP do alvo <= Rage do desafiante * 2: recusa
-       (risco de morte muito alto)
-    3. Se alvo tem carta defensiva (block/dodge/flee) na mao
-       de combate: +30% de aceitar
-    4. Se desafiante tem Rage muito maior: recusa
-    5. Fator aleatorio para variacao
+    1. Se alvo tem modifier 'pode_recusar_qualquer_desafio': sempre recusa
+       (Heightened Senses, etc)
+    2. Se desafiante tem modifier 'challenges_cannot_be_refused': sempre aceita
+    3. Se Rage do alvo >= Rage do desafiante + 2: aceita (confianca)
+    4. Se HP do alvo <= Rage do desafiante * 2: recusa (risco de morte)
+    5. Se alvo tem carta defensiva na mao: +30% de aceitar
+    6. Fator aleatorio
 
     Returns:
         True se aceita o desafio.
@@ -1667,7 +1674,17 @@ def _desafiado_aceita_desafio(game: GameState,
     rage_alvo = alvo.effective_rage
     rage_des = desafiante.effective_rage
     hp_alvo = alvo.health_current or alvo.health
-    dano_esperado = rage_des  # Dano basico do desafiante
+    dano_esperado = rage_des
+
+    # 0. Modifiers especiais de recusa/aceitação
+    # Heightened Senses: pode recusar QUALQUER challenge
+    if _tem_modifier(game, id(alvo), 'pode_recusar_qualquer_desafio'):
+        game.add_log(f'  {alvo.name} pode recusar qualquer desafio (modifier)')
+        return False
+    # Kirijama/desafiante com modifier: desafios não podem ser recusados
+    if _tem_modifier(game, id(desafiante), 'challenges_cannot_be_refused'):
+        game.add_log(f'  {desafiante.name}: desafio não pode ser recusado')
+        return True
 
     # Fatores de decisao
     score = 50  # Neutro (50% base)
