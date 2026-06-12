@@ -1,0 +1,35 @@
+{
+  "id": "clawstorm",
+  "nome": "Clawstorm",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Compra 2 combat cards, joga ate 3 combat actions",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "valor": 2,
+            "descricao": "Clawstorm: compra 2 combat cards"
+          }
+        },
+        {
+          "tipo": "acao_extra_por_rodada",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "valor": 3,
+            "descricao": "Clawstorm: ate 3 combat actions"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1426,
+    "texto_original": "Play between rounds of combat. Draw 2 combat cards. You may play up to 3 combat actions.",
+    "precisa_revisao": false,
+    "slug": "clawstorm"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "caern-of-the-crescent-moon",
+  "nome": "Caern of the Crescent Moon",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "Dobra Renome de 1 pack member no Moot",
+      "efeitos": [
+        {
+          "tipo": "moot_restricao_global",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "votos_extras_por_personagem": 2,
+            "descricao": "Dobra Renome de 1 personagem no Moot"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 582,
+    "texto_original": "You may choose one pack member and double her Renown during any Moot Phase.",
+    "precisa_revisao": false,
+    "slug": "caern-of-the-crescent-moon"
+  }
+}

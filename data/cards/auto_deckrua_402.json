@@ -1,0 +1,29 @@
+{
+  "id": "flame-spirit",
+  "nome": "Flame Spirit",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Ataque de dano 3 agravado, depois morre",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "valor": 3,
+            "tipo": "agravado",
+            "auto_destruir": true,
+            "descricao": "Flame Spirit ataca com dano 3 agravado e se queima"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 402,
+    "texto_original": "The Flame Spirit can burn itself out in one damage 3 attack (aggravated).",
+    "precisa_revisao": false,
+    "slug": "flame-spirit"
+  }
+}

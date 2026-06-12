@@ -1,0 +1,27 @@
+{
+  "id": "mother-larissa",
+  "nome": "Mother Larissa",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Compra 2 cartas de combate extra quando atacada",
+      "efeitos": [
+        {
+          "tipo": "comprar_quando_atacado",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "valor": 2,
+            "descricao": "Compra 2 cartas combat quando Larissa e alvo de ataque"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 195,
+    "texto_original": "You may draw 2 extra combat cards whenever she is the target of an attack.",
+    "precisa_revisao": false,
+    "slug": "mother-larissa"
+  }
+}

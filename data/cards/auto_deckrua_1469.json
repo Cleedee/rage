@@ -1,0 +1,27 @@
+{
+  "id": "quari-filth",
+  "nome": "Quari Filth",
+  "tipo": "Character - Rogue",
+  "modos": [
+    {
+      "descricao": "Busca carta de combate no descarte",
+      "efeitos": [
+        {
+          "tipo": "remover_do_descarte",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "tipo": "Combat Action",
+            "descricao": "Quari busca 1 Combat Action no descarte na fase Resource"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1469,
+    "texto_original": "During the Resource Phase, he may target a combat card in a discard pile and add it to his hand.",
+    "precisa_revisao": false,
+    "slug": "quari-filth"
+  }
+}

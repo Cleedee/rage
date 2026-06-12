@@ -1,0 +1,28 @@
+{
+  "id": "blood-dagger",
+  "nome": "Blood Dagger",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "+1 Rage em combate",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "bonus_rage": 1,
+            "descricao": "Blood Dagger: +1 Rage"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 622,
+    "texto_original": "A character equipped with the Blood Dagger acts at +1 Rage.",
+    "precisa_revisao": false,
+    "slug": "blood-dagger"
+  }
+}

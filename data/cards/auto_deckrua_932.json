@@ -1,0 +1,31 @@
+{
+  "id": "battle-song",
+  "nome": "Battle Song",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Pack joga Combat Actions a +2 Rage neste turno",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "packmates",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": 2,
+            "duracao": "1_turno",
+            "descricao": "Battle Song: pack +2 Rage neste turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 932,
+    "texto_original": "The Galliard's pack plays Combat Actions at +2 Rage for the current turn.",
+    "precisa_revisao": false,
+    "slug": "battle-song"
+  }
+}

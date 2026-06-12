@@ -1,0 +1,28 @@
+{
+  "id": "flicker",
+  "nome": "Flicker",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "So na Umbra. Esquiva todos os ataques.",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "ataques_recebidos",
+          "params": {
+            "duracao": "rodada_atual",
+            "requer_zona": "umbra",
+            "descricao": "Flicker: esquiva todos os ataques (so Umbra)"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 324,
+    "texto_original": "Only usable in the Umbra. Dodge all attacks played against you this round.",
+    "precisa_revisao": false,
+    "slug": "flicker"
+  }
+}

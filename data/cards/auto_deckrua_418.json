@@ -1,0 +1,28 @@
+{
+  "id": "kinfolk-small-town-cop",
+  "nome": "Kinfolk Small Town Cop",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": " + Prende personagem em Homid",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "duracao": "1_turno",
+            "forma": "homid",
+            "descricao": "Cop prende 1 personagem em Homid por 1 turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 418,
+    "texto_original": "Once per turn, just before alphas are selected, the Cop can select any 1 character in Homid form to put in jail.",
+    "precisa_revisao": false,
+    "slug": "kinfolk-small-town-cop"
+  }
+}

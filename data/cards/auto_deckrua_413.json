@@ -1,0 +1,28 @@
+{
+  "id": "ka-spirit",
+  "nome": "Ka Spirit",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Imortal — retorna ao deck quando morto",
+      "efeitos": [
+        {
+          "tipo": "registrar_trigger_combate",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "trigger": "morte",
+            "acao": "retornar_ao_deck",
+            "descricao": "Ka Spirit retorna ao deck quando morto"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 413,
+    "texto_original": "The Ka Spirit is truly immortal and can never be destroyed. If the Ka Spirit is killed, place it back in the deck.",
+    "precisa_revisao": false,
+    "slug": "ka-spirit"
+  }
+}

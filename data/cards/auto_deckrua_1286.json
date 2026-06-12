@@ -1,0 +1,31 @@
+{
+  "id": "off-balanced-attack",
+  "nome": "Off-balanced Attack",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "-1 Rage na proxima rodada",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1,
+            "duracao": "proxima_rodada",
+            "descricao": "Off-balanced: -1 Rage proxima rodada"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1286,
+    "texto_original": "The character playing this card plays Combat Actions at -1 Rage for the next round of combat.",
+    "precisa_revisao": false,
+    "slug": "off-balanced-attack"
+  }
+}

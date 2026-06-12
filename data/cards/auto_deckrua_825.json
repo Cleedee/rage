@@ -1,0 +1,27 @@
+{
+  "id": "city-father",
+  "nome": "City Father",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Pack pode recusar ataques de Prey e Animal forms",
+      "efeitos": [
+        {
+          "tipo": "modifier",
+          "condicao_alvo": "packmates",
+          "params": {
+            "modifier": "pode_recusar_ataques_pre_animal",
+            "descricao": "Pack pode recusar ataques de Prey/Animal forms"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 825,
+    "texto_original": "Your pack members may decline attacks from Prey and from Animal form characters as if they were challenges.",
+    "precisa_revisao": false,
+    "slug": "city-father"
+  }
+}

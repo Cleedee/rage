@@ -1,0 +1,39 @@
+{
+  "id": "mosquito-swarm",
+  "nome": "Mosquito Swarm",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Busca todas as copias no deck e joga",
+      "efeitos": [
+        {
+          "tipo": "buscar_copias",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "nome": "Mosquito Swarm",
+            "descricao": "Busca todas as copias de Mosquito Swarm no deck"
+          }
+        }
+      ]
+    },
+    {
+      "descricao": "Auto pack attack/defend",
+      "efeitos": [
+        {
+          "tipo": "auto_pack_attack",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "descricao": "Mosquito Swarm faz pack attack/defend automatico"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1381,
+    "texto_original": "When you play Mosquito Swarm you may search your deck for all copies of Mosquito Swarm and play them.",
+    "precisa_revisao": false,
+    "slug": "mosquito-swarm"
+  }
+}

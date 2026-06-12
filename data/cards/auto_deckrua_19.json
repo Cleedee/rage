@@ -1,0 +1,18 @@
+{
+  "id": "crick-rumwrangler",
+  "nome": "Crick Rumwrangler",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "R1 G6, sem efeito especial de carta",
+      "efeitos": []
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 19,
+    "texto_original": "Crick has gained notoriety for battling the Wyrm in the Amazon jungle.",
+    "precisa_revisao": false,
+    "slug": "crick-rumwrangler"
+  }
+}

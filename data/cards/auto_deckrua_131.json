@@ -1,0 +1,27 @@
+{
+  "id": "grandfather-bannion",
+  "nome": "Grandfather Bannion",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Pack comeca com .38 Special equipada",
+      "efeitos": [
+        {
+          "tipo": "equipar_inicial",
+          "condicao_alvo": "packmates",
+          "params": {
+            "tipo_equipamento": "firearm",
+            "descricao": "Pack members comecam com .38 Special"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 131,
+    "texto_original": "Members of Bannion's pack may begin the game equipped with .38 Special",
+    "precisa_revisao": false,
+    "slug": "grandfather-bannion"
+  }
+}

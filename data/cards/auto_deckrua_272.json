@@ -1,0 +1,28 @@
+{
+  "id": "flak-jacket",
+  "nome": "Flak Jacket",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Para 1 ataque de ate 4 dano",
+      "efeitos": [
+        {
+          "tipo": "modificar_reducao_dano",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "valor": 4,
+            "duracao": "proximo_ataque",
+            "descricao": "Flak Jacket para 1 ataque de ate 4 dano"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 272,
+    "texto_original": "The Flak Jacket stops any one attack of up to 4 damage.",
+    "precisa_revisao": false,
+    "slug": "flak-jacket"
+  }
+}

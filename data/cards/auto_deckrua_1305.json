@@ -1,0 +1,29 @@
+{
+  "id": "sap-spirit",
+  "nome": "Sap Spirit",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "So Umbra. Nao pode ser bloqueado.",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "valor": 1,
+            "nao_pode_ser_bloqueado": true,
+            "requer_zona": "umbra",
+            "descricao": "Sap Spirit: dano 1, so Umbra, unblockable"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1305,
+    "texto_original": "Sap Spirit cannot be Blocked. This combat action is only playable in the Umbra.",
+    "precisa_revisao": false,
+    "slug": "sap-spirit"
+  }
+}

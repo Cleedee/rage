@@ -1,0 +1,26 @@
+{
+  "id": "buggerhead",
+  "nome": "Buggerhead",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Filtra redraw do sept deck",
+      "efeitos": [
+        {
+          "tipo": "filtrar_redraw",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "descricao": "Descarta e compra 1 carta sept extra no fim do Redraw"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1,
+    "texto_original": "While in play, Buggerhead allows you to discard and redraw any 1 sept card at the end of your normal Redraw Phase.",
+    "precisa_revisao": false,
+    "slug": "buggerhead"
+  }
+}

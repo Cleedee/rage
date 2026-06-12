@@ -1,0 +1,26 @@
+{
+  "id": "messengers-fortitude",
+  "nome": "Messenger's Fortitude",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Foge do combate antes de comecar, -1 Renome",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "descricao": "Messenger foge antes do combate, -1 Renome"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1003,
+    "texto_original": "The user outruns his opponent(s) before combat begins. The character acts at -1 Renown until he engages in combat.",
+    "precisa_revisao": false,
+    "slug": "messengers-fortitude"
+  }
+}

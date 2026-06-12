@@ -1,0 +1,26 @@
+{
+  "id": "friends-in-high-places",
+  "nome": "Friends in High Places",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Encerra qualquer combate (sem frenzy)",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "todas_criaturas",
+          "params": {
+            "descricao": "Encerra combate atual (exceto frenzy)"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 790,
+    "texto_original": "You may end any one combat that does not involve a frenzy.",
+    "precisa_revisao": false,
+    "slug": "friends-in-high-places"
+  }
+}

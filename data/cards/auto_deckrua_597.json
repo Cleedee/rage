@@ -1,0 +1,27 @@
+{
+  "id": "sky-river-caern",
+  "nome": "Sky River Caern",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "Nao-alfas imunes a challenge/sneak attack",
+      "efeitos": [
+        {
+          "tipo": "modifier",
+          "condicao_alvo": "packmates",
+          "params": {
+            "modifier": "sky_river_caern",
+            "descricao": "Nao-alfas nao podem ser desafiados ou sneak attacked"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 597,
+    "texto_original": "Non-alpha members of your pack cannot be challenged or sneak attacked.",
+    "precisa_revisao": false,
+    "slug": "sky-river-caern"
+  }
+}

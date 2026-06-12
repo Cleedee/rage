@@ -1,0 +1,28 @@
+{
+  "id": "reckless-swing",
+  "nome": "Reckless Swing",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Se esquivado, sem combat action na proxima rodada",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "duracao": "proxima_rodada",
+            "condicao": "se_esquivado",
+            "descricao": "Reckless: se esquivado, sem action proxima rodada"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 1296,
+    "texto_original": "If this attack is dodged your character cannot play a combat action during the next round of combat.",
+    "precisa_revisao": false,
+    "slug": "reckless-swing"
+  }
+}

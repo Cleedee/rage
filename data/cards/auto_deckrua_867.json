@@ -1,0 +1,27 @@
+{
+  "id": "grandfather-thunder",
+  "nome": "Grandfather Thunder",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Oponentes jogam Combat Actions a -1 Rage",
+      "efeitos": [
+        {
+          "tipo": "modifier",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "modifier": "combate_minus_1_rage",
+            "descricao": "Oponentes: -1 Rage em Combat Actions"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 867,
+    "texto_original": "All opponents play Combat Actions at -1 Rage when fighting any member of your pack.",
+    "precisa_revisao": false,
+    "slug": "grandfather-thunder"
+  }
+}

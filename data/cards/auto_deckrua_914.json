@@ -1,0 +1,27 @@
+{
+  "id": "the-green-dragon",
+  "nome": "The Green Dragon",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Alpha faz dano agravado +2 Rage, ignora restricoes de forma",
+      "efeitos": [
+        {
+          "tipo": "modifier",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "modifier": "green_dragon_alpha",
+            "descricao": "Alpha: dano agravado +2 Rage, ignora forma"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 914,
+    "texto_original": "This pack's alpha does aggravated damage and is +2 Rage. Your pack members can ignore form restrictions on combat cards.",
+    "precisa_revisao": false,
+    "slug": "the-green-dragon"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "38-special",
+  "nome": ".38 Special",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Firearm, so Homid, permite jogar combat cards",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "tipo": "firearm",
+            "requer_forma": "homid",
+            "bonus_rage": 0,
+            "descricao": ".38 Special: Firearm para Homid"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 610,
+    "texto_original": "Only usable by creatures in Homid form. This Firearm allows this creature to play combat cards of Rage 0.",
+    "precisa_revisao": false,
+    "slug": "38-special"
+  }
+}
