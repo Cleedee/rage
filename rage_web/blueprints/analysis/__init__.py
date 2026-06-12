@@ -82,7 +82,7 @@ class Snapshot:
 
 def _card_info(c) -> dict:
     """Serializa uma CardInstance para o template."""
-    return {
+    info = {
         'card_id': getattr(c, 'card_id', 0),
         'name': getattr(c, 'name', '?'),
         'card_type': getattr(c, 'card_type', ''),
@@ -97,7 +97,34 @@ def _card_info(c) -> dict:
         'requires': getattr(c, 'requires', ''),
         'keywords': getattr(c, 'keywords', []),
         'text': getattr(c, 'text', ''),
+        # Estatísticas efetivas (com buffs)
+        'rage_efetivo': getattr(c, 'rage_efetivo', getattr(c, 'rage', 0)),
+        'gnosis_efetivo': getattr(c, 'gnosis_efetivo', getattr(c, 'gnosis', 0)),
+        'health_max_efetivo': getattr(c, 'health_max_efetivo', getattr(c, 'health', 0)),
+        # Buffs (só se > 0)
+        'buff_rage': getattr(c, 'buff_rage', 0),
+        'buff_gnosis': getattr(c, 'buff_gnosis', 0),
+        'buff_health': getattr(c, 'buff_health', 0),
+        'buff_reducao_dano': getattr(c, 'buff_reducao_dano', 0),
+        'buff_dano_proximo_ataque': getattr(c, 'buff_dano_proximo_ataque', 0),
+        'buff_dano_agravado': getattr(c, 'buff_dano_agravado', 0),
+        # Modificadores
+        'modifiers': getattr(c, 'modifiers', {}),
+        # Dano anexado
+        'total_dano_anexado': getattr(c, 'total_dano_anexado', 0),
+        'attached_damage_count': len(getattr(c, 'attached_damage', [])),
+        # Equipamentos anexados
+        'attached_equipment': [
+            {
+                'card_id': getattr(eq, 'card_id', 0),
+                'name': getattr(eq, 'name', '?'),
+                'card_type': getattr(eq, 'card_type', ''),
+                'keywords': getattr(eq, 'keywords', []),
+            }
+            for eq in getattr(c, 'attached_equipment', [])
+        ],
     }
+    return info
 
 
 # ── Cache de partidas analisadas ──

@@ -357,19 +357,57 @@
                    onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')"
                    style="{% if card.tapped %}opacity:0.6;filter:grayscale(0.5){% endif %}">
               {% if card.health > 0 and card.health_current is defined %}
-              <div class="card-dmg">{{ card.health_current }}/{{ card.health }}</div>
+              <div class="card-dmg">{{ card.health_current }}/{{ card.health_max_efetivo or card.health }}</div>
               {% endif %}
             </div>
             <span class="card-name">{{ card.name }}</span>
             <span class="card-stats">
-              {% if card.rage %}R{{ card.rage }}{% endif %}
-              {% if card.gnosis %} G{{ card.gnosis }}{% endif %}
+              {% if card.rage or card.rage_efetivo %}
+                R{{ card.rage_efetivo }}
+                {%- if card.buff_rage %}<sup style="color:#48c774">+{{ card.buff_rage }}</sup>{% endif -%}
+              {% endif %}
+              {% if card.gnosis or card.gnosis_efetivo %}
+                G{{ card.gnosis_efetivo }}
+                {%- if card.buff_gnosis %}<sup style="color:#48c774">+{{ card.buff_gnosis }}</sup>{% endif -%}
+              {% endif %}
               {% if card.renown %} ⭐{{ card.renown }}{% endif %}
             </span>
-            {% if card.health > 0 and card.health_current is defined and card.health > 0 %}
-            <div class="health-bar">
-              <div class="health-bar-fill {% if card.health_current / card.health < 0.3 %}low{% elif card.health_current / card.health < 0.6 %}mid{% endif %}"
-                   style="width:{{ (card.health_current / card.health * 100)|int }}%"></div>
+            {% if card.health > 0 and card.health_current is defined and card.health_max_efetivo > 0 %}
+            <div class="health-bar" style="margin-top:6px">
+              <div class="health-bar-fill {% if card.health_current / card.health_max_efetivo < 0.3 %}low{% elif card.health_current / card.health_max_efetivo < 0.6 %}mid{% endif %}"
+                   style="width:{{ (card.health_current / card.health_max_efetivo * 100)|int }}%"></div>
+            </div>
+            {% endif %}
+            {% if card.health_max_efetivo != card.health %}
+            <span style="font-size:0.6rem;color:#48c774;display:block">❤️{{ card.health }}→{{ card.health_max_efetivo }}</span>
+            {% endif %}
+            {% if card.buff_reducao_dano %}
+            <span style="font-size:0.6rem;color:#3273dc;display:block">🛡️ -{{ card.buff_reducao_dano }} dmg</span>
+            {% endif %}
+            {% if card.buff_dano_proximo_ataque %}
+            <span style="font-size:0.6rem;color:#f14668;display:block">⚔️ +{{ card.buff_dano_proximo_ataque }} atq</span>
+            {% endif %}
+            {% if card.buff_dano_agravado %}
+            <span style="font-size:0.6rem;color:#ff3860;display:block">☠️ +{{ card.buff_dano_agravado }} agravado</span>
+            {% endif %}
+            {% if card.total_dano_anexado %}
+            <span style="font-size:0.6rem;color:#f14668;display:block">💥 {{ card.total_dano_anexado }} dano</span>
+            {% endif %}
+            {% if card.attached_equipment %}
+            <div style="margin-top:4px;border-top:1px solid #ddd;padding-top:3px">
+              {% for eq in card.attached_equipment %}
+              <div class="card-img-cell" style="width:100%;margin:0;padding:1px 0;cursor:pointer"
+                   data-card-name="{{ eq.name }}"
+                   data-card-text=""
+                   data-card-type="{{ eq.card_type }}"
+                   data-card-img="{{ get_card_image_url(eq.card_id) or '' }}">
+                <span style="font-size:0.6rem;color:#555;display:flex;align-items:center;gap:3px">
+                  <span style="background:#eee;border-radius:3px;padding:0 4px;font-weight:600">🛠️</span>
+                  <span style="font-weight:600">{{ eq.name }}</span>
+                  <span style="color:#888">{{ eq.card_type.replace('Equipment - ','') if 'Equipment' in eq.card_type else eq.card_type }}</span>
+                </span>
+              </div>
+              {% endfor %}
             </div>
             {% endif %}
           </div>
