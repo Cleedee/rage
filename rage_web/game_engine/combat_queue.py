@@ -1133,9 +1133,11 @@ def start_combat(game: GameState, attackers: list[str],
                     if alpha_id:
                         # Substitui Territory pelo alpha defensor
                         novos_defensores.append(alpha_id)
+                        alpha_card = _find_card(game, alpha_id)
+                        alpha_name = alpha_card.name if alpha_card else alpha_id
                         game.add_log(
                             f'  {card.name} (Territory) defendido por '
-                            f'alpha {alpha_id}')
+                            f'alpha {alpha_name}')
                         # Marca Territory para destruicao se alpha morrer
                         if 'territory_targets' not in game.combat_triggers:
                             game.combat_triggers['territory_targets'] = {}
@@ -1453,8 +1455,13 @@ def declare_action(game: GameState, card_id: str, action: str,
     success = game.combat.declare(card_id, action)
     if success:
         last = game.combat.last_to_declare
+        card_declaring = _find_card(game, card_id)
+        card_name = card_declaring.name if card_declaring else card_id
+        # Resolve nome da acao para formato legivel
+        from .action_descriptions import _resolve_action_name
+        acao_nome = _resolve_action_name(action, card_name, game)
         game.add_log(
-            f'{card_id} declarou {action}'
+            f'{acao_nome}'
             f'{" (Ultimo a Declarar!)" if card_id == last else ""}'
         )
     return success
@@ -1527,7 +1534,14 @@ def reveal_all(game: GameState) -> bool:
     game.combat.step = 'reveal'
     game.add_log('Acoes reveladas!')
     for cid, action in game.combat.declarations.items():
-        game.add_log(f'  {cid}: {action}')
+        if action:
+            card_revealed = _find_card(game, cid)
+            card_name = card_revealed.name if card_revealed else cid
+            from .action_descriptions import _resolve_action_name
+            acao_nome = _resolve_action_name(action, card_name, game)
+            game.add_log(f'  {acao_nome}')
+        else:
+            game.add_log(f'  {cid}: {action}')
 
     # Tzinzie (1348): se oponente revelou a acao nomeada, descarta
     if 1348 in game.combat_triggers:

@@ -2350,7 +2350,7 @@ class PriorityBot:
         from rage_web.game_engine.rules import parse_custo_rage
 
         modelo = CARTAS_EXEMPLO.get(card.modelo_id)
-        if not modelo:
+        if not modelo or not modelo.modos:
             self._play_card(hand_index)
             return f'play_{card.card_id}'
 
@@ -3103,8 +3103,19 @@ class PriorityBot:
         """Inicia combate entre atacante e defensor."""
         start_combat(self.game, [attacker_id], [defender_id])
         self._ataques_feitos.add(attacker_id)
+        # Resolve nomes dos combatentes
+        atk_name = attacker_id
+        dfd_name = defender_id
+        g = self.game
+        for p in g.players:
+            for zone_list in (p.pack_home, p.hunting_grounds, p.umbra):
+                for c in zone_list:
+                    if str(c.card_id) == attacker_id:
+                        atk_name = c.name
+                    if str(c.card_id) == defender_id:
+                        dfd_name = c.name
         self.game.add_log(
-            f'[BOT] {self.player.name} atacou {defender_id} com {attacker_id}')
+            f'[BOT] {self.player.name} atacou {dfd_name} com {atk_name}')
 
     def _pass_turn(self):
         """Passa a vez.

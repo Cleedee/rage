@@ -79,6 +79,57 @@ PHASE_HUMAN = {
 }
 
 
+def _resolve_action_name(action: str, card_name: Optional[str] = None,
+                          game=None) -> str:
+    """Resolve um nome de acao de combate para formato legivel.
+
+    Usado para logs de declaracao/revelacao de combate.
+
+    Args:
+        action: Nome da acao (ex: 'strike', 'block', 'ce_282', 'bum_rush').
+        card_name: Nome da criatura que declarou.
+        game: GameState opcional.
+
+    Returns:
+        "Stalks Death declarou Atacar (Strike)" ou similar.
+    """
+    if not action:
+        return card_name or 'Acao vazia'
+
+    # Combat Events: ce_<card_id>
+    if action.startswith('ce_'):
+        ce_id = action[3:]
+        if game:
+            ce_card = None
+            for p in game.players:
+                for zone_list in (p.discard_combat, p.discard_sept, p.hand):
+                    for c in zone_list:
+                        if c.card_id == int(ce_id):
+                            ce_card = c
+                            break
+            if ce_card:
+                ce_name = ce_card.name
+            else:
+                # Procura no banco
+                try:
+                    from rage_web.models.card import Card as CardModel
+                    card_banco = CardModel.query.get(int(ce_id))
+                    ce_name = card_banco.name if card_banco else f'CE#{ce_id}'
+                except Exception:
+                    ce_name = f'CE#{ce_id}'
+        else:
+            ce_name = f'CE#{ce_id}'
+        if card_name:
+            return f'{card_name} jogou {ce_name} (Evento)'
+        return f'{ce_name} (Evento)'
+
+    # Acoes padrao de combate
+    human = COMBAT_ACTIONS_HUMAN.get(action, action.replace('_', ' ').title())
+    if card_name:
+        return f'{card_name} declarou {human}'
+    return human
+
+
 def describe_action(acao: str, game=None) -> str:
     """Converte uma acao tecnica em descricao humana.
 
