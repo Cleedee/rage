@@ -7,10 +7,11 @@
       "descricao": "Oponentes jogam Combat Actions a -1 Rage",
       "efeitos": [
         {
-          "tipo": "modifier",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "criatura_inimiga",
           "params": {
             "modifier": "combate_minus_1_rage",
+            "alvos": "self",
             "descricao": "Oponentes: -1 Rage em Combat Actions"
           }
         }

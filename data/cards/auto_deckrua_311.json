@@ -1,0 +1,29 @@
+{
+  "id": "improvised-weapon",
+  "nome": "Improvised Weapon",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Arma improvisada: +0 Rage, pode jogar 2 combat actions por 1 rodada",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "bonus_rage": 0,
+            "descricao": "Improvised Weapon: permite 2 combat actions por 1 rodada"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 311,
+    "texto_original": "Weapon. A character need not equip with Improvised Weapon during the Equip/Ally Phase; play it instead during any combat. For 1 round, the character may play 2 damage-dealing Combat Actions. Discard Improvised Weapon after it is used in a combat.",
+    "precisa_revisao": true,
+    "slug": "improvised-weapon",
+    "notas": "A habilidade '2 damage-dealing Combat Actions' requer modificacoes no motor de combate para permitir acoes extras por rodada. Implementacao futura."
+  }
+}

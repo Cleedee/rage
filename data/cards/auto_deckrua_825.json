@@ -7,10 +7,11 @@
       "descricao": "Pack pode recusar ataques de Prey e Animal forms",
       "efeitos": [
         {
-          "tipo": "modifier",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "packmates",
           "params": {
             "modifier": "pode_recusar_ataques_pre_animal",
+            "alvos": "packmates",
             "descricao": "Pack pode recusar ataques de Prey/Animal forms"
           }
         }

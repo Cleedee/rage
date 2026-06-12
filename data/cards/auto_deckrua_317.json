@@ -1,1 +1,28 @@
-{}
+{
+  "id": "evasion",
+  "nome": "Evasion",
+  "tipo": "Combat Action",
+  "acao_combate": "dodge",
+  "modos": [
+    {
+      "descricao": "Esquiva todos os ataques na rodada (Rage 2)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "ataques_recebidos",
+          "params": {
+            "duracao": "rodada_atual",
+            "descricao": "Evasion: esquiva todos os ataques na rodada"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck_ratos",
+    "card_id": 317,
+    "texto_original": "Avoids (dodges) all attacks during the current combat round.",
+    "precisa_revisao": false,
+    "slug": "evasion"
+  }
+}

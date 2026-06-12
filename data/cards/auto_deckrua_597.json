@@ -7,10 +7,11 @@
       "descricao": "Nao-alfas imunes a challenge/sneak attack",
       "efeitos": [
         {
-          "tipo": "modifier",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "packmates",
           "params": {
             "modifier": "sky_river_caern",
+            "alvos": "packmates",
             "descricao": "Nao-alfas nao podem ser desafiados ou sneak attacked"
           }
         }

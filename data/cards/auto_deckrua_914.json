@@ -7,10 +7,11 @@
       "descricao": "Alpha faz dano agravado +2 Rage, ignora restricoes de forma",
       "efeitos": [
         {
-          "tipo": "modifier",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "criatura_aliada",
           "params": {
             "modifier": "green_dragon_alpha",
+            "alvos": "self",
             "descricao": "Alpha: dano agravado +2 Rage, ignora forma"
           }
         }
