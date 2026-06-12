@@ -62,10 +62,11 @@ class Snapshot:
                 'rage_pool': p.rage_pool,
                 'gnosis_pool': p.gnosis_pool,
             })
-        # Hunting Grounds global
-        self.hunting_grounds_cards = [
-            _card_info(c) for c in game.hunting_grounds_cards
-        ]
+        # Hunting Grounds unificado: neutro + todos os jogadores
+        todas_hg = list(game.hunting_grounds_cards)
+        for p in game.players:
+            todas_hg.extend(p.hunting_grounds)
+        self.hunting_grounds_cards = [_card_info(c) for c in todas_hg]
         # Combat
         self.combat = {
             'is_active': game.combat.is_active,

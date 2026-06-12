@@ -260,7 +260,35 @@
 <!-- Tooltip único -->
 <div id="card-tooltip"></div>
 
-<!-- Hunting Grounds (sempre visível) -->
+<!-- Log da partida (accordion) -->
+<div class="zone-box accordion mb-4" onclick="toggleAccordion(this)">
+  <h3 class="accordion-header">
+    <span class="icon"><i class="bi bi-chevron-right"></i></span>
+    📜 Log da Partida <span class="count">({{ state.log|length }} entradas)</span>
+  </h3>
+  <div class="accordion-body">
+    {% if state.log %}
+    <div style="max-height:400px;overflow-y:auto;font-family:monospace;font-size:0.75rem;line-height:1.3;background:#1a1a2e;color:#e0e0e0;border-radius:6px;padding:8px 12px">
+      {% for entry in state.log %}
+      <div>
+        {%- set entry_body = entry.strip() -%}
+        {%- if entry_body.startswith('[') and '] ' in entry_body -%}
+          {%- set tag = entry_body.split('] ', 1)[0] | trim('[') -%}
+          {%- set rest = entry_body.split('] ', 1)[1] -%}
+          <span style="color:#888">[{{ tag }}]</span> {{ rest }}
+        {%- else -%}
+          {{ entry_body }}
+        {%- endif -%}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-zone">— Nenhuma entrada no log —</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Hunting Grounds (zona neutra compartilhada) -->
 <div class="zone-box mb-4" style="background:#f0f5f0;border-color:#b5d8b5">
   <h3>🌍 Hunting Grounds <span class="count">({{ state.hunting_grounds_cards|length }})</span></h3>
   {% if state.hunting_grounds_cards %}
