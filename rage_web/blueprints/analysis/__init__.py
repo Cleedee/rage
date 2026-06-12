@@ -55,7 +55,15 @@ class Snapshot:
                 'name': p.name,
                 'victory_points': p.victory_points,
                 'hand': [_card_info(c) for c in p.hand],
-                'pack_home': [_card_info(c) for c in p.pack_home],
+                # Separa Events como efeitos ativos
+                'active_effects': [
+                    _card_info(c) for c in p.pack_home
+                    if (c.card_type or '') == 'Event'
+                ],
+                'pack_home': [
+                    _card_info(c) for c in p.pack_home
+                    if (c.card_type or '') != 'Event'
+                ],
                 'umbra': [_card_info(c) for c in p.umbra],
                 'hunting_grounds': [_card_info(c) for c in p.hunting_grounds],
                 'victory_pile': [_card_info(c) for c in p.victory_pile],

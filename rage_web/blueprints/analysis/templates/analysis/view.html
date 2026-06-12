@@ -340,6 +340,30 @@
         <span class="tag is-light">{{ p.deck_combat_count }}C / {{ p.deck_sept_count }}S</span>
       </div>
 
+      <!-- Efeitos Ativos (Event cards) -->
+      {% if p.active_effects %}
+      <div class="zone-box" style="background:#fff8e1;border-color:#ffe082">
+        <h3>⚡ Efeitos Ativos <span class="count">({{ p.active_effects|length }})</span></h3>
+        <div class="hg-grid">
+          {% for card in p.active_effects %}
+          <div class="card-img-cell"
+               data-card-name="{{ card.name }}"
+               data-card-text="{{ card.text|e }}"
+               data-card-type="{{ card.card_type }}"
+               data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
+            <div class="card-img-wrap">
+              <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
+                   alt="{{ card.name }}" loading="lazy"
+                   onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
+            </div>
+            <span class="card-name">{{ card.name }}</span>
+            <span class="card-stats" style="font-size:0.65rem;color:#b8860b">🌍 Efeito Global</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
       <!-- Pack Home -->
       <div class="zone-box">
         <h3>🏠 Pack Home <span class="count">({{ p.pack_home|length }})</span></h3>
