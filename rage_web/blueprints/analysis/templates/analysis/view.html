@@ -69,6 +69,24 @@
   }
   .health-bar-fill.low { background: #f14668; }
   .health-bar-fill.mid { background: #ffe08a; }
+
+  /* ── Alpha card highlight (6.5.9) ── */
+  .alpha-card img {
+    border: 3px solid #f5a623 !important;
+    box-shadow: 0 0 12px rgba(245,166,35,0.5);
+  }
+  .alpha-card .alpha-badge {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+    pointer-events: none;
+    z-index: 2;
+  }
+  .alpha-card .card-name {
+    color: #b8860b;
+  }
   .zone-box {
     border: 1px solid #e0e0e0;
     border-radius: 6px;
@@ -228,6 +246,14 @@
     {% if state.combat.is_active %}
     <span class="tag is-danger is-light">⚔️ Combate ativo</span>
     {% endif %}
+    {% if state.combat.alphas %}
+    <div class="is-flex is-flex-wrap-wrap" style="gap:6px;margin-top:4px">
+      {% for pid, alpha_id in state.combat.alphas.items() %}
+      {% set p_name = state.players|selectattr('id','equalto',pid)|map(attribute='name')|first %}
+      <span class="tag is-warning is-light">👑 Alpha {{ p_name or pid }}: #{{ alpha_id }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
   </div>
 
   <div class="is-flex is-align-items-center" style="gap:8px">
@@ -289,12 +315,14 @@
 </div>
 
 <!-- Hunting Grounds (zona neutra compartilhada) -->
+{% set alpha_ids_hg = state.combat.alphas.values()|list %}
 <div class="zone-box mb-4" style="background:#f0f5f0;border-color:#b5d8b5">
   <h3>🌍 Hunting Grounds <span class="count">({{ state.hunting_grounds_cards|length }})</span></h3>
   {% if state.hunting_grounds_cards %}
   <div class="hg-grid">
     {% for card in state.hunting_grounds_cards %}
-    <div class="card-img-cell"
+    {% set is_alpha_hg = card.card_id|string in alpha_ids_hg %}
+    <div class="card-img-cell{% if is_alpha_hg %} alpha-card{% endif %}"
          data-card-name="{{ card.name }}"
          data-card-text="{{ card.text|e }}"
          data-card-type="{{ card.card_type }}"
@@ -307,8 +335,11 @@
         {% if card.health > 0 and card.health_current is defined %}
         <div class="card-dmg">{{ card.health_current }}/{{ card.health }}</div>
         {% endif %}
+        {% if is_alpha_hg %}
+        <div class="alpha-badge">👑</div>
+        {% endif %}
       </div>
-      <span class="card-name">{{ card.name }}</span>
+      <span class="card-name">{% if is_alpha_hg %}👑 {% endif %}{{ card.name }}</span>
       <span class="card-stats">
         {% if card.rage %}R{{ card.rage }}{% endif %}
         {% if card.gnosis %} G{{ card.gnosis }}{% endif %}
@@ -391,13 +422,16 @@
       </div>
       {% endif %}
 
+      {% set alpha_card_id = state.combat.alphas.get(p.id, '') %}
+
       <!-- Pack Home -->
       <div class="zone-box">
         <h3>🏠 Pack Home <span class="count">({{ p.pack_home|length }})</span></h3>
         {% if p.pack_home %}
         <div class="hg-grid">
           {% for card in p.pack_home %}
-          <div class="card-img-cell"
+          {% set is_alpha = alpha_card_id and alpha_card_id == card.card_id|string %}
+          <div class="card-img-cell{% if is_alpha %} alpha-card{% endif %}"
                data-card-name="{{ card.name }}"
                data-card-text="{{ card.text|e }}"
                data-card-type="{{ card.card_type }}"
@@ -410,8 +444,11 @@
               {% if card.health > 0 and card.health_current is defined %}
               <div class="card-dmg">{{ card.health_current }}/{{ card.health_max_efetivo or card.health }}</div>
               {% endif %}
+              {% if is_alpha %}
+              <div class="alpha-badge">👑</div>
+              {% endif %}
             </div>
-            <span class="card-name">{{ card.name }}</span>
+            <span class="card-name">{% if is_alpha %}👑 {% endif %}{{ card.name }}</span>
             <span class="card-stats">
               {% if card.rage or card.rage_efetivo %}
                 R{{ card.rage_efetivo }}
@@ -475,7 +512,8 @@
         {% if p.umbra %}
         <div class="hg-grid">
           {% for card in p.umbra %}
-          <div class="card-img-cell"
+          {% set is_alpha = alpha_card_id and alpha_card_id == card.card_id|string %}
+          <div class="card-img-cell{% if is_alpha %} alpha-card{% endif %}"
                data-card-name="{{ card.name }}"
                data-card-text="{{ card.text|e }}"
                data-card-type="{{ card.card_type }}"
@@ -487,8 +525,11 @@
               {% if card.health > 0 and card.health_current is defined %}
               <div class="card-dmg">{{ card.health_current }}/{{ card.health }}</div>
               {% endif %}
+              {% if is_alpha %}
+              <div class="alpha-badge">👑</div>
+              {% endif %}
             </div>
-            <span class="card-name">{{ card.name }}</span>
+            <span class="card-name">{% if is_alpha %}👑 {% endif %}{{ card.name }}</span>
           </div>
           {% endfor %}
         </div>

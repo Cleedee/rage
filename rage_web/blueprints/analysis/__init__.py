@@ -92,6 +92,11 @@ class Snapshot:
             'defenders': game.combat.defenders,
             'declarations': dict(game.combat.declarations),
             'last_to_declare': game.combat.last_to_declare,
+            'alphas': dict(game.combat.alphas),
+            # player_id -> alpha card_id
+            'alpha_order': list(game.combat.alpha_order),
+            # order by renown
+            'current_alpha_index': game.combat.current_alpha_index,
         }
         # Log entries APENAS desde o snapshot anterior
         log_full = list(game.log) if hasattr(game, 'log') else []
