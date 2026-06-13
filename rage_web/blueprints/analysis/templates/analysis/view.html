@@ -257,38 +257,18 @@
   </div>
 
   <div class="is-flex is-align-items-center" style="gap:8px">
-    <!-- Turn navigation -->
-    <a href="{{ url_for('analysis.view_state', game_id=game_id, state_index=first_of_current_turn) }}"
-       class="button is-small is-inverted"
-       style="font-weight:600;color:#b8860b">
-      👑 T{{ current_turn }}
-    </a>
-    <a href="{% if prev_turn_idx is not none %}{{ url_for('analysis.view_state', game_id=game_id, state_index=turn_starts[prev_turn_idx]) }}{% else %}#{% endif %}"
-       class="button is-small is-inverted {% if prev_turn_idx is none %}is-disabled{% endif %}"
-       {% if prev_turn_idx is none %}disabled{% endif %}>
-      <span class="icon"><i class="bi bi-chevron-left"></i></span>
-      <span>Turno</span>
-    </a>
-    <span class="progress-text">T{{ current_turn }} / {{ total_turns }}</span>
-    <a href="{% if next_turn_idx is not none %}{{ url_for('analysis.view_state', game_id=game_id, state_index=turn_starts[next_turn_idx]) }}{% else %}#{% endif %}"
-       class="button is-small is-inverted {% if next_turn_idx is none %}is-disabled{% endif %}"
-       {% if next_turn_idx is none %}disabled{% endif %}>
-      <span>Turno</span>
-      <span class="icon"><i class="bi bi-chevron-right"></i></span>
-    </a>
-    <!-- Fase navigation (snapshots dentro do turno) -->
-    <span style="color:#ccc;margin:0 4px">|</span>
     <a href="{{ url_for('analysis.prev_state', game_id=game_id, state_index=state_index) }}"
-       class="button is-small is-inverted {% if state_index == first_of_current_turn %}is-disabled{% endif %}"
-       {% if state_index == first_of_current_turn %}disabled{% endif %}>
+       class="button is-small is-inverted {% if state_index == 0 %}is-disabled{% endif %}"
+       {% if state_index == 0 %}disabled{% endif %}>
       <span class="icon"><i class="bi bi-chevron-left"></i></span>
-      <span>Fase</span>
+      <span>Anterior</span>
     </a>
-    <span class="progress-text" style="font-size:0.7rem;color:rgba(255,255,255,0.6)">{{ state_index - first_of_current_turn + 1 }}/{{ last_of_current_turn - first_of_current_turn + 1 }}</span>
+    <span class="progress-text">{{ state_index + 1 }} / {{ total_states }}</span>
+    <span class="tag is-warning is-light" style="font-size:0.7rem;margin-left:4px">T{{ current_turn }}/{{ total_turns }}</span>
     <a href="{{ url_for('analysis.next_state', game_id=game_id, state_index=state_index) }}"
-       class="button is-small is-inverted {% if state_index >= last_of_current_turn %}is-disabled{% endif %}"
-       {% if state_index >= last_of_current_turn %}disabled{% endif %}>
-      <span>Fase</span>
+       class="button is-small is-inverted {% if state_index >= total_states - 1 %}is-disabled{% endif %}"
+       {% if state_index >= total_states - 1 %}disabled{% endif %}>
+      <span>Próximo</span>
       <span class="icon"><i class="bi bi-chevron-right"></i></span>
     </a>
   </div>
