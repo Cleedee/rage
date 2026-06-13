@@ -1075,11 +1075,11 @@ class PriorityBot:
 
         if deve_atacar_presa and alvo_hg:
             # Ataca Presa direto (pula inimigos)
-            start_combat(self.game, [meu_alpha_id],
-                         [str(alvo_hg.card_id)])
             self.game.add_log(
                 f'[BOT] Alpha {alpha_card.name} atacou '
                 f'{alvo_hg.name} no Hunting Grounds (estrategico)')
+            start_combat(self.game, [meu_alpha_id],
+                         [str(alvo_hg.card_id)])
             return f'alpha_attack_hg_{meu_alpha_id}'
 
         # 1. Tenta desafiar nao-alfa de alto valor (6.5.2)
@@ -1157,11 +1157,11 @@ class PriorityBot:
             if (alpha_inimigo.health_current > 0
                     and self.prioritizer.pode_eliminar(alpha_card,
                                                        alpha_inimigo)):
-                start_combat(self.game, [meu_alpha_id],
-                             [str(alpha_inimigo.card_id)])
                 self.game.add_log(
                     f'[BOT] Alpha {alpha_card.name} atacou alpha '
                     f'{alpha_inimigo.name} ({opp.name})')
+                start_combat(self.game, [meu_alpha_id],
+                             [str(alpha_inimigo.card_id)])
                 return f'alpha_attack_alpha_{meu_alpha_id}'
 
         # 2. Agrega ameacas de TODOS os oponentes, ordenadas por
@@ -1178,11 +1178,11 @@ class PriorityBot:
                              reverse=True)
             for alvo in ameacas:
                 if self.prioritizer.pode_eliminar(alpha_card, alvo):
-                    start_combat(self.game, [meu_alpha_id],
-                                 [str(alvo.card_id)])
                     self.game.add_log(
                         f'[BOT] Alpha {alpha_card.name} atacou '
                         f'{alvo.name}')
+                    start_combat(self.game, [meu_alpha_id],
+                                 [str(alvo.card_id)])
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
 
         # 3. Tenta atacar Territory inimigo (6.5.4)
@@ -1190,13 +1190,13 @@ class PriorityBot:
             for c in opp.pack_home:
                 ct = (c.card_type or '').lower()
                 if 'territory' in ct or 'realm' in ct:
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} atacou '
+                        f'Territory {c.name} ({opp.name})')
                     start_combat(self.game, [meu_alpha_id],
                                  [str(c.card_id)],
                                  attack_type='territory',
                                  target_card_id=str(c.card_id))
-                    self.game.add_log(
-                        f'[BOT] Alpha {alpha_card.name} atacou '
-                        f'Territory {c.name} ({opp.name})')
                     return f'alpha_attack_territory_{meu_alpha_id}'
 
         # 4. Tenta atacar Battlefield inimigo (6.5.3)
@@ -1204,13 +1204,13 @@ class PriorityBot:
             for c in opp.pack_home + opp.hunting_grounds:
                 ct = (c.card_type or '').lower()
                 if 'battlefield' in ct:
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} atacou '
+                        f'Battlefield {c.name} ({opp.name})')
                     start_combat(self.game, [meu_alpha_id],
                                  [str(c.card_id)],
                                  attack_type='battlefield',
                                  target_card_id=str(c.card_id))
-                    self.game.add_log(
-                        f'[BOT] Alpha {alpha_card.name} atacou '
-                        f'Battlefield {c.name} ({opp.name})')
                     return f'alpha_attack_battlefield_{meu_alpha_id}'
 
         # 5. Tenta vincular Spirit no Hunting Grounds (6.5.5)
@@ -1221,21 +1221,21 @@ class PriorityBot:
                     ct = (c.card_type or '').lower()
                     if 'spirit' in ct:
                         # Spirit no HG pode ser vinculado
+                        self.game.add_log(
+                            f'[BOT] Alpha {alpha_card.name} tentou '
+                            f'vincular Spirit {c.name} ({opp.name})')
                         start_combat(self.game, [meu_alpha_id],
                                      [str(c.card_id)],
                                      attack_type='bind',
                                      target_card_id=str(c.card_id))
-                        self.game.add_log(
-                            f'[BOT] Alpha {alpha_card.name} tentou '
-                            f'vincular Spirit {c.name} ({opp.name})')
                         return f'alpha_attack_bind_{meu_alpha_id}'
 
         # 6. Fallback: ataca Presa no Hunting Grounds
         if alvo_hg:
-            start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
             self.game.add_log(
                 f'[BOT] Alpha {alpha_card.name} atacou '
                 '{alvo_hg.name} no Hunting Grounds')
+            start_combat(self.game, [meu_alpha_id], [str(alvo_hg.card_id)])
             return f'alpha_attack_hg_{meu_alpha_id}'
         return None
 
@@ -3116,9 +3116,8 @@ class PriorityBot:
 
     def _attack(self, attacker_id: str, defender_id: str):
         """Inicia combate entre atacante e defensor."""
-        start_combat(self.game, [attacker_id], [defender_id])
-        self._ataques_feitos.add(attacker_id)
-        # Resolve nomes dos combatentes
+        # Log ANTES do start_combat para que o intento apareca
+        # antes de eventos como Frenar trocar de lugar
         atk_name = attacker_id
         dfd_name = defender_id
         g = self.game
@@ -3131,6 +3130,8 @@ class PriorityBot:
                         dfd_name = c.name
         self.game.add_log(
             f'[BOT] {self.player.name} atacou {dfd_name} com {atk_name}')
+        start_combat(self.game, [attacker_id], [defender_id])
+        self._ataques_feitos.add(attacker_id)
 
     def _encontrar_receptor_gift(self, gift: CardInstance) -> Optional[CardInstance]:
         """Encontra o melhor personagem no pack para receber um Gift.

@@ -1927,9 +1927,9 @@ def _tentar_desafio(game: GameState, alpha_id: str,
 
     if aceita:
         from rage_web.game_engine.combat_queue import start_combat
-        start_combat(game, [alpha_id], [alvo_id])
         game.add_log(
             f'  [Challenge] {alpha.name} desafiou {alvo.name} — ACEITO')
+        start_combat(game, [alpha_id], [alvo_id])
         return True
     else:
         game.add_log(
