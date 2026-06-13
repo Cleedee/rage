@@ -96,6 +96,7 @@ class EfeitoTipo(str, Enum):
     MODIFICAR_HAND_SIZE = 'modificar_hand_size'  # Modifica hand size (Old Storm Chaser)
     ADICIONAR_MODIFIER = 'adicionar_modifier'  # Adicionar modifier string a uma criatura (Heightened Senses)
     MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
+    DESCARTAR_EQUIPAMENTOS = 'descartar_equipamentos'  # Spirit Backlash: descarta fetishes com Gnosis 5+
     IGNORAR_DANO_AGRAVADO = 'ignorar_dano_agravado'  # Purity of Spirit: converter dano agravado em normal por um turno
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
@@ -295,6 +296,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
             EfeitoTipo.ADICIONAR_MODIFIER: self._resolver_adicionar_modifier,
             EfeitoTipo.MATAR_VITIMA: self._resolver_matar_vitima,
+            EfeitoTipo.DESCARTAR_EQUIPAMENTOS: self._resolver_descartar_equipamentos,
             EfeitoTipo.IGNORAR_DANO_AGRAVADO: self._resolver_ignorar_dano_agravado,
             # Efeitos de Moot
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
@@ -1140,6 +1142,59 @@ class ResolvedorEfeitos:
             f'  {origem.name} descartado apos proteger {alvo.name}'
         )
 
+        return True
+
+    def _resolver_descartar_equipamentos(self, efeito: Efeito,
+                                         origem: CardInstance,
+                                         jogador: PlayerState,
+                                         alvo) -> bool:
+        """Spirit Backlash: descarta fetish/bane fetish equipment com Gnosis >= N.
+
+        Examina equipamentos anexados a criaturas de todos os jogadores.
+        Remove os que sao fetish/bane fetish e tem Gnosis >= threshold.
+
+        params:
+        - gnosis_min: int (padrao 5)
+        - tipo: str — tipo de equipamento ('fetish', 'bane_fetish', 'all')
+        """
+        params = efeito.params or {}
+        gnosis_min = int(params.get('gnosis_min', 5))
+        tipo_filtro = params.get('tipo', 'fetish').lower()
+
+        descartados = 0
+        for p in self.game.players:
+            for c in p.pack_home + p.hunting_grounds + p.umbra:
+                for eq in list(getattr(c, 'attached_equipment', [])):
+                    eq_tipo = (eq.card_type or '').lower()
+                    eq_gnosis = getattr(eq, 'gnosis', 0) or 0
+
+                    # Verifica se e fetish/bane fetish
+                    if tipo_filtro == 'fetish' and 'fetish' not in eq_tipo:
+                        continue
+                    if tipo_filtro == 'bane_fetish' and 'bane' not in eq_tipo:
+                        continue
+                    if tipo_filtro == 'all' and 'fetish' not in eq_tipo:
+                        continue
+
+                    # Verifica Gnosis
+                    if eq_gnosis < gnosis_min:
+                        continue
+
+                    # Remove o equipamento
+                    c.attached_equipment.remove(eq)
+                    eq.zone = Zone.DISCARD_COMBAT
+                    # Encontra dono do equipamento para descartar corretamente
+                    dono_eq = self._find_player(eq.owner_id)
+                    if dono_eq:
+                        dono_eq.discard_combat.append(eq)
+                    descartados += 1
+                    self.game.add_log(
+                        f'  {eq.name} (Gn {eq_gnosis}) descartado '
+                        f'de {c.name} por Spirit Backlash')
+
+        self.game.add_log(
+            f'{origem.name}: {descartados} equipamento(s) descartado(s)'
+        )
         return True
 
     def _resolver_perder_vp(self, efeito: Efeito, origem: CardInstance,

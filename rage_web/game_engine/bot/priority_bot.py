@@ -2403,6 +2403,17 @@ class PriorityBot:
 
         logs = aplicar_carta(self.game, modelo, self.player_id,
                               modo_idx=modo_idx, card_origem=card_real)
+
+        # Descarta a carta apos o uso, a menos que tenha sido anexada
+        # a uma criatura (gift/equipamento persistente)
+        ct = (card_real.card_type or '').lower()
+        if 'gift' not in ct:
+            # So descarta se a carta nao estiver em nenhuma zona ativa
+            # (ja pode ter sido movida pelo efeito)
+            if card_real.zone in (Zone.OUT_OF_PLAY, Zone.HAND):
+                card_real.zone = Zone.DISCARD_SEPT
+                self.player.discard_sept.append(card_real)
+
         return desc
 
     def _try_prey_gift(self) -> Optional[str]:

@@ -4,24 +4,22 @@
   "tipo": "Event",
   "modos": [
     {
-      "descricao": "Remove fetishes com Gnosis 5+",
+      "descricao": "Descarta fetishes com Gnosis 5+",
       "efeitos": [
         {
-          "tipo": "destruir",
-          "quantidade": 1,
-          "condicao_alvo": "criatura_inimiga",
+          "tipo": "descartar_equipamentos",
           "params": {
-            "alvo_extra": "equipment",
-            "gnosis_min": 5
+            "gnosis_min": 5,
+            "tipo": "fetish"
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "criado_para_deck605",
+    "fonte": "manual",
     "card_id": 907,
-    "texto_original": "All fetish and Bane fetish Equipment requiring Gnosis 5 or greater to equip are immediately discarded.",
+    "texto_original": "All fetish and Bane fetish Equipment requiring Gnosis 5 or greater to equip are immediately discarded. Only 1 Spirit Backlash can be played per game. Discard the Event after its effect takes place.",
     "keywords": "",
     "damage": "",
     "rage": 0,
