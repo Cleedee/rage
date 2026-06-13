@@ -203,6 +203,28 @@ def zona_da_carta(tipo: str) -> str:
     return 'pack_home'
 
 
+def zona_descarte(tipo: str) -> str:
+    """Retorna a zona de descarte apropriada para uma carta baseado no tipo.
+
+    Regra:
+    - Combat Action / Combat Event → descarte de combate
+    - Damage Card → descarte de combate (fichas de dano)
+    - Todo o resto (Gift, Event, Equipment, Ally, Caern, etc.) → descarte de sept
+
+    Args:
+        tipo: Tipo da carta (ex: 'Combat Action', 'Gift', 'Character')
+
+    Returns:
+        'discard_combat' | 'discard_sept'
+    """
+    if not tipo:
+        return 'discard_sept'
+    t = tipo.lower().strip()
+    if 'combat' in t or t == 'damage card':
+        return 'discard_combat'
+    return 'discard_sept'
+
+
 def _info_char(char: 'CardInstance') -> str:
     """Retorna o texto completo de um personagem para matching.
 

@@ -291,16 +291,31 @@ def descartar_anexos(card: CardInstance, dono: PlayerState):
     Regra (6.4.2): quando uma criatura morre, descarte todas as
     cartas (exceto Past Lives) anexadas a ela.
     Inclui damage cards e equipamentos.
+
+    Damage cards vao para DISCARD_COMBAT (sao fichas de combate).
+    Equipamentos vao para DISCARD_SEPT (sao cartas de sept).
     """
+    from rage_web.game_engine.rules import zona_descarte
+
     # Descarta damage cards (regra 6.4)
     for anexo in card.attached_damage:
-        anexo.zone = Zone.DISCARD_COMBAT
-        dono.discard_combat.append(anexo)
+        zona = zona_descarte(anexo.card_type or '')
+        if zona == 'discard_combat':
+            anexo.zone = Zone.DISCARD_COMBAT
+            dono.discard_combat.append(anexo)
+        else:
+            anexo.zone = Zone.DISCARD_SEPT
+            dono.discard_sept.append(anexo)
     card.attached_damage.clear()
     # Descarta equipamentos anexados (regra 6.4.2)
     for eq in card.attached_equipment:
-        eq.zone = Zone.DISCARD_COMBAT
-        dono.discard_combat.append(eq)
+        zona = zona_descarte(eq.card_type or '')
+        if zona == 'discard_combat':
+            eq.zone = Zone.DISCARD_COMBAT
+            dono.discard_combat.append(eq)
+        else:
+            eq.zone = Zone.DISCARD_SEPT
+            dono.discard_sept.append(eq)
     card.attached_equipment.clear()
 
 
@@ -424,14 +439,20 @@ class PlayerState:
         Returns:
             Lista de cartas descartadas.
         """
+        from rage_web.game_engine.rules import zona_descarte
         descartadas = []
         # Ordena reverso para remover sem baguncar indices
         for idx in sorted(indices, reverse=True):
             if 0 <= idx < len(self.hand):
                 card = self.hand.pop(idx)
-                card.zone = Zone.DISCARD_COMBAT
+                zona = zona_descarte(card.card_type or '')
+                if zona == 'discard_combat':
+                    card.zone = Zone.DISCARD_COMBAT
+                    self.discard_combat.append(card)
+                else:
+                    card.zone = Zone.DISCARD_SEPT
+                    self.discard_sept.append(card)
                 descartadas.append(card)
-                self.discard_combat.append(card)
         return descartadas
 
     def redraw_sept(self, descartar_primeiro: bool = True

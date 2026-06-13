@@ -730,8 +730,8 @@ class TestAnatomyLesson:
                        acoes_extra=['anatomy_lesson'])
         declare_action(game, '200', 'strike')
         resolve_combat(game)
-        # Defensor deve ter sido retirado do combate (discard)
-        assert defender.zone.value == 'discard_combat'
+        # Defensor deve ter sido retirado do combate (descarte de sept)
+        assert defender.zone.value == 'discard_sept'
 
     def test_anatomy_lesson_recusado_se_frenetico(
         self, game, frenzied_attacker, defender
@@ -923,8 +923,8 @@ class TestSubmissionHold:
                        acoes_extra=['submission_hold'])
         declare_action(game, '201', 'strike')
         resolve_combat(game)
-        # Defensor deve ter sido retirado do combate
-        assert normal_defender.zone.value == 'discard_combat'
+        # Defensor deve ter sido retirado do combate (descarte de sept)
+        assert normal_defender.zone.value == 'discard_sept'
 
     def test_submission_hold_anti_dodge_se_frenzied(
         self, game, attacker, frenzied_defender

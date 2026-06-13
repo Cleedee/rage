@@ -370,11 +370,18 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
             _remove_creature(game, alvo)
             game.add_log(f'  {alvo.name} foi destruido e removido do jogo!')
         else:
-            # Non-character: descartado
-            alvo.zone = Zone.DISCARD_COMBAT
+            # Non-character: descarta na pilha correta
+            from rage_web.game_engine.rules import zona_descarte
+            zona = zona_descarte(alvo.card_type or '')
+            if zona == 'discard_combat':
+                alvo.zone = Zone.DISCARD_COMBAT
+                if dono_alvo:
+                    dono_alvo.discard_combat.append(alvo)
+            else:
+                alvo.zone = Zone.DISCARD_SEPT
+                if dono_alvo:
+                    dono_alvo.discard_sept.append(alvo)
             _remove_creature(game, alvo)
-            if dono_alvo:
-                dono_alvo.discard_combat.append(alvo)
             game.add_log(f'  {alvo.name} foi destruido e descartado!')
 
     # Caern of the Snow Leopard (584): personagem morto na Umbra
@@ -1771,12 +1778,19 @@ def _retirar_do_combate(game: GameState, criatura: CardInstance) -> bool:
         combat.defenders = [d for d in combat.defenders
                             if str(d) != str(criatura.card_id)]
 
-    # Remove da zona atual e move para discard
+    # Remove da zona atual e move para o descarte apropriado
     dono = _find_owner(game, criatura)
     _remove_creature(game, criatura)
-    criatura.zone = Zone.DISCARD_COMBAT
-    if dono:
-        dono.discard_combat.append(criatura)
+    from rage_web.game_engine.rules import zona_descarte
+    zona = zona_descarte(criatura.card_type or '')
+    if zona == 'discard_combat':
+        criatura.zone = Zone.DISCARD_COMBAT
+        if dono:
+            dono.discard_combat.append(criatura)
+    else:
+        criatura.zone = Zone.DISCARD_SEPT
+        if dono:
+            dono.discard_sept.append(criatura)
     return True
 
 
