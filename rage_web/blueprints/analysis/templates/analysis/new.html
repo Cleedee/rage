@@ -32,7 +32,7 @@
                 <select name="deck1" required>
                   <option value="">— Selecione —</option>
                   {% for d in decks %}
-                  <option value="{{ d.id }}">{{ d.label }}</option>
+                  <option value="{{ d.id }}" {% if ultimos and ultimos.deck1 == d.id %}selected{% endif %}>{{ d.label }}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -57,7 +57,7 @@
                 <select name="deck2" required>
                   <option value="">— Selecione —</option>
                   {% for d in decks %}
-                  <option value="{{ d.id }}">{{ d.label }}</option>
+                  <option value="{{ d.id }}" {% if ultimos and ultimos.deck2 == d.id %}selected{% endif %}>{{ d.label }}</option>
                   {% endfor %}
                 </select>
               </div>

@@ -162,6 +162,8 @@ def _card_info(c) -> dict:
 
 # ── Cache de partidas analisadas ──
 _analyses: dict[str, dict] = {}
+# Últimos decks usados (pré-seleção nos formulários)
+_ultimos_decks: dict = {'deck1': None, 'deck2': None, 'sim_deck1': None, 'sim_deck2': None}
 
 
 def _calc_deck_renown(deck_id: int) -> int:
@@ -196,7 +198,9 @@ def _get_decks_with_renown() -> list[dict]:
 def new_analysis():
     """Formulário para configurar a análise."""
     decks = _get_decks_with_renown()
-    return render_template('analysis/new.html', decks=decks)
+    return render_template('analysis/new.html',
+                           decks=decks,
+                           ultimos=_ultimos_decks)
 
 
 @bp.route('/run', methods=['POST'])
@@ -345,6 +349,11 @@ def run_analysis():
         'total_states': len(states),
         'full_log': full_log,
     }
+    # Salva decks da última análise para pré-seleção
+    _ultimos_decks['deck1'] = deck1_id
+    _ultimos_decks['deck2'] = deck2_id
+    _ultimos_decks['sim_deck1'] = deck1_id
+    _ultimos_decks['sim_deck2'] = deck2_id
 
     return redirect(url_for('analysis.view_state',
                             game_id=game_id, state_index=0))
@@ -545,7 +554,8 @@ def simulation():
     if request.method == 'GET':
         return render_template('analysis/simulation.html',
                                decks=decks,
-                               results=None)
+                               results=None,
+                               ultimos=_ultimos_decks)
 
     # POST: roda a simulacao
     deck1_id = request.form.get('deck1', type=int)
@@ -597,6 +607,10 @@ def simulation():
             draws += 1
         else:
             timeouts += 1
+
+    # Salva decks da última simulação para pré-seleção
+    _ultimos_decks['sim_deck1'] = deck1_id
+    _ultimos_decks['sim_deck2'] = deck2_id
 
     return render_template('analysis/simulation.html',
                            decks=decks,
