@@ -54,7 +54,7 @@ EFEITOS_IMPLEMENTADOS = {
     'acao_extra_por_rodada', 'imune_combate_rage',
     'modificar_atributo_passivo', 'modificar_gauntlet',
     'modificar_hand_size', 'adicionar_modifier',
-    'matar_vitima',
+    'matar_vitima', 'ignorar_dano_agravado',
     # Efeitos de Moot (Juntas)
     'moot_remover_personagem', 'moot_ganhar_vp',
     'moot_restringir', 'moot_rebaixar_forma',

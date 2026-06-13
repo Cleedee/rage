@@ -96,6 +96,7 @@ class EfeitoTipo(str, Enum):
     MODIFICAR_HAND_SIZE = 'modificar_hand_size'  # Modifica hand size (Old Storm Chaser)
     ADICIONAR_MODIFIER = 'adicionar_modifier'  # Adicionar modifier string a uma criatura (Heightened Senses)
     MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
+    IGNORAR_DANO_AGRAVADO = 'ignorar_dano_agravado'  # Purity of Spirit: converter dano agravado em normal por um turno
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
     MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
@@ -294,6 +295,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
             EfeitoTipo.ADICIONAR_MODIFIER: self._resolver_adicionar_modifier,
             EfeitoTipo.MATAR_VITIMA: self._resolver_matar_vitima,
+            EfeitoTipo.IGNORAR_DANO_AGRAVADO: self._resolver_ignorar_dano_agravado,
             # Efeitos de Moot
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
             EfeitoTipo.MOOT_GANHAR_VP: self._resolver_moot_ganhar_vp,
@@ -1073,6 +1075,71 @@ class ResolvedorEfeitos:
         )
 
         self.game.check_death_triggers(alvo, melhor, jogador)
+        return True
+
+    def _resolver_ignorar_dano_agravado(self, efeito: Efeito,
+                                        origem: CardInstance,
+                                        jogador: PlayerState,
+                                        alvo) -> bool:
+        """Purity of Spirit: protege Ahroun de dano agravado na Umbra.
+
+        O Ahroun ainda sofre ferimentos, mas eles nao sao agravados.
+        O Gift e descartado apos o efeito (fim do turno).
+
+        params:
+        - duracao: 'end_of_turn' (padrao)
+        """
+        if not isinstance(alvo, CardInstance):
+            self.game.add_log(f'{origem.name}: alvo invalido para Purity of Spirit')
+            return False
+
+        # Verifica se o alvo esta na Umbra
+        if alvo.zone != Zone.UMBRA:
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} nao esta na Umbra, '
+                f'Purity of Spirit sem efeito'
+            )
+            return False
+
+        # Verifica se o alvo e Ahroun (requisito do card)
+        kw = (alvo.keywords or '').lower()
+        if 'ahroun' not in kw:
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} nao e Ahroun, '
+                f'Purity of Spirit sem efeito'
+            )
+            return False
+
+        duracao = efeito.params.get('duracao', 'end_of_turn')
+
+        # Ativa a protecao contra dano agravado
+        alvo.ignorar_agravado = True
+
+        # Registra GameModifier para cleanup no fim do turno
+        modifier = GameModifier(
+            card_uid=id(alvo),
+            modifier='ignorar_agravado',
+            duration=duracao,
+        )
+        self.game.game_modifiers.append(modifier)
+
+        # Remove o Gift da mao e descarta (ja foi usado)
+        self.game.add_log(
+            f'  ✨ {alvo.name} protegido por Purity of Spirit: '
+            f'dano agravado convertido em normal por um turno'
+        )
+
+        # Descarta o Gift apos o efeito
+        if origem in jogador.hand:
+            jogador.hand.remove(origem)
+        elif origem in jogador.combat_hand:
+            jogador.combat_hand.remove(origem)
+        origem.zone = Zone.DISCARD_SEPT
+        jogador.discard_sept.append(origem)
+        self.game.add_log(
+            f'  {origem.name} descartado apos proteger {alvo.name}'
+        )
+
         return True
 
     def _resolver_perder_vp(self, efeito: Efeito, origem: CardInstance,

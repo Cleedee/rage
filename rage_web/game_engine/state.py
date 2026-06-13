@@ -123,6 +123,7 @@ class CardInstance:
     buff_dano_agravado: int = 0  # Dano agravado adicional (ex: Toxic Claws)
     is_face_down: bool = False
     modifiers: dict = field(default_factory=dict)
+    ignorar_agravado: bool = False  # Purity of Spirit: converte dano agravado em normal
     modelo_id: Optional[str] = None  # ID do modelo de efeitos (effects.py)
     damage_aggravated: int = 0  # Quanto do dano e agravado (nao regenera)
     restricoes: list[str] = field(default_factory=list)
@@ -265,9 +266,16 @@ def anexar_dano(alvo: CardInstance, origem: CardInstance,
     2. Anexa a `alvo.attached_damage`.
     3. Recalcula `health_current` via sync_health().
 
+    Se o alvo tiver modifier 'ignorar_agravado' (Purity of Spirit),
+    dano agravado e convertido em normal.
+
     Returns:
         A damage card criada.
     """
+    # Purity of Spirit: converte dano agravado em normal
+    if is_aggravated and getattr(alvo, 'ignorar_agravado', False):
+        is_aggravated = False
+
     damage_card = criar_carta_dano(origem, valor, dono_id, is_aggravated)
     alvo.attached_damage.append(damage_card)
     alvo.sync_health()
@@ -1390,8 +1398,22 @@ class GameState:
         """Executa efeitos de fim de turno.
 
         - Mage of the Celestial Chorus (503): remove lowest Renown victim.
+        - Purity of Spirit: limpa flag ignorar_agravado.
+        - GameModifiers com duracao='end_of_turn': remove.
         """
         from rage_web.game_engine.combat_queue import _remove_creature
+
+        # Limpa GameModifiers de fim de turno (inclui Purity of Spirit)
+        self.game_modifiers = [
+            m for m in self.game_modifiers
+            if getattr(m, 'duration', '') != 'end_of_turn'
+        ]
+
+        # Limpa flag ignorar_agravado de todas as cartas
+        for p in self.players:
+            for c in p.pack_home + p.hunting_grounds + p.umbra:
+                if getattr(c, 'ignorar_agravado', False):
+                    c.ignorar_agravado = False
 
         # Procura Mage of the Celestial Chorus em qualquer HG
         mages = []
