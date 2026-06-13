@@ -517,6 +517,33 @@ que já têm resolvedor.
 
 ---
 
+## 🧩 Convenções de Código
+
+### Registro de Passivas (register_card_passives)
+
+Usar **slug** (não `card_id` numérico) para identificar cartas no
+registro de passivas em `state.py`:
+
+```python
+# ✅ Correto (slug)
+elif slug == 'frenar_r1':
+    ...
+
+# ❌ Evitar (card_id numérico)
+elif card.card_id == 71:
+    ...
+```
+
+**Motivo:** o slug é o identificador canônico da carta, imutável e
+independente do banco de dados. Facilita correlação com JSONs e
+evita confusão entre diferentes ambientes.
+
+**Exceção:** triggers de morte (`DeathTrigger`) e cartas carregadas
+de JSONs podem usar `card_id` quando o slug ainda não está
+disponível no momento do registro.
+
+---
+
 ## 🔮 Sugestões de Melhorias (Pendentes)
 
 1. ~~Remover `database.db` do versionamento~~ ✅ (`.gitignore`)

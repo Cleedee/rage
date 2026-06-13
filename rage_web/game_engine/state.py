@@ -1568,6 +1568,17 @@ class GameState:
             self.add_log(
                 f'{card.name}: Wyrm Renown 4+ viram +1 VP')
 
+        elif slug == 'frenar_r1':  # Frenar (card_id=71)
+            # Frenar pode trocar de lugar com o alpha se o alpha for atacado
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='frenar_alpha_switch'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode trocar de lugar com o alpha '
+                f'se o alpha for atacado')
+
         elif card.card_id == 1671:  # Big Fisher
             modifier = GameModifier(
                 card_uid=id(card),

@@ -1126,6 +1126,39 @@ def start_combat(game: GameState, attackers: list[str],
                     f'lados diferentes do Gauntlet')
                 return False
 
+    # ── Frenar (slug='frenar_r1'): troca de lugar com o alpha se atacado ──
+    if game.has_modifier('frenar_alpha_switch'):
+        alphas_atuais = dict(game.combat.alphas) if game.combat else {}
+        novos_defensores = list(defenders)
+        for dfd in list(novos_defensores):
+            if dfd == 'hg':
+                continue
+            dfd_card = _find_card(game, dfd)
+            if not dfd_card:
+                continue
+            # Verifica se o defensor e o alpha de algum jogador
+            for pid, alpha_id in alphas_atuais.items():
+                if dfd != alpha_id:
+                    continue
+                # Alpha esta sendo atacado! Frenar pode trocar.
+                dono_alpha = _find_owner(game, dfd_card)
+                if not dono_alpha:
+                    continue
+                for c in dono_alpha.pack_home:
+                    if c.health_current <= 0:
+                        continue
+                    if getattr(c, 'modelo_id', '') == 'frenar_r1':
+                        # Frenar troca de lugar com o alpha
+                        i = novos_defensores.index(dfd)
+                        novos_defensores[i] = str(c.card_id)
+                        game.add_log(
+                            f'  [Frenar] {c.name} trocou de lugar '
+                            f'com {dfd_card.name} (alpha atacado)!'
+                        )
+                        break
+                break
+        defenders = novos_defensores
+
     # Preserva alphas do estado de combate anterior
     alphas_anteriores = dict(game.combat.alphas) if game.combat else {}
     # Reseta tracking de vitimas para Vigilante
