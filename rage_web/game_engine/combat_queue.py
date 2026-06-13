@@ -1726,7 +1726,8 @@ def _remove_creature(game: GameState, card: CardInstance):
     _limpar_buffs(game, card)
     # Tenta remover das zonas dos jogadores
     for p in game.players:
-        for zone_list in (p.pack_home, p.hunting_grounds, p.umbra):
+        for zone_list in (p.pack_home, p.hunting_grounds, p.umbra,
+                          p.discard_combat, p.discard_sept, p.victory_pile):
             if card in zone_list:
                 zone_list.remove(card)
                 return
@@ -2613,7 +2614,9 @@ def resolve_combat(game: GameState) -> bool:
             _flipar_para_crinos(game, alvo_card)
 
         # Retirada do combate (Anatomy Lesson: criatura ferida deve retirar)
-        if retira_se_ferido and alvo_card.health_current < alvo_card.health:
+        # Nao retira se a criatura ja morreu (health_current <= 0)
+        if (retira_se_ferido and alvo_card.health_current < alvo_card.health
+                and alvo_card.health_current > 0):
             if _retirar_do_combate(game, alvo_card):
                 game.add_log(
                     f'  {alvo_card.name} ferida por {acao_origem}! '
