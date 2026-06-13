@@ -499,6 +499,23 @@
               {% endfor %}
             </div>
             {% endif %}
+            {% if card.attached_gifts %}
+            <div style="margin-top:4px;border-top:1px solid #b8d4fe;padding-top:3px">
+              {% for g in card.attached_gifts %}
+              <div class="card-img-cell" style="width:100%;margin:0;padding:1px 0;cursor:pointer"
+                   data-card-name="{{ g.name }}"
+                   data-card-text=""
+                   data-card-type="{{ g.card_type }}"
+                   data-card-img="{{ get_card_image_url(g.card_id) or '' }}">
+                <span style="font-size:0.6rem;color:#2980b9;display:flex;align-items:center;gap:3px">
+                  <span style="background:#dbeafe;border-radius:3px;padding:0 4px;font-weight:600">🎁</span>
+                  <span style="font-weight:600">{{ g.name }}</span>
+                  <span style="color:#2980b9">{{ g.card_type }}</span>
+                </span>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
           </div>
           {% endfor %}
         </div>

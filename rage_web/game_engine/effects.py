@@ -2965,6 +2965,11 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
             if gift_eh_permanente(card_origem):
                 card_origem.zone = Zone.PACK_HOME
                 jogador.pack_home.append(card_origem)
+                # Anexa o gift ao ultimo alvo criatura que recebeu o efeito
+                ultimo_alvo = getattr(resolvedor, '_ultimo_alvo', None)
+                if ultimo_alvo and hasattr(ultimo_alvo, 'attached_gifts'):
+                    if getattr(ultimo_alvo, 'card_id', 0) > 0:
+                        ultimo_alvo.attached_gifts.append(card_origem)
                 game.add_log(f'{card_origem.name}: Gift permanente em jogo')
             else:
                 # Gift temporario: descarta

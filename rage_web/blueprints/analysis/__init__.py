@@ -146,6 +146,16 @@ def _card_info(c) -> dict:
             }
             for eq in getattr(c, 'attached_equipment', [])
         ],
+        # Gifts permanentes anexados
+        'attached_gifts': [
+            {
+                'card_id': getattr(g, 'card_id', 0),
+                'name': getattr(g, 'name', '?'),
+                'card_type': getattr(g, 'card_type', ''),
+                'keywords': getattr(g, 'keywords', []),
+            }
+            for g in getattr(c, 'attached_gifts', [])
+        ],
     }
     return info
 

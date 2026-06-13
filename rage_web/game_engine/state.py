@@ -132,6 +132,8 @@ class CardInstance:
     # Cartas de dano anexadas a esta criatura (regra 6.4)
     attached_equipment: list[CardInstance] = field(default_factory=list)
     # Equipamentos anexados a esta criatura
+    attached_gifts: list[CardInstance] = field(default_factory=list)
+    # Gifts permanentes anexados a esta criatura (4.5.3)
     reducao_dano: int = 0
     # Reducao de dano passiva (ex: armaduras)
     is_aggravated: bool = False  # Se esta carta em si e dano agravado
