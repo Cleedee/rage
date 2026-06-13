@@ -1597,7 +1597,9 @@ def reveal_all(game: GameState) -> bool:
                     break
 
     # ── Pack Combat (6.5.8): processa efeitos de pack attack/defense ──
-    _process_pack_combat(game)
+    # NOTA: nao chamamos aqui porque cartas ilegais ainda nao foram
+    # removidas. O processamento ocorre em _processar_bluff() apos
+    # a limpeza de ilegais.
 
     return True
 
@@ -1972,6 +1974,9 @@ def _process_pack_combat(game: GameState) -> None:
     for cid, action in list(game.combat.declarations.items()):
         if action is None:
             continue
+        # Pula cartas marcadas como ilegais (ja removidas apos bluff)
+        if cid in game.combat.illegal_cards:
+            continue
         if not action.startswith('ce_'):
             # Só Combat Events podem ter pack_attack/puxa_pack
             props = COMBAT_ACTION_PROPS.get(action, {})
@@ -2145,9 +2150,6 @@ def _processar_bluff(game: GameState) -> bool:
             game.add_log(f'  [Bluff] {card.name} esta blefando com {action} '
                          f'(Rage {card.effective_rage} < {rage_req})')
 
-    # ── Pack Combat (6.5.8): processa pack_attack/puxa_pack ANTES de descartar ilegais ──
-    _process_pack_combat(game)
-
     # Descartar ilegais ANTES de verificar blefes (6.9.1 ordem)
     for cid in list(game.combat.illegal_cards):
         if cid in game.combat.declarations:
@@ -2156,6 +2158,10 @@ def _processar_bluff(game: GameState) -> bool:
         card = _find_card(game, cid)
         game.add_log(f'  [Bluff] {(card.name if card else cid)}: '
                      f'carta ilegal descartada (6.9.1)')
+
+    # ── Pack Combat (6.5.8): processa pack_attack/puxa_pack APOS
+    # descartar ilegais, para que cartas ilegais nao ativem efeitos ──
+    _process_pack_combat(game)
 
     # --- Fase 2: Determinar sucesso/falha dos blefes ---
     # Todas as verificacoes sao simultaneas
