@@ -1127,8 +1127,20 @@ def start_combat(game: GameState, attackers: list[str],
                 return False
 
     # ── Frenar (slug='frenar_r1'): troca de lugar com o alpha se atacado ──
+    # NOTA: Se Sky River Caern estiver ativo no pack, Frenar NAO troca.
+    #       Senao, Frenar defenderia (nao-alfa) e o Caern bloquearia.
     if game.has_modifier('frenar_alpha_switch'):
         alphas_atuais = dict(game.combat.alphas) if game.combat else {}
+        # Sky River Caern ativo? Descobre quais packs estao protegidos
+        packs_caern = set()
+        if game.has_modifier('sky_river_caern'):
+            for p in game.players:
+                for mod in game.game_modifiers:
+                    if mod.modifier == 'sky_river_caern':
+                        for c in p.pack_home + p.hunting_grounds + p.umbra:
+                            if id(c) == mod.card_uid:
+                                packs_caern.add(p.id)
+                                break
         novos_defensores = list(defenders)
         for dfd in list(novos_defensores):
             if dfd == 'hg':
@@ -1140,10 +1152,17 @@ def start_combat(game: GameState, attackers: list[str],
             for pid, alpha_id in alphas_atuais.items():
                 if dfd != alpha_id:
                     continue
-                # Alpha esta sendo atacado! Frenar pode trocar.
+                # Alpha esta sendo atacado!
                 dono_alpha = _find_owner(game, dfd_card)
                 if not dono_alpha:
                     continue
+                # Se Sky River Caern protege este pack, Frenar nao troca
+                # (o ataque ja e contra o alpha, que o Caern permite)
+                if dono_alpha.id in packs_caern:
+                    game.add_log(
+                        f'  [Frenar] {dfd_card.name} e o alpha sob '
+                        f'Sky River Caern — Frenar mantem posicao')
+                    break
                 for c in dono_alpha.pack_home:
                     if c.health_current <= 0:
                         continue
