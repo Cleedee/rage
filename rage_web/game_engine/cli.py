@@ -1097,6 +1097,29 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                             resolvedor = ResolvedorEfeitos(g)
                             resolvedor.aplicar_efeito(efeito, c, p)
 
+    # ── Susan Anthony: começa com um Kinfolk Ally em jogo ──
+    for p in g.players:
+        has_susan = any(
+            mod.modifier == 'susan_anthony_kinfolk'
+            for mod in g.game_modifiers
+        )
+        if not has_susan:
+            continue
+        # Procura um Ally Kinfolk no Sept deck (se houver)
+        for i, c in enumerate(p.deck_sept):
+            ct = (c.card_type or '').lower()
+            kw = (c.keywords or '').lower()
+            if 'ally' in ct and 'kinfolk' in kw:
+                kinfolk_ally = p.deck_sept.pop(i)
+                kinfolk_ally.zone = Zone.PACK_HOME
+                kinfolk_ally.health_current = kinfolk_ally.health
+                p.pack_home.append(kinfolk_ally)
+                g.add_log(
+                    f'{p.name}: Susan Anthony permitiu comecar com '
+                    f'{kinfolk_ally.name} em jogo!'
+                )
+                break
+
     for p in g.players:
         p.draw_combat(p.hand_size_combat)
         if p.deck_sept:

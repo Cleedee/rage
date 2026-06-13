@@ -1630,6 +1630,16 @@ class GameState:
             self.add_log(
                 f'{card.name}: +2 Renome em Moots')
 
+        elif slug == 'susan-anthony_r4':  # Susan Anthony
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='susan_anthony_kinfolk'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: {owner.name} pode comecar com '
+                f'um Kinfolk Ally em jogo')
+
         elif card.card_id == 96:  # Clan of Hyenas
             card.restricoes.append('hyenas_escape')
             self.add_log(
