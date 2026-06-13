@@ -361,11 +361,38 @@ def view_state(game_id: str, state_index: int):
     deck1 = Deck.query.get(meta['deck1_id'])
     deck2 = Deck.query.get(meta['deck2_id'])
 
+    # --- Turn-based navigation ---
+    # Constroi indice: primeiro snapshot de cada turno
+    turn_starts = {}  # turn_number -> state_index
+    for i, s in enumerate(states):
+        tn = s.turn
+        if tn not in turn_starts:
+            turn_starts[tn] = i
+    sorted_turns = sorted(turn_starts.keys())
+    current_turn = snap.turn
+    current_turn_idx = sorted_turns.index(current_turn) if current_turn in sorted_turns else 0
+    total_turns = len(sorted_turns)
+    first_of_current_turn = turn_starts.get(current_turn, 0)
+    last_of_current_turn = next(
+        (turn_starts[t] for t in sorted_turns if t > current_turn),
+        len(states)
+    ) - 1
+    # Indices dos turnos adjacentes
+    prev_turn_idx = sorted_turns[current_turn_idx - 1] if current_turn_idx > 0 else None
+    next_turn_idx = sorted_turns[current_turn_idx + 1] if current_turn_idx < total_turns - 1 else None
+
     return render_template('analysis/view.html',
                            game_id=game_id,
                            state=snap,
                            state_index=state_index,
                            total_states=len(states),
+                           turn_starts=turn_starts,
+                           current_turn=current_turn,
+                           total_turns=total_turns,
+                           first_of_current_turn=first_of_current_turn,
+                           last_of_current_turn=last_of_current_turn,
+                           prev_turn_idx=prev_turn_idx,
+                           next_turn_idx=next_turn_idx,
                            meta=meta,
                            deck1_name=deck1.name if deck1 else '?',
                            deck2_name=deck2.name if deck2 else '?',
