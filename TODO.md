@@ -300,7 +300,11 @@
 
 ## Habilidades das Cartas
 
-- [ ] **Attacking the Wyrm** não é usada da forma correta.
+- [x] **Attacking the Wyrm** não é usada da forma correta
+
+## Área de Análises da App Web
+
+- [ ] O efeito **Sky River Caern** não tem destaque visual
 
 ## 🧪 Testes
 

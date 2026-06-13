@@ -297,10 +297,23 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         if vp > 0:
             dono_origem.victory_points += vp
         # Hacked Apart: marca morte mas NAO remove do jogo ainda
+        # Helper: remove o morto das listas de combatentes
+        def _remover_de_combate(card: CardInstance):
+            cid_str = str(card.card_id)
+            if cid_str in game.combat.attackers:
+                game.combat.attackers.remove(cid_str)
+            if cid_str in game.combat.defenders:
+                game.combat.defenders.remove(cid_str)
+            if cid_str in game.combat.combatants:
+                game.combat.combatants.remove(cid_str)
+            game.combat.declarations.pop(cid_str, None)
+            game.combat.targets.pop(cid_str, None)
+
         if eh_hacked_apart:
             alvo.zone = Zone.VICTORY_PILE
             _remove_creature(game, alvo)
             dono_origem.victory_pile.append(alvo)
+            _remover_de_combate(alvo)
             game.add_log(
                 f'  Hacked Apart! {alvo.name} foi despedacado! '
                 f'{dono_origem.name} ganhou {vp} VP '
@@ -309,6 +322,7 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         elif alvo.is_frenzied:
             # Frenzied mas abaixo do threshold: morto mas continua
             # Nao move para VP, nao remove do jogo ainda
+            # PERMANECE nas listas de combatentes (frenzy_dead_but_fighting)
             alvo.frenzy_dead_but_fighting = True
             game.add_log(
                 f'  {alvo.name} foi morto mas continua lutando '
@@ -319,6 +333,7 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
             alvo.zone = Zone.VICTORY_PILE
             _remove_creature(game, alvo)
             dono_origem.victory_pile.append(alvo)
+            _remover_de_combate(alvo)
             if vp > 0:
                 game.add_log(
                     f'  {alvo.name} foi destruido! '
@@ -330,6 +345,7 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
                     f'  {alvo.name} foi destruido! '
                     f'{dono_origem.name} ganhou 0 VP'
                 )
+
         # Death triggers (disparam mesmo se Hacked Apart / frenzied)
         game.check_death_triggers(alvo, origem, dono_origem)
         game.check_kill_bonuses(alvo, dono_origem)
