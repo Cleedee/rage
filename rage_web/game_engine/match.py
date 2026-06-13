@@ -445,7 +445,7 @@ def _run_match_impl(seed, max_turns, max_steps_override,
             elif entry_body.startswith('[Fim'):
                 vlog(2, f'    ⚡ {entry_stripped}')
             else:
-                if any(kw in entry_body for kw in ['regenera', 'imune', 'ataque', 'dano', 'cura', 'morte']):
+                if any(kw in entry_body for kw in ['regenera', 'imune', 'ataque', 'dano', 'cura', 'morte', 'Wyldstorm']):
                     vlog(2, f'    📋 {entry_stripped}')
 
         # Tabuleiro periodico (só verbose>=2)

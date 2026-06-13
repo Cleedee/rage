@@ -4,29 +4,30 @@
   "tipo": "Event",
   "modos": [
     {
-      "descricao": "Evento",
+      "descricao": "Redistribuir personagens com maior Renome",
       "efeitos": [
         {
-          "tipo": "comprar",
+          "tipo": "redistribuir_maior_renome",
           "condicao_alvo": "jogador",
           "quantidade": 1,
           "params": {
-            "zona": "deck_sept"
+            "incluir_removidos": false
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 218,
-    "texto_original": "Each player selects his highest Renown character, discarding any Gifts or Equipment it may have. These characters are then shuffled together and randomly distributed to all players. For the remainder of the game, each character is part of a new pack. Char",
+    "texto_original": "Each player selects his highest Renown character, discarding any Gifts or Equipment it may have. These characters are then shuffled together and randomly distributed to all players. For the remainder of the game, each character is part of a new pack.",
     "keywords": "",
     "damage": "",
     "rage": 0,
     "gnosis": 0,
     "health": 0,
     "requires": "",
+    "precisa_revisao": false,
     "slug": "wyldstorm"
   }
 }

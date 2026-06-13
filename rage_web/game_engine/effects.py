@@ -83,6 +83,7 @@ class EfeitoTipo(str, Enum):
     ENTRAR_FRENESI = 'entrar_em_frenesi'  # Entrar em estado de frenesi
     # Efeitos de setup / passivos
     EQUIPAR_INICIAL = 'equipar_inicial'  # Comeca o jogo com equipamento (Bannion)
+    REDISTRIBUIR_MAIOR_RENOME = 'redistribuir_maior_renome'  # Wyldstorm: redistribuir personagens com maior Renome
     FILTRAR_REDRAW = 'filtrar_redraw'  # Fim do Redraw: descarta + compra (Buggerhead)
     COMPRAR_QUANDO_ATACADO = 'comprar_quando_atacado'  # Compra quando atacado (Mother Larissa)
     REMOVER_DO_DESCARTE = 'remover_do_descarte'  # Remove carta do descarte (Quari Filth)
@@ -279,6 +280,7 @@ class ResolvedorEfeitos:
     EfeitoTipo.MODIFICAR_REDUCAO_DANO: self._resolver_modificar_reducao_dano,
     EfeitoTipo.DESCARTAR_METADE_MAO: self._resolver_descartar_metade_mao,
     EfeitoTipo.REMOVER_DO_JOGO: self._resolver_remover_do_jogo,
+            EfeitoTipo.REDISTRIBUIR_MAIOR_RENOME: self._resolver_redistribuir_maior_renome,
             EfeitoTipo.EQUIPAR_INICIAL: self._resolver_equipar_inicial,
             EfeitoTipo.FILTRAR_REDRAW: self._resolver_filtrar_redraw,
             EfeitoTipo.COMPRAR_QUANDO_ATACADO: self._resolver_comprar_quando_atacado,
@@ -2094,6 +2096,129 @@ class ResolvedorEfeitos:
             f'{origem.name}: equipou {idx}x {equip_nome} na pack ({num_personagens} chars)'
         )
         return idx > 0
+
+    def _resolver_redistribuir_maior_renome(self, efeito: Efeito,
+                                              origem: CardInstance,
+                                              jogador: PlayerState,
+                                              alvo) -> bool:
+        """Wyldstorm: redistribui personagens com maior Renome.
+
+        Cada jogador seleciona seu personagem com maior Renome
+        (desempate: maior Rage). Descarta Gifts e Equipment
+        anexados. Embaralha e redistribui aleatoriamente entre
+        todos os jogadores. Para o resto do jogo, cada personagem
+        faz parte de um novo pack.
+
+        params:
+        - 'incluir_removidos' (bool): se True, inclui personagens
+          no Removed/VictoryPile (default False)
+        """
+        game = self.game
+        params = efeito.params or {}
+        incluir_removidos = params.get('incluir_removidos', False)
+
+        # 1. Cada jogador seleciona seu personagem com maior Renome
+        selecionados = []  # Lista de (card_instance, dono_antigo)
+        for p in game.players:
+            # Busca personagens vivos no pack_home e HG
+            candidatos = [
+                c for c in p.pack_home + p.hunting_grounds + p.umbra
+                if 'Character' in (c.card_type or '')
+                and c.health_current > 0
+            ]
+            if incluir_removidos:
+                for c in p.victory_pile:
+                    if 'Character' in (c.card_type or ''):
+                        candidatos.append(c)
+
+            if not candidatos:
+                self.game.add_log(
+                    f'  Wyldstorm: {p.name} nao tem personagens viaveis'
+                )
+                continue
+
+            # Maior Renome (desempate: maior Rage)
+            melhor = max(candidatos, key=lambda c: (c.renown, c.rage))
+            selecionados.append((melhor, p))
+            self.game.add_log(
+                f'  Wyldstorm: {p.name} selecionou {melhor.name} '
+                f'(Renome {melhor.renown})'
+            )
+
+        if len(selecionados) < 2:
+            self.game.add_log(
+                '  Wyldstorm: poucos jogadores com personagens - sem efeito'
+            )
+            return False
+
+        # 2. Descarta Gifts e Equipment dos selecionados
+        from rage_web.game_engine.state import Zone, descartar_anexos
+        for card_inst, dono_antigo in selecionados:
+            # Remove equipamentos e gifts anexados
+            for eq in list(card_inst.attached_equipment):
+                eq.zone = Zone.DISCARD_SEPT
+                dono_antigo.discard_sept.append(eq)
+            card_inst.attached_equipment.clear()
+            for gft in list(card_inst.attached_gifts):
+                gft.zone = Zone.DISCARD_SEPT
+                dono_antigo.discard_sept.append(gft)
+            card_inst.attached_gifts.clear()
+            # Descarta damage cards anexados
+            for dmg in list(card_inst.attached_damage):
+                dmg.zone = Zone.DISCARD_COMBAT
+                dono_antigo.discard_combat.append(dmg)
+            card_inst.attached_damage.clear()
+            # Remove da zona atual
+            removido = False
+            for zlist in (dono_antigo.pack_home,
+                          dono_antigo.hunting_grounds,
+                          dono_antigo.umbra):
+                if card_inst in zlist:
+                    zlist.remove(card_inst)
+                    removido = True
+                    break
+            if not removido and card_inst in dono_antigo.victory_pile:
+                dono_antigo.victory_pile.remove(card_inst)
+
+        # 3. Embaralha e redistribui aleatoriamente
+        cards = [c for c, _ in selecionados]
+        game.rng.shuffle(cards)
+
+        num_players = len(game.players)
+        for i, card_inst in enumerate(cards):
+            novo_dono = game.players[i % num_players]
+            # Remove do dono original
+            dono_antigo = None
+            for p in game.players:
+                for zlist in (p.pack_home, p.hunting_grounds, p.umbra):
+                    if card_inst in zlist:
+                        dono_antigo = p
+                        zlist.remove(card_inst)
+                        break
+                if dono_antigo:
+                    break
+
+            # Adiciona ao novo pack
+            card_inst.zone = Zone.PACK_HOME
+            card_inst.health_current = card_inst.health
+            card_inst.owner_id = novo_dono.id
+            card_inst.controller_id = novo_dono.id
+            novo_dono.pack_home.append(card_inst)
+            self.game.add_log(
+                f'  Wyldstorm: {card_inst.name} foi para '
+                f'{novo_dono.name}'
+            )
+
+        self.game.add_log(
+            '  Wyldstorm: personagens redistribuidos! '
+            'Cada personagem agora faz parte de um novo pack.'
+        )
+        # Marca modificador global
+        from rage_web.game_engine.state import GameModifier
+        game.game_modifiers.append(GameModifier(
+            card_uid=id(origem) if origem else 0,
+            modifier='wyldstorm_redistribuicao'))
+        return True
 
     def _resolver_filtrar_redraw(self, efeito: Efeito,
                                   origem: CardInstance,
