@@ -2646,6 +2646,18 @@ class PriorityBot:
                 if dano_valor is None or dano_valor <= 0:
                     continue
 
+                # Verifica Rage requirement do card (campo 'rage' no banco)
+                rage_card = getattr(carta_combate, 'rage', 0)
+                if card.effective_rage < rage_card:
+                    continue
+                if nivel_restrito is not None and rage_card > nivel_restrito:
+                    continue
+
+                # Verifica requisitos especiais (campo 'requires')
+                reqs = (getattr(carta_combate, 'requires', '') or '').lower()
+                if 'crino' in reqs and not card.is_crinos:
+                    continue
+
                 # So usa se dano >= melhor basica (ou se basica for strike puro e dano for util)
                 if dano_valor < melhor_dano_basico:
                     continue

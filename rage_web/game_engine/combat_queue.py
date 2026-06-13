@@ -1492,10 +1492,11 @@ def _registrar_acao_dano(game: GameState, card: CardInstance,
     uid = id(card)
     action_name = f'dano_{uid}'
 
-    # Registra no estado do combate
+    # Registra no estado do combate (inclui Rage requirement do banco)
     game.combat.dano_actions[action_name] = {
         'damage': dano_valor,
         'card_id': card.card_id,
+        'rage_requirement': getattr(card, 'rage', 0),
         'card_name': card.name,
     }
 
@@ -2204,6 +2205,11 @@ def _processar_bluff(game: GameState) -> bool:
 
         props = COMBAT_ACTION_PROPS.get(action, {})
         rage_req = props.get('rage_requirement', 0)
+
+        # Para acoes virtuais (dano_<uid>), busca requirement do card
+        if action.startswith('dano_'):
+            dano_info = game.combat.dano_actions.get(action, {})
+            rage_req = dano_info.get('rage_requirement', 0) or 0
 
         # 6.9.1: Verificar ilegais (requisitos nao-Rage)
         # Combat Events jogados face-down sao ilegais
