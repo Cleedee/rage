@@ -226,12 +226,16 @@ def run_analysis():
     stale = 0
     last_turn = game.turn_number
     last_phase = game.phase
-    max_steps = max_turns * 50
+    max_steps = max_turns * 200  # Margem segura para ações por turno
     step = 0
     _alpha_order = []
     _alpha_index = 0
     _alpha_map = {}
     _alpha_phase = False
+
+    from rage_web.game_engine.combat_queue import (
+        _tem_character, _eliminar_jogador
+    )
 
     while step < max_steps:
         # Gerenciamento de alphas (mesma lógica do match.py)
@@ -282,13 +286,12 @@ def run_analysis():
             stale += 1
         last_phase = game.phase
 
-        if stale > 200:
-            break
+        # Se ficou muito tempo sem mudar de fase (ex: combate longo),
+        # aumenta o limite em vez de abortar
+        if stale > 500:
+            stale = 0  # Reseta para permitir mais ações
 
         # Verifica condições de fim
-        from rage_web.game_engine.combat_queue import (
-            _tem_character, _eliminar_jogador
-        )
         if game.turn_number > 1:
             for p in game.players:
                 if not _tem_character(p) and not getattr(p, 'eliminado', False):
@@ -300,16 +303,17 @@ def run_analysis():
             _capture_state(game, states, log_offset)
             break
 
+        # Verifica vitoria
+        venceu = False
         for p in jogadores_ativos:
             if p.victory_points >= p.renown_level:
                 _capture_state(game, states, log_offset)
+                venceu = True
                 break
-        else:
-            step += 1
-            continue
-        break
+        if venceu:
+            break
 
-        # Verifica limite de turnos
+        # Verifica limite de turnos (USANDO max_turns corretamente)
         if game.turn_number > max_turns:
             _capture_state(game, states, log_offset)
             break
