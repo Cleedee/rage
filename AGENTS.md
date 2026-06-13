@@ -542,6 +542,38 @@ evita confusão entre diferentes ambientes.
 de JSONs podem usar `card_id` quando o slug ainda não está
 disponível no momento do registro.
 
+### Tags de Cartas (Card.tags)
+
+Tags são dados **curados manualmente** que **NÃO** foram importados
+do LackeyCCG. São versionadas em:
+
+- `data/card_tags.json` — dump de todas as tags (slug → tags)
+- `scripts/apply_tags.py` — aplica tags do JSON ao banco
+
+**Uso:**
+
+```bash
+# Aplicar todas as tags (após recriar banco)
+PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py
+
+# Apenas uma carta específica
+PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py --slug war-council_r7
+
+# Preview sem alterar
+PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py --dry-run
+```
+
+**Convenções de tags:**
+- `gaia-only` — carta exclusiva para decks Gaia (ex: War Council)
+- `gaia` — carta de alinhamento Gaia
+- `wyrm` — carta de alinhamento Wyrm
+- `moot` — carta do tipo Moot
+- `character`, `equipment`, `gift`, `event`, `action` — tipo da carta
+- `auspice-*` — aurépicio (ex: `auspice-ragabash`, `auspice-ahroun`)
+- `tribo-*` — tribo (ex: `tribo-silver-fangs`, `tribo-shadow-lords`)
+- `form-*` — forma (ex: `form-homid`, `form-lupus`)
+- `class-*` — classe (ex: `class-garou`, `class-spirit`, `class-human`)
+
 ---
 
 ## 🔮 Sugestões de Melhorias (Pendentes)
