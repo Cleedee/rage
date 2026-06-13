@@ -3225,11 +3225,11 @@ def _check_caern_unwashed_child(game: GameState):
 
 
 def _check_sky_river_caern(game: GameState):
-    """Sky River Caern (597): nao-alfas imunes a challenge/sneak attack.
+    """Sky River Caern (slug='sky-river-caern'): nao-alfas imunes
+    a challenge/sneak attack.
 
     Se o defensor tem Sky River Caern, verifica se o atacante
-    esta atacando um nao-alfa (que nao seja o maior Renown).
-    Se sim, bloqueia o ataque.
+    esta atacando um nao-alfa. Se sim, bloqueia o ataque.
     """
     if not game.has_modifier('sky_river_caern'):
         return
@@ -3239,13 +3239,17 @@ def _check_sky_river_caern(game: GameState):
     for p in game.players:
         for mod in game.game_modifiers:
             if mod.modifier == 'sky_river_caern':
-                for c in p.pack_home + p.hunting_grounds:
+                # Verifica todas as zonas (pack_home, HG, umbra)
+                for c in p.pack_home + p.hunting_grounds + p.umbra:
                     if id(c) == mod.card_uid:
                         packs_protegidos.add(p.id)
                         break
 
     if not packs_protegidos:
         return
+
+    # Alpha oficial do combate (selecionado no Moot)
+    alphas_combate = game.combat.alphas  # {player_id: card_id_str}
 
     # Verifica se algum defensor esta em pack protegido e nao e o Alpha
     for dfd_id in list(game.combat.defenders):
@@ -3254,21 +3258,17 @@ def _check_sky_river_caern(game: GameState):
             continue
         if dfd.owner_id not in packs_protegidos:
             continue
-        dono = _find_owner(game, dfd)
-        if not dono:
-            continue
-        # Alpha = maior Renown no pack
-        alfa = max(
-            [c for c in dono.pack_home if c.health_current > 0],
-            key=lambda x: x.renown,
-            default=None
-        )
-        if alfa and dfd.card_id != alfa.card_id:
-            # Nao-alfa atacado! Bloqueia
-            game.combat.defenders.remove(dfd_id)
-            game.add_log(
-                f'Sky River Caern: {dfd.name} nao pode ser atacado '
-                f'(nao e o Alpha do pack)')
+
+        # Determina se o defensor e o alpha oficial deste jogador
+        alpha_card_id = alphas_combate.get(dfd.owner_id)
+        if alpha_card_id and str(dfd.card_id) == alpha_card_id:
+            continue  # E o alpha — ataque permitido
+
+        # Nao-alfa atacado! Bloqueia
+        game.combat.defenders.remove(dfd_id)
+        game.add_log(
+            f'Sky River Caern: {dfd.name} nao pode ser atacado '
+            f'(nao e o Alpha do pack)')
 
     # Se nao sobrou defensores, remove atacantes
     if not game.combat.defenders:

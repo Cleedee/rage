@@ -302,6 +302,7 @@
 
 - [x] **Attacking the Wyrm** não é usada da forma correta
 - [x] **Frenar** não está implementada corretamente 
+- [x] **Sky River Caern** — passive usa slug, alpha detection usa game.combat.alphas
 
 ## Área de Análises da App Web
 

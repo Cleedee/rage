@@ -1711,7 +1711,7 @@ class GameState:
                 f'{card.name}: BSD causam dano agravado. '
                 f'Regeneram apenas na Umbra.')
 
-        elif card.card_id == 597:  # Sky River Caern
+        elif slug == 'sky-river-caern':  # Sky River Caern (card_id=597)
             modifier = GameModifier(
                 card_uid=id(card),
                 modifier='sky_river_caern',
