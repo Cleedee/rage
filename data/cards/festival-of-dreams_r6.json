@@ -7,7 +7,7 @@
       "descricao": "Bastet compram 2 sept cards no Resource",
       "efeitos": [
         {
-          "tipo": "comprar_cartas",
+          "tipo": "comprar",
           "condicao_alvo": "jogador",
           "params": {
             "quantidade": 1

@@ -435,6 +435,7 @@ COMBAT_ACTIONS = {
     'body_slam',        # Body Slam (+2 dano se sem acao anterior)
     'bum_rush',         # Bum Rush (evento, pack ataca)
     'pack_defense',     # Pack Defense (evento, puxa pack)
+    'attacking_the_wyrm',  # Attacking the Wyrm (pack action, alpha ataca HG)
     'lucky_blow',       # Lucky Blow (dano 1)
     'off_balanced',     # Off-balanced Attack (-1 Rage prox rodada)
     'overextended',     # Overextended Attack (sem acao prox rodada)
@@ -698,6 +699,13 @@ COMBAT_ACTION_PROPS: dict[str, dict] = {
         'rage_requirement': 0,
         'speed': 'normal',
         'puxa_pack': True,
+    },
+    'attacking_the_wyrm': {
+        'damage': 0,
+        'rage_requirement': 0,
+        'speed': 'normal',
+        'pack_attack': True,
+        'draw_per_pack_member': True,
     },
     'lucky_blow': {
         'damage': 1,
@@ -2032,6 +2040,31 @@ def _process_pack_combat(game: GameState) -> None:
                     game.add_log(
                         f'  [Pack Defense] {c.name} juntou-se a defesa!'
                     )
+
+        # Conta quantos do pack entraram (para Attacking the Wyrm)
+        joining_count = 0
+        if props.get('draw_per_pack_member'):
+            for c in dono.pack_home:
+                if c.health_current <= 0:
+                    continue
+                cid_str = str(c.card_id)
+                if cid_str not in combatants_list:
+                    continue
+                if _eh_combatente_valido(game, cid_str):
+                    # Ja estava no combate ou entrou via pack
+                    if cid_str in game.combat.attackers or cid_str in game.combat.defenders:
+                        joining_count += 1
+            # Tira o alpha da contagem (ele ja estava atacando)
+            alpha_id = game.combat.alphas.get(dono.id, '')
+            if alpha_id and alpha_id in (game.combat.attackers + game.combat.defenders):
+                joining_count = max(0, joining_count - 1)
+            if joining_count > 0:
+                drawn = dono.draw_combat(joining_count)
+                game.add_log(
+                    f'  [Attacking the Wyrm] {dono.name} comprou '
+                    f'{len(drawn)} carta(s) de combate '
+                    f'({joining_count} do pack)'
+                )
 
         if is_pack_attack:
             game.add_log(

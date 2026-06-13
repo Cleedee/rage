@@ -4,38 +4,22 @@
   "tipo": "Combat Event",
   "modos": [
     {
-      "descricao": "Todos do pack atacam junto",
+      "descricao": "Pack Action: Todos do pack atacam junto; compra 1 carta por cada membro que se juntar",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "criatura_inimiga",
-          "quantidade": 3
+          "tipo": "auto_pack_attack",
+          "condicao_alvo": "proprio_pack",
+          "params": {
+            "draw_per_member": true,
+            "descricao": "pack_attack_hg"
+          }
         }
-      ]
-    },
-    {
-      "descricao": "Comprar 3 carta(s) de combate",
-      "efeitos": [
-        {
-          "tipo": "comprar",
-          "condicao_alvo": "deck_combate",
-          "quantidade": 3
-        }
-      ]
-    },
-    {
-      "descricao": "Comprar carta extra quando em desvantagem",
-      "efeitos": [
-        {
-          "tipo": "comprar",
-          "condicao_alvo": "deck_combate",
-          "quantidade": 1
-        }
-      ]
+      ],
+      "condicao_uso": "alpha_attack_hg"
     }
   ],
   "_metadata": {
-    "fonte": "analise_v2+revisado",
+    "fonte": "corrigido",
     "card_id": 282,
     "texto_original": "Play when your alpha declares an attack on any enemy in the Hunting Grounds. Choose any or all of the members of your pack to join the attack. Draw one additional combat card for each pack member who joins your alpha in the attack.",
     "keywords": "Pack Action",

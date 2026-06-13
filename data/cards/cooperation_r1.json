@@ -7,7 +7,7 @@
       "descricao": "Sept draw +1 para Gaia packs",
       "efeitos": [
         {
-          "tipo": "comprar_cartas",
+          "tipo": "comprar",
           "condicao_alvo": "jogador",
           "params": {
             "quantidade": 1

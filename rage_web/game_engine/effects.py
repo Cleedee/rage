@@ -2680,6 +2680,8 @@ def _validar_condicao_uso(game: GameState, jogador: 'PlayerState',
             lambda: _condicao_nao_frenetico(game, jogador),
         'fase_umbra_mokole':
             lambda: _condicao_fase_umbra_mokole(game, jogador),
+        'alpha_attack_hg':
+            lambda: _condicao_alpha_attack_hg(game, jogador),
     }
     validador = validadores.get(condicao)
     if validador:
@@ -2722,6 +2724,32 @@ def _condicao_fase_umbra_mokole(game: GameState,
         keywords = (c.keywords or '').lower()
         if 'mokole' in keywords and 'Character' in (c.card_type or ''):
             return True
+    return False
+
+
+def _condicao_alpha_attack_hg(game: GameState,
+                              jogador: 'PlayerState') -> bool:
+    """Verifica se o alpha do jogador esta atacando um inimigo no HG.
+
+    Usado por Attacking the Wyrm (Pack Action, Declaration step).
+    """
+    if not game.combat or not game.combat.is_active:
+        return False
+    # O alpha do jogador deve estar entre os atacantes
+    alpha_id = game.combat.alphas.get(jogador.id)
+    if not alpha_id or alpha_id not in game.combat.attackers:
+        return False
+    # O alvo deve estar no Hunting Grounds
+    for dfd_id in game.combat.defenders:
+        if dfd_id == 'hg':
+            continue
+        for p in game.players:
+            for c in p.hunting_grounds:
+                if str(c.card_id) == dfd_id:
+                    return True
+    # Tambem verifica se ha um alvo 'hg' generico
+    if 'hg' in game.combat.defenders:
+        return True
     return False
 
 

@@ -128,9 +128,9 @@
 
 ## 🔄 Pendente (Interface)
 
-- [ ] **Exportar deck** — Download em formato texto ou .dek
+- [x] **Exportar deck** — Download em formato texto ou .dek
 - [ ] **Filtros avançados** — Por renown, damage, atributos min/max
-- [ ] **Exportação de Deck para Discord** — Texto em inglês, Personagens antes dos demais tipos de cartas
+- [x] **Exportação de Deck para Discord** — Texto em inglês, Personagens antes dos demais tipos de cartas
 
 ## 🔄 Pendente (Qualidade)
 
@@ -153,7 +153,7 @@
 - [ ] **Drag & drop** — Arrastar cartas do deck, mão para o campo
 - [ ] **Histórico de ações** — Log da partida com replay
 - [ ] **Timer / Relógio** — Controle de tempo por turno
-- [ ] **Treinamento bot** — Coletar dados de partidas para refinar heurísticas
+- [x] **Treinamento bot** — Coletar dados de partidas para refinar heurísticas
 
 ## 🔄 Pendente (Prey)
 
@@ -297,6 +297,10 @@
 - [x] `_play_card()` fallback manda para DISCARD_COMBAT em vez de PACK_HOME
 - [ ] Timing restrictions: "Play between rounds" — Complexo, baixo impacto (2 cards)
 - [ ] Frenzy keyword mechanics — Frenzy cards tem regras especificas de berserk
+
+## Habilidades das Cartas
+
+- [ ] **Attacking the Wyrm** não é usada da forma correta.
 
 ## 🧪 Testes
 

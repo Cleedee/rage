@@ -43,6 +43,7 @@ COMBAT_ACTIONS_HUMAN = {
     'body_slam': 'Body Slam',
     'bum_rush': 'Bum Rush',
     'pack_defense': 'Pack Defense',
+    'attacking_the_wyrm': 'Attacking the Wyrm',
 }
 
 # Tipos de carta
