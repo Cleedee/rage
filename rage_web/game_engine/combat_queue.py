@@ -2648,12 +2648,17 @@ def resolve_combat(game: GameState) -> bool:
     # Fast Striking -> Normal -> Slow Striking
     # Criaturas mortas em Fast nao resolvem suas acoes em Normal/Slow
     def _get_dead_ids() -> set[str]:
-        """Retorna IDs das criaturas mortas (health_current <= 0)."""
+        """Retorna IDs das criaturas mortas (health_current <= 0).
+
+        So considera cartas com health > 0 (criaturas, aliados).
+        Cartas sem vida (Caern, Gift, Equipment, Event) tem
+        health=0 e nao sao consideradas 'mortas'.
+        """
         dead = set()
         for p in game.players:
             for zone_list in (p.pack_home, p.hunting_grounds, p.umbra):
                 for c in zone_list:
-                    if c.health_current <= 0:
+                    if c.health > 0 and c.health_current <= 0:
                         cid = str(c.card_id)
                         dead.add(cid)
         return dead
