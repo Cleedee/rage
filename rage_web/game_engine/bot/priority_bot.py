@@ -3002,11 +3002,26 @@ class PriorityBot:
                 card.zone = Zone.PACK_HOME
                 card.health_current = card.health
                 self.player.pack_home.append(card)
-                self.game.add_log(
-                    f'[BOT] {self.player.name} jogou {card.name}')
                 self.game.register_card_passives(card, self.player)
+                # Gift: anexa a um personagem viavel no pack
+                ct = (card.card_type or '').lower()
+                if 'gift' in ct:
+                    receptor = self._encontrar_receptor_gift(card)
+                    if receptor:
+                        receptor.attached_gifts.append(card)
+                        self.game.add_log(
+                            f'[BOT] {receptor.name} recebeu '
+                            f'{card.name}')
+                    else:
+                        # Gift sem receptor viavel: log padrao
+                        self.game.add_log(
+                            f'[BOT] {self.player.name} jogou '
+                            f'{card.name}')
+                else:
+                    self.game.add_log(
+                        f'[BOT] {self.player.name} jogou {card.name}')
                 # Equipment: tenta equipar a uma criatura do pack
-                if 'equipment' in (card.card_type or '').lower():
+                if 'equipment' in ct:
                     self._equip_card_to_pack(card)
 
     def _equip_card_to_pack(self, card):
@@ -3116,6 +3131,55 @@ class PriorityBot:
                         dfd_name = c.name
         self.game.add_log(
             f'[BOT] {self.player.name} atacou {dfd_name} com {atk_name}')
+
+    def _encontrar_receptor_gift(self, gift: CardInstance) -> Optional[CardInstance]:
+        """Encontra o melhor personagem no pack para receber um Gift.
+
+        Regras (4.5.3):
+        - O personagem deve ter Gnosis >= requisito do Gift
+        - O personagem deve ter keywords que atendam 'requires' do Gift
+        - Gift é anexado ao personagem via attached_gifts
+
+        Args:
+            gift: A carta Gift.
+
+        Returns:
+            CardInstance do personagem receptor, ou None.
+        """
+        from rage_web.game_engine.rules import parse_custo_rage
+
+        req_gnosis = gift.gnosis or 0
+        # 'requires' pode conter keywords separadas por espaco ou virgula
+        req_keywords_raw = (gift.requires or '').strip()
+        req_keywords = [k.strip().lower() for k in req_keywords_raw.replace(',', ' ').split() if k.strip()]
+
+        candidates = []
+        for c in self.player.pack_home:
+            if c.card_id == gift.card_id:
+                continue
+            if c.health_current <= 0:
+                continue
+            if 'character' not in (c.card_type or '').lower():
+                continue
+
+            # Verifica Gnosis
+            if c.gnosis < req_gnosis:
+                continue
+
+            # Verifica keywords requeridas
+            if req_keywords:
+                c_kw = (c.keywords or '').lower()
+                if not all(kw in c_kw for kw in req_keywords):
+                    continue
+
+            candidates.append(c)
+
+        if not candidates:
+            return None
+
+        # Escolhe o com maior Gnosis (mais apto a usar Gifts)
+        candidates.sort(key=lambda x: x.gnosis, reverse=True)
+        return candidates[0]
 
     def _pass_turn(self):
         """Passa a vez.
