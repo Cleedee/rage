@@ -301,7 +301,7 @@
 ## Habilidades das Cartas
 
 - [x] **Attacking the Wyrm** não é usada da forma correta
-- [ ] **Frenar** não está implementada corretamente 
+- [x] **Frenar** não está implementada corretamente 
 
 ## Área de Análises da App Web
 
