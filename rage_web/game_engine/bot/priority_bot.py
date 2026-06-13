@@ -2813,6 +2813,21 @@ class PriorityBot:
         if not ce_card:
             return None
 
+        # Verifica se o CE tem condicao_uso que nao pode ser atendida
+        # (ex: Attacking the Wyrm requer alpha atacando HG)
+        if ce_card.modelo_id:
+            from rage_web.game_engine.effects import (
+                CARTAS_EXEMPLO, _validar_condicao_uso)
+            modelo = CARTAS_EXEMPLO.get(ce_card.modelo_id)
+            if modelo and modelo.modos:
+                for modo in modelo.modos:
+                    if modo.condicao_uso:
+                        if not _validar_condicao_uso(
+                                g, self.player, modo.condicao_uso):
+                            # Condicao nao atendida: nao vale a pena
+                            # desperdicar o CE como blefe
+                            return None
+
         # Joga CE face-down
         if _jogar_ce_face_down(g, str(card.card_id),
                                 str(ce_card.card_id)):
