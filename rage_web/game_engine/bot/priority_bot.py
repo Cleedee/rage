@@ -1411,6 +1411,42 @@ class PriorityBot:
                                     action = acao_forcada
                                     break
                     if not result:
+                        # Blefe: tenta jogar qualquer carta da mao de combate
+                        # (se revelada e invalida, vira blefe).
+                        # Regra: jogador sempre pode jogar um Combat Action
+                        # mesmo que nao cumpra requisitos — sera blefe.
+                        if self.player.combat_hand:
+                            from rage_web.game_engine.combat_queue import (
+                                _registrar_acao_dano, _jogar_ce_face_down)
+                            carta_bluff = self.player.combat_hand[-1]
+                            resultado_bluff = False
+                            ct = (carta_bluff.card_type or '').lower()
+                            if 'combat event' in ct or ct == 'combat_event':
+                                # CE face-down
+                                resultado_bluff = _jogar_ce_face_down(
+                                    g, cid, str(carta_bluff.card_id))
+                            else:
+                                # Combat Action: cria acao virtual dano_<uid>
+                                acao_bluff = _registrar_acao_dano(
+                                    g, carta_bluff, str(card.card_id))
+                                if acao_bluff:
+                                    if carta_bluff in self.player.combat_hand:
+                                        self.player.combat_hand.remove(carta_bluff)
+                                        carta_bluff.zone = Zone.DISCARD_COMBAT
+                                        self.player.discard_combat.append(carta_bluff)
+                                    resultado_bluff = declare_action(
+                                        g, cid, acao_bluff)
+                                    if resultado_bluff:
+                                        g.add_log(f'{self.player.name} jogou '
+                                                  f'{carta_bluff.name} como blefe')
+                                        self._usou_carta_combate = True
+                                        return f'bluff_{cid}_{carta_bluff.card_id}'
+                            if resultado_bluff:
+                                g.add_log(f'{self.player.name} jogou '
+                                          f'{carta_bluff.name} como CE blefe')
+                                self._usou_carta_combate = True
+                                return f'bluff_{cid}_{carta_bluff.card_id}'
+                    if not result:
                         # Ainda falhou: marca como passou (impede loop)
                         g.combat.played_cards[cid] = ''
                         self._pass_turn()

@@ -176,6 +176,8 @@ def describe_action(acao: str, game=None) -> str:
         return acao
     elif acao == 'reveal':
         return 'Revelar ações'
+    elif acao.startswith('bluff_'):
+        return _describe_bluff(acao, card_name, game)
     elif acao in ('end_combat', 'combat_end'):
         return 'Encerrar combate'
     elif acao.startswith('combat_to_'):
@@ -500,6 +502,14 @@ def _format_fallback(acao: str) -> str:
     legivel = acao.replace('_', ' ')
     # Capitalizar primeira letra
     return legivel.capitalize()
+
+
+def _describe_bluff(acao: str, card_name: Optional[str], game=None) -> str:
+    """Describe uma acao de blefe (jogar Combat Action sem atender requisitos)."""
+    parts = acao.split('_')
+    if len(parts) >= 3 and card_name:
+        return f'Blefe com {card_name}'
+    return 'Blefe'
 
 
 # ---------------------------------------------------------------------------
