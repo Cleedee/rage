@@ -248,6 +248,14 @@ def _run_match_impl(seed, max_turns, max_steps_override,
             _alpha_map = {cid: pid for pid, cid in game.combat.alphas.items()}
             _alpha_phase = True
 
+        # Se o combate acabou, limpa alpha order e deixa o sistema
+        # normal de passes resolver a transicao de fase
+        if not game.combat.is_active:
+            _alpha_order.clear()
+            _alpha_index = 0
+            _alpha_map.clear()
+            _alpha_phase = False
+
         if _alpha_phase and _alpha_order and _alpha_index < len(_alpha_order):
             if not game.combat.is_active:
                 cid_atual = _alpha_order[_alpha_index]
