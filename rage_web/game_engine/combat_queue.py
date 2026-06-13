@@ -997,12 +997,9 @@ def advance_combat_step(game: GameState) -> bool:
         elif step == 'withdrawal':
             if _processar_withdrawal(game):
                 game.add_log('  [Withdrawal] Atacante retirou-se')
-                # Com withdrawal, combate termina
-                idx = COMBAT_STEPS.index(step)
-                if idx + 1 < len(COMBAT_STEPS):
-                    prox = COMBAT_STEPS[idx + 1]
-                    game.combat.step = prox
-                    game.add_log(f'  Step: {step} -> {prox}')
+                # Com withdrawal, combate termina imediatamente
+                game.combat.step = 'end'
+                game.add_log('  [Withdrawal] Combate encerrado')
                 return True
             game.add_log('  [Withdrawal] Atacante continua (auto)')
 
@@ -1688,10 +1685,22 @@ def reveal_all(game: GameState) -> bool:
 
 def _find_card(game: GameState, card_id: str) -> Optional[CardInstance]:
     """Encontra uma carta pelo ID em qualquer zona de qualquer jogador
-    ou no Hunting Grounds global."""
+    ou no Hunting Grounds global.
+
+    Prioriza zonas ativas (pack_home, hunting_grounds, umbra, hand)
+    sobre zonas de descarte/vitoria, para evitar que damage cards
+    (que copiam o card_id da origem) sejam encontradas no lugar da
+    carta original."""
+    # Primeira passada: zonas ativas (cartas "vivas")
     for p in game.players:
         for zone_list in (p.pack_home, p.hunting_grounds, p.umbra,
-                          p.hand, p.discard_combat, p.discard_sept,
+                          p.hand):
+            for c in zone_list:
+                if str(c.card_id) == card_id:
+                    return c
+    # Segunda passada: zonas de descarte/vitoria
+    for p in game.players:
+        for zone_list in (p.discard_combat, p.discard_sept,
                           p.victory_pile):
             for c in zone_list:
                 if str(c.card_id) == card_id:
@@ -1887,7 +1896,9 @@ def _processar_withdrawal(game: GameState) -> bool:
     # Verifica Maim (impede withdrawal)
     # TODO: implementar Maim check
 
-    return False  # Por enquanto, nunca retira
+    # Atacante retira do combate (6.3.1)
+    game.add_log('  [Withdrawal] Atacante retirou-se do combate')
+    return True
 
 
 def _tentar_desafio(game: GameState, alpha_id: str,
@@ -2374,8 +2385,8 @@ def resolve_combat(game: GameState) -> bool:
                 )
                 return
 
-        acao_origem = game.combat.declarations.get(origem_id, 'strike')
-        acao_alvo = game.combat.declarations.get(alvo_id, 'strike')
+        acao_origem = game.combat.declarations.get(origem_id, '')
+        acao_alvo = game.combat.declarations.get(alvo_id, '')
 
         # Origem precisa acao ofensiva
         if acao_origem not in ACOES_OFENSIVAS:
@@ -2748,7 +2759,7 @@ def resolve_combat(game: GameState) -> bool:
         for a_id in game.combat.attackers:
             if a_id == 'hg':
                 continue
-            acao_a = game.combat.declarations.get(a_id, 'strike')
+            acao_a = game.combat.declarations.get(a_id, '')
             props_a = COMBAT_ACTION_PROPS.get(acao_a, {})
             if props_a.get('speed', 'normal') != velocidade:
                 continue
@@ -2770,7 +2781,7 @@ def resolve_combat(game: GameState) -> bool:
         for d_id in game.combat.defenders:
             if d_id == 'hg':
                 continue
-            acao_d = game.combat.declarations.get(d_id, 'strike')
+            acao_d = game.combat.declarations.get(d_id, '')
             props_d = COMBAT_ACTION_PROPS.get(acao_d, {})
             if props_d.get('speed', 'normal') != velocidade:
                 continue

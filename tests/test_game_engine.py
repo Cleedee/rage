@@ -250,16 +250,10 @@ class TestCombatQueue:
         assert game.combat.step == 'withdrawal'
 
         from rage_web.game_engine.combat_queue import advance_combat_step
-        assert advance_combat_step(game)  # withdrawal -> between_rounds
+        assert advance_combat_step(game)  # withdrawal -> end (atacante retirou-se)
 
-        # Multi-round (6.2): como ambos os combatentes sobreviveram,
-        # o combate prossegue para a segunda rodada
-        assert advance_combat_step(game)  # between_rounds -> play_card (rodada 2)
-        assert game.combat.step == 'play_card'
-        assert game.combat.round_number == 2
-
-        # Encerra manualmente
-        game.combat.step = 'end'
+        # Com withdrawal, combate encerrou
+        assert game.combat.step == 'end'
         assert end_combat(game)
         assert not game.combat.is_active
 
@@ -359,12 +353,10 @@ class TestCombatQueue:
         assert resolve_combat(game)
         assert game.combat.step == 'withdrawal'
         from rage_web.game_engine.combat_queue import advance_combat_step
-        advance_combat_step(game)  # withdrawal -> between_rounds
-        # Multi-round (6.2): ambos sobreviveram, combate continua
-        advance_combat_step(game)  # between_rounds -> play_card (rodada 2)
-        assert game.combat.step == 'play_card'
-        assert game.combat.round_number == 2
-        game.combat.step = 'end'  # encerra manualmente
+        advance_combat_step(game)  # withdrawal -> end (atacante retirou-se)
+        game.combat.step = 'end'
+        end_combat(game)
+        assert not game.combat.is_active
 
     def test_get_combatants(self, game):
         start_combat(game, ['c1', 'c2'], ['c3'])
@@ -3367,7 +3359,7 @@ class TestWithdrawal:
         resolve_combat(game)
         # So verifica se a funcao existe e retorna False sem erro
         result = _processar_withdrawal(game)
-        assert result is False, 'Withdrawal padrao = False'
+        assert result is True, 'Withdrawal padrao = True (atacante pode retirar)'
 
 
 class TestCombatEventFaceDown:

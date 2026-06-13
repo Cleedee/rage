@@ -1339,8 +1339,6 @@ class PriorityBot:
                             # Tenta usar o nome da carta como acao
                             nome_acao = (carta_rand.name or '').lower().replace(' ', '_')
                             # Mapeia nomes de cartas para acoes conhecidas
-                            from rage_web.game_engine.combat_queue import (
-                                COMBAT_ACTIONS, COMBAT_ACTION_PROPS)
                             if nome_acao in COMBAT_ACTIONS:
                                 result = declare_action(g, cid, nome_acao)
                                 if result:
@@ -1404,23 +1402,17 @@ class PriorityBot:
                     action = self._choose_combat_action(card, owner)
                     result = declare_action(g, cid, action)
                     if not result:
-                        # Fallback: tenta acoes mais seguras
-                        for fallback in ('strike', 'claw', 'bite', 'block', 'dodge'):
-                            if fallback in COMBAT_ACTIONS:
-                                result = declare_action(g, cid, fallback)
+                        # 6.6.6b: Forced Play — se tem carta e nao conseguiu,
+                        # tenta qualquer acao viavel (mesmo ilegal/bluff)
+                        if g.combat.has_forced_play(cid):
+                            for acao_forcada in COMBAT_ACTIONS:
+                                result = declare_action(g, cid, acao_forcada)
                                 if result:
-                                    action = fallback
+                                    action = acao_forcada
                                     break
-                    # 6.6.6b: Forced Play — se tem carta e nao conseguiu,
-                    # tenta qualquer acao viavel (mesmo ilegal)
-                    if not result and g.combat.has_forced_play(cid):
-                        for acao_forcada in COMBAT_ACTIONS:
-                            result = declare_action(g, cid, acao_forcada)
-                            if result:
-                                action = acao_forcada
-                                break
                     if not result:
-                        # Ainda falhou: passa a vez
+                        # Ainda falhou: marca como passou (impede loop)
+                        g.combat.played_cards[cid] = ''
                         self._pass_turn()
                         return 'combat_wait'
                     return f'declare_{cid}_{action}'
@@ -1736,13 +1728,7 @@ class PriorityBot:
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     result = declare_action(g, cid, action)
                     if not result:
-                        for fallback in ('strike', 'claw', 'bite', 'block', 'dodge'):
-                            if fallback in COMBAT_ACTIONS:
-                                result = declare_action(g, cid, fallback)
-                                if result:
-                                    action = fallback
-                                    break
-                    if not result:
+                        # Sem acao viavel: passa (criatura nao joga carta)
                         self._pass_turn()
                         return 'combat_wait'
                     return f'declare_{cid}_{action}'
@@ -1757,8 +1743,8 @@ class PriorityBot:
                 card = _find_card(g, cid)
                 if not card or card.owner_id != self.player_id:
                     continue
-                acao = g.combat.declarations.get(cid, 'strike')
-                if acao in ('block', 'dodge', 'flee'):
+                acao = g.combat.declarations.get(cid, '')
+                if acao in ('block', 'dodge', 'flee') or not acao:
                     continue  # defensivas nao precisam de alvo
                 # Escolhe alvo aleatorio do lado oposto
                 if cid in g.combat.attackers:
@@ -2705,17 +2691,8 @@ class PriorityBot:
             return 'dodge'
 
         if owner_id != self.player_id:
-            # Criatura do oponente: reage de forma defensiva
-            if card.health_current < card.health * 0.4:
-                return 'dodge'
-            if card.rage >= 3:
-                max_atk_rage = 0
-                if me and me.pack_home:
-                    max_atk_rage = max(c.rage for c in me.pack_home)
-                if max_atk_rage > card.rage * 1.5:
-                    return 'block'
-                return 'strike'
-            return 'block'
+            # Criatura do oponente: sem carta de combate, nao age
+            return ''
 
         # Criatura propria: escolhe acao ofensiva de maior dano viavel
         from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS
@@ -2725,11 +2702,19 @@ class PriorityBot:
             str(card.card_id))
 
         opp = self._get_opponent()
-        melhor_acao = 'strike'
+        melhor_acao = ''
         melhor_dano = -1
 
+        # Atacantes tem fallback para strike; defensores nao
+        cid_str = str(card.card_id)
+        is_attacker = cid_str in self.game.combat.attackers
+        acoes_base = ()
+        if is_attacker:
+            # Atacantes sempre podem tentar strike como fallback
+            acoes_base = ('strike', 'claw', 'bite')
+
         for acao in ('anatomy_lesson', 'head_butt', 'savage_beatdown',
-                     'tail_lash', 'submission_hold', 'strike', 'claw', 'bite'):
+                     'tail_lash', 'submission_hold') + acoes_base:
             props = COMBAT_ACTION_PROPS.get(acao, {})
             req = props.get('rage_requirement', 0)
             if card.effective_rage < req:

@@ -1068,6 +1068,9 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
             if 'Character' in c.card_type:
                 c.zone = Zone.PACK_HOME
                 c.health_current = c.health
+                # Metis tem forma breed = Crinos (regra A1.4)
+                if c.keywords and 'metis' in c.keywords.lower():
+                    c.is_crinos = True
                 player.pack_home.append(c)
             elif c.card_type in sept_types:
                 c.zone = Zone.DECK_SEPT
