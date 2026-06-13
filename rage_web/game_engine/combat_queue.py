@@ -1126,21 +1126,40 @@ def start_combat(game: GameState, attackers: list[str],
                     f'lados diferentes do Gauntlet')
                 return False
 
+    # ── Sky River Caern: bloqueia ataque a nao-alfa ANTES do Frenar ──
+    if game.has_modifier('sky_river_caern'):
+        alphas_atuais = dict(game.combat.alphas) if game.combat else {}
+        # Descobre quais packs tem Caern
+        packs_caern = set()
+        for mod in list(game.game_modifiers):
+            if mod.modifier == 'sky_river_caern':
+                for p in game.players:
+                    for c in p.pack_home + p.hunting_grounds + p.umbra:
+                        if id(c) == mod.card_uid:
+                            packs_caern.add(p.id)
+                            break
+        # Se algum defensor original e nao-alfa em pack protegido, bloqueia
+        for dfd in list(defenders):
+            if dfd == 'hg':
+                continue
+            dfd_card = _find_card(game, dfd)
+            if not dfd_card:
+                continue
+            if dfd_card.owner_id not in packs_caern:
+                continue
+            # E alpha? Caern permite ataque ao alpha
+            alpha_card_id = alphas_atuais.get(dfd_card.owner_id)
+            if alpha_card_id and str(dfd_card.card_id) == alpha_card_id:
+                continue
+            # Nao-alfa em pack protegido — bloqueia antes do Frenar
+            game.add_log(
+                f'Sky River Caern: {dfd_card.name} nao pode ser atacado '
+                f'(nao e o Alpha do pack)')
+            return False
+
     # ── Frenar (slug='frenar_r1'): troca de lugar com o alpha se atacado ──
-    # NOTA: Se Sky River Caern estiver ativo no pack, Frenar NAO troca.
-    #       Senao, Frenar defenderia (nao-alfa) e o Caern bloquearia.
     if game.has_modifier('frenar_alpha_switch'):
         alphas_atuais = dict(game.combat.alphas) if game.combat else {}
-        # Sky River Caern ativo? Descobre quais packs estao protegidos
-        packs_caern = set()
-        if game.has_modifier('sky_river_caern'):
-            for p in game.players:
-                for mod in game.game_modifiers:
-                    if mod.modifier == 'sky_river_caern':
-                        for c in p.pack_home + p.hunting_grounds + p.umbra:
-                            if id(c) == mod.card_uid:
-                                packs_caern.add(p.id)
-                                break
         novos_defensores = list(defenders)
         for dfd in list(novos_defensores):
             if dfd == 'hg':
@@ -1152,17 +1171,10 @@ def start_combat(game: GameState, attackers: list[str],
             for pid, alpha_id in alphas_atuais.items():
                 if dfd != alpha_id:
                     continue
-                # Alpha esta sendo atacado!
+                # Alpha esta sendo atacado! Frenar pode trocar.
                 dono_alpha = _find_owner(game, dfd_card)
                 if not dono_alpha:
                     continue
-                # Se Sky River Caern protege este pack, Frenar nao troca
-                # (o ataque ja e contra o alpha, que o Caern permite)
-                if dono_alpha.id in packs_caern:
-                    game.add_log(
-                        f'  [Frenar] {dfd_card.name} e o alpha sob '
-                        f'Sky River Caern — Frenar mantem posicao')
-                    break
                 for c in dono_alpha.pack_home:
                     if c.health_current <= 0:
                         continue
@@ -1214,8 +1226,9 @@ def start_combat(game: GameState, attackers: list[str],
     # Caern of the Unwashed Child (586): oponentes perdem 2 Rage ou Gnosis
     _check_caern_unwashed_child(game)
 
-    # Sky River Caern (597): nao-alfas imunes a challenge/sneak attack
-    _check_sky_river_caern(game)
+    # NOTA: _check_sky_river_caern removido daqui — a verificacao
+    #       e feita ANTES do Frenar (acima), para evitar falso
+    #       bloqueio quando Frenar troca com o alpha.
 
     # Trata ataque a Territory: substitui defensor pelo alpha do dono
     # Regra (Quickstart): o alpha do pack controlador pode defender
