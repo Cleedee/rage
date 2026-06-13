@@ -4,15 +4,15 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift (Gn3)",
+      "descricao": "Jogar 1 combat card extra no primeiro round de cada combate (Gn3)",
       "efeitos": [
         {
-          "tipo": "anular",
-          "condicao_alvo": "criatura_inimiga"
-        },
-        {
-          "tipo": "combar_acao",
-          "condicao_alvo": "criatura_aliada"
+          "tipo": "acao_extra_por_rodada",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "valor": 2,
+            "descricao": "Arms of the Abyss: +1 combat card no primeiro round de cada combate (permanente ate cancelar)"
+          }
         }
       ]
     }

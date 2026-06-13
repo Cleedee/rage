@@ -1,7 +1,7 @@
 {
   "id": "discard-trick-shot-from-play-while-equipped-with-a-firearm-to-target-a-creature-in-combat-target-s-controller-discards-a-random-combat-card-if-the-target-creature-is-frenzied-the-controller-must-randomly-discard-half-her-combat-hand",
-  "nome": "Discard Trick Shot from play while equipped with a Firearm to target a creature in combat. Target's controller discards a random combat card. If the target creature is frenzied, the controller must randomly discard half her combat hand (",
-  "tipo": "",
+  "nome": "Trick Reload",
+  "tipo": "Gift",
   "modos": [
     {
       "descricao": "Efeito passivo",
@@ -24,6 +24,8 @@
     "card_id": 1078,
     "texto_original": "",
     "precisa_revisao": true,
-    "slug": "discard-trick-shot-from-play-while-equipped-with-a-firearm-to-target-a-creature-in-combat-target-s-controller-discards-a-random-combat-card-if-the-target-creature-is-frenzied-the-controller-must-randomly-discard-half-her-combat-hand"
+    "slug": "discard-trick-shot-from-play-while-equipped-with-a-firearm-to-target-a-creature-in-combat-target-s-controller-discards-a-random-combat-card-if-the-target-creature-is-frenzied-the-controller-must-randomly-discard-half-her-combat-hand",
+    "keywords": "Firearm - Trick Shot",
+    "nota_revisao": "Nome corrigido (era fragmento corrompido de carta ID 1077)"
   }
 }

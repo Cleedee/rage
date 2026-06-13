@@ -1,0 +1,33 @@
+{
+  "id": "caern-of-the-tri-spiral",
+  "nome": "Caern of the Tri-Spiral",
+  "tipo": "Caern",
+  "modos": [
+    {
+      "descricao": "+2 Gnose para Gifts",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "packmates",
+          "params": {
+            "atributos": ["gnosis_para_gifts"],
+            "quantidade": 2,
+            "duracao": "permanente",
+            "descricao": "Members of the pack gain +2 Gnosis for the purposes of using Gifts"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck1050_assombracao",
+    "card_id": 585,
+    "texto_original": "All members of the pack that controls this caern gain 2 Gnosis for the purposes of using Gifts. Only one Caern of the Tri-Spiral can be in play at any time.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "slug": "caern-of-the-tri-spiral"
+  }
+}

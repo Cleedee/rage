@@ -1,0 +1,31 @@
+{
+  "id": "natasha-moon-chaser_r5",
+  "nome": "Natasha Moon Chaser",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn7 H2 (Ren5) - Silent Striders Ragabash",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "self",
+          "params": {
+            "descricao": "Uma vez por jogo, pode cancelar um ataque declarado para perseguir Baba Yaga"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck1050_assombracao",
+    "card_id": 200,
+    "texto_original": "Once per game, a player can speak the name Baba Yaga and Natasha will forfeit a declared attack in paranoid pursuit of the Hag.",
+    "keywords": "Garou - Silent Striders - Ragabash - Homid - Gaia - Female",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 7,
+    "health": 2,
+    "requires": "",
+    "slug": "natasha-moon-chaser_r5"
+  }
+}

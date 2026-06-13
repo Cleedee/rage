@@ -1,0 +1,14 @@
+{
+  "id": "fomori-2_r4",
+  "nome": "Fomori (2)",
+  "tipo": "Enemy",
+  "modos": [],
+  "_metadata": {
+    "card_id": 484,
+    "slug": "fomori-2_r4",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Fomori"
+  }
+}

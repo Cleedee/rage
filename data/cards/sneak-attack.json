@@ -4,12 +4,16 @@
   "tipo": "Action",
   "modos": [
     {
-      "descricao": "Atacar qualquer personagem",
+      "descricao": "Burlar protocolo alpha e engajar qualquer personagem",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "criatura_inimiga",
-          "quantidade": 2
+          "tipo": "adicionar_modifier",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "modifier": "sneak_attack_bypass_alpha",
+            "alvos": "self",
+            "descricao": "Circunventa o ciclo normal de alpha, engaja qualquer personagem/ally/inimigo. Interrompe o ciclo alpha se jogado durante Combat Phase (nao interrompe combate ja iniciado)"
+          }
         }
       ]
     }
@@ -17,7 +21,7 @@
   "_metadata": {
     "fonte": "analise_v2+revisado",
     "card_id": 807,
-    "texto_original": "The character can circumvent the normal combat protocol and engage any character, ally or enemy in play.  If played during the Combat Phase of a turn, Sneak Attack can interrupt the normal alpha attack cycle, but cannot interrupt a combat that has already",
+    "texto_original": "The character can circumvent the normal combat protocol and engage any character, ally or enemy in play.  If played during the Combat Phase of a turn, Sneak Attack can interrupt the normal alpha attack cycle, but cannot interrupt a combat that has already started.",
     "keywords": "",
     "damage": "",
     "rage": 0,

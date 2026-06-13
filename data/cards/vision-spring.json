@@ -1,0 +1,14 @@
+{
+  "id": "vision-spring",
+  "nome": "Vision Spring",
+  "tipo": "Territory",
+  "modos": [],
+  "_metadata": {
+    "card_id": 766,
+    "slug": "vision-spring",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 765.",
+    "keywords": "Gaia"
+  }
+}

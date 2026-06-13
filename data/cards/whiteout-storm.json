@@ -1,0 +1,14 @@
+{
+  "id": "whiteout-storm",
+  "nome": "Whiteout Storm",
+  "tipo": "Gift",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1627,
+    "slug": "whiteout-storm",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1626.",
+    "keywords": "Permanent - Blizzard"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "theurge-pact",
+  "nome": "Theurge Pact",
+  "tipo": "Moot",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1240,
+    "slug": "theurge-pact",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1239.",
+    "keywords": "Theurge - Spirit"
+  }
+}

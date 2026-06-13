@@ -1,0 +1,27 @@
+{
+  "id": "festival-of-dreams_r6",
+  "nome": "Festival of Dreams",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Bastet compram 2 sept cards no Resource",
+      "efeitos": [
+        {
+          "tipo": "comprar_cartas",
+          "condicao_alvo": "jogador",
+          "params": {
+            "quantidade": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 1432,
+    "slug": "festival-of-dreams_r6",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043 | Efeitos basicos adicionados para funcionamento do bot",
+    "keywords": ""
+  }
+}

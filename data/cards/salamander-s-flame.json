@@ -1,0 +1,14 @@
+{
+  "id": "salamander-s-flame",
+  "nome": "Salamander's Flame",
+  "tipo": "Ally",
+  "modos": [],
+  "_metadata": {
+    "card_id": 437,
+    "slug": "salamander-s-flame",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 436.",
+    "keywords": "Spirit - Fire - Beast-of-War"
+  }
+}

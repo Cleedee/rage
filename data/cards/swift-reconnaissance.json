@@ -4,17 +4,15 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift (Gn5)",
+      "descricao": "Ver Combat Action do oponente antes de selecionar a propria (Gn5)",
       "efeitos": [
         {
-          "tipo": "modificar_atributo",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "rage"
-            ],
-            "valor": 1,
-            "duracao": "ate_fim_combate"
+            "modifier": "swift_reconnaissance_active",
+            "alvos": "self",
+            "descricao": "Ve a Combat Action do oponente antes de selecionar a sua; deve jogar uma Combat Action por round. Descarta apos 3 rounds."
           }
         }
       ]
@@ -23,7 +21,7 @@
   "_metadata": {
     "fonte": "auto_json",
     "card_id": 1066,
-    "texto_original": "The Gift user may see her opponents Combat Action before it is played and select her own Combat Action once her opponents has been seen. The Gift user must play a Combat Action during each round of combat. Discard this Gift after 3 rounds of combat have p",
+    "texto_original": "The Gift user may see her opponents Combat Action before it is played and select her own Combat Action once her opponents has been seen. The Gift user must play a Combat Action during each round of combat. Discard this Gift after 3 rounds of combat have passed.",
     "keywords": "",
     "damage": "",
     "rage": 0,

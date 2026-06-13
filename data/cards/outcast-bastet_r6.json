@@ -1,0 +1,14 @@
+{
+  "id": "outcast-bastet_r6",
+  "nome": "Outcast Bastet",
+  "tipo": "Victim",
+  "modos": [],
+  "_metadata": {
+    "card_id": 514,
+    "slug": "outcast-bastet_r6",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Bastet"
+  }
+}

@@ -4,11 +4,16 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Ataque nao pode ser redirecionado",
+      "descricao": "Ataques do usuario nao podem ser redirecionados nem substituidos (step in)",
       "efeitos": [
         {
-          "tipo": "redirecionar",
-          "condicao_alvo": "criatura_aliada"
+          "tipo": "adicionar_modifier",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "modifier": "nao_pode_redirecionar",
+            "alvos": "self",
+            "descricao": "Ataques desta criatura nao podem ser redirecionados nem substituidos via step in"
+          }
         }
       ]
     }

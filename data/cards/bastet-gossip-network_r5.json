@@ -1,0 +1,30 @@
+{
+  "id": "bastet-gossip-network_r5",
+  "nome": "Bastet Gossip Network",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Pode votar em qualquer junta",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "gnosis"
+            ],
+            "valor": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 447,
+    "slug": "bastet-gossip-network_r5",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043 | Efeitos basicos adicionados para funcionamento do bot",
+    "keywords": "Human - Kinfolk"
+  }
+}

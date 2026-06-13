@@ -1,0 +1,31 @@
+{
+  "id": "erishka-derr_r1",
+  "nome": "Erishka Derr",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn2 H1 (Ren1) - Uktena Ragabash",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "self",
+          "params": {
+            "descricao": "Once per game, in the Regeneration phase, may destroy a Bane Fetish"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck1050_assombracao",
+    "card_id": 1656,
+    "texto_original": "Erishka Derr is a young Choctaw Uktena who's making a name liberating stolen Native American fetishes but sometimes gets more than she can handle. Once per game, in the Regeneration phase, she may destroy a Bane Fetish in play.",
+    "keywords": "Uktena - Homid - Female - Ragabash - Gaia",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 2,
+    "health": 1,
+    "requires": "",
+    "slug": "erishka-derr_r1"
+  }
+}

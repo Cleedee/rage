@@ -1,0 +1,14 @@
+{
+  "id": "ear-lober",
+  "nome": "Ear Lober",
+  "tipo": "Combat Action",
+  "modos": [],
+  "_metadata": {
+    "card_id": 314,
+    "slug": "ear-lober",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Unblockable"
+  }
+}

@@ -4,7 +4,7 @@
   "tipo": "Character - Gaia",
   "modos": [
     {
-      "descricao": "Personagem: Rg3 Gn8 H5 (Ren9) - Ragabash",
+      "descricao": "Personagem: Rg3 Gn8 H5 (Ren9) - Ragabash — pode usar Gifts Philodox",
       "efeitos": [
         {
           "tipo": "registrar_trigger_combate",
@@ -17,6 +17,15 @@
               "condicao_alvo": "jogador_inimigo",
               "quantidade": 1
             }
+          }
+        },
+        {
+          "tipo": "adicionar_modifier",
+          "condicao_alvo": "self",
+          "params": {
+            "modifier": "can_use_philodox_gifts",
+            "alvos": "self",
+            "descricao": "Pode usar Gifts Philodox em adicao aos normais"
           }
         }
       ]
@@ -32,7 +41,7 @@
     "gnosis": 8,
     "health": 5,
     "requires": "",
-    "notas": "Philodox Gifts implementado via rules.pode_usar_gift(). +1 VP ao ser destruido via trigger.",
+    "notas": "Philodox Gifts: modifier can_use_philodox_gifts. +1 VP ao ser destruido via trigger.",
     "slug": "stalks-death_r9"
   }
 }

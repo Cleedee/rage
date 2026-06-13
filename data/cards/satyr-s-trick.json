@@ -1,0 +1,14 @@
+{
+  "id": "satyr-s-trick",
+  "nome": "Satyr's Trick",
+  "tipo": "Gift",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1035,
+    "slug": "satyr-s-trick",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1034.",
+    "keywords": "Permanent - Renown"
+  }
+}

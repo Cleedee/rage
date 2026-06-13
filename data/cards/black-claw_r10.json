@@ -1,0 +1,14 @@
+{
+  "id": "black-claw_r10",
+  "nome": "Black Claw",
+  "tipo": "Character - Gaia",
+  "modos": [],
+  "_metadata": {
+    "card_id": 44,
+    "slug": "black-claw_r10",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Bastet - Balam - Feline - Gaia - Male"
+  }
+}

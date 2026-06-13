@@ -1,0 +1,27 @@
+{
+  "id": "submit",
+  "nome": "Submit",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cancela Gift de alvo de menor renome",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "alvo_qualquer",
+          "params": {
+            "alvo": "efeito"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 1428,
+    "slug": "submit",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043 | Efeitos basicos adicionados para funcionamento do bot",
+    "keywords": ""
+  }
+}

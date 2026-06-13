@@ -1,0 +1,14 @@
+{
+  "id": "corporate-moot",
+  "nome": "Corporate Moot",
+  "tipo": "Quest",
+  "modos": [],
+  "_metadata": {
+    "card_id": 800,
+    "slug": "corporate-moot",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 799.",
+    "keywords": "Pentex"
+  }
+}

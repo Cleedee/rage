@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 """Simulador de partida entre dois bots Rage CCG.
 
+Modos de verbosidade:
+    verbose=0: só resultado final (quem venceu)
+    verbose=1: narrativa (turnos, jogadas importantes, dano, mortes, VP)
+    verbose=2: debug completo (tudo, inclusive passes e passos de combate)
+
 Uso:
-    python3 match.py                # hard vs hard
+    python3 match.py                          # hard vs hard, verbose=1
     python3 match.py --p1 easy --p2 easy
     python3 match.py --seed 123 --max-turns 10
+    python3 match.py --verbose 2               # debug
+    python3 match.py --quiet                   # só resultado
 """
 
 import argparse
@@ -20,6 +27,27 @@ from rage_web.game_engine.combat_queue import get_declaration_summary, get_comba
 from rage_web.game_engine.state import GameState
 
 
+# ── Sistema de verbosidade narrativa ──
+# verbose=0: só resultado
+# verbose=1: narrativa (turnos, jogadas importantes, dano, mortes, VP)
+# verbose=2: debug completo (tudo)
+_VERBOSE = 1
+
+def vlog(level: int, *args, **kwargs):
+    """Log condicional conforme nivel de verbosidade."""
+    if level <= _VERBOSE:
+        print(*args, **kwargs)
+
+def vsep(level: int, char='━', width=60):
+    if level <= _VERBOSE:
+        print(char * width)
+
+def set_verbosity(level: int):
+    """Altera o nivel de verbosidade global."""
+    global _VERBOSE
+    _VERBOSE = level
+
+
 FASE_NOMES = {
     'redraw': 'REDRAW (Compra)',
     'regeneration': 'REGENERACAO',
@@ -32,8 +60,7 @@ FASE_NOMES = {
 def _log_fase(game, turno, fase):
     """Loga mudanca de fase com destaque e lista HG."""
     nome = FASE_NOMES.get(fase, fase.upper())
-    print(f'\n  ── [{turno}] {nome} ──\n')
-    # Mostra Hunting Grounds no inicio de cada fase
+    vlog(1, f'\n  ── [{turno}] {nome} ──\n')
     hg_cards = []
     for p in game.players:
         for c in p.hunting_grounds:
@@ -41,22 +68,24 @@ def _log_fase(game, turno, fase):
     hg_global = getattr(game, 'hunting_grounds_cards', [])
     for c in hg_global:
         hg_cards.append(f'{c.name}(global)')
-    if hg_cards:
-        print(f'    🎯 Hunting Grounds: {", ".join(hg_cards)}')
+    if hg_cards and _VERBOSE >= 2:
+        vlog(2, f'    🎯 Hunting Grounds: {", ".join(hg_cards)}')
 
 
 def print_separator(char='━', width=60):
-    print(char * width)
+    vlog(1, char * width)
 
 
 def print_board(game: GameState):
-    """Exibe o estado de forma compacta e colorida."""
+    """Exibe o estado de forma compacta (sempre visivel em verbose>=1)."""
+    if _VERBOSE < 1:
+        return
     fase_icone = {
         'redraw': '🔄', 'regeneration': '💚', 'resource': '🛠️',
         'umbra': '🌙', 'moot': '🗳️', 'combat': '⚔️',
     }
     icone = fase_icone.get(game.phase, '?')
-    print(f'  ═══ Turno {game.turn_number} {icone} {game.phase.upper()} ═══')
+    vlog(1, f'  ═══ Turno {game.turn_number} {icone} {game.phase.upper()} ═══')
     for p in game.players:
         pack = ', '.join(
             f'{c.name}({c.health_current}/{c.health})'
@@ -66,32 +95,30 @@ def print_board(game: GameState):
         deck_c = len(p.deck_combat)
         deck_s = len(p.deck_sept)
         hg_local = ', '.join(f'{c.name}({c.health_current}/{c.health})' if hasattr(c,'health') and c.health else c.name[:15] for c in p.hunting_grounds) or '—'
-        print(f'  {p.name:20s} 🃏{hand:2d} 📚C{deck_c:2d} S{deck_s:2d} '
+        vlog(1, f'  {p.name:20s} 🃏{hand:2d} 📚C{deck_c:2d} S{deck_s:2d} '
               f'🏆{p.victory_points}')
-        print(f'  {" "*20} 🏠 {pack}')
-        print(f'  {" "*20} 🎯 {hg_local}')
-    # Global Hunting Grounds
+        vlog(1, f'  {" "*20} 🏠 {pack}')
+        vlog(1, f'  {" "*20} 🎯 {hg_local}')
     hg_global = getattr(game, 'hunting_grounds_cards', [])
     if hg_global:
         hg_names = ', '.join(
             f'{c.name}({c.health_current}/{c.health})' if hasattr(c,'health') and c.health
             else c.name[:15] for c in hg_global
         )
-        print(f'  {" "*20} 🌍 HG Global: {hg_names}')
+        vlog(2, f'  {" "*20} 🌍 HG Global: {hg_names}')
     if game.combat.is_active:
         atk = ', '.join(game.combat.attackers)
         dfd = ', '.join(game.combat.defenders)
-        print(f'  ⚔️  COMBATE [{game.combat.step}] {atk} vs {dfd}')
-        summary = get_declaration_summary(game)
-        if 'declarations' in summary:
-            for cid, action in summary['declarations'].items():
-                print(f'     {cid}: {action}')
+        vlog(1, f'  ⚔️  COMBATE [{game.combat.step}] {atk} vs {dfd}')
+        if _VERBOSE >= 2:
+            summary = get_declaration_summary(game)
+            if 'declarations' in summary:
+                for cid, action in summary['declarations'].items():
+                    vlog(2, f'     {cid}: {action}')
 
 
 def build_game_from_decks_n(*deck_ids: int, seed: int = 42):
-    """Converte N decks do banco SQLite em uma partida.
-    Re-exporta de cli.py para acesso via rage_web.game_engine.match.
-    """
+    """Converte N decks do banco SQLite em uma partida."""
     from rage_web.game_engine.cli import build_game_from_decks_n as _build_n
     return _build_n(*deck_ids, seed=seed)
 
@@ -106,22 +133,38 @@ def run_match(seed: int = 42, max_turns: int = 30,
               # Novos parametros N-player
               deck_ids: list[int] | None = None,
               difficulties: list[str] | None = None,
-              vp_to_win: int | None = None) -> str:
+              vp_to_win: int | None = None,
+              verbose: int | None = None) -> str:
     """Roda uma partida entre bots (2 ou mais jogadores).
 
     Args:
-        seed: Semente aleatoria.
-        max_turns: Limite de turnos.
-        difficulty_p1/difficulty_p2: Dificuldades (compatibilidade 2p).
-        deck1_id/deck2_id: IDs dos decks (compatibilidade 2p).
-        delay: Delay entre acoes.
-        deck_ids: Lista de IDs de decks (N players).
-        difficulties: Lista de dificuldades (N players).
-
-    Returns:
-        ID do vencedor | 'draw' | 'timeout' | 'error'
+        verbose: 0=só resultado, 1=narrativa, 2=debug.
+                 None = usa o nivel global _VERBOSE.
+        Demais parametros: vide match.py original.
     """
-    # Usa parametros N-player se fornecidos
+    global _VERBOSE
+    if verbose is not None:
+        old_verbose = _VERBOSE
+        _VERBOSE = verbose
+    else:
+        old_verbose = None
+
+    try:
+        return _run_match_impl(seed, max_turns, max_steps_override,
+                               difficulty_p1, difficulty_p2,
+                               deck1_id, deck2_id, delay,
+                               deck_ids, difficulties, vp_to_win)
+    finally:
+        if old_verbose is not None:
+            _VERBOSE = old_verbose
+
+
+def _run_match_impl(seed, max_turns, max_steps_override,
+                    difficulty_p1, difficulty_p2,
+                    deck1_id, deck2_id, delay,
+                    deck_ids, difficulties, vp_to_win):
+    """Implementacao interna do loop de partida."""
+    # ── Setup ──
     if deck_ids and len(deck_ids) >= 2:
         n_players = len(deck_ids)
         diffs = difficulties or ['hard'] * n_players
@@ -130,7 +173,7 @@ def run_match(seed: int = 42, max_turns: int = 30,
         try:
             game = build_game_from_decks_n(*deck_ids, seed=seed)
         except ValueError as e:
-            print(f'Erro ao carregar decks: {e}')
+            vlog(0, f'Erro ao carregar decks: {e}')
             return 'error'
     elif deck1_id and deck2_id:
         n_players = 2
@@ -138,14 +181,13 @@ def run_match(seed: int = 42, max_turns: int = 30,
         try:
             game = build_game_from_decks(deck1_id, deck2_id, seed=seed)
         except ValueError as e:
-            print(f'Erro ao carregar decks: {e}')
+            vlog(0, f'Erro ao carregar decks: {e}')
             return 'error'
     else:
         n_players = 2
         diffs = [difficulty_p1, difficulty_p2]
         game = create_sample_game(seed=seed)
 
-    # Override de VP para vencer (se informado)
     if vp_to_win is not None:
         for p in game.players:
             p.renown_level = vp_to_win
@@ -156,13 +198,13 @@ def run_match(seed: int = 42, max_turns: int = 30,
         diff = diffs[idx] if idx < len(diffs) else 'hard'
         bots[p.id] = PriorityBot(game, p.id, difficulty=diff)
 
-    # Cores por indice
     colors = ['\033[1;36m', '\033[1;33m', '\033[1;35m',
               '\033[1;32m', '\033[1;31m', '\033[1;34m']
     reset = '\033[0m'
 
-    print_separator()
-    print(f'  RAGE CCG — PARTIDA ENTRE BOTS')
+    # ── Header ──
+    vsep(1)
+    vlog(1, f'  🎮 RAGE CCG — PARTIDA ENTRE BOTS')
     if deck_ids:
         deck_info = ' | Decks: ' + ', '.join(str(d) for d in deck_ids)
     elif deck1_id and deck2_id:
@@ -170,43 +212,42 @@ def run_match(seed: int = 42, max_turns: int = 30,
     else:
         deck_info = ' | Deck: Sample'
     diffs_str = ', '.join(d.upper() for d in diffs)
-    # VP necessario para vencer (por jogador)
+    vp_info = ''
     if game.players:
         vp_strs = [f'J{p.id[-1]}: {p.renown_level}' for p in game.players]
         vp_info = ' | VP: ' + ', '.join(vp_strs)
-    else:
-        vp_info = ''
-    print(f'  {diffs_str}{deck_info} | {n_players} jogadores | '
+    vlog(1, f'  {diffs_str}{deck_info} | {n_players} jogadores | '
           f'Max: {max_turns}t{vp_info}')
-    print_separator()
-    print_board(game)
+    vsep(1)
+    if _VERBOSE >= 1:
+        print_board(game)
 
+    # ── Variaveis de estado ──
     step = 0
     action_count = 0
     stale_steps = 0
     last_turn = game.turn_number
     last_phase = game.phase
-    last_log_len = 0  # rastreia quantas entradas do game.log ja mostramos
+    last_log_len = 0
     max_steps = max_steps_override if max_steps_override else max_turns * 50
-    if max_steps_override:
-        print(f'  (max-steps: {max_steps})')
-    _log_fase(game, last_turn, last_phase)
+    if max_steps_override and _VERBOSE >= 2:
+        vlog(2, f'  (max-steps: {max_steps})')
+    if _VERBOSE >= 1:
+        _log_fase(game, last_turn, last_phase)
 
-    # Estado de alphas (salvo porque end_combat reseta CombatState)
-    _alpha_order = []       # Lista de card_ids em ordem
-    _alpha_index = 0        # Indice do alpha atual
-    _alpha_map = {}         # card_id -> player_id
-    _alpha_phase = False    # True = ainda processando alpha actions
+    _alpha_order = []
+    _alpha_index = 0
+    _alpha_map = {}
+    _alpha_phase = False
 
+    # ── Loop principal ──
     while step < max_steps:
-        # ── Inicio da Combat Phase: salvar alphas e entrar em modo alpha ──
         if game.phase == 'combat' and game.combat.alpha_order and not _alpha_order:
             _alpha_order = list(game.combat.alpha_order)
             _alpha_index = 0
             _alpha_map = {cid: pid for pid, cid in game.combat.alphas.items()}
             _alpha_phase = True
 
-        # ── Direcionar para alpha atual (se em modo alpha e combate inativo) ──
         if _alpha_phase and _alpha_order and _alpha_index < len(_alpha_order):
             if not game.combat.is_active:
                 cid_atual = _alpha_order[_alpha_index]
@@ -229,14 +270,11 @@ def run_match(seed: int = 42, max_turns: int = 30,
         action = bot.decide()
         action_count += 1
 
-        # Avancar alpha index quando o alpha age (qualquer acao)
-        if _alpha_phase and action and not action.startswith('wait') and not action.startswith('pass'):
+        if _alpha_phase and action and not action.startswith('wait'):
             _alpha_index += 1
 
-        # Detecta progresso: turno ou fase mudou
         if game.turn_number != last_turn or game.phase != last_phase:
             stale_steps = 0
-            # Resetar alphas ao mudar de fase
             if game.phase != 'combat':
                 _alpha_order.clear()
                 _alpha_index = 0
@@ -246,73 +284,102 @@ def run_match(seed: int = 42, max_turns: int = 30,
             stale_steps += 1
         last_phase = game.phase
 
-        # Se 200 steps sem mudanca de turno/fase, algo travou
         if stale_steps > 200:
-            print(f'  ⚠️  TRAVOU ({stale_steps} steps sem progresso)')
-            print_separator()
-            print_board(game)
+            vlog(0, f'  ⚠️  TRAVOU ({stale_steps} steps sem progresso)')
+            vsep(0)
+            if _VERBOSE >= 1:
+                print_board(game)
             return 'stuck'
 
-        # Mostra a acao com nome da carta quando possivel
+        # ── Exibir acao ──
         if action and not action.startswith('wait'):
-            # Tenta extrair nome da carta do ultimo log do jogo
-            nome_carta = ''
             from rage_web.game_engine.action_descriptions import describe_action
             descricao = describe_action(action, game)
 
-            if action.startswith('combat'):
-                print(f'  {color}{cp.name}: ⚔️  {descricao}{reset}')
-            elif action.startswith('play_'):
-                print(f'  {color}{cp.name}: 🃏 {descricao}{reset}')
-            elif action.startswith('use_'):
-                print(f'  {color}{cp.name}: 🎴 {descricao}{reset}')
-            elif action.startswith('attack_') or action.startswith('eliminate_'):
-                print(f'  {color}{cp.name}: ⚔️  {descricao}{reset}')
-            elif action.startswith('declare_'):
-                print(f'  {color}{cp.name}: 🗣️  {descricao}{reset}')
-            elif action.startswith('feint_'):
-                print(f'  {color}{cp.name}: 🎭 {descricao}{reset}')
-            elif action.startswith('umbra_'):
-                print(f'  {color}{cp.name}: 🌙 {descricao}{reset}')
-            elif action.startswith('alpha_'):
-                print(f'  {color}{cp.name}: 👑 {descricao}{reset}')
-            elif action.startswith('redraw_'):
-                print(f'  {color}{cp.name}: 🔄 {descricao}{reset}')
-            elif action.startswith('moot_'):
-                print(f'  {color}{cp.name}: 🗳️ {descricao}{reset}')
-            elif action == 'reveal':
-                print(f'  {color}{cp.name}: 👁️  {descricao}{reset}')
-            elif action in ('end_combat', 'combat_end'):
-                print(f'  {color}{cp.name}: 🏁 {descricao}{reset}')
-            elif action.startswith('target_'):
-                print(f'  {color}{cp.name}: 🎯 {descricao}{reset}')
-            elif action == 'combat_wait':
-                print(f'  {color}{cp.name}: ⏳ {descricao}{reset}')
-            elif action == 'draw':
-                print(f'  {color}{cp.name}: 📥 COMPRAR{reset}')
-            elif action.startswith('pass'):
-                if delay:
-                    fase_alvo = action.replace('pass_', '').upper() if action != 'pass' else ''
-                    label = f'⏭️  PASSAR {fase_alvo}' if fase_alvo else '⏭️  PASSAR'
-                    print(f'  {color}{cp.name}: {label}{reset}')
+            is_pass = action.startswith('pass')
+            is_combat_transition = action.startswith('combat_to_')
+            is_combat_wait = action == 'combat_wait'
+            is_targeting = action.startswith('target_')
+            is_reveal = action == 'reveal'
+            is_combat_end = action in ('end_combat', 'combat_end')
+            is_draw = action == 'draw'
 
-        # ── Mostra novas entradas do game.log (resultados: dano, morte, VP) ──
-        # Mostra apenas entradas de RESULTADO, pulando acoes ja exibidas
+            if _VERBOSE == 1:
+                # Modo narrativo: mostra ações relevantes, silencia passes/detalhes de combate
+                if not (is_pass or is_combat_transition or is_combat_wait
+                        or is_targeting or is_reveal or is_combat_end):
+                    print(f'  {color}{cp.name}: {descricao}{reset}')
+            elif _VERBOSE >= 2:
+                # Modo debug: mostra tudo
+                if action.startswith('combat'):
+                    print(f'  {color}{cp.name}: ⚔️  {descricao}{reset}')
+                elif action.startswith('play_'):
+                    print(f'  {color}{cp.name}: 🃏 {descricao}{reset}')
+                elif action.startswith('use_'):
+                    print(f'  {color}{cp.name}: 🎴 {descricao}{reset}')
+                elif action.startswith('attack_') or action.startswith('eliminate_'):
+                    print(f'  {color}{cp.name}: ⚔️  {descricao}{reset}')
+                elif action.startswith('declare_'):
+                    print(f'  {color}{cp.name}: 🗣️  {descricao}{reset}')
+                elif action.startswith('feint_'):
+                    print(f'  {color}{cp.name}: 🎭 {descricao}{reset}')
+                elif action.startswith('umbra_'):
+                    print(f'  {color}{cp.name}: 🌙 {descricao}{reset}')
+                elif action.startswith('alpha_'):
+                    print(f'  {color}{cp.name}: 👑 {descricao}{reset}')
+                elif action.startswith('redraw_'):
+                    print(f'  {color}{cp.name}: 🔄 {descricao}{reset}')
+                elif action.startswith('moot_'):
+                    print(f'  {color}{cp.name}: 🗳️  {descricao}{reset}')
+                elif action == 'reveal':
+                    print(f'  {color}{cp.name}: 👁️  {descricao}{reset}')
+                elif action in ('end_combat', 'combat_end'):
+                    print(f'  {color}{cp.name}: 🏁 {descricao}{reset}')
+                elif action.startswith('target_'):
+                    print(f'  {color}{cp.name}: 🎯 {descricao}{reset}')
+                elif action == 'combat_wait':
+                    print(f'  {color}{cp.name}: ⏳ {descricao}{reset}')
+                elif action == 'draw':
+                    print(f'  {color}{cp.name}: 📥 COMPRAR{reset}')
+                elif action.startswith('pass'):
+                    if delay:
+                        fase_alvo = action.replace('pass_', '').upper() if action != 'pass' else ''
+                        label = f'⏭️  PASSAR {fase_alvo}' if fase_alvo else '⏭️  PASSAR'
+                        print(f'  {color}{cp.name}: {label}{reset}')
+
+        # ── Mostrar resultados do game.log ──
         while last_log_len < len(game.log):
             entry = game.log[last_log_len]
             last_log_len += 1
             entry_stripped = entry.strip()
-            # Remove prefixo de turno/fase (ex: '[T1 REDRAW]') para analise
             entry_body = entry_stripped
             if entry_body.startswith('[') and '] ' in entry_body:
                 entry_body = entry_body.split('] ', 1)[1]
-            # --- Entradas que SAO acoes (já exibidas) ---
+
+            if _VERBOSE == 1:
+                # Modo narrativo: só resultados críticos
+                if 'foi destruido' in entry_body or 'foi eliminado' in entry_body:
+                    vlog(1, f'    💀 {entry_stripped}')
+                elif 'VP' in entry_body and any(kw in entry_body for kw in ['ganhou', 'recebeu', 'perdeu', 'conquistou']):
+                    vlog(1, f'    🏆 {entry_stripped}')
+                elif 'regenerou' in entry_body:
+                    vlog(1, f'    💚 {entry_stripped}')
+                elif 'sofreu' in entry_body and 'dano' in entry_body:
+                    vlog(1, f'    💥 {entry_stripped}')
+                elif 'causou' in entry_body and 'dano' in entry_body:
+                    vlog(1, f'    💥 {entry_stripped}')
+                elif 'VENCEU' in entry_body:
+                    vlog(0, f'    🏆 {entry_stripped}')
+                elif 'anulou' in entry_body:
+                    vlog(1, f'    🛡️  {entry_stripped}')
+                continue
+
+            # verbose>=2: log completo (comportamento legado)
             if entry_body.startswith('[BOT]'):
-                body = entry_body[5:].strip()  # Remove '[BOT] '
-                # Mostra acoes do bot que nao sao duplicadas
+                body = entry_body[5:].strip()
                 if not body.startswith(('pagou', 'passou', 'selecionou', 'comprou')):
                     if not (('(Rage ' in body or '(Gnosis ' in body) and '):' in body):
-                        print(f'    🤖 {body}')
+                        vlog(2, f'    🤖 {body}')
                 continue
             if ' passou' in entry_body or entry_body.startswith('Todos passaram'):
                 continue
@@ -320,7 +387,6 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 continue
             if 'comprou ' in entry_body and 'carta' in entry_body:
                 continue
-            # Requisito de Rage/Gnosis (nao e pagamento, e prerequisito)
             if ('(Rage ' in entry_body or '(Gnosis ' in entry_body) and '):' in entry_body:
                 continue
             if 'pagou' in entry_body and ('Rage' in entry_body or 'Gnosis' in entry_body):
@@ -331,106 +397,102 @@ def run_match(seed: int = 42, max_turns: int = 30,
                 continue
             if entry_body.startswith('(') and entry_body.endswith(')'):
                 continue
-            # Entrada vazia ou separador
             if not entry_body or entry_body.startswith('━'):
                 continue
-            # --- Mostra entradas de RESULTADO ---
             if 'foi destruido' in entry_body or 'foi eliminado' in entry_body:
-                print(f'    💀 {entry_stripped}')
+                vlog(1, f'    💀 {entry_stripped}')
             elif 'causou' in entry_body and 'dano' in entry_body:
-                print(f'    💥 {entry_stripped}')
+                vlog(1, f'    💥 {entry_stripped}')
             elif 'usou ' in entry_body and '(dano:' in entry_body:
-                print(f'    ⚔️  {entry_stripped}')
+                vlog(2, f'    ⚔️  {entry_stripped}')
             elif 'atacou Hunting Grounds' in entry_body:
-                print(f'    🎯 {entry_stripped}')
+                vlog(2, f'    🎯 {entry_stripped}')
             elif 'sofreu' in entry_body and 'dano' in entry_body:
-                print(f'    💥 {entry_stripped}')
+                vlog(1, f'    💥 {entry_stripped}')
             elif 'VP' in entry_body:
-                print(f'    🏆 {entry_stripped}')
+                vlog(1, f'    🏆 {entry_stripped}')
             elif 'regenerou' in entry_body:
-                print(f'    💚 {entry_stripped}')
+                vlog(1, f'    💚 {entry_stripped}')
             elif 'Quest' in entry_body or 'quest' in entry_body:
-                print(f'    📜 {entry_stripped}')
+                vlog(2, f'    📜 {entry_stripped}')
             elif entry_body.startswith('('):
-                print(f'    📝 {entry_stripped}')
+                vlog(2, f'    📝 {entry_stripped}')
             elif 'anulou' in entry_body:
-                print(f'    🛡️  {entry_stripped}')
+                vlog(1, f'    🛡️  {entry_stripped}')
             elif 'Gauntlet' in entry_body:
-                print(f'    🌐 {entry_stripped}')
+                vlog(2, f'    🌐 {entry_stripped}')
             elif 'passiva' in entry_body.lower() or 'registrado' in entry_body:
                 continue
             elif 'rage' in entry_body.lower() or 'gnosis' in entry_body.lower():
                 if '+' in entry_body or '-' in entry_body:
-                    print(f'    📊 {entry_stripped}')
+                    vlog(2, f'    📊 {entry_stripped}')
             elif 'Feint' in entry_body:
-                continue  # ja exibido como 🎭
+                continue
             elif 'Acoes reveladas' in entry_body:
-                continue  # ja exibido como 👁️
+                continue
             elif 'Resolvendo combate' in entry_body:
                 continue
             elif entry_body.startswith('Resolucao por velocidade'):
-                print(f'    ⚡ {entry_stripped}')
+                vlog(2, f'    ⚡ {entry_stripped}')
             elif entry_body.startswith('[Fim'):
-                print(f'    ⚡ {entry_stripped}')
+                vlog(2, f'    ⚡ {entry_stripped}')
             else:
-                # Só mostra se parecer relevante
                 if any(kw in entry_body for kw in ['regenera', 'imune', 'ataque', 'dano', 'cura', 'morte']):
-                    print(f'    📋 {entry_stripped}')
+                    vlog(2, f'    📋 {entry_stripped}')
 
-        # A cada 4 acoes (fora de combate), mostra o tabuleiro
-        if action_count % 4 == 0 and not game.combat.is_active and delay:
-            print_separator('-')
+        # Tabuleiro periodico (só verbose>=2)
+        if _VERBOSE >= 2 and action_count % 4 == 0 and not game.combat.is_active and delay:
+            vsep(2, '-')
             print_board(game)
             time.sleep(delay * 2)
 
-        # Verifica condicoes de fim
+        # ── Verificar fim ──
         if game.turn_number > max_turns:
-            print_separator()
-            print(f'⏰ LIMITE DE TURNOS ({max_turns}) ATINGIDO')
+            vsep(0)
+            vlog(0, f'⏰ LIMITE DE TURNOS ({max_turns}) ATINGIDO')
             return 'timeout'
 
-        # Regra 2.3: verificar eliminacao e vitoria
         from rage_web.game_engine.combat_queue import _tem_character, _eliminar_jogador
         if game.turn_number > 1:
             for p in game.players:
                 if not _tem_character(p) and not getattr(p, 'eliminado', False):
                     _eliminar_jogador(game, p)
-                    print_separator()
-                    print(f'💀 {p.name} foi eliminado! (sem Characters em jogo)')
+                    vsep(0)
+                    vlog(0, f'💀 {p.name} foi eliminado! (sem Characters em jogo)')
 
         jogadores_ativos = [p for p in game.players if not getattr(p, 'eliminado', False)]
         if len(jogadores_ativos) == 1:
             p = jogadores_ativos[0]
-            print_separator()
-            print(f'🏆 {p.name} VENCEU! (unico jogador com Characters em jogo)')
+            vsep(0)
+            vlog(0, f'🏆 {p.name} VENCEU! (unico jogador com Characters em jogo)')
             return p.id
         if len(jogadores_ativos) == 0:
-            print_separator()
-            print('💀 Todos os jogadores foram eliminados! Empate.')
+            vsep(0)
+            vlog(0, '💀 Todos os jogadores foram eliminados! Empate.')
             return 'draw'
 
-        # Vitoria por VP
         for p in jogadores_ativos:
             if p.victory_points >= p.renown_level:
-                print_separator()
-                print(f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP necessarios)')
+                vsep(0)
+                vlog(0, f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP)')
                 return p.id
 
-        # Mostra tabuleiro na mudanca de fase/turno
+        # Tabuleiro na mudanca de fase/turno
         if game.phase != last_phase or game.turn_number != last_turn:
-            if game.turn_number != last_turn:
-                print(f'\n  ════ TURNO {game.turn_number} ════\n')
-            _log_fase(game, game.turn_number, game.phase)
-            print_separator('-', 40)
-            print_board(game)
+            if game.turn_number != last_turn and _VERBOSE >= 1:
+                vlog(1, f'\n  ════ TURNO {game.turn_number} ════\n')
+            if _VERBOSE >= 1:
+                _log_fase(game, game.turn_number, game.phase)
+                vsep(1, '-', 40)
+                print_board(game)
             time.sleep(delay)
             last_turn = game.turn_number
             last_phase = game.phase
 
         step += 1
 
-    print_separator()
-    print(f'⏰ STEPS EXCEDIDOS ({max_steps})')
+    vsep(0)
+    vlog(0, f'⏰ STEPS EXCEDIDOS ({max_steps})')
     return 'timeout'
 
 
@@ -442,70 +504,55 @@ def main():
 Exemplos:
   rage-match --deck 416 --deck 7                    # 2 jogadores
   rage-match --deck 416 --deck 90 --deck 7           # 3 jogadores
-  rage-match --deck 416 --deck 90 --deck 7 --diff hard --diff medium --diff easy
-  rage-match --deck1 416 --deck2 7                   # compatibilidade
+  rage-match --verbose 2                             # debug completo
+  rage-match --quiet                                 # só resultado
 ''')
     parser.add_argument('--p1', default='hard',
-                        choices=['easy', 'medium', 'hard'],
-                        help='Compatibilidade: dificuldade J1')
+                        choices=['easy', 'medium', 'hard'])
     parser.add_argument('--p2', default='hard',
-                        choices=['easy', 'medium', 'hard'],
-                        help='Compatibilidade: dificuldade J2')
+                        choices=['easy', 'medium', 'hard'])
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--max-turns', type=int, default=30)
-    parser.add_argument('--max-steps', type=int, default=0,
-                        help='Override: max steps em vez de turnos*50')
-    parser.add_argument('--deck1', type=int, default=None,
-                        help='Compatibilidade: ID do deck J1')
-    parser.add_argument('--deck2', type=int, default=None,
-                        help='Compatibilidade: ID do deck J2')
-    parser.add_argument('--delay', type=float, default=0.3,
-                        help='Delay entre acoes (segundos)')
-    parser.add_argument('--watch', action='store_true',
-                        help='Assiste a partida com delay')
-    parser.add_argument('--deck', type=int, action='append',
-                        help='ID do deck (repetir para cada jogador)')
+    parser.add_argument('--max-steps', type=int, default=0)
+    parser.add_argument('--deck1', type=int, default=None)
+    parser.add_argument('--deck2', type=int, default=None)
+    parser.add_argument('--delay', type=float, default=0.3)
+    parser.add_argument('--watch', action='store_true')
+    parser.add_argument('--deck', type=int, action='append')
     parser.add_argument('--diff', type=str, action='append',
-                        choices=['easy', 'medium', 'hard'],
-                        help='Dificuldade (repetir para cada jogador)')
-    parser.add_argument('--vp', type=int, default=None,
-                        help='VP necessario para vencer (default: usa renown_cap do deck)')
+                        choices=['easy', 'medium', 'hard'])
+    parser.add_argument('--vp', type=int, default=None)
+    parser.add_argument('--verbose', type=int, default=1, choices=[0, 1, 2],
+                        help='0=só resultado, 1=narrativa, 2=debug')
+    parser.add_argument('--quiet', action='store_true',
+                        help='Equivalente a --verbose 0')
     args = parser.parse_args()
 
-    max_steps_override = args.max_steps if args.max_steps > 0 else None
-
-    if args.watch:
-        delay = args.delay
+    if args.quiet:
+        verbosity = 0
     else:
-        delay = 0
+        verbosity = args.verbose
 
-    # Determina se usa modo N-player ou compatibilidade
+    max_steps_override = args.max_steps if args.max_steps > 0 else None
+    delay = args.delay if args.watch else 0
+
     if args.deck and len(args.deck) >= 2:
         result = run_match(
-            seed=args.seed,
-            max_turns=args.max_turns,
-            max_steps_override=max_steps_override,
-            delay=delay,
-            deck_ids=args.deck,
-            difficulties=args.diff,
-            vp_to_win=args.vp,
+            seed=args.seed, max_turns=args.max_turns,
+            max_steps_override=max_steps_override, delay=delay,
+            deck_ids=args.deck, difficulties=args.diff,
+            vp_to_win=args.vp, verbose=verbosity,
         )
     else:
         result = run_match(
-            seed=args.seed,
-            max_turns=args.max_turns,
+            seed=args.seed, max_turns=args.max_turns,
             max_steps_override=max_steps_override,
-            difficulty_p1=args.p1,
-            difficulty_p2=args.p2,
-            deck1_id=args.deck1,
-            deck2_id=args.deck2,
-            delay=delay,
-            vp_to_win=args.vp,
+            difficulty_p1=args.p1, difficulty_p2=args.p2,
+            deck1_id=args.deck1, deck2_id=args.deck2,
+            delay=delay, vp_to_win=args.vp, verbose=verbosity,
         )
 
-    print()
-    print(f'Resultado: {result}')
-    print()
+    vlog(0, f'Resultado: {result}')
 
 
 if __name__ == '__main__':

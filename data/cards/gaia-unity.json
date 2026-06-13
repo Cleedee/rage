@@ -1,0 +1,14 @@
+{
+  "id": "gaia-unity",
+  "nome": "Gaia Unity",
+  "tipo": "Moot",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1202,
+    "slug": "gaia-unity",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1201.",
+    "keywords": "Gaia - Cooperation"
+  }
+}

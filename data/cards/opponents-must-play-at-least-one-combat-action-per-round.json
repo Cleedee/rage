@@ -1,7 +1,7 @@
 {
   "id": "opponents-must-play-at-least-one-combat-action-per-round",
-  "nome": "Opponents must play at least one Combat Action per round.�",
-  "tipo": "",
+  "nome": "Combat Mandate",
+  "tipo": "Gift",
   "modos": [
     {
       "descricao": "Efeito passivo",
@@ -24,6 +24,8 @@
     "card_id": 1039,
     "texto_original": "",
     "precisa_revisao": true,
-    "slug": "opponents-must-play-at-least-one-combat-action-per-round"
+    "slug": "opponents-must-play-at-least-one-combat-action-per-round",
+    "keywords": "Permanent - Combat",
+    "nota_revisao": "Nome corrigido (era fragmento corrompido de carta ID 1038)"
   }
 }

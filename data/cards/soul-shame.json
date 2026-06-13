@@ -1,0 +1,14 @@
+{
+  "id": "soul-shame",
+  "nome": "Soul Shame",
+  "tipo": "Board Meeting",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1224,
+    "slug": "soul-shame",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1223.",
+    "keywords": "Eater-of-Souls"
+  }
+}

@@ -4,17 +4,15 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift (Gn3)",
+      "descricao": "Roubar 1 equipamento de outra criatura (Gn3)",
       "efeitos": [
         {
-          "tipo": "modificar_atributo",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "rage"
-            ],
-            "valor": 1,
-            "duracao": "ate_fim_combate"
+            "modifier": "sticky_paws_active",
+            "alvos": "self",
+            "descricao": "Pode roubar 1 equipamento de outra criatura (requer requisitos do item)"
           }
         }
       ]
@@ -23,7 +21,7 @@
   "_metadata": {
     "fonte": "auto_json",
     "card_id": 1061,
-    "texto_original": "The Gift user may steal any 1 piece of Equipment from another character. The user must still meet the requirements of the stolen item before it may be used. If the original owner defeats the new owner in combat, she recovers her property. Discard this Gif",
+    "texto_original": "The Gift user may steal any 1 piece of Equipment from another character. The user must still meet the requirements of the stolen item before it may be used. If the original owner defeats the new owner in combat, she recovers her property. Discard this Gift after use.",
     "keywords": "",
     "damage": "",
     "rage": 0,

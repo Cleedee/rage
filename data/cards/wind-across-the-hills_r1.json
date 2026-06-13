@@ -1,0 +1,34 @@
+{
+  "id": "wind-across-the-hills_r1",
+  "nome": "Wind-Across-the-Hills",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Personagem: Rg1 Gn2 H1 (Ren1) - Fianna Ragabash",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "self",
+          "params": {
+            "atributos": ["renown_para_pack_actions"],
+            "valor": 0,
+            "duracao": "permanente",
+            "descricao": "Conta como Renome zero para pack attacks/defenses"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck1050_assombracao",
+    "card_id": 350,
+    "texto_original": "Wind-Across-the-Hills is considered Renown zero for purposes of joining pack attacks or defenses.",
+    "keywords": "Garou - Fianna - Ragabash - Homid - Gaia - Male",
+    "damage": "",
+    "rage": 1,
+    "gnosis": 2,
+    "health": 1,
+    "requires": "",
+    "slug": "wind-across-the-hills_r1"
+  }
+}

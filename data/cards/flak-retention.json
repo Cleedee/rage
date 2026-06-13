@@ -1,0 +1,14 @@
+{
+  "id": "flak-retention",
+  "nome": "Flak Retention",
+  "tipo": "Event",
+  "modos": [],
+  "_metadata": {
+    "card_id": 828,
+    "slug": "flak-retention",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 827.",
+    "keywords": "Permanent - Form"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "pentex-strip-miners_r4",
+  "nome": "Pentex Strip Miners",
+  "tipo": "Enemy",
+  "modos": [],
+  "_metadata": {
+    "card_id": 521,
+    "slug": "pentex-strip-miners_r4",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Human - Pentex"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "bluff-guard",
+  "nome": "Bluff Guard",
+  "tipo": "Gift",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1038,
+    "slug": "bluff-guard",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1037.",
+    "keywords": "Permanent - Combat"
+  }
+}

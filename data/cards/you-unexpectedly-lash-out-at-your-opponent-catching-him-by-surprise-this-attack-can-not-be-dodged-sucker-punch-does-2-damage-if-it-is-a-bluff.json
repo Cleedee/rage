@@ -1,7 +1,7 @@
 {
   "id": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
-  "nome": "You unexpectedly lash out at your opponent, catching him by surprise. This attack can not be Dodged. Sucker Punch does +2 damage if it is a bluff.",
-  "tipo": "",
+  "nome": "Cheap Shot",
+  "tipo": "Combat Action",
   "modos": [
     {
       "descricao": "Efeito passivo",
@@ -24,6 +24,8 @@
     "card_id": 1316,
     "texto_original": "",
     "precisa_revisao": true,
-    "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff"
+    "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+    "keywords": "Surprise",
+    "nota_revisao": "Nome corrigido (era fragmento corrompido de carta ID 1315)"
   }
 }

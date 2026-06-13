@@ -1,0 +1,14 @@
+{
+  "id": "treerose_r3",
+  "nome": "Treerose",
+  "tipo": "Character - Gaia",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1391,
+    "slug": "treerose_r3",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Bastet - Bagheera - Feline - Male - Gaia"
+  }
+}

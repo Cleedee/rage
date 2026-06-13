@@ -1,0 +1,14 @@
+{
+  "id": "dis-arm",
+  "nome": "Dis-Arm",
+  "tipo": "Combat Action",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1273,
+    "slug": "dis-arm",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": ""
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "aggravated-burn",
+  "nome": "Aggravated Burn",
+  "tipo": "Ally",
+  "modos": [],
+  "_metadata": {
+    "card_id": 438,
+    "slug": "aggravated-burn",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 437.",
+    "keywords": "Spirit - Fire - Salamander"
+  }
+}

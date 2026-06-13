@@ -1,0 +1,30 @@
+{
+  "id": "beta-status_r4",
+  "nome": "Beta Status",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Impede beneficios de Territories",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 1188,
+    "slug": "beta-status_r4",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043 | Efeitos basicos adicionados para funcionamento do bot",
+    "keywords": ""
+  }
+}

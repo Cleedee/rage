@@ -1,7 +1,7 @@
 {
   "id": "while-in-crinos-packmembers-may-use-equipment-as-if-they-were-in-homid-form",
-  "nome": "While in Crinos, packmembers may use Equipment as if they were in Homid form.�",
-  "tipo": "",
+  "nome": "Crinos Adapt",
+  "tipo": "Event",
   "modos": [
     {
       "descricao": "Efeito passivo",
@@ -24,6 +24,8 @@
     "card_id": 827,
     "texto_original": "",
     "precisa_revisao": true,
-    "slug": "while-in-crinos-packmembers-may-use-equipment-as-if-they-were-in-homid-form"
+    "slug": "while-in-crinos-packmembers-may-use-equipment-as-if-they-were-in-homid-form",
+    "keywords": "Permanent - Form",
+    "nota_revisao": "Nome corrigido (era fragmento corrompido de carta ID 826)"
   }
 }

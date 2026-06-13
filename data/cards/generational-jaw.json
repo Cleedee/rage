@@ -1,0 +1,14 @@
+{
+  "id": "generational-jaw",
+  "nome": "Generational Jaw",
+  "tipo": "Combat Action",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1275,
+    "slug": "generational-jaw",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1274.",
+    "keywords": "7th Generation"
+  }
+}

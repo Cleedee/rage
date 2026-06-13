@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Gera checklist de deck: cartas, JSONs, efeitos, sistemas."""
+"""Gera checklist de deck: cartas, JSONs, efeitos, sistemas.
+
+ATENCAO: A lista EFEITOS_IMPLEMENTADOS abaixo deve ser mantida em sincronia
+com o enum EfeitoTipo em rage_web/game_engine/effects.py.
+Sempre que adicionar um novo tipo de efeito no motor, adicione-o aqui tambem.
+"""
 
 import argparse
 import glob
@@ -18,22 +23,42 @@ DECK_INFO = {
     465: ("Apocalypse: First Team 28", "Wyrm squad. 5 personagens, ataque HG em massa."),
     484: ("Ajaba Aggression", "Hienas que fogem de dano alto. Morder e correr."),
     524: ("Classic: Wailer special", "Aliados + pack attack. Wailer flipa e trava Combat Actions."),
+    1050: ("Assombracao dos Passos da Morte", "Pack Ragabash Silent Striders - Stalks Death + truques."),
 }
 
 
 # -------------------------------------------------------------------
 # Efeitos implementados no motor (efeitos.py)
+# Deve refletir exatamente o enum EfeitoTipo em rage_web/game_engine/effects.py
 # -------------------------------------------------------------------
 EFEITOS_IMPLEMENTADOS = {
-    'dano', 'curar', 'destruir', 'descarte', 'comprar', 'tapar', 'destapar',
-    'modificar_rage', 'modificar_gnosis', 'modificar_vida', 'mover_para',
-    'remover_do_jogo', 'ganhar_vp', 'perder_vp', 'combar_acao', 'redirecionar',
-    'anular', 'fugir', 'iniciar_combate', 'restringir', 'comprar_ate', 'equipar',
-    'modificar_reducao_dano', 'descartar_metade_mao', 'modificar_atributo',
-    'usar_gift', 'quest_check', 'impedir_acoes', 'impedir_retirada',
-    'cancelar_acao', 'ataque_imediato', 'remover_do_combate', 'forcar_bluff',
+    # Efeitos basicos de combate
+    'dano', 'curar', 'destruir', 'descarte', 'comprar',
+    'modificar_rage', 'modificar_gnosis', 'modificar_vida',
+    'mover_para', 'remover_do_jogo',
+    'ganhar_vp', 'perder_vp',
+    'combar_acao', 'redirecionar', 'anular', 'fugir',
+    'iniciar_combate', 'restringir', 'comprar_ate', 'equipar',
+    'modificar_reducao_dano', 'descartar_metade_mao',
+    'modificar_atributo', 'usar_gift', 'quest_check',
+    'impedir_acoes', 'impedir_retirada', 'cancelar_acao',
+    'ataque_imediato', 'remover_do_combate', 'forcar_bluff',
     'impedir_frenzy', 'olhar_topo_deck', 'descartar_mao_combate',
-    'registrar_trigger_combate', 'remover_do_jogo',
+    'registrar_trigger_combate',
+    # Efeitos de estado
+    'entrar_em_frenesi', 'tapar', 'destapar',
+    # Efeitos de setup / passivos
+    'equipar_inicial', 'filtrar_redraw',
+    'comprar_quando_atacado', 'remover_do_descarte',
+    'buscar_copias', 'auto_pack_attack',
+    'acao_extra_por_rodada', 'imune_combate_rage',
+    'modificar_atributo_passivo', 'modificar_gauntlet',
+    'modificar_hand_size', 'adicionar_modifier',
+    'matar_vitima',
+    # Efeitos de Moot (Juntas)
+    'moot_remover_personagem', 'moot_ganhar_vp',
+    'moot_restringir', 'moot_rebaixar_forma',
+    'moot_construir_caern', 'moot_restricao_global',
 }
 
 
@@ -52,8 +77,11 @@ def get_deck_strategy(deck_id):
 
 
 def load_json_cards():
-    """Carrega metadados de todos os JSONs em data/cards/."""
-    import re
+    """Carrega metadados de todos os JSONs em data/cards/.
+
+    Retorna dict {card_id: info}, onde a chave e o card_id extraido
+    do campo _metadata.card_id de cada JSON. JSONs sem card_id sao ignorados.
+    """
     jsons = {}
     for f in sorted(glob.glob("data/cards/*.json")):
         if '_checklist' in f:
@@ -64,21 +92,19 @@ def load_json_cards():
                 data = json.load(fh)
             meta = data.get('_metadata', {})
             cid = meta.get('card_id')
-            # Fallback: extrair card_id do nome do arquivo (ex: deck7_122_hunting_party.json)
-            if not cid:
-                m = re.search(r'_(\d+)_', os.path.basename(f))
-                if m:
-                    cid = int(m.group(1))
             if cid:
-                deck_src = os.path.basename(f).split('_')[0]
+                # deck fonte = prefixo do nome do arquivo ate primeiro '_' (ex: deck7, deck1050)
+                # ou 'data/cards/' se nao tiver prefixo numerico
+                deck_src = os.path.basename(f)
                 jsons[cid] = {
-                    'file': os.path.basename(f),
+                    'file': deck_src,
                     'deck': deck_src,
                     'nome': data['nome'],
                     'tipo': data['tipo'],
                     'efeitos': sum(len(m.get('efeitos', [])) for m in data.get('modos', [])),
+                    'data': data,  # Guarda os dados completos para analise de efeitos
                 }
-        except Exception as exc:
+        except Exception:
             pass
     return jsons
 
@@ -124,6 +150,7 @@ def gerar_checklist(deck_id):
             .order_by(Card.id)
         ).all()
 
+        # Carrega JSONs indexados por card_id
         jsons = load_json_cards()
         nome = get_deck_name(deck_id)
         estrategia = get_deck_strategy(deck_id)
@@ -142,24 +169,19 @@ def gerar_checklist(deck_id):
             tipo_base = card.tipo.split(' - ')[0] if ' - ' in card.tipo else card.tipo
             categories[tipo_base].append((card, qty))
 
-            # Verifica JSON (conta por carta unica, nao por quantidade)
             cid = card.id
             if cid in jsons:
                 j = jsons[cid]
-                if j['deck'] == f'deck{deck_id}':
+                # Determina se o JSON foi criado "novo" para este deck
+                # (o deck fonte contem o deck_id no nome do arquivo)
+                if f'deck{deck_id}' in j['deck'] or j['deck'].startswith(f'deck{deck_id}'):
                     jsons_novos += 1
                 else:
                     jsons_reaproveitados += 1
-            else:
-                sem_json += 1
 
-            # Tenta ler o JSON para extrair efeitos
-            json_paths = glob.glob(f"data/cards/*_{cid}_*.json")
-            if json_paths:
-                import json
+                # Extrai efeitos do JSON (usando os dados completos guardados)
                 try:
-                    with open(json_paths[0]) as fh:
-                        jdata = json.load(fh)
+                    jdata = j['data']
                     tipos = get_tipos_efeito_no_json(jdata)
                     efeitos_usados.update(tipos)
                     for t in tipos:
@@ -168,6 +190,8 @@ def gerar_checklist(deck_id):
                             gaps.add((t, status))
                 except Exception:
                     pass
+            else:
+                sem_json += 1
 
         # --- GERA OUTPUT ---
         lines = []
@@ -189,7 +213,7 @@ def gerar_checklist(deck_id):
                 cid = card.id
                 if cid in jsons:
                     j = jsons[cid]
-                    status = '✅' if j['deck'] == f'deck{deck_id}' else '✅'
+                    status = '✅'
                     deck_src = j['deck']
                     n_efeitos = j.get('efeitos', 0)
                 else:
@@ -224,6 +248,84 @@ def gerar_checklist(deck_id):
             lines.append("")
             for tipo, status in sorted(gaps):
                 lines.append(f"- **{tipo}**: {status}")
+
+        # --- VALIDACAO DE EQUIPAMENTOS vs PERSONAGENS ---
+        lines.append("")
+        lines.append("## Validacao de Equipamentos vs Personagens")
+        lines.append("")
+        lines.append("Verifica se os equipamentos do deck sao compativeis com as formas")
+        lines.append("e alinhamento dos personagens.")
+        lines.append("")
+
+        # Coleta keywords dos personagens
+        chars_text = []
+        chars_names = []
+        for card, qty in results:
+            if 'Character' in (card.tipo or ''):
+                ct = ((card.tipo or '') + ' ' + (card.keyword or '')).lower()
+                chars_text.append(ct)
+                chars_names.append(card.name)
+
+        equip_issues = []
+        for card, qty in results:
+            if card.tipo != 'Equipment':
+                continue
+            kw = (card.keyword or '').lower()
+            req = (card.requires or '').strip()
+            issues = []
+
+            # 1. Bane Fetish: requer personagem Wyrm
+            eh_bane_fetish = 'bane fetish' in kw or 'bane' in kw.split(' - ')
+            if eh_bane_fetish:
+                tem_wyrm = any('wyrm' in ct for ct in chars_text)
+                if not tem_wyrm:
+                    issues.append('Bane Fetish: requer personagem Wyrm, mas nenhum personagem e Wyrm')
+
+            # 2. Gaia Fetish (nao-bane): requer personagem Gaia
+            eh_fetish = not eh_bane_fetish and ('fetish' in kw) and 'non-fetish' not in kw
+            if eh_fetish:
+                tem_gaia = any('gaia' in ct for ct in chars_text)
+                if not tem_gaia:
+                    issues.append('Gaia Fetish: requer personagem Gaia, mas nenhum personagem e Gaia')
+
+            # 3. Form restrictions via requires field
+            if req.startswith('(') and req.endswith(')'):
+                req_clean = req.strip('()').strip().lower()
+                if req_clean.startswith('not '):
+                    forma_negada = req_clean[4:].replace(' form', '').strip()
+                    tem_forma = any(forma_negada in ct for ct in chars_text)
+                    if tem_forma:
+                        issues.append(f'Requer que NAO esteja em forma "{forma_negada}", '
+                                      f'mas algum personagem esta nesta forma')
+                else:
+                    forma_exigida = req_clean.replace(' form', '').strip()
+                    tem_forma = any(forma_exigida in ct for ct in chars_text)
+                    # Metis sao sempre Crinos — se exigir Homid, Metis nao serve
+                    if forma_exigida == 'homid':
+                        # Verifica se ha Metis que nao podem virar Homid
+                        if not tem_forma:
+                            issues.append(f'Requer forma "{forma_exigida}", '
+                                          f'mas nenhum personagem esta nela '
+                                          f'(personagens Metis sao sempre Crinos)')
+                    elif not tem_forma:
+                        issues.append(f'Requer forma "{forma_exigida}", '
+                                      f'mas nenhum personagem esta nela')
+
+            if issues:
+                equip_issues.append((card, issues))
+
+        if equip_issues:
+            lines.append("| Carta | Problema |")
+            lines.append("|---|---|")
+            for card, issues in equip_issues:
+                for iss in issues:
+                    lines.append(f"| ❌ **{card.name}** (ID {card.id}) | {iss} |")
+            lines.append("")
+            lines.append("**⚠️  Equipamentos incompativeis encontrados!**")
+            lines.append("Considere substituir por alternativas compativeis com os personagens do deck.")
+        else:
+            lines.append("✅ Todos os equipamentos sao compativeis com os personagens do deck.")
+        lines.append("")
 
         # --- SUGESTOES DE TESTES ---
         lines.append("")

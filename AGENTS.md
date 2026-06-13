@@ -398,7 +398,7 @@ Character (Gaia/Wyrm/Rogue), Gift, Equipment, Combat Action, Event, Ally, Enemy,
 Quando o usuário pedir para analisar um deck, verificar status de cartas, efeitos ou criar/atualizar checklist, execute:
 
 ```bash
-cd /workspace && .venv/bin/python3 scripts/gerar_checklist.py <deck_id>
+cd /workspace && PYTHONPATH=. python3 scripts/gerar_checklist.py <deck_id>
 ```
 
 O script:
@@ -409,7 +409,111 @@ O script:
 - Sugere testes
 - Gera/salva `data/cards/deck<id>_checklist.md`
 
-Exemplo: `.venv/bin/python3 scripts/gerar_checklist.py 160`
+Exemplo: `PYTHONPATH=. python3 scripts/gerar_checklist.py 1050`
+
+---
+
+### ⚠️ Combat Phase: Closed Play vs Open Play (terminologia)
+
+É importante distinguir dois conceitos diferentes no livro de regras:
+
+1. **Seção 2.2.6 — Combat Phase (discard + redraw + alpha selection):**
+   - Ao entrar na Combat Phase, jogadores *podem* descartar cartas de combate da
+     mão e comprar até o máximo (*hand_size_combat*).
+   - Selecionam alpha (personagem com maior Renome).
+   - O motor implementa isso em `state.py:1027` (`redraw_combat()`) e na
+     seleção automática de alfas.
+
+2. **Seção 3.2 / 3.2.1 — Closed Play vs Open Play (regras de timing):**
+   - **Closed Play:** períodos em que apenas cartas/abilidades específicas podem
+     ser usadas (recursos, combat actions, passivas sempre ativas, etc.).
+     Inclui: `declaration` + `pre_combat` + steps 1-6 de cada rodada (`play_card`
+     → `targeting` → `reveal` → `feint` → `bluff`).
+   - **Open Play:** períodos em que cartas de sept/gifts/abilidades podem ser
+     jogadas livremente. Inclui: `beginning_of_combat`, `between_rounds`.
+   - Offensive Effects em Open Play exigem anúncio e atenção dos outros jogadores.
+
+**Steps do combate e seu tipo de período (Cap. 6):**
+
+| Step | Período | Descrição |
+|---|---|---|
+| `select_alpha` | — | Escolha do alpha |
+| `alpha_action` | — | Alpha declara ataque/challenge |
+| `declaration` | Closed Play | Declarar atacante+alvo |
+| `pre_combat` | Closed Play | Pack actions, redirect, step in |
+| `beginning_of_combat` | **Open Play** | Gifts pré-rodada, frenzy |
+| `play_card` (step 1) | Closed Play | Jogar combat card face-down |
+| `targeting` (step 2) | Closed Play | Atribuir alvos |
+| `reveal` (step 3) | Closed Play | Revelar + feinting |
+| `feint` (step 4) | Closed Play | Troca de ação (Último a Declarar) |
+| `bluff` (step 5-6) | Closed Play | Verificar requisitos |
+| `resolution` | — | Aplicar dano, mortes → VP |
+| `withdrawal` | — | Atacante pode retirar |
+| `between_rounds` | **Open Play** | Gift entre rodadas |
+| `end` | — | Cleanup |
+
+O motor em `rules.py:56-72` define `COMBAT_STEPS` e `COMBAT_STEPS_AUTO` mapeando
+cada step. O bot respeita esses períodos: em Open Play ele pode jogar gifts; em
+Closed Play ele só pode jogar combat cards ou usar passivas. Não há restrição
+adicional implementada — assume-se que o bot só toma ações válidas.
+
+### ⚠️ Seleção de Alpha (2.2.6)
+
+- Cada jogador seleciona um Character ou Ally do pack como alpha.
+- *"A player may select a different alpha every combat phase, or use the same one
+  repeatedly."* (seção 2.2.6) — **não** há restrição geral de alpha não poder
+  ser escolhido 2 turnos seguidos.
+- A restrição `nao_pode_alpha_2_turnos_seguidos` existe APENAS para cartas
+  específicas (ex: Allonzo Montoya, card_id=29, por seu texto de carta).
+- `nao_pode_ser_alpha` é usado para cartas que nunca podem ser alpha
+  (ex: Caern Lua Crescente).
+- Se o alpha morre durante o combate, o jogador não pode selecionar outro
+  até a próxima Combat Phase.
+
+---
+
+### ⚠️ Nomenclatura dos JSONs
+
+Os arquivos JSON em `data/cards/` usam o **slug** da carta (campo `Card.slug`) como nome de arquivo,
+**não** o ID numérico. Exemplos:
+
+| Carta | ID | Slug | Arquivo JSON |
+|---|---|---|---|
+| Stalks Death | 264 | `stalks-death_r9` | `stalks-death_r9.json` |
+| Catfeet | 944 | `catfeet` | `catfeet.json` |
+| Umbral Escape | 1324 | `umbral-escape_unlimited` | `umbral-escape_unlimited.json` |
+
+O vínculo entre JSON e carta no banco é feito pelo campo `_metadata.card_id` dentro do JSON.
+
+**IMPORTANTE:** Scripts que fazem busca de JSON por ID numérico NÃO devem usar glob patterns como
+`data/cards/*_{cid}_*.json`, pois isso não funciona com a nomenclatura por slug. Em vez disso,
+use o campo `_metadata.card_id` de cada JSON (carregue todos, indexe por card_id).
+
+---
+
+### ⚠️ Sincronia `EFEITOS_IMPLEMENTADOS` × `EfeitoTipo`
+
+O script `gerar_checklist.py` mantém uma lista `EFEITOS_IMPLEMENTADOS` que deve refletir
+exatamente o enum `EfeitoTipo` em `rage_web/game_engine/effects.py`.
+
+**Sempre que um novo tipo de efeito for adicionado ao enum no motor, adicione-o também na lista
+no script de checklist.** Caso contrário, o checklist reportará falsos gaps (❌) para efeitos
+que já têm resolvedor.
+
+---
+
+### 📋 Decks Conhecidos (mapeados no script)
+
+| ID | Nome | Estratégia |
+|---|---|---|
+| 7 | Kinfolk Resistance | Kinfolk + Firearms + Pack combat |
+| 90 | Classic: Cliath Ahroun | Ahroun básico, Strike + Dodge |
+| 160 | Mokole | Gaia com quests, morte e recrutamento |
+| 416 | Questor | Vigilante que pontua matando menor Renome |
+| 465 | Apocalypse: First Team 28 | Wyrm squad, ataque HG em massa |
+| 484 | Ajaba Aggression | Hienas que fogem de dano alto |
+| 524 | Classic: Wailer special | Aliados + pack attack |
+| **1050** | **Assombração dos Passos da Morte** | **Pack Ragabash Silent Striders — Stalks Death + truques** |
 
 ---
 

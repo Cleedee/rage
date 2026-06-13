@@ -1,0 +1,51 @@
+{
+  "id": "anubis-stone",
+  "nome": "Anubis Stone",
+  "tipo": "Equipment",
+  "requires": "Silent Striders",
+  "keyword": "Gaia Fetish",
+  "atributos": {
+    "gnosis": 0
+  },
+  "modos": [
+    {
+      "descricao": "Puxar packmates para pack attack",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": ["pack_attack_capacity"],
+            "descricao": "Owner may draw up to her Renown worth of additional packmates into pack attacks"
+          }
+        }
+      ]
+    },
+    {
+      "descricao": "Vampiros tem -2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": ["rage"],
+            "quantidade": -2,
+            "condicao": "alvo_eh_vampiro",
+            "duracao": "permanente",
+            "descricao": "Vampires act at -2 Rage against the bearer of the Anubis Stone and her pack"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "deck1050_assombracao",
+    "card_id": 612,
+    "texto_original": "The owner of the Anubis Stone may draw up to her Renown worth of additional packmates into pack attacks. Vampires act at -2 Rage against the bearer of the Anubis Stone and her pack. Only 1 Anubis Stone can be in play at any time.",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "slug": "anubis-stone"
+  }
+}

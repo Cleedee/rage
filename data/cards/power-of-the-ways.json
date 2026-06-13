@@ -4,17 +4,16 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift (Gn4)",
+      "descricao": "Na Umbra: +1 Rage, +1 Gnosis, +1 Health (Gn4, Philodox)",
       "efeitos": [
         {
           "tipo": "modificar_atributo",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "rage"
-            ],
+            "atributos": ["rage", "gnosis", "health"],
             "valor": 1,
-            "duracao": "ate_fim_combate"
+            "duracao": "ate_fim_combate",
+            "descricao": "Power of the Ways: +1 a Rage, Gnosis e Health enquanto estiver na Umbra. Descarta ao retornar ao mundo fisico."
           }
         }
       ]

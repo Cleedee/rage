@@ -4,12 +4,15 @@
   "tipo": "Equipment",
   "modos": [
     {
-      "descricao": "Bloquear ataque (armadura)",
+      "descricao": "Armadura: reduz dano de 1 ataque em ate 4",
       "efeitos": [
         {
-          "tipo": "curar",
+          "tipo": "modificar_reducao_dano",
+          "quantidade": 4,
           "condicao_alvo": "criatura_aliada",
-          "quantidade": 4
+          "params": {
+            "descricao": "Flak Jacket: stop any one attack of up to 4 damage (one-shot, descartada apos uso)"
+          }
         }
       ]
     }

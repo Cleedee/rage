@@ -1,0 +1,14 @@
+{
+  "id": "board-presence",
+  "nome": "Board Presence",
+  "tipo": "Board Meeting",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1183,
+    "slug": "board-presence",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1182.",
+    "keywords": "Board of Directors"
+  }
+}

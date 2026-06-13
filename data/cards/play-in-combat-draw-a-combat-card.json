@@ -1,7 +1,7 @@
 {
   "id": "play-in-combat-draw-a-combat-card",
-  "nome": "Play in combat. Draw a combat card.",
-  "tipo": "",
+  "nome": "Quick Draw",
+  "tipo": "Action",
   "modos": [
     {
       "descricao": "Efeito passivo",
@@ -24,6 +24,8 @@
     "card_id": 797,
     "texto_original": "",
     "precisa_revisao": true,
-    "slug": "play-in-combat-draw-a-combat-card"
+    "slug": "play-in-combat-draw-a-combat-card",
+    "keywords": "Draw",
+    "nota_revisao": "Nome corrigido (era fragmento corrompido de carta ID 796)"
   }
 }

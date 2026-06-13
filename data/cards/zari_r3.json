@@ -1,0 +1,14 @@
+{
+  "id": "zari_r3",
+  "nome": "Zari",
+  "tipo": "Character - Gaia",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1396,
+    "slug": "zari_r3",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043",
+    "keywords": "Bastet - Simba - Homid - Female - Gaia"
+  }
+}

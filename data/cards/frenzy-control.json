@@ -1,0 +1,14 @@
+{
+  "id": "frenzy-control",
+  "nome": "Frenzy Control",
+  "tipo": "Gift",
+  "modos": [],
+  "_metadata": {
+    "card_id": 1040,
+    "slug": "frenzy-control",
+    "fonte": "corrupted-fix",
+    "precisa_revisao": true,
+    "nota_revisao": "Fragmento corrompido. Nome atribuído artificialmente. Carta real original: ID 1039.",
+    "keywords": "Permanent - Frenzy"
+  }
+}

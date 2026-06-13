@@ -4,12 +4,24 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Esquivar de todos os ataques",
+      "descricao": "Agilidade felina: esquiva de Combat Actions, mas so pode jogar acoes de Rage 1",
       "efeitos": [
         {
-          "tipo": "fugir",
+          "tipo": "adicionar_modifier",
           "condicao_alvo": "criatura_aliada",
-          "quantidade": 3
+          "params": {
+            "modifier": "catfeet_active",
+            "alvos": "self",
+            "descricao": "Dodge all Combat Actions except those which specifically ignore dodges"
+          }
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "restricoes": ["rage1_combat_actions_only"],
+            "descricao": "So pode jogar Combat Actions de Rage 1 enquanto Catfeet estiver ativo"
+          }
         }
       ]
     }
@@ -17,7 +29,7 @@
   "_metadata": {
     "fonte": "analise_v2+revisado",
     "card_id": 944,
-    "texto_original": "The user of this Gift becomes extremely nimble. For the duration of the current combat, he is agile enough to dodge all Combat Actions except those which specifically ignore dodges. The character may only play Combat Actions of Rage 1 while Catfeet is in",
+    "texto_original": "The user of this Gift becomes extremely nimble. For the duration of the current combat, he is agile enough to dodge all Combat Actions except those which specifically ignore dodges. The character may only play Combat Actions of Rage 1 while Catfeet is in effect.",
     "keywords": "",
     "damage": "",
     "rage": 0,

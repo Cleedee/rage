@@ -1,0 +1,30 @@
+{
+  "id": "war-mask",
+  "nome": "War Mask",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Oponentes agem com -1 Rage em combate",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_inimiga",
+          "params": {
+            "atributos": [
+              "rage"
+            ],
+            "valor": -1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 727,
+    "slug": "war-mask",
+    "fonte": "auto-created",
+    "precisa_revisao": true,
+    "nota_revisao": "JSON criado automaticamente para deck 1043 | Efeitos basicos adicionados para funcionamento do bot",
+    "keywords": "Gaia Fetish"
+  }
+}
