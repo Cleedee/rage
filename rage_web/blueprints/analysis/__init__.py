@@ -330,7 +330,8 @@ def run_analysis():
 
         step += 1
 
-    # Armazena
+    # Armazena (inclui log completo para export)
+    full_log = list(game.log)
     _analyses[game_id] = {
         'meta': {
             'deck1_id': deck1_id,
@@ -342,6 +343,7 @@ def run_analysis():
         },
         'states': states,
         'total_states': len(states),
+        'full_log': full_log,
     }
 
     return redirect(url_for('analysis.view_state',
@@ -395,6 +397,10 @@ def view_state(game_id: str, state_index: int):
     prev_turn_idx = sorted_turns[current_turn_idx - 1] if current_turn_idx > 0 else None
     next_turn_idx = sorted_turns[current_turn_idx + 1] if current_turn_idx < total_turns - 1 else None
 
+    # ── State comparison (diff com snapshot anterior) ──
+    prev_snap = states[state_index - 1] if state_index > 0 else None
+    diff = _compute_diff(prev_snap, snap) if prev_snap else None
+
     return render_template('analysis/view.html',
                            game_id=game_id,
                            state=snap,
@@ -407,6 +413,7 @@ def view_state(game_id: str, state_index: int):
                            last_of_current_turn=last_of_current_turn,
                            prev_turn_idx=prev_turn_idx,
                            next_turn_idx=next_turn_idx,
+                           diff=diff,
                            meta=meta,
                            deck1_name=deck1.name if deck1 else '?',
                            deck2_name=deck2.name if deck2 else '?',
@@ -414,10 +421,196 @@ def view_state(game_id: str, state_index: int):
                            get_card_image_url=_get_card_img_url)
 
 
+def _compute_diff(prev: Snapshot, cur: Snapshot) -> dict:
+    """Compara dois snapshots e retorna mudancas visuais.
+
+    Returns dict com:
+    - 'victory_points': {player_id: (antes, depois)}
+    - 'novas_cartas': {player_id: [lista de nomes]} (cartas que apareceram)
+    - 'cartas_removidas': {player_id: [lista de nomes]}
+    - 'dano_tomado': {player_id: [(nome, antes_hp, depois_hp)]}
+    - 'nova_fase': (antes, depois)
+    - 'combate_iniciado': bool
+    - 'combate_terminou': bool
+    """
+    diff = {
+        'victory_points': {},
+        'novas_cartas': {},
+        'cartas_removidas': {},
+        'dano_tomado': {},
+        'fase': (prev.phase, cur.phase),
+        'turno': (prev.turn, cur.turn),
+        'combate_iniciado': False,
+        'combate_terminou': False,
+    }
+
+    if not prev.combat.get('is_active') and cur.combat.get('is_active'):
+        diff['combate_iniciado'] = True
+    if prev.combat.get('is_active') and not cur.combat.get('is_active'):
+        diff['combate_terminou'] = True
+
+    # Compara jogadores
+    prev_players = {p['id']: p for p in prev.players}
+    cur_players = {p['id']: p for p in cur.players}
+
+    for pid, cp in cur_players.items():
+        pp = prev_players.get(pid)
+        if not pp:
+            continue
+
+        # VP
+        if cp['victory_points'] != pp['victory_points']:
+            diff['victory_points'][pid] = (
+                pp['victory_points'], cp['victory_points'])
+
+        # Novas cartas no pack_home
+        prev_names = {c['name'] + str(c['card_id']) for c in pp.get('pack_home', [])}
+        cur_names = {c['name'] + str(c['card_id']) for c in cp.get('pack_home', [])}
+        novas = cur_names - prev_names
+        removidas = prev_names - cur_names
+        if novas:
+            diff['novas_cartas'][pid] = list(novas)
+        if removidas:
+            diff['cartas_removidas'][pid] = list(removidas)
+
+        # Dano tomado (health_current mudou)
+        dano = []
+        prev_cards = {c['name'] + str(c['card_id']): c for c in pp.get('pack_home', [])}
+        for c in cp.get('pack_home', []):
+            key = c['name'] + str(c['card_id'])
+            pc = prev_cards.get(key)
+            if pc and pc['health_current'] != c['health_current']:
+                dano.append((c['name'], pc['health_current'], c['health_current']))
+        if dano:
+            diff['dano_tomado'][pid] = dano
+
+    return diff
+
+
 def _get_card_img_url(card_id):
     """Retorna URL da imagem da carta."""
     from rage_web.ext.repository import get_card_image_url_by_id
     return get_card_image_url_by_id(card_id)
+
+
+# ── Export Log ──
+
+@bp.route('/<game_id>/export-log')
+def export_log(game_id: str):
+    """Exporta o log completo da partida como .txt"""
+    analysis = _analyses.get(game_id)
+    if not analysis:
+        return 'Análise não encontrada', 404
+
+    full_log = analysis.get('full_log', [])
+    meta = analysis['meta']
+
+    lines = []
+    lines.append(f'Rage CCG — Log de Partida')
+    lines.append(f'Deck 1: {meta["p1_name"]}')
+    lines.append(f'Deck 2: {meta["p2_name"]}')
+    lines.append(f'Seed: {meta["seed"]}')
+    lines.append(f'Max Turns: {meta["max_turns"]}')
+    lines.append('=' * 60)
+    lines.append('')
+    for entry in full_log:
+        lines.append(entry)
+    lines.append('')
+    lines.append('=' * 60)
+    lines.append(f'Total de snapshots: {len(analysis.get("states", []))}')
+
+    text = '\n'.join(lines)
+
+    from flask import Response
+    return Response(
+        text,
+        mimetype='text/plain',
+        headers={
+            'Content-Disposition':
+            f'attachment; filename="rage-match-{game_id}.txt"'
+        }
+    )
+
+
+# ── Simulation (headless) ──
+
+_simulations: dict[str, dict] = {}
+
+
+@bp.route('/simulation', methods=['GET', 'POST'])
+def simulation():
+    """Configura e roda simulacao headless de N partidas."""
+    decks = _get_decks_with_renown()
+
+    if request.method == 'GET':
+        return render_template('analysis/simulation.html',
+                               decks=decks,
+                               results=None)
+
+    # POST: roda a simulacao
+    deck1_id = request.form.get('deck1', type=int)
+    deck2_id = request.form.get('deck2', type=int)
+    num_games = request.form.get('num_games', 10, type=int)
+    max_turns_sim = request.form.get('max_turns', 30, type=int)
+    seed = request.form.get('seed', 0, type=int)
+    dif1 = request.form.get('difficulty1', 'hard')
+    dif2 = request.form.get('difficulty2', 'hard')
+    p1_name = request.form.get('p1_name', 'Jogador 1')
+    p2_name = request.form.get('p2_name', 'Jogador 2')
+
+    if num_games < 1:
+        num_games = 1
+    if num_games > 1000:
+        num_games = 1000
+
+    # Roda as partidas
+    wins_p1 = 0
+    wins_p2 = 0
+    draws = 0
+    timeouts = 0
+    total_steps = 0
+    results = []
+
+    from rage_web.game_engine.match import run_match
+
+    for i in range(num_games):
+        s = seed + i if seed else 0
+        try:
+            result = run_match(
+                seed=s,
+                max_turns=max_turns_sim,
+                deck_ids=[deck1_id, deck2_id],
+                difficulties=[dif1, dif2],
+                verbose=0,
+                vp_to_win=50,
+                max_steps_override=500
+            )
+        except Exception as e:
+            result = f'error:{e}'
+
+        results.append(result)
+        if result == 0:
+            wins_p1 += 1
+        elif result == 1:
+            wins_p2 += 1
+        elif result == 'draw':
+            draws += 1
+        else:
+            timeouts += 1
+
+    return render_template('analysis/simulation.html',
+                           decks=decks,
+                           results={
+                               'deck1_name': p1_name,
+                               'deck2_name': p2_name,
+                               'num_games': num_games,
+                               'wins_p1': wins_p1,
+                               'wins_p2': wins_p2,
+                               'draws': draws,
+                               'timeouts': timeouts,
+                               'winrate_p1': round(wins_p1 / num_games * 100, 1) if num_games else 0,
+                               'winrate_p2': round(wins_p2 / num_games * 100, 1) if num_games else 0,
+                           })
 
 
 @bp.route('/<game_id>/next/<int:state_index>')
@@ -433,3 +626,18 @@ def prev_state(game_id: str, state_index: int):
     return redirect(url_for('analysis.view_state',
                             game_id=game_id,
                             state_index=max(0, state_index - 1)))
+
+
+@bp.route('/<game_id>/jump-turn/<int:turn>')
+def jump_to_turn(game_id: str, turn: int):
+    """Pula para o primeiro snapshot do turno especificado."""
+    analysis = _analyses.get(game_id)
+    if not analysis:
+        return 'Análise não encontrada', 404
+    states = analysis['states']
+    for i, s in enumerate(states):
+        if s.turn == turn:
+            return redirect(url_for('analysis.view_state',
+                                    game_id=game_id, state_index=i))
+    return redirect(url_for('analysis.view_state',
+                            game_id=game_id, state_index=0))

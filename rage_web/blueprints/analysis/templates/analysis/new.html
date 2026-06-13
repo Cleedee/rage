@@ -6,6 +6,13 @@
     <h1 class="title">🔬 Análise de Partidas</h1>
     <p class="subtitle">Configure uma partida entre bots e navegue turno a turno.</p>
 
+    <div class="mb-4">
+      <a href="{{ url_for('analysis.simulation') }}" class="button is-outlined is-info is-small">
+        <span class="icon"><i class="bi bi-cpu"></i></span>
+        <span>🧪 Simulação Headless (N partidas)</span>
+      </a>
+    </div>
+
     <form method="POST" action="{{ url_for('analysis.run_analysis') }}">
       <div class="columns is-multiline">
         <!-- Jogador 1 -->

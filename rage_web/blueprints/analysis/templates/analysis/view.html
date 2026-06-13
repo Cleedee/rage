@@ -22,6 +22,14 @@
   .card-img-cell:hover img {
     box-shadow: 0 2px 10px rgba(0,0,0,0.25);
   }
+  .card-img-cell.is-new img {
+    border-color: #48c774 !important;
+    box-shadow: 0 0 8px rgba(72,199,116,0.4);
+  }
+  .card-img-cell.is-damaged img {
+    border-color: #f14668 !important;
+    box-shadow: 0 0 8px rgba(241,70,104,0.3);
+  }
   .card-img-cell .card-name {
     display: block;
     font-weight: 600;
@@ -231,7 +239,7 @@
 {% block content %}
 <!-- Navegação -->
 <div class="nav-bar">
-  <div class="is-flex is-align-items-center" style="gap:12px">
+  <div class="is-flex is-align-items-center" style="gap:12px;flex-wrap:wrap">
     <span class="turn-info">⚔️ Turno {{ state.turn }}</span>
     <span class="tag phase-tag 
       {% if state.phase == 'combat' %}is-danger
@@ -254,9 +262,22 @@
       {% endfor %}
     </div>
     {% endif %}
+
+    <!-- Jump-to-turn selector -->
+    <div class="is-flex is-align-items-center" style="gap:4px;margin-left:8px">
+      <span style="font-size:0.75rem;color:rgba(255,255,255,0.6)">Ir p/ turno:</span>
+      <select onchange="window.location.href='{{ url_for("analysis.jump_to_turn", game_id=game_id, turn=999) }}'.replace('999', this.value)"
+              class="tag is-small" style="background:rgba(255,255,255,0.15);color:#fff;border:none;cursor:pointer;font-size:0.75rem">
+        {% for t in sorted_turns %}
+        <option value="{{ t }}" {% if t == current_turn %}selected{% endif %} style="color:#333">
+          Turno {{ t }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
   </div>
 
-  <div class="is-flex is-align-items-center" style="gap:8px">
+  <div class="is-flex is-align-items-center" style="gap:8px;flex-wrap:wrap">
     <a href="{{ url_for('analysis.prev_state', game_id=game_id, state_index=state_index) }}"
        class="button is-small is-inverted {% if state_index == 0 %}is-disabled{% endif %}"
        {% if state_index == 0 %}disabled{% endif %}>
@@ -265,14 +286,61 @@
     </a>
     <span class="progress-text">{{ state_index + 1 }} / {{ total_states }}</span>
     <span class="tag is-warning is-light" style="font-size:0.7rem;margin-left:4px">T{{ current_turn }}/{{ total_turns }}</span>
+
+    {% if prev_turn_idx is not none %}
+    <a href="{{ url_for('analysis.jump_to_turn', game_id=game_id, turn=prev_turn_idx) }}"
+       class="button is-small is-light" title="Turno anterior">
+      <span class="icon"><i class="bi bi-skip-backward"></i></span>
+    </a>
+    {% endif %}
+    {% if next_turn_idx is not none %}
+    <a href="{{ url_for('analysis.jump_to_turn', game_id=game_id, turn=next_turn_idx) }}"
+       class="button is-small is-light" title="Próximo turno">
+      <span class="icon"><i class="bi bi-skip-forward"></i></span>
+    </a>
+    {% endif %}
+
     <a href="{{ url_for('analysis.next_state', game_id=game_id, state_index=state_index) }}"
        class="button is-small is-inverted {% if state_index >= total_states - 1 %}is-disabled{% endif %}"
        {% if state_index >= total_states - 1 %}disabled{% endif %}>
       <span>Próximo</span>
       <span class="icon"><i class="bi bi-chevron-right"></i></span>
     </a>
+
+    <!-- Export button -->
+    <a href="{{ url_for('analysis.export_log', game_id=game_id) }}"
+       class="button is-small is-light" title="Exportar log">
+      <span class="icon"><i class="bi bi-download"></i></span>
+    </a>
   </div>
 </div>
+
+{% if diff %}
+<!-- Indicadores de mudanca -->
+<div class="is-flex is-flex-wrap-wrap" style="gap:6px;margin-bottom:10px;font-size:0.8rem">
+  {% if diff.combate_iniciado %}
+  <span class="tag is-danger">⚔️ Combate iniciado</span>
+  {% endif %}
+  {% if diff.combate_terminou %}
+  <span class="tag is-success">✅ Combate terminou</span>
+  {% endif %}
+  {% for pid, (antes, depois) in diff.victory_points.items() %}
+  {% set p_name = state.players|selectattr('id','equalto',pid)|map(attribute='name')|first %}
+  <span class="tag is-warning">🏆 {{ p_name or pid }}: {{ antes }}→{{ depois }} VP</span>
+  {% endfor %}
+  {% for pid, danos in diff.dano_tomado.items() %}
+  {% for nome, antes, depois in danos %}
+  <span class="tag is-light">💥 {{ nome }}: ❤️{{ antes }}→{{ depois }}</span>
+  {% endfor %}
+  {% endfor %}
+  {% if diff.turno[0] != diff.turno[1] %}
+  <span class="tag is-info">📅 Turno {{ diff.turno[0] }} → {{ diff.turno[1] }}</span>
+  {% endif %}
+  {% if diff.fase[0] != diff.fase[1] %}
+  <span class="tag is-light">🔄 {{ diff.fase[0]|upper }} → {{ diff.fase[1]|upper }}</span>
+  {% endif %}
+</div>
+{% endif %}
 
 <!-- Informações da partida -->
 <div class="box is-small mb-4" style="padding:8px 12px">
@@ -432,7 +500,16 @@
         <div class="hg-grid">
           {% for card in p.pack_home %}
           {% set is_alpha = alpha_card_id and alpha_card_id == card.card_id|string %}
-          <div class="card-img-cell{% if is_alpha %} alpha-card{% endif %}"
+          {# Verifica se carta sofreu dano ou e nova #}
+          {% set card_key = card.name ~ card.card_id %}
+          {% set is_new = diff and diff.novas_cartas.get(p.id, []) and card_key in diff.novas_cartas[p.id] %}
+          {% set is_dmg = false %}
+          {% if diff and diff.dano_tomado.get(p.id, []) %}
+            {% for nome, antes, depois in diff.dano_tomado[p.id] %}
+              {% if nome == card.name %}{% set is_dmg = true %}{% endif %}
+            {% endfor %}
+          {% endif %}
+          <div class="card-img-cell{% if is_alpha %} alpha-card{% endif %}{% if is_new %} is-new{% endif %}{% if is_dmg %} is-damaged{% endif %}"
                data-card-name="{{ card.name }}"
                data-card-text="{{ card.text|e }}"
                data-card-type="{{ card.card_type }}"
