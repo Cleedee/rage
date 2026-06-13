@@ -244,11 +244,14 @@ def criar_carta_dano(origem: CardInstance, valor: int,
 
     Regra (6.4): quando um card causa dano a uma criatura,
     ele se torna uma damage card anexada sob a criatura.
+
+    A damage card recebe card_type='Damage Card' para ser
+    distinguivel da carta original na analise e debug.
     """
     return CardInstance(
         card_id=origem.card_id,
         name=origem.name,
-        card_type=origem.card_type,
+        card_type='Damage Card',
         zone=Zone.OUT_OF_PLAY,
         owner_id=dono_id,
         controller_id=dono_id,
