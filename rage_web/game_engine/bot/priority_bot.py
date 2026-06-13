@@ -2745,9 +2745,10 @@ class PriorityBot:
         cid_str = str(card.card_id)
         is_attacker = cid_str in self.game.combat.attackers
         acoes_base = ()
-        if is_attacker:
-            # Atacantes sempre podem tentar strike como fallback
-            acoes_base = ('strike', 'claw', 'bite')
+        # Per 6.6/6.9.2: nao existe Strike/Claw/Bite intrinseco.
+        # Toda acao precisa ser uma carta de Combat Action.
+        # O fallback e' via bluff (jogar carta invalida) no
+        # play_card step, nao via acao intrinseca.
 
         for acao in ('anatomy_lesson', 'head_butt', 'savage_beatdown',
                      'tail_lash', 'submission_hold') + acoes_base:
