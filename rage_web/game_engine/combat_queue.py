@@ -3003,30 +3003,37 @@ def _reverter_para_breed(game: GameState):
     Regra: apos o combate, criaturas em Crinos voltam a
     forma Breed. Apenas se aplica a criaturas que tenham
     morph values diferentes dos breed (ou seja, que fliparam).
+
+    Metis tem forma breed = Crinos (regra A1.4), entao nao
+    sao revertidos (health_morph == health).
     """
     for p in game.players:
         for c in p.pack_home + p.hunting_grounds + p.umbra:
-            if c.is_crinos and c.health_morph != c.health:
-                # Volta para forma breed
-                c.is_crinos = False
-                # Remove restricoes breed
-                for r in ['rage_breed', 'health_breed', 'gnosis_breed']:
-                    if r in c.restricoes:
-                        c.restricoes.remove(r)
-                health_antes = c.health_current
-                # Recalcula health_current via sync (usa damage cards)
-                c.sync_health()
+            if not c.is_crinos:
+                continue
+            if c.health_morph == c.health:
+                # Metis: breed = Crinos, nao precisa reverter
+                continue
+            # Volta para forma breed
+            c.is_crinos = False
+            # Remove restricoes breed
+            for r in ['rage_breed', 'health_breed', 'gnosis_breed']:
+                if r in c.restricoes:
+                    c.restricoes.remove(r)
+            health_antes = c.health_current
+            # Recalcula health_current via sync (usa damage cards)
+            c.sync_health()
+            game.add_log(
+                f'  ↩️ {c.name} voltou a forma Breed '
+                f'(H {health_antes}/{c.health_morph} -> '
+                f'{c.health_current}/{c.health})'
+            )
+            # Se morreu ao voltar (dano > breed health)
+            if c.health_current <= 0:
                 game.add_log(
-                    f'  ↩️ {c.name} voltou a forma Breed '
-                    f'(H {health_antes}/{c.health_morph} -> '
-                    f'{c.health_current}/{c.health})'
+                    f'  {c.name} nao resistiu a volta a forma Breed!'
                 )
-                # Se morreu ao voltar (dano > breed health)
-                if c.health_current <= 0:
-                    game.add_log(
-                        f'  {c.name} nao resistiu a volta a forma Breed!'
-                    )
-                    _eliminar_jogador(game, p) if not p.eliminado else None
+                _eliminar_jogador(game, p) if not p.eliminado else None
 
 
 def end_combat(game: GameState) -> bool:

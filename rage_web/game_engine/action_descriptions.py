@@ -262,6 +262,11 @@ def _extract_card_id(acao: str, game=None) -> Optional[int]:
     match = re.search(r'(?:card_|step_|back_|play_|declare_|attack_|eliminate_|feint_|alpha_)(\d+)', acao)
     if match:
         return int(match.group(1))
+    # bluff_<cid>_<card_id>: extrai o ultimo numero (card_id da carta sendo blefada)
+    if acao.startswith('bluff_'):
+        parts = acao.split('_')
+        if len(parts) >= 3 and parts[-1].isdigit():
+            return int(parts[-1])
     # Formato alternativo: use_<slug>_modo<N>
     # Extrai o slug e busca no cache ou no banco
     if acao.startswith('use_'):
@@ -404,6 +409,16 @@ def _describe_declare(acao: str, card_name: Optional[str], game=None) -> str:
         combat_action = acao[len(prefix):]
     else:
         combat_action = acao.split('_')[-1] if '_' in acao else acao
+
+    # Acoes virtuais 'dano_<uid>': busca nome da carta em dano_actions
+    if combat_action.startswith('dano_') and game:
+        info = getattr(game.combat, 'dano_actions', {}).get(combat_action, {})
+        nome_carta = info.get('card_name', '')
+        if nome_carta:
+            if card_name:
+                return f'{card_name} declarou {nome_carta}'
+            return f'Personagem #{card_id} declarou {nome_carta}'
+
     combat_human = COMBAT_ACTIONS_HUMAN.get(combat_action, combat_action)
 
     if card_name:
