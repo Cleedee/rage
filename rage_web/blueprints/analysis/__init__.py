@@ -15,7 +15,7 @@ from typing import Optional
 
 from flask import (
     Blueprint, current_app, jsonify, redirect,
-    render_template, request, url_for,
+    render_template, request, session, url_for,
 )
 
 from rage_web.ext.database import db
@@ -162,8 +162,6 @@ def _card_info(c) -> dict:
 
 # ── Cache de partidas analisadas ──
 _analyses: dict[str, dict] = {}
-# Últimos decks usados (pré-seleção nos formulários)
-_ultimos_decks: dict = {'deck1': None, 'deck2': None, 'sim_deck1': None, 'sim_deck2': None}
 
 
 def _calc_deck_renown(deck_id: int) -> int:
@@ -198,9 +196,13 @@ def _get_decks_with_renown() -> list[dict]:
 def new_analysis():
     """Formulário para configurar a análise."""
     decks = _get_decks_with_renown()
+    ultimos = {
+        'deck1': session.get('ultimos_deck1'),
+        'deck2': session.get('ultimos_deck2'),
+    }
     return render_template('analysis/new.html',
                            decks=decks,
-                           ultimos=_ultimos_decks)
+                           ultimos=ultimos)
 
 
 @bp.route('/run', methods=['POST'])
@@ -349,11 +351,9 @@ def run_analysis():
         'total_states': len(states),
         'full_log': full_log,
     }
-    # Salva decks da última análise para pré-seleção
-    _ultimos_decks['deck1'] = deck1_id
-    _ultimos_decks['deck2'] = deck2_id
-    _ultimos_decks['sim_deck1'] = deck1_id
-    _ultimos_decks['sim_deck2'] = deck2_id
+    # Salva decks da última análise na sessão (persiste entre requests)
+    session['ultimos_deck1'] = deck1_id
+    session['ultimos_deck2'] = deck2_id
 
     return redirect(url_for('analysis.view_state',
                             game_id=game_id, state_index=0))
@@ -552,10 +552,14 @@ def simulation():
     decks = _get_decks_with_renown()
 
     if request.method == 'GET':
+        ultimos = {
+            'sim_deck1': session.get('ultimos_sim_deck1'),
+            'sim_deck2': session.get('ultimos_sim_deck2'),
+        }
         return render_template('analysis/simulation.html',
                                decks=decks,
                                results=None,
-                               ultimos=_ultimos_decks)
+                               ultimos=ultimos)
 
     # POST: roda a simulacao
     deck1_id = request.form.get('deck1', type=int)
@@ -608,12 +612,16 @@ def simulation():
         else:
             timeouts += 1
 
-    # Salva decks da última simulação para pré-seleção
-    _ultimos_decks['sim_deck1'] = deck1_id
-    _ultimos_decks['sim_deck2'] = deck2_id
+    # Salva decks da última simulação na sessão
+    session['ultimos_sim_deck1'] = deck1_id
+    session['ultimos_sim_deck2'] = deck2_id
 
     return render_template('analysis/simulation.html',
                            decks=decks,
+                           ultimos={
+                               'sim_deck1': deck1_id,
+                               'sim_deck2': deck2_id,
+                           },
                            results={
                                'deck1_name': p1_name,
                                'deck2_name': p2_name,
