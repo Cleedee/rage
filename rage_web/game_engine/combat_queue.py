@@ -1509,6 +1509,7 @@ def _registrar_acao_dano(game: GameState, card: CardInstance,
         'card_id': card.card_id,
         'rage_requirement': getattr(card, 'rage', 0),
         'card_name': card.name,
+        'speed': getattr(card, 'speed', 'normal'),
     }
 
     # ── Nao descarta a carta imediatamente (regra 6.4) ──
@@ -2985,8 +2986,14 @@ def resolve_combat(game: GameState) -> bool:
                 continue
             acao_a = game.combat.declarations.get(a_id, '')
             props_a = COMBAT_ACTION_PROPS.get(acao_a, {})
-            # Acoes virtuais (dano_<uid>) usam speed normal
-            if not acao_a.startswith('dano_') and props_a.get('speed', 'normal') != velocidade:
+            # Velocidade: acoes normais de COMBAT_ACTION_PROPS
+            # ou acoes virtuais (dano_<uid>) de dano_actions
+            if acao_a.startswith('dano_'):
+                dano_info = game.combat.dano_actions.get(acao_a, {})
+                acao_speed = dano_info.get('speed', 'normal')
+            else:
+                acao_speed = props_a.get('speed', 'normal')
+            if acao_speed != velocidade:
                 continue
             if acao_a not in ACOES_OFENSIVAS and not acao_a.startswith('dano_'):
                 continue
@@ -3009,8 +3016,14 @@ def resolve_combat(game: GameState) -> bool:
                 continue
             acao_d = game.combat.declarations.get(d_id, '')
             props_d = COMBAT_ACTION_PROPS.get(acao_d, {})
-            # Acoes virtuais (dano_<uid>) usam speed normal
-            if not acao_d.startswith('dano_') and props_d.get('speed', 'normal') != velocidade:
+            # Velocidade: acoes normais de COMBAT_ACTION_PROPS
+            # ou acoes virtuais (dano_<uid>) de dano_actions
+            if acao_d.startswith('dano_'):
+                dano_info = game.combat.dano_actions.get(acao_d, {})
+                acao_speed = dano_info.get('speed', 'normal')
+            else:
+                acao_speed = props_d.get('speed', 'normal')
+            if acao_speed != velocidade:
                 continue
             if acao_d not in ACOES_OFENSIVAS and not acao_d.startswith('dano_'):
                 continue
