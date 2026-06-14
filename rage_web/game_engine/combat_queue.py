@@ -276,8 +276,6 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         for anexo in list(alvo.damage_cards):
             anexo.zone = Zone.OUT_OF_PLAY
         alvo.damage_cards.clear()
-        alvo.basic_damage_taken = 0
-        alvo.basic_aggravated_damage = 0
         for eq in list(alvo.attached_equipment):
             eq.zone = Zone.OUT_OF_PLAY
         alvo.attached_equipment.clear()
@@ -2582,17 +2580,6 @@ def resolve_combat(game: GameState) -> bool:
                 # Dodge: dano totalmente evitado
                 game.add_log(f'  {alvo_card.name} esquivou do ataque de '
                              f'{origem_card.name}')
-                # Head Butt: se esquivado, vira damage card no atacante
-                if acao_origem == 'head_butt':
-                    keywords = (origem_card.keywords or '').lower()
-                    if 'mokole' not in keywords:
-                        origem_card.basic_damage_taken += 4
-                        origem_card.sync_health()
-                        _flipar_para_crinos(game, origem_card)
-                        game.add_log(
-                            f'  Head Butt esquivado! {origem_card.name} '
-                            f'recebe 4 de dano de volta'
-                        )
                 return  # Dodge: sem dano
             elif acao_alvo == 'block':
                 # Block: reduz dano pela Rage do defensor
@@ -2602,23 +2589,6 @@ def resolve_combat(game: GameState) -> bool:
                     f'{origem_card.name} (reducao: {reducao_block})'
                 )
                 bloqueou_ou_esquivou = True
-                # Head Butt: se bloqueado, vira damage card no atacante (exceto Mokole)
-                if acao_origem == 'head_butt':
-                    keywords = (origem_card.keywords or '').lower()
-                    if 'mokole' not in keywords:
-                        origem_card.basic_damage_taken += 4
-                        origem_card.sync_health()
-                        _flipar_para_crinos(game, origem_card)
-                        game.add_log(
-                            f'  Head Butt bloqueado! {origem_card.name} '
-                            f'recebe 4 de dano de volta'
-                        )
-                    else:
-                        game.add_log(
-                            f'  Head Butt bloqueado, mas {origem_card.name} '
-                            f'e Mokole (sem dano de volta)'
-                        )
-                # Nao retorna - continua para aplicar dano reduzido
 
         if is_unblockable and acao_alvo in ('block', 'dodge'):
             game.add_log(
@@ -2783,23 +2753,12 @@ def resolve_combat(game: GameState) -> bool:
                 f'causando {dano} de dano a {alvo_card.name} '
                 f'({alvo_card.health_current}/{alvo_card.health})')
         else:
-            # Ataque normal (strike, claw, etc): aplica dano diretamente
-            # sem criar damage card virtual (regra 6.4 — so Combat Actions
-            # reais viram damage cards anexadas)
-            # Purity of Spirit: converte dano agravado em normal
-            eh_agravado = (war_knife_aggravated or trinity_aggravated)
-            if eh_agravado and getattr(alvo_card, 'ignorar_agravado', False):
-                eh_agravado = False
-            if eh_agravado:
-                alvo_card.basic_aggravated_damage += dano
-            else:
-                alvo_card.basic_damage_taken += dano
-            alvo_card.sync_health()
+            # Sem Combat Action real — a declaracao nao causa dano.
+            # Acoes sinteticas (strike, claw, etc) foram removidas.
             game.add_log(
-                f'  {origem_card.name} causou {dano} de dano '
-                f'{"agravado" if eh_agravado else ""} a '
-                f'{alvo_card.name} '
-                f'({alvo_card.health_current}/{alvo_card.health})')
+                f'  {origem_card.name} nao tinha carta de combate: '
+                f'sem dano a {alvo_card.name}')
+            return  # Nao aplica dano
 
         # Flip para Crinos: verifica threshold a cada dano aplicado
         # (regra: dano acumulado >= min(rage, health) da forma breed)
@@ -2878,8 +2837,6 @@ def resolve_combat(game: GameState) -> bool:
                     alvo_card.health_current = alvo_card.health
                     alvo_card.damage_aggravated = 0
                     alvo_card.damage_cards.clear()
-                    alvo_card.basic_damage_taken = 0
-                    alvo_card.basic_aggravated_damage = 0
                     # Move da zona do dono original para Pack Home do atacante
                     for zone_list in (dono_alvo.pack_home,
                                       dono_alvo.hunting_grounds,
@@ -3575,8 +3532,6 @@ def _check_caern_snow_leopard(game: GameState, alvo: CardInstance,
     alvo.zone_original = Zone.PACK_HOME
     alvo.health_current = alvo.health
     alvo.damage_cards.clear()
-    alvo.basic_damage_taken = 0
-    alvo.basic_aggravated_damage = 0
     alvo.attached_equipment.clear()
     dono.pack_home.append(alvo)
 

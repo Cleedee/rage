@@ -129,8 +129,6 @@ class CardInstance:
     restricoes: list[str] = field(default_factory=list)
     # Restricoes ativas: 'nao_jogar_rage_3+', 'nao_fugir', etc.
     is_frenzied: bool = False
-    basic_damage_taken: int = 0  # Dano acumulado de ataques basicos (strike, claw, etc)
-    basic_aggravated_damage: int = 0  # Dano agravado de ataques basicos
     damage_cards: list[CardInstance] = field(default_factory=list)
     # Cartas de combate reais (Combat Actions) anexadas como dano (regra 6.4)
     attached_equipment: list[CardInstance] = field(default_factory=list)
@@ -145,12 +143,13 @@ class CardInstance:
 
     @property
     def total_dano(self) -> int:
-        """Soma de todo o dano sofrido: damage_cards (Combat Actions) + ataques basicos.
+        """Soma do dano de Combat Actions reais anexadas como damage cards.
 
+        Regra (6.4): quando uma Combat Action causa dano, a carta e
+        anexada a` criatura alvo como damage card.
         A criatura morre quando total_dano >= health.
         """
-        dano_cartas = sum(int(d.damage or '0') for d in self.damage_cards)
-        return dano_cartas + self.basic_damage_taken + self.basic_aggravated_damage
+        return sum(int(d.damage or '0') for d in self.damage_cards)
 
     def sync_health(self) -> int:
         """Recalcula health_current a partir de health - total_dano.
@@ -243,32 +242,30 @@ class CardInstance:
 def anexar_dano(alvo: CardInstance, origem: CardInstance,
                 valor: int, dono_id: str,
                 is_aggravated: bool = False,
-                carta_combate: Optional[CardInstance] = None) -> None:
-    """Aplica dano a uma criatura.
+                carta_combate: CardInstance = None) -> None:
+    """Anexa uma Combat Action real como damage card a uma criatura.
 
-    Se `carta_combate` for fornecido (Combat Action real), a carta
-    e anexada a `alvo.damage_cards` como evidencia do dano.
-    Caso contrario (ataque basico: strike, claw, etc), incrementa
-    `basic_damage_taken` — sem criar card virtual no descarte.
+    Regra (6.4): quando uma Combat Action causa dano, a carta e
+    anexada a criatura alvo como damage card.
+    Requer `carta_combate` — a propria carta de combate usada.
 
     Se o alvo tiver modifier 'ignorar_agravado' (Purity of Spirit),
     dano agravado e convertido em normal.
     """
+    if carta_combate is None:
+        raise ValueError('anexar_dano requer carta_combate '
+                         '(Combat Action real). Acoes sinteticas '
+                         'foram removidas do motor.')
+
     # Purity of Spirit: converte dano agravado em normal
     if is_aggravated and getattr(alvo, 'ignorar_agravado', False):
         is_aggravated = False
 
-    if carta_combate is not None:
-        # Combat Action real anexada como dano
-        carta_combate.damage = str(valor)
-        carta_combate.is_aggravated = is_aggravated
-        carta_combate.owner_id = dono_id
-        carta_combate.zone = Zone.OUT_OF_PLAY
-        alvo.damage_cards.append(carta_combate)
-    else:
-        # Ataque basico: so incrementa contador
-        alvo.basic_damage_taken += valor
-
+    carta_combate.damage = str(valor)
+    carta_combate.is_aggravated = is_aggravated
+    carta_combate.owner_id = dono_id
+    carta_combate.zone = Zone.OUT_OF_PLAY
+    alvo.damage_cards.append(carta_combate)
     alvo.sync_health()
 
 
@@ -294,8 +291,6 @@ def descartar_anexos(card: CardInstance, dono: PlayerState):
             anexo.zone = Zone.DISCARD_SEPT
             dono.discard_sept.append(anexo)
     card.damage_cards.clear()
-    card.basic_damage_taken = 0
-    card.basic_aggravated_damage = 0  # Reseta dano de ataques basicos
     # Descarta equipamentos anexados (regra 6.4.2)
     for eq in card.attached_equipment:
         zona = zona_descarte(eq.card_type or '')
@@ -548,8 +543,8 @@ class PlayerState:
         for c in self.pack_home:
             if not self._pode_regenerar(c):
                 continue
-            # Verifica se ha dano para regenerar
-            if not c.damage_cards and c.basic_damage_taken <= 0:
+            # Verifica se ha dano para regenerar (damage_cards de Combat Actions)
+            if not c.damage_cards:
                 continue
             # Trinity Hive: BSD so regeneram na Umbra
             if trinity_hive_ativa:
@@ -584,18 +579,10 @@ class PlayerState:
                                 f'({c.health_current}/{c.health})')
                     continue
 
-            # Se nao ha Combat Actions para regenerar, regenera dano basico
-            if c.basic_damage_taken > 0:
-                # Regenera 1 de dano basico nao-agravado por vez
-                c.basic_damage_taken = max(0, c.basic_damage_taken - 1)
-                c.sync_health()
-                logs.append(f'{c.name} regenerou 1 de dano basico '
-                            f'({c.health_current}/{c.health})')
-            elif pode_agravado and c.basic_aggravated_damage > 0:
-                c.basic_aggravated_damage = max(0, c.basic_aggravated_damage - 1)
-                c.sync_health()
-                logs.append(f'{c.name} regenerou 1 de dano agravado '
-                            f'({c.health_current}/{c.health})')
+            # Nao ha mais fallback de dano basico — toda regeneracao
+            # ocorre sobre damage_cards de Combat Actions reais.
+            logs.append(f'{c.name} nao tem Combat Actions para regenerar')
+            continue
         return logs
 
     def pagar_custo_rage(self, custo: int) -> Optional[str]:

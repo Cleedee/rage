@@ -649,15 +649,9 @@ class ResolvedorEfeitos:
                     menor.damage = str(valor - espaco)
                     cura_real = qtd
 
-            # 2. Se ainda precisa curar, reduz dano basico nao-agravado
-            while cura_real < qtd and alvo.basic_damage_taken > 0:
-                alvo.basic_damage_taken = max(0, alvo.basic_damage_taken - 1)
-                cura_real += 1
-
-            # 3. Se ainda precisa curar, reduz dano basico agravado
-            while cura_real < qtd and alvo.basic_aggravated_damage > 0:
-                alvo.basic_aggravated_damage = max(0, alvo.basic_aggravated_damage - 1)
-                cura_real += 1
+            # 2. Nao ha mais dano basico — se nao ha Combat Actions
+            #    para curar, termina.
+            #    (Acoes sinteticas foram removidas do motor.)
 
             alvo.sync_health()
             self.game.add_log(
@@ -2307,8 +2301,6 @@ class ResolvedorEfeitos:
                 dmg.zone = Zone.DISCARD_COMBAT
                 dono_antigo.discard_combat.append(dmg)
             card_inst.damage_cards.clear()
-            card_inst.basic_damage_taken = 0
-            card_inst.basic_aggravated_damage = 0
             # Remove da zona atual
             removido = False
             for zlist in (dono_antigo.pack_home,

@@ -1488,7 +1488,7 @@ class PriorityBot:
                         continue
                 elif card.owner_id != self.player_id:
                     continue
-                acao = g.combat.declarations.get(cid, 'strike')
+                acao = g.combat.declarations.get(cid, '')
                 if acao in ('block', 'dodge', 'flee'):
                     continue  # defensivas nao precisam de alvo
                 # Escolhe alvo: oponente
@@ -1659,40 +1659,20 @@ class PriorityBot:
                            acao_atual: str,
                            oponentes: dict[str, str],
                            opp: PlayerState) -> Optional[str]:
-        """Decide qual acao seria melhor apos ver as revelacoes."""
-        OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
-                     'ranged_strike'}
-        DEFENSIVAS = {'block', 'dodge', 'flee'}
+        """Decide qual acao seria melhor apos ver as revelacoes.
 
-        # Se todos oponentes agiram defensivamente, ataca
-        todos_defensivos = all(
-            a in DEFENSIVAS for a in oponentes.values())
-        if todos_defensivos and acao_atual in DEFENSIVAS:
-            return 'strike'
+        Nota: acoes sinteticas (strike, dodge, block) foram removidas.
+        Toda acao requer uma Combat Action real.
+        O feint so pode substituir por outra carta que a criatura
+        tenha na mao de combate.
+        """
+        # Sem acao atual, nao ha o que substituir
+        if not acao_atual:
+            return None
 
-        # Se ha ameaca maior que o esperado, defende
-        for cid_op, acao_op in oponentes.items():
-            if acao_op in OFENSIVAS:
-                # Encontra a criatura oponente
-                for c in opp.pack_home:
-                    if str(c.card_id) == cid_op:
-                        if c.rage > criatura.rage * 1.3:
-                            if acao_atual in OFENSIVAS:
-                                return 'dodge'
-                        break
-
-        # Se esta com saude critica, foge
-        if (criatura.health > 0
-                and criatura.health_current < criatura.health * 0.2):
-            if acao_atual not in DEFENSIVAS:
-                return 'dodge'
-
-        # Se o oponente fugiu, ataca
-        if any(a == 'flee' for a in oponentes.values()):
-            if acao_atual in DEFENSIVAS:
-                return 'strike'
-
-        return None  # Mantem acao atual
+        # Tenta encontrar carta de combate viavel na mao
+        # (delega para _escolher_carta_combate_como_acao se disponivel)
+        return None  # Por ora: mantem acao atual
 
     def _decide_combat_random(self) -> str:
         """Acoes aleatorias em combate (modo facil)."""
@@ -2729,17 +2709,11 @@ class PriorityBot:
         """
         me = self.player
 
-        # Presa em HG: defender em vez de atacar
-        ct = (card.card_type or '').lower()
+        # Presa em HG: sem carta de combate, nao age
+        # (ataques de presa sao controlados por _check_victim_attacks)
         is_prey = any(t in ct for t in ('enemy', 'victim'))
         if is_prey and not card.owner_id:
-            # Presa sem dono: qualquer interventor defende
-            if card.health_current < card.health * 0.5:
-                return 'dodge'
-            # Block reduz dano pela Rage da presa
-            if card.rage >= 2:
-                return 'block'
-            return 'dodge'
+            return ''
 
         if owner_id != self.player_id:
             # Criatura do oponente: sem carta de combate, nao age
@@ -2803,15 +2777,9 @@ class PriorityBot:
                 melhor_acao = acao
                 melhor_dano = acao_dano
 
-        # Dodge so em situacao critica
-        opp_pack = opp.pack_home if opp else []
-        if opp_pack:
-            max_opp_rage = max(c.rage for c in opp_pack)
-            if (max_opp_rage > card.rage * 2.0
-                    and card.health_current < card.health * 0.5):
-                return 'dodge'
-
-        return melhor_acao
+        # Nao ha mais fallback para acoes sinteticas (strike, dodge, etc).
+        # Toda acao requer uma Combat Action real.
+        return ''  # Criatura nao age sem carta de combate
 
     def _tentar_ce_face_down(self, card: CardInstance) -> Optional[str]:
         """Tenta jogar um Combat Event face-down como blefe.
