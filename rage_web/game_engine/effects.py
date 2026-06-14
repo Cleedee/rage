@@ -2312,20 +2312,26 @@ class ResolvedorEfeitos:
             )
             return False
 
-        # 2. Descarta Gifts e Equipment dos selecionados
+        # 2. Descarta Gifts e Equipment dos selecionados (com log)
         from rage_web.game_engine.state import Zone, descartar_anexos
         for card_inst, dono_antigo in selecionados:
             # Remove equipamentos e gifts anexados
             for eq in list(card_inst.attached_equipment):
+                self.game.add_log(
+                    f'  Wyldstorm: {eq.name} descartado de {card_inst.name}')
                 eq.zone = Zone.DISCARD_SEPT
                 dono_antigo.discard_sept.append(eq)
             card_inst.attached_equipment.clear()
             for gft in list(card_inst.attached_gifts):
+                self.game.add_log(
+                    f'  Wyldstorm: {gft.name} descartado de {card_inst.name}')
                 gft.zone = Zone.DISCARD_SEPT
                 dono_antigo.discard_sept.append(gft)
             card_inst.attached_gifts.clear()
             # Descarta damage cards (Combat Actions) anexadas
             for dmg in list(card_inst.damage_cards):
+                self.game.add_log(
+                    f'  Wyldstorm: damage card {dmg.name} descartada de {card_inst.name}')
                 dmg.zone = Zone.DISCARD_COMBAT
                 dono_antigo.discard_combat.append(dmg)
             card_inst.damage_cards.clear()
