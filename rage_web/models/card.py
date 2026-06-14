@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import Table, Column, ForeignKey
+from sqlalchemy import Table, Column, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from rage_web.ext.database import db
@@ -35,7 +35,7 @@ class Card(db.Model):
     gnosis_morph: Mapped[int] = mapped_column(default=0)
     health_morph: Mapped[int] = mapped_column(default=0)
     damage: Mapped[str] = mapped_column(default='')
-    text: Mapped[str] = mapped_column(default='')
+    text: Mapped[str] = mapped_column(Text, default='')
     errata: Mapped[str] = mapped_column(default='')
     fan_image: Mapped[Optional[str]] = mapped_column(default='', nullable=True)
     tags: Mapped[str] = mapped_column(default='')

@@ -1,0 +1,30 @@
+{
+  "id": "allies-below",
+  "nome": "Allies Below",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Recruta temporariamente inimigos do HG, compra combat cards bônus",
+      "efeitos": [
+        {
+          "tipo": "recrutar_temporario",
+          "condicao_alvo": "self",
+          "params": {
+            "max_renown": 10,
+            "comprar_por_recrutado": 1,
+            "duracao": "end_of_combat",
+            "once_per_game": true,
+            "descricao": "Recruta ate 10 Renome de inimigos do Hunting Grounds temporariamente. Compra +1 combat card por inimigo recrutado. Dura 1 combate. Once per game."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 924,
+    "texto_original": "The Gift user can create a temporary pack out of enemies in the Hunting Grounds. Up to 10 Renown worth of enemies can be brought into the pack. You may draw 1 additional combat card per enemy recruited. This lasts for 1 combat only. Allies Below may be used only once per game.",
+    "precisa_revisao": false,
+    "slug": "allies-below"
+  }
+}

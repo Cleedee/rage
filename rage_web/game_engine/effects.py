@@ -104,6 +104,7 @@ class EfeitoTipo(str, Enum):
     MOOT_RESTRICAO_GLOBAL = 'moot_restricao_global'  # Restricao global (Tribal War, Litany's Guidance)
     MOOT_REBAIXAR_FORMA = 'moot_rebaixar_forma'  # Reverte a forma breed (The Stolen Wolf)
     MOOT_CONSTRUIR_CAERN = 'moot_construir_caern'  # Constrói um Caern (Caern Building)
+    RECRUTAR_TEMPORARIO = 'recrutar_temporario'  # Recruta inimigos do HG temporariamente por 1 combate (Allies Below)
 
 
 # -----------------------------------------------------------------------
@@ -304,6 +305,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MOOT_RESTRICAO_GLOBAL: self._resolver_moot_restricao_global,
             EfeitoTipo.MOOT_REBAIXAR_FORMA: self._resolver_moot_rebaixar_forma,
             EfeitoTipo.MOOT_CONSTRUIR_CAERN: self._resolver_moot_construir_caern,
+            EfeitoTipo.RECRUTAR_TEMPORARIO: self._resolver_recrutar_temporario,
         }
         return resolvedores.get(tipo)
 
@@ -2954,6 +2956,95 @@ class ResolvedorEfeitos:
         )
         jogador.pack_home.append(caern)
         self.game.add_log(f'[Moot] Caern construido! (Gn {gnosis})')
+        return True
+
+    def _resolver_recrutar_temporario(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState,
+                                       alvo) -> bool:
+        """Recruta inimigos do Hunting Grounds temporariamente.
+
+        Regra (Allies Below, card_id=924):
+        - Recruta ate N Renown de Enemies/Victims do HG
+        - Compra +1 combat card por inimigo recrutado
+        - Dura 1 combate apenas
+        - Once per game
+
+        params:
+        - max_renown: int (default 10)
+        - comprar_por_recrutado: int (default 1)
+        - duracao: str (default 'end_of_combat')
+        - once_per_game: bool (default True)
+        """
+        params = efeito.params or {}
+        max_renown = int(params.get('max_renown', 10))
+        comprar_por = int(params.get('comprar_por_recrutado', 1))
+        duracao = params.get('duracao', 'end_of_combat')
+        once_per_game = params.get('once_per_game', False)
+
+        # ── Once per game ──
+        efeito_id = f'allies-below_{jogador.id}'
+        if once_per_game and efeito_id in self.game.used_effects:
+            self.game.add_log(
+                f'{origem.name}: Allies Below ja foi usada nesta partida'
+            )
+            return False
+
+        # ── Seleciona alvos no HG ──
+        alvos = [c for c in jogador.hunting_grounds
+                 if c.health_current > 0]
+        if not alvos:
+            self.game.add_log(
+                f'{origem.name}: nenhum inimigo no Hunting Grounds para recrutar'
+            )
+            return False
+
+        # Filtra por Renome (ate max_renown)
+        # Ordena por menor Renome primeiro para maximizar quantidade
+        alvos.sort(key=lambda c: getattr(c, 'renown', 1) or 1)
+        recrutados = []
+        renown_total = 0
+        for c in alvos:
+            ren = getattr(c, 'renown', 1) or 1
+            if renown_total + ren <= max_renown:
+                recrutados.append(c)
+                renown_total += ren
+            else:
+                break
+
+        if not recrutados:
+            self.game.add_log(
+                f'{origem.name}: nenhum inimigo cabe no limite de '
+                f'{max_renown} Renome')
+            return False
+
+        # ── Move do HG para PACK_HOME (temporario) ──
+        for c in recrutados:
+            if c in jogador.hunting_grounds:
+                jogador.hunting_grounds.remove(c)
+            c.zone = Zone.PACK_HOME
+            jogador.pack_home.append(c)
+            # Marca como recrutado temporario para devolver no fim do combate
+            if 'recrutado_temporario' not in c.restricoes:
+                c.restricoes.append('recrutado_temporario')
+
+        # ── Compra combat cards ──
+        total_comprar = len(recrutados) * comprar_por
+        if total_comprar > 0:
+            jogador.draw_combat(total_comprar)
+            self.game.add_log(
+                f'{origem.name}: recrutou {len(recrutados)} inimigos '
+                f'({renown_total} Renome), comprou {total_comprar} '
+                f'combat cards')
+        else:
+            self.game.add_log(
+                f'{origem.name}: recrutou {len(recrutados)} inimigos '
+                f'({renown_total} Renome)')
+
+        # ── Marca como usado (once per game) ──
+        if once_per_game:
+            self.game.used_effects.append(efeito_id)
+
         return True
 
 

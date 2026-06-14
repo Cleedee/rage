@@ -3464,6 +3464,23 @@ def end_combat(game: GameState) -> bool:
             elif 'frenesi' in c.restricoes:
                 c.restricoes.remove('frenesi')
 
+    # ── Devolve criaturas recrutadas temporariamente (Allies Below) ──
+    for p in game.players:
+        devolvidas = []
+        for c in list(p.pack_home):
+            if 'recrutado_temporario' in c.restricoes:
+                c.restricoes.remove('recrutado_temporario')
+                c.zone = Zone.HUNTING_GROUNDS
+                p.hunting_grounds.append(c)
+                devolvidas.append(c)
+                game.add_log(
+                    f'  {c.name} retornou ao Hunting Grounds '
+                    f'(fim do recrutamento temporario)')
+        # Remove do pack_home apos iteracao
+        for c in devolvidas:
+            if c in p.pack_home:
+                p.pack_home.remove(c)
+
     game.combat = CombatState()
     game.add_log('--- Fim do combate ---')
     return True
