@@ -2423,7 +2423,7 @@ class PriorityBot:
         # Descarta a carta apos o uso, a menos que tenha sido anexada
         # a uma criatura (gift/equipamento persistente)
         ct = (card_real.card_type or '').lower()
-        if 'gift' not in ct:
+        if 'gift' not in ct and getattr(card_real, 'attached_to', None) is None:
             # So descarta se a carta nao estiver em nenhuma zona ativa
             # (ja pode ter sido movida pelo efeito)
             if card_real.zone in (Zone.OUT_OF_PLAY, Zone.HAND):
