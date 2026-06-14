@@ -136,6 +136,17 @@ def _card_info(c) -> dict:
         # Dano anexado
         'total_dano_anexado': getattr(c, 'total_dano', 0),
         'damage_cards_count': len(getattr(c, 'damage_cards', [])),
+        'damage_cards': [
+            {
+                'card_id': getattr(dc, 'card_id', 0),
+                'name': getattr(dc, 'name', '?'),
+                'card_type': getattr(dc, 'card_type', ''),
+                'damage': getattr(dc, 'damage', ''),
+                'is_aggravated': getattr(dc, 'is_aggravated', False),
+                'keywords': getattr(dc, 'keywords', []),
+            }
+            for dc in getattr(c, 'damage_cards', [])
+        ],
         # Equipamentos anexados
         'attached_equipment': [
             {

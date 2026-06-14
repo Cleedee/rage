@@ -560,7 +560,13 @@
             <span style="font-size:0.6rem;color:#ff3860;display:block">☠️ +{{ card.buff_dano_agravado }} agravado</span>
             {% endif %}
             {% if card.total_dano_anexado %}
-            <span style="font-size:0.6rem;color:#f14668;display:block">💥 {{ card.total_dano_anexado }} dano</span>
+            <span style="font-size:0.6rem;color:#f14668;display:block">💥 {{ card.total_dano_anexado }} dano
+              {%- if card.damage_cards %} (
+                {%- for dc in card.damage_cards -%}
+                  {{ dc.name }}{% if dc.is_aggravated %}☠️{% endif %}{% if not loop.last %}, {% endif %}
+                {%- endfor -%}
+              ){% endif -%}
+            </span>
             {% endif %}
             {% if card.attached_equipment %}
             <div style="margin-top:4px;border-top:1px solid #ddd;padding-top:3px">
@@ -591,6 +597,24 @@
                   <span style="background:#dbeafe;border-radius:3px;padding:0 4px;font-weight:600">🎁</span>
                   <span style="font-weight:600">{{ g.name }}</span>
                   <span style="color:#2980b9">{{ g.card_type }}</span>
+                </span>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% if card.damage_cards %}
+            <div style="margin-top:4px;border-top:1px solid #f5a6a6;padding-top:3px">
+              {% for dc in card.damage_cards %}
+              <div class="card-img-cell" style="width:100%;margin:0;padding:1px 0;cursor:pointer"
+                   data-card-name="{{ dc.name }}"
+                   data-card-text="{{ dc.damage }}"
+                   data-card-type="{{ dc.card_type }}"
+                   data-card-img="{{ get_card_image_url(dc.card_id) or '' }}">
+                <span style="font-size:0.6rem;color:#cc0f35;display:flex;align-items:center;gap:3px">
+                  <span style="background:#fce4ec;border-radius:3px;padding:0 4px;font-weight:600">💥</span>
+                  <span style="font-weight:600">{{ dc.name }}</span>
+                  {%- if dc.is_aggravated %} <span style="color:#ff3860">☠️</span>{% endif %}
+                  <span style="color:#888">{{ dc.damage }} dmg</span>
                 </span>
               </div>
               {% endfor %}
