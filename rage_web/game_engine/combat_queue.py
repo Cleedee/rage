@@ -21,6 +21,18 @@ OLD_STEP_MAP = {
 ACOES_DEFENSIVAS = {'block', 'dodge'}
 
 
+def _get_active_equipment(card) -> list:
+    """Retorna equipamentos que a criatura optou por USAR no momento.
+
+    Regra 4.3.2: "Creatures can choose not to use equipment attached to them."
+    Equipamentos cujo uid esta em card.equipment_disabled sao ignorados.
+    """
+    if not hasattr(card, 'attached_equipment'):
+        return []
+    disabled = getattr(card, 'equipment_disabled', set())
+    return [eq for eq in card.attached_equipment if id(eq) not in disabled]
+
+
 def _eh_pack_gaia(dono: Optional[PlayerState]) -> bool:
     """Verifica se o dono e um pack Gaia.
     Heuristica: personagens com 'Gaia' no tipo.
@@ -509,8 +521,8 @@ def _validar_tail_lash(game: GameState, criatura) -> Optional[str]:
     if not is_rokea and not is_mokole:
         return ('Tail Lash so pode ser usado por Rokea ou Mokole '
                 f'(keywords: {criatura.keywords})')
-    # Verifica se tem arma equipada
-    for eq in criatura.attached_equipment:
+    # Verifica se tem arma equipada e ATIVA (criatura pode optar por nao usar)
+    for eq in _get_active_equipment(criatura):
         eq_kw = (eq.keywords or '').lower()
         if 'weapon' in eq_kw:
             return ('Tail Lash nao pode ser usado com arma '
@@ -802,7 +814,7 @@ def _tem_whip_equipado(game: GameState, card_id: str) -> bool:
     criatura = _find_criatura(game, card_id)
     if not criatura:
         return False
-    for eq in criatura.attached_equipment:
+    for eq in _get_active_equipment(criatura):
         if eq.card_id == 720:  # Whip of the Wicked
             return True
     return False
@@ -1770,8 +1782,8 @@ def _reaplicar_efeitos_equipamento_rodada(game: GameState) -> None:
         criatura_kw = (criatura.keywords or '').lower()
         is_bane = 'bane' in criatura_type or 'bane' in criatura_kw
 
-        # Verifica equipamentos anexados
-        for eq in getattr(criatura, 'attached_equipment', []):
+        # Verifica equipamentos anexados (apenas os ATIVOS)
+        for eq in _get_active_equipment(criatura):
             modelo_id = getattr(eq, 'modelo_id', None)
             if not modelo_id:
                 continue
@@ -2412,7 +2424,7 @@ def _processar_bluff(game: GameState) -> bool:
         # ── Chainsaw: permite Combat Actions ate Rage 10 ──
         tem_chainsaw = any(
             getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in getattr(card, 'attached_equipment', []))
+            for eq in _get_active_equipment(card))
         if tem_chainsaw:
             nivel_restrito = 10  # Chainsaw eleva o limite para 10
         if nivel_restrito is not None:
@@ -2672,9 +2684,9 @@ def resolve_combat(game: GameState) -> bool:
                 f'{acao_origem} e unblockable!'
             )
 
-        # War Knife (716): dano agravado se Rage <= 4
+        # War Knife (716): dano agravado se Rage <= 4 (apenas se ativo)
         war_knife_aggravated = False
-        for eq in origem_card.attached_equipment:
+        for eq in _get_active_equipment(origem_card):
             if eq.card_id == 716:  # War Knife of Benning Simon
                 if origem_card.effective_rage <= 4:
                     war_knife_aggravated = True
@@ -2683,8 +2695,8 @@ def resolve_combat(game: GameState) -> bool:
                         f'({origem_card.name} Rage {origem_card.effective_rage} <= 4)')
                 break
 
-        # Grand Klaive (306): dano agravado (Weapon)
-        for eq in origem_card.attached_equipment:
+        # Grand Klaive (306): dano agravado (Weapon, apenas se ativo)
+        for eq in _get_active_equipment(origem_card):
             if eq.card_id == 306:  # Grand Klaive
                 war_knife_aggravated = True
                 game.add_log(
@@ -2692,9 +2704,9 @@ def resolve_combat(game: GameState) -> bool:
                     f'({origem_card.name})')
                 break
 
-        # Skin of the Hellbound (697): imune a dano de Rage 6+
+        # Skin of the Hellbound (697): imune a dano de Rage 6+ (apenas se ativo)
         skin_blocks = False
-        for eq in alvo_card.attached_equipment:
+        for eq in _get_active_equipment(alvo_card):
             if eq.card_id == 697:  # Skin of the Hellbound
                 if origem_card.effective_rage >= 6:
                     skin_blocks = True
@@ -2709,9 +2721,9 @@ def resolve_combat(game: GameState) -> bool:
         hogling_blocks = 'imune_equipamento_nao_fetich' in getattr(
             alvo_card, 'restricoes', [])
         if hogling_blocks:
-            # Verifica se o atacante tem equipamento Weapon nao-Fetish
+            # Verifica se o atacante tem equipamento Weapon nao-Fetish ativo
             atacante_tem_weapon_nao_fetish = False
-            for eq in origem_card.attached_equipment:
+            for eq in _get_active_equipment(origem_card):
                 keywords = (getattr(eq, 'keywords', '') or '').lower()
                 tipo = (getattr(eq, 'card_type', '') or '').lower()
                 if 'weapon' in keywords or 'weapon' in tipo:
@@ -2763,9 +2775,9 @@ def resolve_combat(game: GameState) -> bool:
                     f'  {origem_card.name}: +{bonus} dano '
                     f'(buff proximo ataque)')
 
-            # Grand Klaive (306): +1 Rage em Crinos
+            # Grand Klaive (306): +1 Rage em Crinos (so se ativo)
             if origem_card.is_crinos:
-                for eq in origem_card.attached_equipment:
+                for eq in _get_active_equipment(origem_card):
                     if eq.card_id == 306:
                         dano_base += 1
                         game.add_log(
@@ -2790,14 +2802,14 @@ def resolve_combat(game: GameState) -> bool:
                         f'({reducao_block} >= {dano_base})'
                     )
 
-        # Ironjaw (369): +1 dano se nem ela nem alvo tem arma
+        # Ironjaw (369): +1 dano se nem ela nem alvo tem arma (considerando apenas equipamentos ativos)
         if 'ironjaw_bonus' in origem_card.restricoes:
             tem_arma_origem = any(
                 'weapon' in (eq.keywords or '').lower()
-                for eq in origem_card.attached_equipment)
+                for eq in _get_active_equipment(origem_card))
             tem_arma_alvo = any(
                 'weapon' in (eq.keywords or '').lower()
-                for eq in alvo_card.attached_equipment)
+                for eq in _get_active_equipment(alvo_card))
             if not tem_arma_origem and not tem_arma_alvo:
                 dano += 1
                 game.add_log(f'  Ironjaw: +1 dano (sem armas)')
@@ -2862,7 +2874,7 @@ def resolve_combat(game: GameState) -> bool:
 
         # ── Chainsaw (slug: chainsaw): descarta apos Combat Action Rg>=6 ──
         if dano > 0:
-            for eq in list(getattr(origem_card, 'attached_equipment', [])):
+            for eq in _get_active_equipment(origem_card):
                 if getattr(eq, 'modelo_id', '') == 'chainsaw':
                     # Descobre o Rage requirement da Combat Action usada
                     rage_req = 0

@@ -135,6 +135,9 @@ class CardInstance:
     attached_to: Optional[CardInstance] = None  # Se for equipamento, referencia a criatura que o possui
     # Equipamentos anexados a esta criatura
     attached_gifts: list[CardInstance] = field(default_factory=list)
+    equipment_disabled: set[int] = field(default_factory=set)
+    # IDs (uid) de equipamentos que a criatura optou por nao usar no combate atual
+    # Regra 4.3.2: "Creatures can choose not to use equipment attached to them."
     # Gifts permanentes anexados a esta criatura (4.5.3)
     reducao_dano: int = 0
     # Reducao de dano passiva (ex: armaduras)

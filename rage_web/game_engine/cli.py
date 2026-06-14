@@ -687,6 +687,78 @@ class RageCLI(cmd.Cmd):
         else:
             print('  Ja existe um combate ativo.')
 
+    def do_EQUIP(self, arg):
+        """EQUIP <card_id> [on|off] - Ativa/desativa equipamento da criatura.
+
+        Regra 4.3.2: "Creatures can choose not to use equipment attached to them."
+        Equipamento desativado nao confere bonus nem restricoes no combate.
+        Se nao especificar on/off, mostra status atual dos equipamentos.
+
+        Exemplos:
+          EQUIP 500          - mostra status dos equipamentos de [500]
+          EQUIP 500 on       - reativa todos os equipamentos de [500]
+          EQUIP 500 off      - desativa todos os equipamentos de [500]
+          EQUIP 500 chainsaw off  - desativa apenas Chainsaw
+        """
+        g = self.game
+        cp = g.current_player
+
+        args = arg.split()
+        if not args:
+            print('Uso: EQUIP <card_id> [on|off] [slug]')
+            return
+
+        card_id = args[0]
+        modo = args[1].lower() if len(args) > 1 else ''
+        filtro_slug = args[2].lower() if len(args) > 2 else ''
+
+        # Encontra a criatura
+        criatura = None
+        for p in g.players:
+            c = self._find_card(card_id, p)
+            if c:
+                criatura = c
+                break
+        if not criatura:
+            print(f'Criatura {card_id} nao encontrada.')
+            return
+
+        equipamentos = getattr(criatura, 'attached_equipment', [])
+        if not equipamentos:
+            print(f'{criatura.name} nao tem equipamentos.')
+            return
+
+        disabled = set(getattr(criatura, 'equipment_disabled', set()))
+
+        if modo in ('on', 'off'):
+            alvo = []
+            if filtro_slug:
+                alvo = [eq for eq in equipamentos
+                        if filtro_slug in (getattr(eq, 'modelo_id', '') or '').lower()]
+            else:
+                alvo = list(equipamentos)
+            if not alvo:
+                print(f'Nenhum equipamento encontrado com slug "{filtro_slug}".')
+                return
+
+            for eq in alvo:
+                eid = id(eq)
+                if modo == 'off':
+                    disabled.add(eid)
+                elif modo == 'on' and eid in disabled:
+                    disabled.discard(eid)
+
+            criatura.equipment_disabled = disabled
+            estado = 'desativado' if modo == 'off' else 'ativado'
+            print(f'{len(alvo)} equipamento(s) {estado}(s) em {criatura.name}')
+
+        # Mostra status
+        print(f'\n  Equipamentos de {criatura.name}:')
+        for eq in equipamentos:
+            ativo = '✅' if id(eq) not in disabled else '❌'
+            slug = getattr(eq, 'modelo_id', '') or ''
+            print(f'    {ativo} {eq.name:30s} (slug: {slug}, uid: {id(eq)})')
+
     def do_DECLARE(self, arg):
         """DECLARE <card_id> <acao> - Declara acao de combate.
 

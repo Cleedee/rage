@@ -2569,9 +2569,48 @@ class PriorityBot:
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
         # ── Chainsaw: eleva limite de Rage para 10 ──
+        # Regra 4.3.2: considera apenas equipamentos ATIVOS
+        equipamentos_ativos = [
+            eq for eq in getattr(card, 'attached_equipment', [])
+            if id(eq) not in getattr(card, 'equipment_disabled', set())
+        ]
         tem_chainsaw = any(
             getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in getattr(card, 'attached_equipment', []))
+            for eq in equipamentos_ativos)
+        if tem_chainsaw:
+            nivel_restrito = max(nivel_restrito or 0, 10)
+
+        # ── Regra 4.3.2: Bot decide se desativa equipamentos ──
+        # Se Chainsaw ativa e vamos jogar Rage >= 6 que a descartaria,
+        # desativa Chainsaw para preserva-la
+        equip_to_disable_bot = []
+        for eq in equipamentos_ativos:
+            eq_slug = getattr(eq, 'modelo_id', '') or ''
+            if eq_slug == 'chainsaw':
+                for acao_check in ('head_butt', 'tail_lash', 'submission_hold'):
+                    props = COMBAT_ACTION_PROPS.get(acao_check, {})
+                    req = props.get('rage_requirement', 0)
+                    if req >= 6 and card.effective_rage >= req:
+                        equip_to_disable_bot.append(eq)
+                        break
+
+        for eq in equip_to_disable_bot:
+            eid = id(eq)
+            disabled = set(getattr(card, 'equipment_disabled', set()))
+            disabled.add(eid)
+            card.equipment_disabled = disabled
+            self.game.add_log(
+                f'[BOT] {self.player.name} desativou '
+                f'{eq.name} em {card.name} (regra 4.3.2)')
+
+        # Recalcula Chainsaw apos possivel desativacao
+        equipamentos_ativos = [
+            eq for eq in getattr(card, 'attached_equipment', [])
+            if id(eq) not in getattr(card, 'equipment_disabled', set())
+        ]
+        tem_chainsaw = any(
+            getattr(eq, 'modelo_id', '') == 'chainsaw'
+            for eq in equipamentos_ativos)
         if tem_chainsaw:
             nivel_restrito = max(nivel_restrito or 0, 10)
 
@@ -2757,9 +2796,46 @@ class PriorityBot:
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
         # ── Chainsaw: eleva limite de Rage para 10 ──
+        # Regra 4.3.2: considera apenas equipamentos ATIVOS
+        equipamentos_ativos = [
+            eq for eq in getattr(card, 'attached_equipment', [])
+            if id(eq) not in getattr(card, 'equipment_disabled', set())
+        ]
         tem_chainsaw = any(
             getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in getattr(card, 'attached_equipment', []))
+            for eq in equipamentos_ativos)
+        if tem_chainsaw:
+            nivel_restrito = max(nivel_restrito or 0, 10)
+
+        # ── Regra 4.3.2: Bot decide se desativa equipamentos ──
+        equip_to_disable_bot = []
+        for eq in equipamentos_ativos:
+            eq_slug = getattr(eq, 'modelo_id', '') or ''
+            if eq_slug == 'chainsaw':
+                for acao_check in ('tail_lash', 'head_butt', 'submission_hold'):
+                    props = COMBAT_ACTION_PROPS.get(acao_check, {})
+                    req = props.get('rage_requirement', 0)
+                    if req >= 6 and card.effective_rage >= req:
+                        equip_to_disable_bot.append(eq)
+                        break
+
+        for eq in equip_to_disable_bot:
+            eid = id(eq)
+            disabled = set(getattr(card, 'equipment_disabled', set()))
+            disabled.add(eid)
+            card.equipment_disabled = disabled
+            self.game.add_log(
+                f'[BOT] {self.player.name} desativou '
+                f'{eq.name} em {card.name} (regra 4.3.2)')
+
+        # Recalcula Chainsaw apos possivel desativacao
+        equipamentos_ativos = [
+            eq for eq in getattr(card, 'attached_equipment', [])
+            if id(eq) not in getattr(card, 'equipment_disabled', set())
+        ]
+        tem_chainsaw = any(
+            getattr(eq, 'modelo_id', '') == 'chainsaw'
+            for eq in equipamentos_ativos)
         if tem_chainsaw:
             nivel_restrito = max(nivel_restrito or 0, 10)
 
