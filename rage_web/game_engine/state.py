@@ -1446,6 +1446,24 @@ class GameState:
             elif vitima.card_id == 503:
                 continue
 
+            # --- 485 - Fomori Cop: ataca Gaia personagem, descarta equipamento nao-fetich ---
+            elif vitima.card_id == 485:
+                # Ataca maior Rage Gaia
+                candidates = [
+                    (c, p) for c, p in todos_personagens
+                    if 'Gaia' in (c.keywords or '')
+                       or 'Gaia' in (c.card_type or '')
+                ]
+                if candidates:
+                    candidates.sort(key=lambda x: x[0].effective_rage,
+                                    reverse=True)
+                    alvo, dono_alvo = candidates[0]
+                    # Se disarmed, Rage = 3
+                    if 'disarmed' in getattr(vitima, 'restricoes', []):
+                        dano_base = 3
+                    else:
+                        dano_base = max(1, vitima.effective_rage)
+
             # --- Outras presas sem auto-ataque ---
             else:
                 continue
@@ -1455,8 +1473,18 @@ class GameState:
                     f'⚔️ {vitima.name} atacou {alvo.name} '
                     f'com {dano_base} de dano{" agravado" if agravado else ""}!'
                 )
+                # Cria carta de combate virtual para o dano da presa
+                carta_virtual = CardInstance(
+                    card_id=vitima.card_id,
+                    name=vitima.name,
+                    card_type='Combat Action',
+                    zone=Zone.OUT_OF_PLAY,
+                    owner_id=dono_vitima_id,
+                    controller_id=dono_vitima_id,
+                )
                 anexar_dano(alvo, vitima, dano_base, dono_alvo.id,
-                            is_aggravated=agravado)
+                            is_aggravated=agravado,
+                            carta_combate=carta_virtual)
                 # Flip para Crinos se threshold atingido
                 from rage_web.game_engine.combat_queue import _flipar_para_crinos
                 _flipar_para_crinos(self, alvo)
@@ -1469,9 +1497,59 @@ class GameState:
                         f'💀 {alvo.name} foi morto por {vitima.name}!'
                     )
 
+        # ── Fim do Combat Phase: Fomori Cop descarta equipamento nao-fetich de Gaia ──
+        for vitima, dono_vitima_id in vitimas:
+            if vitima.card_id == 485 and vitima.health_current > 0:
+                self._fomori_cop_discard_equipment()
+
     def registrar_kill_vitima(self, killer_card_uid: int):
         """Registra quem matou a vitima de menor Renome (para Vigilante)."""
         self._ultimo_killer_vitima = killer_card_uid
+
+    def _fomori_cop_discard_equipment(self):
+        """Fim do Combat Phase: Fomori Cop descarta um equipamento nao-Fetish
+        de uma criatura Gaia (escolhido por um jogador aleatorio).
+
+        Regra: "At the end of the Combat Phase, the Cop discards a piece of
+        non-fetish Equipment equipped by a Gaia creature (chosen by a random player)."
+        """
+        from rage_web.game_engine.combat_queue import _find_owner
+
+        # Coleta todas as criaturas Gaia com equipamento nao-Fetish
+        alvos = []
+        for p in self.players:
+            for c in p.pack_home + p.hunting_grounds + p.umbra:
+                if c.health_current <= 0:
+                    continue
+                if 'Gaia' not in (c.keywords or '') and 'Gaia' not in (c.card_type or ''):
+                    continue
+                for eq in c.attached_equipment[:]:
+                    kw = (eq.keywords or '').lower()
+                    tipo = (eq.card_type or '').lower()
+                    if 'fetish' not in kw and 'fetish' not in tipo:
+                        alvos.append((c, eq))
+
+        if not alvos:
+            self.add_log(
+                'Fomori Cop: nenhum equipamento nao-Fetish em Gaia para descartar')
+            return
+
+        # Escolhe aleatoriamente (regra: chosen by a random player)
+        from rage_web.game_engine.combat_queue import _find_owner
+        idx = self.rng.randint(0, len(alvos) - 1)
+        criatura, equipamento = alvos[idx]
+
+        # Remove o equipamento da criatura
+        if equipamento in criatura.attached_equipment:
+            criatura.attached_equipment.remove(equipamento)
+        equipamento.zone = Zone.DISCARD_COMBAT
+        dono_eq = _find_owner(self, equipamento)
+        if dono_eq:
+            dono_eq.discard_combat.append(equipamento)
+
+        self.add_log(
+            f'Fomori Cop descartou {equipamento.name} de '
+            f'{criatura.name} (equipamento nao-Fetish)')
 
     def _check_end_of_turn_effects(self):
         """Executa efeitos de fim de turno.
@@ -2062,6 +2140,13 @@ class GameState:
             self.add_log(
                 f'{card.name}: pode usar ANY Gifts, '
                 f'remove menor Renome victim no fim do turno')
+
+        elif card.card_id == 485:  # Fomori Cop
+            self.add_log(
+                f'{card.name}: ataca maior Rage Gaia, descarta '
+                f'equipamento nao-Fetish no fim do combate')
+            # Pode receber restricao 'disarmed' se perder a Firearm
+            # (se desarmado, Rage = 3 em _check_victim_attacks)
 
         elif card.card_id == 558:  # Unlucky Lune
             # Pode usar Auspice Gifts + Full Moon = Rage 6
