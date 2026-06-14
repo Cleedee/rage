@@ -1446,23 +1446,11 @@ class GameState:
             elif vitima.card_id == 503:
                 continue
 
-            # --- 485 - Fomori Cop: ataca Gaia personagem, descarta equipamento nao-fetich ---
+            # --- 485 - Fomori Cop: descarta equipamento nao-fetich ---
             elif vitima.card_id == 485:
-                # Ataca maior Rage Gaia
-                candidates = [
-                    (c, p) for c, p in todos_personagens
-                    if 'Gaia' in (c.keywords or '')
-                       or 'Gaia' in (c.card_type or '')
-                ]
-                if candidates:
-                    candidates.sort(key=lambda x: x[0].effective_rage,
-                                    reverse=True)
-                    alvo, dono_alvo = candidates[0]
-                    # Se disarmed, Rage = 3
-                    if 'disarmed' in getattr(vitima, 'restricoes', []):
-                        dano_base = 3
-                    else:
-                        dano_base = max(1, vitima.effective_rage)
+                continue  # Auto-ataque removido: Rage e requisito para Combat Actions,
+                         # nao dano direto. Habilidade principal e o descarte
+                         # de equipamento no fim do Combat Phase (abaixo).
 
             # --- Outras presas sem auto-ataque ---
             else:
@@ -2143,10 +2131,10 @@ class GameState:
 
         elif card.card_id == 485:  # Fomori Cop
             self.add_log(
-                f'{card.name}: ataca maior Rage Gaia, descarta '
-                f'equipamento nao-Fetish no fim do combate')
+                f'{card.name}: descarta equipamento nao-Fetish de Gaia '
+                f'no fim do combate')
             # Pode receber restricao 'disarmed' se perder a Firearm
-            # (se desarmado, Rage = 3 em _check_victim_attacks)
+            # Se desarmado, Rage = 3 (afeta Restricted Play)
 
         elif card.card_id == 558:  # Unlucky Lune
             # Pode usar Auspice Gifts + Full Moon = Rage 6
