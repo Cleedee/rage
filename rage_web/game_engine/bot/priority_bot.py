@@ -404,6 +404,13 @@ class PriorityBot:
             elif ct in ('Gift', 'Event', 'Action'):
                 # Usa via efeito
                 if card.modelo_id:
+                    # ── Allies Below: so joga se tem inimigos no HG ──
+                    if card.modelo_id == 'allies-below':
+                        hg_vals = [
+                            c for c in me.hunting_grounds
+                            if c.health_current > 0]
+                        if not hg_vals:
+                            continue  # Pula, nao ha alvos
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
