@@ -415,6 +415,7 @@ def view_state(game_id: str, state_index: int):
                            state=snap,
                            state_index=state_index,
                            total_states=len(states),
+                           sorted_turns=sorted_turns,
                            turn_starts=turn_starts,
                            current_turn=current_turn,
                            total_turns=total_turns,
