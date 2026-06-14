@@ -2364,6 +2364,20 @@ def _processar_bluff(game: GameState) -> bool:
 
     combatants = get_combatants(game)
 
+    # ── Funcao auxiliar: verifica se carta nao pode ser blefada ──
+    def _carta_nao_pode_blefar(carta) -> bool:
+        reqs = (getattr(carta, 'requires', '') or '').lower()
+        if 'not bluffed' in reqs or 'nao bluffavel' in reqs:
+            return True
+        texto = (getattr(carta, 'text', '') or '').lower()
+        if 'cannot be bluffed' in texto:
+            return True
+        meta = getattr(carta, '_metadata', None) or {}
+        texto_meta = (meta.get('texto_original', '') or '').lower()
+        if 'cannot be bluffed' in texto_meta:
+            return True
+        return False
+
     # --- Fase 1: Identificar ilegais e blefes ---
     for cid, action in list(game.combat.declarations.items()):
         if cid not in combatants:
@@ -2409,6 +2423,16 @@ def _processar_bluff(game: GameState) -> bool:
             game.add_log(f'  [Bluff] {card.name} esta blefando com {action} '
                          f'(Rage {card.effective_rage} < {rage_req})')
 
+        # ── Cartas que NAO PODEM ser blefadas (6.9.1) ──
+        # Verifica a carta de combate usada (regra 6.4).
+        carta_usada = game.combat.played_combat_cards.get(cid)
+        if carta_usada and _carta_nao_pode_blefar(carta_usada):
+            game.combat.illegal_cards.add(cid)
+            game.add_log(
+                f'  [Bluff] {carta_usada.name} nao pode ser '
+                f'blefada (regra 6.9.1) -> ILEGAL')
+            continue
+
     # Descartar ilegais ANTES de verificar blefes (6.9.1 ordem)
     for cid in list(game.combat.illegal_cards):
         if cid in game.combat.declarations:
@@ -2417,6 +2441,21 @@ def _processar_bluff(game: GameState) -> bool:
         card = _find_card(game, cid)
         game.add_log(f'  [Bluff] {(card.name if card else cid)}: '
                      f'carta ilegal descartada (6.9.1)')
+        # Move a carta de combate usada para o descarte do dono
+        carta_combate = game.combat.played_combat_cards.pop(cid, None)
+        if carta_combate:
+            dono = _find_owner(game, carta_combate)
+            if dono:
+                for lista in (dono.hand, dono.combat_hand,
+                              dono.pack_home, dono.umbra,
+                              dono.hunting_grounds, dono.discard_combat,
+                              dono.discard_sept, dono.victory_pile,
+                              dono.out_of_play):
+                    if carta_combate in lista:
+                        lista.remove(carta_combate)
+                        break
+                carta_combate.zone = Zone.DISCARD_COMBAT
+                dono.discard_combat.append(carta_combate)
 
     # ── Pack Combat (6.5.8): processa pack_attack/puxa_pack APOS
     # descartar ilegais, para que cartas ilegais nao ativem efeitos ──
@@ -2469,6 +2508,34 @@ def _processar_bluff(game: GameState) -> bool:
         card = _find_card(game, cid)
         game.add_log(f'  [Bluff] {(card.name if card else cid)}: '
                      f'removido do combate (blefe falhou)')
+
+    # ── Mover cartas de combate usadas para o descarte correto ──
+    # Cartas ilegais e blefes falhos sao descartadas para o
+    # combat discard do JOGADOR que controlava a carta.
+    todas_removidas = (list(game.combat.illegal_cards)
+                       + list(game.combat.bluff_failed))
+    for cid in todas_removidas:
+        carta_combate = game.combat.played_combat_cards.pop(cid, None)
+        if carta_combate is None:
+            continue
+        # Encontra o dono da carta de combate
+        dono = _find_owner(game, carta_combate)
+        if dono:
+            # Garante que a carta nao esta em nenhuma zona ativa
+            for lista in (dono.hand, dono.combat_hand,
+                          dono.pack_home, dono.umbra,
+                          dono.hunting_grounds, dono.discard_combat,
+                          dono.discard_sept, dono.victory_pile,
+                          dono.out_of_play):
+                if carta_combate in lista:
+                    lista.remove(carta_combate)
+                    break
+            # Move para o descarte de combate do dono
+            carta_combate.zone = Zone.DISCARD_COMBAT
+            dono.discard_combat.append(carta_combate)
+            nome = getattr(carta_combate, 'name', '?')
+            game.add_log(f'  [Bluff] {nome} descartada '
+                         f'(dono: {dono.name})')
 
     return True
 

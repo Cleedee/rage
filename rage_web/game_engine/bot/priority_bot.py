@@ -1394,8 +1394,8 @@ class PriorityBot:
                             if not carta_acao.startswith('dano_'):
                                 # P4: remove a carta da mao de combate
                                 # (ela sera anexada ao alvo na resolucao)
-                                if carta_combate in self.player.combat_hand:
-                                    self.player.combat_hand.remove(carta_combate)
+                                if carta_combate in self.player.hand:
+                                    self.player.hand.remove(carta_combate)
                                     carta_combate.zone = Zone.OUT_OF_PLAY
                             self._usou_carta_combate = True
                             g.add_log(f'{self.player.name} usou carta de combate '
@@ -1423,6 +1423,27 @@ class PriorityBot:
                             from rage_web.game_engine.combat_queue import (
                                 _registrar_acao_dano, _jogar_ce_face_down)
                             carta_bluff = self.player.combat_hand[-1]
+
+                            # ── Verifica se a carta pode ser blefada ──
+                            # Cartas com 'Not bluffed' no requires ou
+                            # 'nao_bluffavel': true nao podem ser blefadas
+                            reqs = (carta_bluff.requires or '').lower()
+                            pode_blefar = True
+                            if 'not bluffed' in reqs or 'nao bluffavel' in reqs:
+                                pode_blefar = False
+                            if hasattr(carta_bluff, '_metadata'):
+                                meta = carta_bluff._metadata or {}
+                                if meta.get('nao_bluffavel') or \
+                                   ('not bluffed' in (meta.get('texto_original', '') or '').lower()):
+                                    pode_blefar = False
+                            if not pode_blefar:
+                                g.add_log(f'[Bluff] {carta_bluff.name} '
+                                          f'não pode ser blefada — ignorada')
+                                # Tenta prox carta da mao
+                                if carta_bluff in self.player.hand:
+                                    pass  # Mantem na mao para uso legitimo
+                                continue
+
                             resultado_bluff = False
                             ct = (carta_bluff.card_type or '').lower()
                             if 'combat event' in ct or ct == 'combat_event':
@@ -1434,8 +1455,8 @@ class PriorityBot:
                                 acao_bluff = _registrar_acao_dano(
                                     g, carta_bluff, str(card.card_id))
                                 if acao_bluff:
-                                    if carta_bluff in self.player.combat_hand:
-                                        self.player.combat_hand.remove(carta_bluff)
+                                    if carta_bluff in self.player.hand:
+                                        self.player.hand.remove(carta_bluff)
                                         carta_bluff.zone = Zone.OUT_OF_PLAY
                                     resultado_bluff = declare_action(
                                         g, cid, acao_bluff,
@@ -1743,8 +1764,8 @@ class PriorityBot:
                             if result:
                                 # P8: acao virtual 'dano_' ja consumiu a carta
                                 if not carta_acao.startswith('dano_'):
-                                    if carta_combate in self.player.combat_hand:
-                                        self.player.combat_hand.remove(carta_combate)
+                                    if carta_combate in self.player.hand:
+                                        self.player.hand.remove(carta_combate)
                                         carta_combate.zone = Zone.OUT_OF_PLAY
                                 return f'declare_{cid}_{carta_acao}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
@@ -2925,8 +2946,8 @@ class PriorityBot:
                     if declare_action(g, dfd, nome_acao,
                                      carta_combate=c):
                         c.zone = Zone.OUT_OF_PLAY
-                        if c in self.player.combat_hand:
-                            self.player.combat_hand.remove(c)
+                        if c in self.player.hand:
+                            self.player.hand.remove(c)
                         g.add_log(
                             f'[BOT] {self.player.name} interveio: usou '
                             f'{c.name} como {nome_acao} para {card.name}'
