@@ -1380,15 +1380,8 @@ class PriorityBot:
                                 )
                                 return self._usar_carta_efeito(i, modo_idx, gift_card)
 
-                    # Tenta jogar CE face-down como blefe
-                    from rage_web.game_engine.combat_queue import \
-                        _jogar_ce_face_down
-                    ce_jogado = self._tentar_ce_face_down(card)
-                    if ce_jogado:
-                        return ce_jogado
-
                     # P4+P8: Tenta usar carta da mao de combate como acao
-                    # antes de cair em acoes basicas (strike/claw/bite).
+                    # ANTES de tentar blefe (primeiro carta valida, depois ilegal)
                     carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
                     if carta_acao and carta_combate:
                         # ── Passa a carta de combate original (regra 6.4) ──
@@ -1421,6 +1414,14 @@ class PriorityBot:
                                 if result:
                                     action = acao_forcada
                                     break
+                    if not result:
+                        # Tenta jogar CE face-down como blefe (ultimo recurso)
+                        from rage_web.game_engine.combat_queue import \
+                            _jogar_ce_face_down
+                        ce_jogado = self._tentar_ce_face_down(card)
+                        if ce_jogado:
+                            return ce_jogado
+
                     if not result:
                         # Blefe: tenta jogar qualquer carta da mao de combate
                         # (se revelada e invalida, vira blefe).
@@ -1748,20 +1749,8 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue
-                    # 20% de chance de jogar CE face-down
-                    if self.game.rng.random() < 0.2:
-                        from rage_web.game_engine.combat_queue import \
-                            _jogar_ce_face_down
-                        ce_card = None
-                        for c in self.player.combat_hand:
-                            ct = (c.card_type or '').lower()
-                            if 'combat event' in ct or ct == 'combat_event':
-                                ce_card = c
-                                break
-                        if ce_card and _jogar_ce_face_down(
-                                g, cid, str(ce_card.card_id)):
-                            return f'play_{cid}_ce_{ce_card.card_id}'
                     # P4+P8: Tenta usar carta da mao de combate como acao
+                    # (carta valida primeiro, CE ilegal como ultimo recurso)
                     card = _find_card(g, cid)
                     if card and card.owner_id == self.player_id:
                         carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
@@ -1775,6 +1764,19 @@ class PriorityBot:
                                         self.player.hand.remove(carta_combate)
                                         carta_combate.zone = Zone.OUT_OF_PLAY
                                 return f'declare_{cid}_{carta_acao}'
+                    # CE face-down como blefe (ultimo recurso)
+                    if self.game.rng.random() < 0.2:
+                        from rage_web.game_engine.combat_queue import \
+                            _jogar_ce_face_down
+                        ce_card = None
+                        for c in self.player.combat_hand:
+                            ct = (c.card_type or '').lower()
+                            if 'combat event' in ct or ct == 'combat_event':
+                                ce_card = c
+                                break
+                        if ce_card and _jogar_ce_face_down(
+                                g, cid, str(ce_card.card_id)):
+                            return f'play_{cid}_ce_{ce_card.card_id}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     result = declare_action(g, cid, action)
                     if not result:
