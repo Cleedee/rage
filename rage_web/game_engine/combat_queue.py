@@ -2409,6 +2409,12 @@ def _processar_bluff(game: GameState) -> bool:
         # 6.6.6a: Restricted Play — se a carta nao atende a
         # restricao, e considerada ilegal.
         nivel_restrito = game.combat.get_restricted_level(cid)
+        # ── Chainsaw: permite Combat Actions ate Rage 10 ──
+        tem_chainsaw = any(
+            getattr(eq, 'modelo_id', '') == 'chainsaw'
+            for eq in getattr(card, 'attached_equipment', []))
+        if tem_chainsaw:
+            nivel_restrito = 10  # Chainsaw eleva o limite para 10
         if nivel_restrito is not None:
             if rage_req > nivel_restrito:
                 game.combat.illegal_cards.add(cid)
@@ -2829,6 +2835,30 @@ def resolve_combat(game: GameState) -> bool:
                 f'  {origem_card.name} nao tinha carta de combate: '
                 f'sem dano a {alvo_card.name}')
             return  # Nao aplica dano
+
+        # ── Chainsaw (slug: chainsaw): descarta apos Combat Action Rg>=6 ──
+        if dano > 0:
+            for eq in list(getattr(origem_card, 'attached_equipment', [])):
+                if getattr(eq, 'modelo_id', '') == 'chainsaw':
+                    # Descobre o Rage requirement da Combat Action usada
+                    rage_req = 0
+                    if acao_origem.startswith('dano_'):
+                        dano_info = game.combat.dano_actions.get(
+                            acao_origem, {})
+                        rage_req = dano_info.get('rage_requirement', 0) or 0
+                    else:
+                        props = COMBAT_ACTION_PROPS.get(acao_origem, {})
+                        rage_req = props.get('rage_requirement', 0) or 0
+                    if rage_req >= 6:
+                        # Descarta Chainsaw
+                        if eq in origem_card.attached_equipment:
+                            origem_card.attached_equipment.remove(eq)
+                        eq.zone = Zone.DISCARD_SEPT
+                        dono_origem.discard_sept.append(eq)
+                        game.add_log(
+                            f'  Chainsaw descartada! {origem_card.name} '
+                            f'usou Combat Action de Rage {rage_req} '
+                            f'(>=6)')
 
         # Flip para Crinos: verifica threshold a cada dano aplicado
         # (regra: dano acumulado >= min(rage, health) da forma breed)

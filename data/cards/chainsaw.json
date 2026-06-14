@@ -1,24 +1,27 @@
 {
   "id": "chainsaw",
   "nome": "Chainsaw",
-  "tipo": "Equipment",
+  "tipo": "Equipment - Weapon",
   "modos": [
     {
-      "descricao": "Equipar (Gn0)",
+      "descricao": "Equipar: permite Combat Actions ate Rg10; descarta apos usar Rg6+",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "criatura_inimiga",
-          "quantidade": 1
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "descricao": "Chainsaw: permite Combat Actions ate Rg10"
+          }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "manual",
     "card_id": 628,
     "texto_original": "Weapon. Allows the character to play up to Rage 10 Combat Actions. The Chainsaw is discarded immediately after its user plays a Combat Action of Rage 6 or higher.",
-    "keywords": "Non-Fetish - Weapon",
+    "keywords": "Weapon",
     "damage": "",
     "rage": 0,
     "gnosis": 0,

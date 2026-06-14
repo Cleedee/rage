@@ -2568,6 +2568,12 @@ class PriorityBot:
 
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
+        # ── Chainsaw: eleva limite de Rage para 10 ──
+        tem_chainsaw = any(
+            getattr(eq, 'modelo_id', '') == 'chainsaw'
+            for eq in getattr(card, 'attached_equipment', []))
+        if tem_chainsaw:
+            nivel_restrito = max(nivel_restrito or 0, 10)
 
         # Calcula o dano da melhor acao basica para comparacao
         melhor_dano_basico = card.effective_rage  # 'strike' = Rage
@@ -2750,6 +2756,12 @@ class PriorityBot:
         # 6.6.6a: Restricted Play — filtra por nivel maximo de Rage
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
+        # ── Chainsaw: eleva limite de Rage para 10 ──
+        tem_chainsaw = any(
+            getattr(eq, 'modelo_id', '') == 'chainsaw'
+            for eq in getattr(card, 'attached_equipment', []))
+        if tem_chainsaw:
+            nivel_restrito = max(nivel_restrito or 0, 10)
 
         opp = self._get_opponent()
         melhor_acao = ''
