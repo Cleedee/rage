@@ -1482,6 +1482,8 @@ class PriorityBot:
                     continue
                 # So atribui alvo para criaturas do proprio bot
                 card = _find_card(g, cid)
+                if card is None:
+                    continue
                 # Presa: qualquer jogador (exceto atacante) pode escolher alvo
                 if _eh_prey_no_hg(g, cid):
                     if _eh_atacante_da_presa(g, cid, self.player_id):
@@ -2708,6 +2710,8 @@ class PriorityBot:
         acao defensiva (block/dodge) para proteger a Presa.
         """
         me = self.player
+
+        ct = (card.card_type or '').lower()
 
         # Presa em HG: sem carta de combate, nao age
         # (ataques de presa sao controlados por _check_victim_attacks)

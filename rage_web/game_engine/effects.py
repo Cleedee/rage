@@ -583,10 +583,28 @@ class ResolvedorEfeitos:
 
     def _resolver_dano(self, efeito: Efeito, origem: CardInstance,
                        jogador: PlayerState, alvo) -> bool:
-        """Aplica dano a um alvo e anexa damage card (regra 6.4)."""
+        """Aplica dano a um alvo e anexa damage card (regra 6.4).
+
+        Cria uma CardInstance para representar o dano causado pelo efeito,
+        pois a regra 6.4 exige que todo dano tenha uma carta de origem
+        (Combat Action, Gift, etc.) anexada como damage card.
+        """
         qtd = efeito.quantidade or 2
         if isinstance(alvo, CardInstance):
-            anexar_dano(alvo, origem, qtd, jogador.id)
+            # Cria CardInstance para o dano do efeito (regra 6.4)
+            # Usa os dados da carta de origem do efeito
+            carta_dano = CardInstance(
+                card_id=getattr(origem, 'card_id', 0),
+                name=f'{getattr(origem, "name", "Efeito")} '
+                     f'[{efeito.tipo.name}]',
+                card_type=getattr(origem, 'card_type', 'Effect'),
+                zone=Zone.OUT_OF_PLAY,
+                owner_id=jogador.id,
+                controller_id=jogador.id,
+                damage=str(qtd),
+            )
+            anexar_dano(alvo, origem, qtd, jogador.id,
+                        carta_combate=carta_dano)
             # Registra o dano no log ANTES de processar morte
             # para manter ordem cronologica: dano → destruicao
             self.game.add_log(

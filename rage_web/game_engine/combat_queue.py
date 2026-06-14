@@ -1606,6 +1606,8 @@ def declare_action(game: GameState, card_id: str, action: str,
 
     success = game.combat.declare(card_id, action, extra=is_extra)
     if success:
+        # Marca a criatura como tendo declarado (play_card step)
+        game.combat.played_cards[card_id] = action
         last = game.combat.last_to_declare
         card_declaring = _find_card(game, card_id)
         card_name = card_declaring.name if card_declaring else card_id

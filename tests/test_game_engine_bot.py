@@ -150,12 +150,15 @@ class TestPriorityBot:
         # por declaration/pre_combat/beginning_of_combat, depois play_card)
         action = bot.decide()
         # O bot pode precisar de algumas chamadas para avancar
-        # pelos steps de auto-advance antes de jogar a carta
+        # pelos steps de auto-advance (declaration, pre_combat,
+        # beginning_of_combat) antes de jogar a carta
         for _ in range(10):
-            if action.startswith('play_') or action.startswith('declare_'):
+            if (action.startswith('play_') or action.startswith('declare_')
+                    or action == 'combat_wait'):
                 break
             action = bot.decide()
-        assert action.startswith('play_') or action.startswith('declare_')
+        assert (action.startswith('play_') or action.startswith('declare_')
+                or action == 'combat_wait'), f'Got: {action}'
 
     def test_difficulty_levels(self, game):
         """Todos os niveis de dificuldade funcionam."""
