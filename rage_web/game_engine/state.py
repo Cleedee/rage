@@ -1004,6 +1004,7 @@ class LunarPhaseState:
     dono_id: str = ''  # Jogador que jogou
     modelo_id: str = ''  # ID do modelo de carta
     card_uid: int = 0  # Python id() da instancia
+    ragabash_gnosis_bonus: bool = False  # New Moon: +1 Gnosis para Ragabash
 
     def efeito_global(self) -> str:
         """Descricao do efeito global desta fase lunar."""
@@ -2298,6 +2299,26 @@ class GameState:
         descartada = ''
         if self.lunar_phase:
             descartada = self.lunar_phase.nome
+            # Reverte Ragabash Gnosis bonus se a fase anterior era New Moon
+            if self.lunar_phase.ragabash_gnosis_bonus:
+                for p in self.players:
+                    for c in p.pack_home + p.hunting_grounds + p.umbra:
+                        keywords = (c.keywords or '').lower()
+                        if 'ragabash' in keywords:
+                            c.gnosis = max(0, c.gnosis - 1)
+                self.add_log(
+                    'Ragabash -1 Gnosis (New Moon substituida)')
+            # Descarta a carta da fase lunar anterior do pack_home
+            uid_antigo = self.lunar_phase.card_uid
+            for p in self.players:
+                for c in list(p.pack_home):
+                    if id(c) == uid_antigo:
+                        p.pack_home.remove(c)
+                        c.zone = Zone.DISCARD_SEPT
+                        p.discard_sept.append(c)
+                        self.add_log(
+                            f'{c.name} descartada (substituida por {nome})')
+                        break
         self.lunar_phase = LunarPhaseState(
             card_id=card_id,
             nome=nome,
@@ -2314,12 +2335,34 @@ class GameState:
     def remover_lunar_phase(self) -> Optional[str]:
         """Remove a fase lunar ativa (ex: Lunar Eclipse).
 
+        Descarta a carta da fase lunar do pack_home do dono.
+
         Returns:
             Nome da fase removida, ou None se nao havia.
         """
         if not self.lunar_phase:
             return None
         nome = self.lunar_phase.nome
+        uid_antigo = self.lunar_phase.card_uid
+        # Reverte Ragabash Gnosis bonus se a fase removida era New Moon
+        if self.lunar_phase.ragabash_gnosis_bonus:
+            for p in self.players:
+                for c in p.pack_home + p.hunting_grounds + p.umbra:
+                    keywords = (c.keywords or '').lower()
+                    if 'ragabash' in keywords:
+                        c.gnosis = max(0, c.gnosis - 1)
+            self.add_log(
+                'Ragabash -1 Gnosis (New Moon removida)')
+        # Descarta a carta da fase lunar
+        for p in self.players:
+            for c in list(p.pack_home):
+                if id(c) == uid_antigo:
+                    p.pack_home.remove(c)
+                    c.zone = Zone.DISCARD_SEPT
+                    p.discard_sept.append(c)
+                    self.add_log(
+                        f'{c.name} descartada (fase lunar removida)')
+                    break
         self.lunar_phase = None
         self.add_log(f'Fase Lunar {nome} removida')
         return nome

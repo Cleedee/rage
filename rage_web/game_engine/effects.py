@@ -390,6 +390,7 @@ class ResolvedorEfeitos:
             'criatura_inimiga': lambda: self._escolher_criatura(
                 _criaturas_inimigas()
             ),
+            'todos': lambda: 'todos',  # Efeitos globais (New Moon: impedir_frenzy)
             'criatura_inimiga_moot': lambda: _criaturas_inimigas_moot(),
             'criatura_aliada': lambda: self._escolher_criatura(
                 jogador.pack_home
@@ -2058,7 +2059,10 @@ class ResolvedorEfeitos:
         Usado por: New Moon.
         Adiciona modificador global 'impede_frenzy' no jogo.
         """
-        self.game.game_modifiers.add('impede_frenzy')
+        from rage_web.game_engine.state import GameModifier
+        mod = GameModifier(card_uid=id(origem),
+                           modifier='impede_frenzy')
+        self.game.game_modifiers.append(mod)
         if efeito.params.get('ragabash_gnosis_bonus'):
             # +1 Gnosis para Ragabash
             for p in self.game.players:
@@ -2069,6 +2073,9 @@ class ResolvedorEfeitos:
                         self.game.add_log(
                             f'{c.name} +1 Gnosis (Ragabash - New Moon)'
                         )
+            # Marca a fase lunar ativa como tendo o bonus
+            if self.game.lunar_phase:
+                self.game.lunar_phase.ragabash_gnosis_bonus = True
         self.game.add_log(f'{origem.name}: ninguem pode frenzir (New Moon)')
         return True
 
@@ -2098,8 +2105,8 @@ class ResolvedorEfeitos:
             self.game.add_log(f'{alvo.name} ja esta em frenesi')
             return False
 
-        # Verifica se frenzy esta bloqueado globalmente
-        if 'impede_frenzy' in self.game.game_modifiers:
+        # Verifica se frenzy esta bloqueado globalmente (New Moon etc.)
+        if self.game.has_modifier('impede_frenzy'):
             self.game.add_log(f'{alvo.name} nao pode frenzir (impedido)')
             return False
 

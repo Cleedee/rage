@@ -201,8 +201,8 @@ def _entrar_em_frenesi(game: GameState, card: CardInstance,
     if card.is_frenzied:
         return False
 
-    # Nao pode frenzir se impedido
-    if 'impede_frenzy' in game.game_modifiers:
+    # Nao pode frenzir se impedido (New Moon etc.)
+    if game.has_modifier('impede_frenzy'):
         return False
     if 'nao_pode_frenzy' in card.restricoes:
         return False
