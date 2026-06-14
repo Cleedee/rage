@@ -269,27 +269,36 @@ def anexar_dano(alvo: CardInstance, origem: CardInstance,
     alvo.sync_health()
 
 
-def descartar_anexos(card: CardInstance, dono: PlayerState):
+def descartar_anexos(card: CardInstance, dono: PlayerState,
+                     game: Optional[GameState] = None):
     """Move todas as cartas anexadas ao descarte do dono.
 
     Regra (6.4.2): quando uma criatura morre, descarte todas as
     cartas (exceto Past Lives) anexadas a ela.
     Inclui damage cards e equipamentos.
 
-    Damage cards vao para DISCARD_COMBAT (sao fichas de combate).
-    Equipamentos vao para DISCARD_SEPT (sao cartas de sept).
+    Damage cards vao para DISCARD_COMBAT do jogador que as jogou
+    (nao do dono da criatura que tomou o dano).
+    Equipamentos vao para DISCARD_SEPT do dono da criatura.
     """
     from rage_web.game_engine.rules import zona_descarte
 
     # Descarta damage cards (sao Combat Actions reais anexadas como dano)
     for anexo in card.damage_cards:
         zona = zona_descarte(anexo.card_type or '')
+        # Damage card vai para o descarte do JOGADOR QUE A JOGOU
+        dono_dano = dono
+        if anexo.owner_id and game:
+            for p in game.players:
+                if p.id == anexo.owner_id:
+                    dono_dano = p
+                    break
         if zona == 'discard_combat':
             anexo.zone = Zone.DISCARD_COMBAT
-            dono.discard_combat.append(anexo)
+            dono_dano.discard_combat.append(anexo)
         else:
             anexo.zone = Zone.DISCARD_SEPT
-            dono.discard_sept.append(anexo)
+            dono_dano.discard_sept.append(anexo)
     card.damage_cards.clear()
     # Descarta equipamentos anexados (regra 6.4.2)
     for eq in card.attached_equipment:
@@ -518,7 +527,7 @@ class PlayerState:
                      'ratkin', 'rokea', 'shifter', 'shapeshifter'}
         return any(r in kw for r in regeneram)
 
-    def regeneration(self) -> list[str]:
+    def regeneration(self, game: Optional[GameState] = None) -> list[str]:
         """Fase de Regeneration: remove a menor carta de dano nao-agravado.
 
         Regra (2.2.2):
@@ -572,7 +581,16 @@ class PlayerState:
                     valor = int(menor.damage or '0')
                     c.damage_cards.remove(menor)
                     menor.zone = Zone.DISCARD_COMBAT
-                    self.discard_combat.append(menor)
+                    # Damage card vai para o descarte de combate do
+                    # jogador que a jogou (dono original da carta),
+                    # nao do dono da criatura que regenerou.
+                    dono_dano = self
+                    if menor.owner_id and game:
+                        for p in game.players:
+                            if p.id == menor.owner_id:
+                                dono_dano = p
+                                break
+                    dono_dano.discard_combat.append(menor)
                     c.health_current = min(c.health_current + valor,
                                            c.health)
                     logs.append(f'{c.name} regenerou {valor} de dano '
@@ -1072,7 +1090,7 @@ class GameState:
             # Executa acoes automaticas na transicao
             if self.phase == 'regeneration':
                 for p in self.players:
-                    logs = p.regeneration()
+                    logs = p.regeneration(game=self)
                     for log in logs:
                         self.add_log(log)
                 # Verificar progresso das quests

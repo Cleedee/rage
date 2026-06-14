@@ -689,7 +689,7 @@ class ResolvedorEfeitos:
             # Descarta cartas anexadas (regra 6.4.2)
             dono_alvo = self._find_player(alvo.owner_id)
             if dono_alvo:
-                descartar_anexos(alvo, dono_alvo)
+                descartar_anexos(alvo, dono_alvo, game=self.game)
             # Remove da zona atual
             alvo.zone = Zone.DISCARD_COMBAT
             if alvo in jogador.pack_home:
@@ -2872,7 +2872,7 @@ class ResolvedorEfeitos:
             return False
         dono_alvo = self._find_player(alvo.owner_id)
         if dono_alvo:
-            descartar_anexos(alvo, dono_alvo)
+            descartar_anexos(alvo, dono_alvo, game=self.game)
             for zone_list in (dono_alvo.pack_home, dono_alvo.hunting_grounds,
                               dono_alvo.umbra):
                 if alvo in zone_list:

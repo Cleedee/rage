@@ -270,7 +270,7 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
             eh_hacked_apart = True  # Dano suficiente: morre de vez
     
     if dono_alvo:
-        descartar_anexos(alvo, dono_alvo)
+        descartar_anexos(alvo, dono_alvo, game=game)
     else:
         # Sem dono (HG global): descarta anexos sem dono
         for anexo in list(alvo.damage_cards):
