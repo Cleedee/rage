@@ -416,6 +416,9 @@ def pode_usar_gift(player: 'PlayerState',
     # (Mage of Celestial Chorus = ANY Gifts, Unlucky Lune = Auspice Gifts)
     for char in characters:
         char_text = _info_char(char).lower()
+        # 4.5.3: Gifts cannot be played while frenzied
+        if getattr(char, 'is_frenzied', False):
+            continue
         # ANY Gifts: pode usar qualquer gift
         if 'mage of the celestial chorus' in char_text:
             if char.gnosis >= (gift_card.gnosis or 0):
@@ -436,13 +439,19 @@ def pode_usar_gift(player: 'PlayerState',
     if not requires:
         # Sem requisito de keyword: apenas check de Gnosis
         gnosis_req = gift_card.gnosis or 0
-        return any(c.gnosis >= gnosis_req for c in characters)
+        # 4.5.3: Gifts cannot be played while frenzied
+        return any(
+            c.gnosis >= gnosis_req and not getattr(c, 'is_frenzied', False)
+            for c in characters)
 
     # Parseia requisitos (formato " - " = OR)
     opcoes = [p.strip() for p in requires.split(' - ')]
 
     from rage_web.game_engine.state import Zone
     for char in characters:
+        # 4.5.3: Gifts cannot be played while frenzied
+        if getattr(char, 'is_frenzied', False):
+            continue
         char_text = _info_char(char)
         char_gnosis = char.gnosis
 
