@@ -1320,8 +1320,20 @@ class ResolvedorEfeitos:
                         jogador: PlayerState, alvo) -> bool:
         """Forca uma criatura a fugir do combate.
 
-        Suporta N jogadores: encontra o dono da criatura pelo owner_id.
+        Se alvo for 'todos' (efeito global), encerra o combate
+        inteiro (Friends in High Places).
         """
+        if isinstance(alvo, str) and alvo == 'todos':
+            # Efeito global: encerra o combate
+            if self.game.combat and self.game.combat.is_active:
+                from rage_web.game_engine.combat_queue import end_combat
+                end_combat(self.game)
+                self.game.add_log(f'{origem.name}: combate encerrado')
+                return True
+            else:
+                self.game.add_log(f'{origem.name}: nao ha combate ativo')
+                return False
+
         if isinstance(alvo, CardInstance):
             dono_alvo = self._find_player(alvo.owner_id)
             alvo.zone = Zone.DISCARD_COMBAT

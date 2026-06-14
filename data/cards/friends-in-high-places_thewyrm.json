@@ -8,7 +8,7 @@
       "efeitos": [
         {
           "tipo": "fugir",
-          "condicao_alvo": "todas_criaturas"
+          "alvo": "todos"
         }
       ]
     }
@@ -16,7 +16,7 @@
   "_metadata": {
     "fonte": "analise_v2+revisado",
     "card_id": 790,
-    "texto_original": "You call in a favor from some powerful friends. You may end any one combat that does not involve a frenzy. A pack may not play more than one Friends in High Places per turn. A character can only play one Friends in High Places per game.",
+    "texto_original": "You may end any one combat that does not involve a frenzy. A pack may not play more than one Friends in High Places per turn. A character can only play one Friends in High Places per game.",
     "keywords": "",
     "damage": "",
     "rage": 0,

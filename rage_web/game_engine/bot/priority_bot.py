@@ -195,8 +195,8 @@ class PriorityBot:
         )
         tem_hg = bool(me.hunting_grounds)
 
-        # TIPOS que NAO sao de recurso
-        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting'}
+        # TIPOS que NAO sao de recurso (nao podem ser jogados na fase Resource)
+        TIPOS_NAO_RECURSO = {'Combat Action', 'Combat Event', 'Moot', 'Board Meeting', 'Action'}
 
         scored = []
         for i, card in enumerate(me.hand):
@@ -315,8 +315,9 @@ class PriorityBot:
                     score += 35
                 else:
                     score -= 10
-            elif ct in ('Event', 'Action'):
+            elif ct in ('Event',):
                 score += 20
+            # Action cards sao para combate, nao recurso
 
             # 11. Cartas sem modelo_id: inuteis
             if not card.modelo_id and score < 50:
