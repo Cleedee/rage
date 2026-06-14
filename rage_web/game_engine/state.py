@@ -1446,8 +1446,8 @@ class GameState:
             elif vitima.card_id == 503:
                 continue
 
-            # --- 485 - Fomori Cop: descarta equipamento nao-fetich ---
-            elif vitima.card_id == 485:
+            # --- Fomori Cop (slug fomori-cop_r5): descarta equipamento nao-fetich ---
+            elif vitima.modelo_id == 'fomori-cop_r5':
                 continue  # Auto-ataque removido: Rage e requisito para Combat Actions,
                          # nao dano direto. Habilidade principal e o descarte
                          # de equipamento no fim do Combat Phase (abaixo).
@@ -1487,7 +1487,7 @@ class GameState:
 
         # ── Fim do Combat Phase: Fomori Cop descarta equipamento nao-fetich de Gaia ──
         for vitima, dono_vitima_id in vitimas:
-            if vitima.card_id == 485 and vitima.health_current > 0:
+            if vitima.modelo_id == 'fomori-cop_r5' and vitima.health_current > 0:
                 self._fomori_cop_discard_equipment()
 
     def registrar_kill_vitima(self, killer_card_uid: int):
@@ -2129,7 +2129,7 @@ class GameState:
                 f'{card.name}: pode usar ANY Gifts, '
                 f'remove menor Renome victim no fim do turno')
 
-        elif card.card_id == 485:  # Fomori Cop
+        elif slug == 'fomori-cop_r5':  # Fomori Cop
             self.add_log(
                 f'{card.name}: descarta equipamento nao-Fetish de Gaia '
                 f'no fim do combate')
