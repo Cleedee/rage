@@ -2068,6 +2068,24 @@ class GameState:
                 f'{card.name}: pode usar Auspice Gifts, '
                 f'Rage 6 com Full Moon')
 
+        elif slug == 'hogling_r5':  # Hogling (496)
+            # Imune a equipamentos nao-fetiche
+            # (verificado em _processar_ataque por 'imune_equipamento_nao_fetich')
+            if 'imune_equipamento_nao_fetich' not in card.restricoes:
+                card.restricoes.append('imune_equipamento_nao_fetich')
+            # Pode usar Gifts Metis
+            modifier_name = 'can_use_metis_gifts'
+            if not any(m.modifier == modifier_name
+                       for m in self.game_modifiers):
+                modifier = GameModifier(
+                    card_uid=id(card),
+                    modifier=modifier_name,
+                )
+                self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: imune a equipamentos nao-fetiche, '
+                f'pode usar Gifts Metis')
+
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
         self.death_triggers.append(trigger)

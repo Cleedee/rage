@@ -2704,9 +2704,33 @@ def resolve_combat(game: GameState) -> bool:
                         f'({origem_card.name})')
                 break
 
+        # Hogling (496): imune a equipamentos nao-fetiche
+        # Verifica se o alvo tem a restricao de Hogling
+        hogling_blocks = 'imune_equipamento_nao_fetich' in getattr(
+            alvo_card, 'restricoes', [])
+        if hogling_blocks:
+            # Verifica se o atacante tem equipamento Weapon nao-Fetish
+            atacante_tem_weapon_nao_fetish = False
+            for eq in origem_card.attached_equipment:
+                keywords = (getattr(eq, 'keywords', '') or '').lower()
+                tipo = (getattr(eq, 'card_type', '') or '').lower()
+                if 'weapon' in keywords or 'weapon' in tipo:
+                    if 'fetish' not in tipo and 'fetish' not in keywords:
+                        atacante_tem_weapon_nao_fetish = True
+                        break
+            if atacante_tem_weapon_nao_fetish:
+                hogling_blocks = True
+                game.add_log(
+                    f'  Hogling: {alvo_card.name} imune a dano de '
+                    f'{origem_card.name} (equipamento nao-fetiche)')
+            else:
+                hogling_blocks = False
+        else:
+            hogling_blocks = False
+
         # Aplica dano e cria damage card (regra 6.4)
         # Calcula dano base: primeiro da acao, depois Rage da criatura
-        if skin_blocks:
+        if skin_blocks or hogling_blocks:
             dano = 0
         else:
             # Dano basico: usa damage da acao (se definido) ou Rage da criatura
