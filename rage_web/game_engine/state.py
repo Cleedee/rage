@@ -132,6 +132,7 @@ class CardInstance:
     attached_damage: list[CardInstance] = field(default_factory=list)
     # Cartas de dano anexadas a esta criatura (regra 6.4)
     attached_equipment: list[CardInstance] = field(default_factory=list)
+    attached_to: Optional[CardInstance] = None  # Se for equipamento, referencia a criatura que o possui
     # Equipamentos anexados a esta criatura
     attached_gifts: list[CardInstance] = field(default_factory=list)
     # Gifts permanentes anexados a esta criatura (4.5.3)
@@ -724,6 +725,10 @@ class CombatState:
     # --- Play Card Step ---
     # played_cards[card_id] = action_name (strike, block, dodge, etc)
     played_cards: dict[str, str] = field(default_factory=dict)
+    # played_combat_cards[criatura_card_id] = CardInstance da carta de combate jogada
+    # Usado para rastrear qual Combat Action real foi usada (ex: Surprise Attack)
+    # para que a carta original seja anexada como dano ao alvo (regra 6.4)
+    played_combat_cards: dict[str, 'CardInstance'] = field(default_factory=dict)
     # face_down_order: ordem em que os cards foram jogados
     face_down_order: list[str] = field(default_factory=list)
 
@@ -777,6 +782,9 @@ class CombatState:
     declarations: dict[str, Optional[str]] = field(default_factory=dict)
     # declaration_order: ordem das declaracoes
     declaration_order: list[str] = field(default_factory=list)
+    # extra_declarations: card_id -> action (acoes extras por equipamento)
+    # Usado por Devilwhip e outros equipamentos que concedem acoes extras
+    extra_declarations: dict[str, str] = field(default_factory=dict)
     # weapon_declarations: card_id -> weapon_card_id (armas usadas)
     weapon_declarations: dict[str, str] = field(default_factory=dict)
 
@@ -845,15 +853,32 @@ class CombatState:
             return self.alpha_order[self.current_alpha_index]
         return None
 
-    def declare(self, card_id: str, action: str) -> bool:
-        """Registra a acao de combate de uma criatura (antigo 'declare').
-        Agora mapeia tanto para declarations (back compat) quanto
-        para played_cards (novo sistema).
+    def declare(self, card_id: str, action: str, extra: bool = False) -> bool:
+        """Registra a acao de combate de uma criatura.
+
+        Args:
+            card_id: ID da criatura.
+            action: Nome da acao (strike, block, etc).
+            extra: Se True, permite uma segunda declaracao para criaturas
+                   com acoes extras disponiveis (ex: Devilwhip).
+                   A declaracao extra e rastreada em extra_declarations.
         """
         if not self.is_active:
             return False
+
+        # Verifica se ja declarou (normal ou extra)
         if card_id in self.declarations:
-            return False
+            if not extra:
+                return False
+            # Modo extra: verifica se ja usou acao extra
+            if card_id in self.extra_declarations:
+                return False
+            # Registra como acao extra
+            self.extra_declarations[card_id] = action
+            self.declaration_order.append(card_id)
+            return True
+
+        # Declaracao normal
         self.declarations[card_id] = action
         self.declaration_order.append(card_id)
         # Tambem registra no novo sistema (play_card)
@@ -862,8 +887,25 @@ class CombatState:
         return True
 
     def all_declared(self, combatants: list[str]) -> bool:
-        """Verifica se todos os combatentes declararam."""
+        """Verifica se todos os combatentes declararam.
+
+        Criaturas com acoes extras disponiveis (ex: Devilwhip) podem
+        declarar novamente mesmo apos all_declared retornar True.
+        """
         return all(c in self.declarations for c in combatants)
+
+    def has_extra_declaration(self, card_id: str) -> bool:
+        """Verifica se uma criatura pode declarar uma acao extra.
+
+        Usado por equipamentos como Devilwhip que concedem +1 acao
+        de combate por rodada. A verificacao real de acoes extras
+        disponiveis e feita em declare_action (combat_queue.py).
+        """
+        if card_id not in self.declarations:
+            return False  # Ainda nao declarou a acao principal
+        if card_id in self.extra_declarations:
+            return False  # Ja usou a acao extra nesta rodada
+        return True
 
     def selecionar_alfa(self, jogador_id: str, card_id: str):
         """Seleciona o alpha de um jogador."""

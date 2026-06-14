@@ -23,7 +23,6 @@
 ├── rage_web/                       # 📦 Pacote principal da aplicação
 │   ├── __init__.py                 # Factory: create_app()
 │   ├── config.py                   # Configurações (SQLite, SECRET_KEY)
-│   ├── database.db                 # 🗄️ Banco SQLite
 │   │
 │   ├── game_engine/                # 🎮 Motor de jogo (4 fases implementadas)
 │   │   ├── __init__.py
@@ -40,6 +39,26 @@
 │   │       ├── evaluator.py       # BoardEvaluator (threat, advantage, pressure, victory)
 │   │       └── priority_bot.py    # PriorityBot (árvore de decisão por prioridades)
 │   │
+│   ├── telegram_bot/               # 🤖 Bot Telegram (multiplayer)
+│   │   ├── __init__.py
+│   │   ├── bot.py                 # Entry point, build_application, run_polling/run_webhook
+│   │   ├── handlers.py            # 16+ comandos, callbacks, turn_timeout_handler
+│   │   ├── conversations.py       # ConversationHandlers: /duel guiado, /accept guiado
+│   │   ├── game_manager.py        # GameSession, timer de turno, persistência
+│   │   ├── matchmaker.py          # Challenge, aceite/recusa, criação de partidas
+│   │   ├── user_registry.py       # Resolução @username → Telegram ID (SQLite)
+│   │   ├── stats.py               # ELO, match_history, player_ratings
+│   │   ├── persistence.py         # GamePersistence: pickle + SQLite
+│   │   ├── render.py              # GameState → texto formatado para Telegram
+│   │   ├── keyboards.py           # 8 funções de teclado inline
+│   │   ├── i18n.py                # Internacionalização (pt_BR + en_US)
+│   │   ├── locales/               # Traduções JSON
+│   │   │   ├── pt_BR.json
+│   │   │   └── en_US.json
+│   │   ├── persistence.db         # 💾 Partidas salvas (pickle)
+│   │   ├── user_registry.db       # 👤 Mapeamento @username → user_id
+│   │   └── stats.db               # 📊 Histórico de partidas + ratings ELO
+│   │
 │   ├── ext/                        # Extensões
 │   │   ├── base.py                 # Base declarativa do SQLAlchemy
 │   │   ├── database.py             # Inicialização do SQLAlchemy
@@ -50,20 +69,29 @@
 │   │   └── forms.py                # Formulários WTForms
 │   │
 │   ├── models/                     # Modelos do banco
-│   │   ├── card.py                 # Card (carta)
-│   │   ├── deck.py                 # Deck
+│   │   ├── card.py                 # Card (carta) — 18+ campos
+│   │   ├── deck.py                 # Deck — com is_public, telegram_owner_id, usage_count
 │   │   └── picture.py             # Picture (imagem)
 │   │
 │   ├── blueprints/                 # Blueprints (módulos)
 │   │   ├── home/                   # Página inicial
 │   │   ├── cards/                  # CRUD de cartas
-│   │   └── decks/                  # CRUD de decks
+│   │   ├── decks/                  # CRUD de decks
+│   │   ├── game/                   # Interface web de partidas (HTMX)
+│   │   ├── tournaments/            # Gerenciamento de torneios
+│   │   ├── analysis/               # Análise de decks/cartas
+│   │   ├── tutorial/               # Páginas de tutorial
+│   │   ├── auth/                   # Login via Telegram Widget
+│   │   └── games/                  # Lista de partidas ativas
 │   │
 │   ├── templates/
-│   │   └── base.html              # Template base com Bulma + HTMX
+│   │   ├── base.html              # Template base (Bulma + HTMX)
+│   │   ├── auth/login.html        # Página de login Telegram
+│   │   └── games/list.html        # Meus Jogos
 │   │
-│   └── instance/images/           # Imagens das cartas
-│       └── hatii-the-thunderer.png
+│   └── instance/
+│       └── images/                # Imagens das cartas
+│           └── hatii-the-thunderer.png
 │
 ├── migrations/                     # Migrations Alembic
 │   ├── alembic.ini
@@ -105,6 +133,11 @@
 | **python-slugify** | Slug para nomes de arquivos |
 | **pytest** | Testes |
 | **uv** | Gerenciador de pacotes |
+| **python-telegram-bot >=22.8** | Bot Telegram (polling/webhook) |
+| **python-dotenv** | Config via `.env` (token do bot) |
+| **SQLite** (4x) | Bancos: `database`, `persistence`, `user_registry`, `stats` |
+| **ELO Rating** | Sistema de rating (K=32, default=1200) |
+| **i18n JSON** | Traduções pt_BR + en_US com fallback |
 
 ---
 
@@ -134,6 +167,12 @@
 | `id` | Integer (PK) | Identificador único |
 | `name` | String | Nome do deck |
 | `description` | String (nullable) | Descrição opcional |
+| `is_public` | Boolean (default=False) | Deck público na galeria social |
+| `telegram_owner_id` | Integer (nullable) | Dono do deck no Telegram |
+| `usage_count` | Integer (default=0) | Nº de visualizações na galeria |
+| `created_at` | DateTime | Data de criação |
+| `updated_at` | DateTime | Data da última modificação |
+| `cards` | Relationship | Muitos-para-muitos com Card (via `deck_cards`) |
 
 ### Picture (Imagem) — `rage_web/models/picture.py`
 
@@ -176,6 +215,17 @@
 | `/decks/{id}/remove-card` | POST | Remover carta |
 | `/decks/{id}/update-quantity` | POST | Atualizar quantidade |
 | `/decks/import` | GET/POST | Importar deck |
+| `/game/new` | GET | Criar nova partida |
+| `/game/<id>` | GET | Acompanhar partida (HTMX) |
+| `/game/<id>/board` | GET | Partial do board (HTMX polling) |
+| `/game/<id>/action` | POST | Executar ação na partida |
+| `/auth/login` | GET | Login via Telegram Widget |
+| `/auth/telegram` | GET | Callback do Telegram Login |
+| `/auth/logout` | GET | Logout |
+| `/games/` | GET | Minhas partidas ativas |
+| `/tutorial` | GET | Tutorial interativo |
+| `/tournaments` | GET | Lista de torneios |
+| `/analysis` | GET | Análise de decks/cartas |
 
 ---
 
@@ -314,6 +364,122 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 2. ~~**📢 Anunciador em `__post_init__`**~~ — ✅ Criado via `default_factory` no campo `anunciador`; `__post_init__` removido.
 3. ~~**🔄 Verificação de Gauntlet incompleta**~~ — ✅ `_mesmo_lado_gauntlet` agora considera `hunting_grounds`, Caern/Territory/Spirit (ambos os lados) e a zona neutra de Hunting Grounds.
 4. **🃏 Cartas sem `modelo_id` são "inúteis"** — O bot descarta cartas sem `modelo_id` no redraw, mas elas poderiam ter efeitos não estruturados.
+
+---
+
+---
+
+# 🤖 Telegram Bot (Multiplayer)
+
+## Visão Geral
+
+O bot Telegram (`@furia_ccg_bot`) permite jogar Rage CCG online diretamente pelo Telegram.
+Usa o mesmo motor de jogo (`game_engine/`) e banco de dados do site, rodando em **modo polling**
+(sem precisar de URL pública).
+
+### Arquitetura
+
+```
+Telegram User ──► python-telegram-bot ──► GameManager ──► GameState
+                      │                          │
+                      ▼                          ▼
+                 Handlers / Render          Matchmaker
+```
+
+### Módulos
+
+| Módulo | Responsabilidade |
+|---|---|
+| `bot.py` | Entry point (`rage-bot`), `build_application()`, `_restore_active_games()` |
+| `handlers.py` | 16+ comandos, ~30 callbacks, `turn_timeout_handler` |
+| `conversations.py` | Fluxos guiados: `/duel` passo-a-passo, `/accept` passo-a-passo |
+| `game_manager.py` | `GameSession`, timer de turno, persistência, auto-concede |
+| `matchmaker.py` | `Challenge`, aceite/recusa, criação de partidas, expiração 2min |
+| `user_registry.py` | Resolução @username → Telegram ID (SQLite + fallback API) |
+| `stats.py` | `StatsManager`, ELO (K=32), match_history, player_ratings |
+| `persistence.py` | `GamePersistence`: GameSession picklizada em SQLite |
+| `render.py` | GameState → texto formatado + emojis + HP bars |
+| `keyboards.py` | 8 funções de teclado inline |
+| `i18n.py` | Internacionalização: `t('chave', lang)` com fallback pt_BR |
+
+### Comandos do Bot
+
+| Comando | Descrição |
+|---|---|
+| `/start` | Boas-vindas + link do site |
+| `/help` | Referência de comandos |
+| `/decks` | Seus decks registrados |
+| `/duel @user <deck_id>` | Desafiar jogador |
+| `/accept @user <deck_id>` | Aceitar desafio |
+| `/decline @user` | Recusar desafio |
+| `/board` | Tabuleiro completo |
+| `/hand` | Sua mão |
+| `/status` | Resumo do jogo |
+| `/actions` | Ações disponíveis |
+| `/play N` | Jogar carta N da mão |
+| `/use N` | Usar carta de efeito |
+| `/attack <id> [alvo]` | Iniciar combate |
+| `/declare <id> <ação>` | Declarar ação de combate |
+| `/reveal` | Revelar ações |
+| `/feint <id> <ação>` | Trocar ação (Último a Declarar) |
+| `/resolve` | Resolver combate |
+| `/pass` | Passar prioridade |
+| `/next` | Avançar fase |
+| `/concede` | Conceder partida |
+| `/draw [deck] [qtd]` | Comprar cartas |
+| `/endcombat` | Forçar fim do combate |
+| `/timer <horas>` | Customizar timeout do turno (1h–48h) |
+| `/stats` | Suas estatísticas (rating, winrate, deck favorito) |
+| `/rank` | Top 15 jogadores (medalhas) |
+| `/card N` | Detalhes visuais de uma carta |
+| `/deck search <termo>` | Buscar decks públicos |
+| `/deck view <id>` | Ver deck público |
+| `/deck share <id>` | Compartilhar deck |
+| `/deck top` | Decks mais populares |
+| `/lang <código>` | Mudar idioma (pt_BR, en_US) |
+
+### Feature Set
+
+| Funcionalidade | Status |
+|---|---|
+| Partidas 1v1 com motor de jogo completo | ✅ |
+| Matchmaking via @username (banco local + API) | ✅ |
+| Timer de turno (default 2h, configurável) | ✅ |
+| Auto-concede após 3 timeouts consecutivos | ✅ |
+| Edição de mensagens (evita flood) | ✅ |
+| Persistência SQLite (sobrevive a restart) | ✅ |
+| Galeria social de decks (público/privado) | ✅ |
+| Sistema ELO (K=32, rating default 1200) | ✅ |
+| Estatísticas e rank (winrate, deck favorito) | ✅ |
+| Efeitos visuais (HP bars, retrato de carta) | ✅ |
+| Internacionalização (pt_BR + en_US) | ✅ |
+| Login Telegram no site (Widget) | ✅ |
+| Partidas visíveis no navegador (`/games/`) | ✅ |
+| Modo polling (sem URL pública) | ✅ |
+
+### Bancos de Dados
+
+O bot usa **4 bancos SQLite independentes**:
+
+| Banco | Localização | Conteúdo |
+|---|---|---|
+| `database.db` | `rage_web/` | Cartas, decks (compartilhado com Flask) |
+| `persistence.db` | `rage_web/telegram_bot/` | GameSession picklizada |
+| `user_registry.db` | `rage_web/telegram_bot/` | Mapeamento @username → user_id |
+| `stats.db` | `rage_web/telegram_bot/` | Match history + ELO ratings |
+
+### Fluxo de Partida
+
+```
+1. /duel @joao 7        → João recebe notificação + [🌐 Link web]
+2. /accept @pedro 90    → Partida criada (decks 7 vs 90)
+3. /board               → Ver tabuleiro (enviado ou editado)
+4. /play 0              → Jogar carta da mão
+5. /pass                → Passar a vez
+6. (João é notificado)  → Vez de João + board editado
+...
+7. /concede             → Partida encerrada, ELO atualizado
+```
 
 ---
 
@@ -581,14 +747,22 @@ PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py --dry-run
 1. ~~Remover `database.db` do versionamento~~ ✅ (`.gitignore`)
 2. ~~Corrigir formulário de Character~~ ✅ (campo `tipo` adicionado)
 3. ~~Padronizar as rotas~~ ✅
-4. ~~Corrigir testes~~ ✅ (142 testes passando)
-5. Implementar upload de imagens completo com rotas e templates
+4. ~~Corrigir testes~~ ✅ (142+ testes passando)
+5. ~~Implementar upload de imagens~~ ✅ Rotas + templates implementados
 6. ~~Adicionar relacionamento Deck ↔ Card~~ ✅ (tabela `deck_cards`)
 7. Implementar Redis se for realmente necessário, ou remover do docker-compose
-8. Adicionar autenticação (sign up / log in estão no template mas não implementados)
+8. ~~Adicionar autenticação (login Telegram)~~ ✅ Login via Telegram Widget implementado em `/auth/login`
 9. Usar variáveis de ambiente para SECRET_KEY em produção
 10. Adicionar validação e tratamento de erros mais robustos (páginas 404, flash messages consistentes)
 11. ~~Registrar `api_bp` no `create_app()`~~ ✅ Já registrado
-12. ~~Criar diretório `data/cards/`~~ ✅ Já existe com 67 exemplos
-13. Adicionar seed determinística ao `ResolvedorEfeitos` para reprodutibilidade
-14. Integrar o game engine ao frontend (HTMX) para partidas web
+12. ~~Criar diretório `data/cards/`~~ ✅ Já existe com 550+ JSONs
+13. ~~Adicionar seed determinística ao `ResolvedorEfeitos`~~ ✅ `GameState` tem `rng` próprio
+14. ~~Integrar game engine ao frontend (HTMX)~~ ✅ Blueprint `game/` com board + ações + polling
+15. ~~Sistema de matchmaking no Telegram~~ ✅ Matchmaker com desafios, aceite, notificação
+16. ~~Timer de turno com auto-concede~~ ✅ Default 2h, configurável, 3 timeouts → concede
+17. ~~Persistência de partidas~~ ✅ GameSession picklizada em SQLite
+18. ~~Galeria social de decks~~ ✅ `/deck search`, `/deck view`, `/deck share`, `/deck top`
+19. ~~Sistema ELO e estatísticas~~ ✅ `/stats`, `/rank`, ELO K=32
+20. ~~Efeito Devilwhip (acao_extra_por_rodada)~~ ✅ JSON + resolver + combat Declaration + reaplicação por rodada
+21. ~~Internacionalização~~ ✅ pt_BR + en_US com fallback
+22. ~~Bugs corrigidos (5)~~ ✅ ConversationHandler, Matchmaker duplicado, Timeout 24h→2h, Edição de mensagens, Username case-sensitive

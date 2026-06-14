@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Login - Rage CCG{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 500px; margin-top: 3rem;">
+  <div class="card">
+    <div class="card-content">
+      <div class="has-text-centered mb-5">
+        <span class="icon is-large">
+          <i class="bi bi-shield-lock fs-1" style="font-size: 3rem; color: #e8a838;"></i>
+        </span>
+        <h1 class="title is-4 mt-3">Entrar no Rage CCG</h1>
+        <p class="subtitle is-6">Use sua conta Telegram para acessar</p>
+      </div>
+
+      {% if error %}
+      <div class="notification is-danger is-light">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+      </div>
+      {% endif %}
+
+      <div class="has-text-centered my-5">
+        <script async
+          src="https://telegram.org/js/telegram-widget.js?22"
+          data-telegram-login="{{ bot_username }}"
+          data-size="large"
+          data-radius="8"
+          data-request-access="write"
+          data-auth-url="{{ url_for('auth.telegram_callback', _external=True) }}">
+        </script>
+      </div>
+
+      <div class="notification is-info is-light mt-4">
+        <p class="is-size-7">
+          <i class="bi bi-info-circle"></i>
+          Ao fazer login, você autoriza o Rage CCG a ver seu nome,
+          username e foto de perfil do Telegram. Seus dados não são
+          compartilhados com terceiros.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="has-text-centered mt-4">
+    <a href="{{ url_for('home.index') }}" class="button is-ghost">
+      <i class="bi bi-arrow-left"></i> Voltar ao início
+    </a>
+  </div>
+</div>
+{% endblock %}

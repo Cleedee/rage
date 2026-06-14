@@ -444,3 +444,122 @@ class TestAplicarCartaCompleta:
         carta = CARTAS_EXEMPLO['golpe_misericordia']
         logs = aplicar_carta(game, carta, 'inexistente', modo_idx=0)
         assert 'nao encontrado' in logs[0]
+
+    def test_devilwhip_equipar_extra_acao(self, game):
+        """Devilwhip equipa e concede +1 acao extra por rodada."""
+        # Usa a primeira criatura do pack do jogador 1 (do game de exemplo)
+        char = game.players[0].pack_home[0]
+
+        # Cria Devilwhip
+        devilwhip = CardInstance(
+            card_id=638, name='Devilwhip', card_type='Equipment',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            modelo_id='devilwhip',
+        )
+        game.players[0].pack_home.append(devilwhip)
+
+        # Equipa Devilwhip (modo 0 = Rg2)
+        carta = CARTAS_EXEMPLO['devilwhip']
+        logs = aplicar_carta(game, carta, 'p1', modo_idx=0, card_origem=devilwhip)
+
+        # Verifica que equipou
+        assert devilwhip.zone == Zone.OUT_OF_PLAY
+        assert devilwhip.attached_to is not None
+        criatura_equipada = devilwhip.attached_to
+        assert any(c is devilwhip for c in criatura_equipada.attached_equipment)
+
+        # Verifica que concedeu acao extra na criatura equipada
+        assert getattr(criatura_equipada, 'acoes_extras_disponiveis', 0) == 1
+        assert getattr(criatura_equipada, 'acoes_extras_max_rage', 0) == 2
+        assert getattr(criatura_equipada, 'acoes_extras_unblockable', False) is True
+
+    def test_devilwhip_acao_extra_combate(self, game):
+        """Criatura com Devilwhip declara acao extra no combate."""
+        from rage_web.game_engine.combat_queue import (
+            start_combat, declare_action, advance_combat_step,
+            _reaplicar_efeitos_equipamento_rodada,
+        )
+
+        # Usa as criaturas do game de exemplo (card_ids 500, 502)
+        char1 = game.players[0].pack_home[0]  # Shadow Fang (500)
+        char2 = game.players[1].pack_home[0]  # Storm Howler (502)
+
+        # Cria e equipa Devilwhip no char1
+        devilwhip = CardInstance(
+            card_id=638, name='Devilwhip', card_type='Equipment',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            modelo_id='devilwhip',
+        )
+        game.players[0].pack_home.append(devilwhip)
+        aplicar_carta(game, CARTAS_EXEMPLO['devilwhip'], 'p1', modo_idx=0, card_origem=devilwhip)
+
+        # Verifica que Devilwhip foi equipado
+        assert devilwhip.attached_to is char1
+        assert getattr(char1, 'acoes_extras_disponiveis', 0) == 1
+
+        # Inicia combate
+        game.phase = 'combat'
+        start_combat(game, ['500'], ['502'])
+        while game.combat.step != 'play_card' and game.combat.step != 'end':
+            advance_combat_step(game)
+
+        # Declara acao normal
+        assert declare_action(game, '500', 'strike') is True
+        # Declara acao extra (Devilwhip)
+        assert declare_action(game, '500', 'dodge') is True
+        # Tenta terceira acao (deve falhar)
+        assert declare_action(game, '500', 'block') is False
+        # Oponente declara
+        assert declare_action(game, '502', 'block') is True
+        # Oponente tenta segunda (deve falhar)
+        assert declare_action(game, '502', 'dodge') is False
+
+        # Verifica estado
+        assert '500' in game.combat.declarations
+        assert '500' in game.combat.extra_declarations
+        assert game.combat.extra_declarations['500'] == 'dodge'
+        assert getattr(char1, 'acoes_extras_disponiveis', 0) == 0
+
+    def test_devilwhip_reaplica_rodada(self, game):
+        """Devilwhip reaplica acao extra no inicio de cada rodada."""
+        from rage_web.game_engine.combat_queue import (
+            _reaplicar_efeitos_equipamento_rodada,
+        )
+
+        # Usa criaturas do game de exemplo
+        char1 = game.players[0].pack_home[0]  # Shadow Fang (500)
+        char2 = game.players[1].pack_home[0]  # Storm Howler (502)
+
+        # Cria e equipa Devilwhip
+        devilwhip = CardInstance(
+            card_id=638, name='Devilwhip', card_type='Equipment',
+            zone=Zone.PACK_HOME, owner_id='p1', controller_id='p1',
+            modelo_id='devilwhip',
+        )
+        game.players[0].pack_home.append(devilwhip)
+        aplicar_carta(game, CARTAS_EXEMPLO['devilwhip'], 'p1', modo_idx=0, card_origem=devilwhip)
+
+        # Verifica que equipou
+        assert devilwhip.attached_to is char1
+        assert getattr(char1, 'acoes_extras_disponiveis', 0) == 1
+
+        # Simula transicao between_rounds -> play_card (como advance_combat_step faz)
+        game.combat.is_active = True
+        game.combat.attackers = ['500']
+        game.combat.defenders = ['502']
+        game.combat.round_number = 1
+
+        # Reaplica efeitos (como acontece na transicao entre rodadas)
+        _reaplicar_efeitos_equipamento_rodada(game)
+
+        # A criatura deve ter recebido +1 acao extra (total 2: 1 do equip + 1 do reapply)
+        # Nota: o reapply encontrado 1 Devilwhip com 1 efeito = +1 extras
+        assert getattr(char1, 'acoes_extras_disponiveis', 0) == 2
+
+        # Consome 1 extra
+        setattr(char1, 'acoes_extras_disponiveis', 1)
+
+        # Proxima rodada: deve reaplicar de novo
+        game.combat.round_number = 2
+        _reaplicar_efeitos_equipamento_rodada(game)
+        assert getattr(char1, 'acoes_extras_disponiveis', 0) == 2  # 1 + 1 reapply

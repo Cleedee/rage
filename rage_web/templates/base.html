@@ -131,17 +131,27 @@
           <a class="navbar-item" href="{{ url_for('analysis.new_analysis') }}">
             <i class="bi bi-search" style="margin-right:0.3rem;"></i> Análise
           </a>
+          <a class="navbar-item" href="{{ url_for('games.my_games') }}">
+            <i class="bi bi-controller" style="margin-right:0.3rem;"></i> Meus Jogos
+          </a>
         </div>
 
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary is-small">
-                <strong><i class="bi bi-person-plus"></i> Sign up</strong>
+              {% if telegram_user and telegram_user.logged_in %}
+              <a class="button is-light is-small" href="{{ url_for('games.my_games') }}">
+                <i class="bi bi-person-circle"></i>
+                {{ telegram_user.full_name or telegram_user.username }}
               </a>
-              <a class="button is-light is-small">
-                <i class="bi bi-box-arrow-in-right"></i> Log in
+              <a class="button is-light is-small" href="{{ url_for('auth.logout') }}">
+                <i class="bi bi-box-arrow-right"></i>
               </a>
+              {% else %}
+              <a class="button is-primary is-small" href="{{ url_for('auth.login') }}">
+                <strong><i class="bi bi-telegram"></i> Login Telegram</strong>
+              </a>
+              {% endif %}
             </div>
           </div>
         </div>

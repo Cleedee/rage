@@ -4,30 +4,47 @@
   "tipo": "Equipment - Bane Fetish - Weapon",
   "modos": [
     {
-      "descricao": "Acao extra de combate Rg2 ou menos por rodada",
+      "descricao": "Equipar: acao extra de combate Rg2 ou menos por rodada",
       "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "descricao": "Devilwhip: equipar como arma"
+          }
+        },
         {
           "tipo": "acao_extra_por_rodada",
           "condicao_alvo": "self",
           "params": {
             "max_rage": 2,
             "qtd_acoes": 1,
-            "unblockable": false,
+            "unblockable": true,
             "descricao": "1 acao extra de combate Rg2 ou menos por rodada (inbloqueavel)"
           }
         }
       ]
     },
     {
-      "descricao": "Bane: acoes ate Rg3",
+      "descricao": "Equipar (Bane): acoes extras ate Rg3",
       "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "slot": "weapon",
+            "descricao": "Devilwhip: equipar como arma (Bane)"
+          }
+        },
         {
           "tipo": "acao_extra_por_rodada",
           "condicao_alvo": "self",
           "params": {
             "max_rage": 3,
             "qtd_acoes": 1,
-            "descricao": "Se Bane, acoes extras podem ser ate Rg3"
+            "unblockable": true,
+            "descricao": "Se Bane, acoes extras podem ser ate Rg3 (inbloqueavel)"
           }
         }
       ]

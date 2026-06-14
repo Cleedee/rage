@@ -39,6 +39,8 @@ def create_app(name_config='production'):
     from rage_web.blueprints.tutorial import tutorial_bp
     from rage_web.blueprints.tournaments import tournaments_bp
     from rage_web.blueprints.analysis import bp as analysis_bp
+    from rage_web.blueprints.auth import bp as auth_bp
+    from rage_web.blueprints.games import bp as games_bp
 
     app.register_blueprint(raiz)
     app.register_blueprint(cards)
@@ -48,10 +50,16 @@ def create_app(name_config='production'):
     app.register_blueprint(tutorial_bp)
     app.register_blueprint(tournaments_bp)
     app.register_blueprint(analysis_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(games_bp)
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(500, internal_server_error)
+
+    # Injeta dados do usuário Telegram nos templates
+    from rage_web.blueprints.auth import inject_telegram_user
+    app.context_processor(inject_telegram_user)
 
     # Disponibiliza helpers em todos os templates
     @app.context_processor

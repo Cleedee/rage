@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Meus Jogos - Rage CCG{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 800px; margin-top: 2rem;">
+  <div class="level mb-4">
+    <div class="level-left">
+      <h1 class="title">
+        <i class="bi bi-controller"></i> Meus Jogos
+      </h1>
+    </div>
+    <div class="level-right">
+      <a href="{{ url_for('game.new_game') }}" class="button is-primary">
+        <i class="bi bi-plus-circle"></i> Novo Jogo
+      </a>
+    </div>
+  </div>
+
+  {% if not bot_games and not web_games %}
+  <div class="notification is-info is-light">
+    <i class="bi bi-info-circle"></i>
+    Você não tem partidas ativas no momento.
+    <br/><br/>
+    <a href="{{ url_for('game.new_game') }}" class="button is-primary is-small">
+      <i class="bi bi-plus-circle"></i> Criar nova partida
+    </a>
+    <a href="https://t.me/furia_ccg_bot" class="button is-info is-small ml-2">
+      <i class="bi bi-telegram"></i> Desafiar alguém no Telegram
+    </a>
+  </div>
+  {% endif %}
+
+  {% if bot_games %}
+  <h2 class="subtitle mt-4">
+    <i class="bi bi-chat-dots"></i> Partidas do Telegram
+  </h2>
+  <div class="columns is-multiline">
+    {% for g in bot_games %}
+    <div class="column is-half">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <span class="icon is-large">
+                <i class="bi bi-robot fs-1" style="font-size: 2rem;"></i>
+              </span>
+            </div>
+            <div class="media-content">
+              <p class="title is-5">{{ g.id }}</p>
+              <p class="subtitle is-7">
+                Turno {{ g.turn_number }} — Fase: {{ g.phase }}
+              </p>
+              {% for p in g.players %}
+              <p>
+                <i class="bi bi-person"></i> {{ p.name }}
+                ({{ p.victory_points }} VP)
+                {% if p.id == g.current_player.id %}
+                <span class="tag is-warning is-light">🎯 Jogando</span>
+                {% endif %}
+              </p>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="buttons mt-3">
+            <a href="{{ url_for('game.view_game', game_id=g.id) }}"
+               class="button is-small is-primary" target="_blank">
+              <i class="bi bi-eye"></i> Acompanhar
+            </a>
+            <span class="tag is-light">
+              <i class="bi bi-robot"></i> Bot
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if web_games %}
+  <h2 class="subtitle mt-4">
+    <i class="bi bi-globe"></i> Partidas da Web
+  </h2>
+  <div class="columns is-multiline">
+    {% for gid, g in web_games %}
+    <div class="column is-half">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <span class="icon is-large">
+                <i class="bi bi-globe fs-1" style="font-size: 2rem;"></i>
+              </span>
+            </div>
+            <div class="media-content">
+              <p class="title is-5">{{ g.name or 'Partida' }}</p>
+              <p class="subtitle is-7">
+                Turno {{ g.turn_number }} — Fase: {{ g.phase }}
+              </p>
+              {% for p in g.players %}
+              <p>
+                <i class="bi bi-person"></i> {{ p.name }}
+                ({{ p.victory_points }} VP)
+                {% if p.id == g.current_player.id %}
+                <span class="tag is-warning is-light">🎯 Jogando</span>
+                {% endif %}
+              </p>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="buttons mt-3">
+            <a href="{{ url_for('game.view_game', game_id=gid) }}"
+               class="button is-small is-primary" target="_blank">
+              <i class="bi bi-eye"></i> Acompanhar
+            </a>
+            <span class="tag is-light">
+              <i class="bi bi-globe"></i> Web
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

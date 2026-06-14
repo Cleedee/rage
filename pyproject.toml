@@ -10,6 +10,7 @@ dependencies = [
     "flask-sqlalchemy>=3.1.1",
     "flask-wtf>=1.2.2",
     "python-slugify>=8.0.4",
+    "python-telegram-bot>=22.8",
 ]
 
 [tool.setuptools.packages]
@@ -18,6 +19,7 @@ find = {}
 [project.scripts]
 rage-match = "rage_web.game_engine.match:main"
 rage-cli = "rage_web.game_engine.cli:main"
+rage-bot = "rage_web.telegram_bot.bot:main"
 
 [dependency-groups]
 dev = [

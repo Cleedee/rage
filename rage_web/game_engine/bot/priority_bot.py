@@ -1384,15 +1384,19 @@ class PriorityBot:
                     # antes de cair em acoes basicas (strike/claw/bite).
                     carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
                     if carta_acao and carta_combate:
-                        result = declare_action(g, cid, carta_acao)
+                        # ── Passa a carta de combate original (regra 6.4) ──
+                        # A carta sera anexada ao alvo como dano na resolucao,
+                        # em vez de criar uma damage card copia.
+                        result = declare_action(g, cid, carta_acao,
+                                                carta_combate=carta_combate)
                         if result:
                             # P8: acao virtual 'dano_' ja consumiu a carta
                             if not carta_acao.startswith('dano_'):
-                                # P4: consome a carta da mao de combate
+                                # P4: remove a carta da mao de combate
+                                # (ela sera anexada ao alvo na resolucao)
                                 if carta_combate in self.player.combat_hand:
                                     self.player.combat_hand.remove(carta_combate)
-                                    carta_combate.zone = Zone.DISCARD_COMBAT
-                                    self.player.discard_combat.append(carta_combate)
+                                    carta_combate.zone = Zone.OUT_OF_PLAY
                             self._usou_carta_combate = True
                             g.add_log(f'{self.player.name} usou carta de combate '
                                       f'{carta_combate.name} como {carta_acao}')
@@ -1432,10 +1436,10 @@ class PriorityBot:
                                 if acao_bluff:
                                     if carta_bluff in self.player.combat_hand:
                                         self.player.combat_hand.remove(carta_bluff)
-                                        carta_bluff.zone = Zone.DISCARD_COMBAT
-                                        self.player.discard_combat.append(carta_bluff)
+                                        carta_bluff.zone = Zone.OUT_OF_PLAY
                                     resultado_bluff = declare_action(
-                                        g, cid, acao_bluff)
+                                        g, cid, acao_bluff,
+                                        carta_combate=carta_bluff)
                                     if resultado_bluff:
                                         g.add_log(f'{self.player.name} jogou '
                                                   f'{carta_bluff.name} como blefe')
@@ -1752,14 +1756,14 @@ class PriorityBot:
                     if card and card.owner_id == self.player_id:
                         carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
                         if carta_acao and carta_combate and self.game.rng.random() < 0.5:
-                            result = declare_action(g, cid, carta_acao)
+                            result = declare_action(g, cid, carta_acao,
+                                                    carta_combate=carta_combate)
                             if result:
                                 # P8: acao virtual 'dano_' ja consumiu a carta
                                 if not carta_acao.startswith('dano_'):
                                     if carta_combate in self.player.combat_hand:
                                         self.player.combat_hand.remove(carta_combate)
-                                        carta_combate.zone = Zone.DISCARD_COMBAT
-                                        self.player.discard_combat.append(carta_combate)
+                                        carta_combate.zone = Zone.OUT_OF_PLAY
                                 return f'declare_{cid}_{carta_acao}'
                     action = self.game.rng.choice(list(COMBAT_ACTIONS))
                     result = declare_action(g, cid, action)
@@ -2946,9 +2950,9 @@ class PriorityBot:
             for c in self.player.combat_hand:
                 nome_acao = (c.name or '').lower().replace(' ', '_')
                 if nome_acao in COMBAT_ACTIONS:
-                    if declare_action(g, dfd, nome_acao):
-                        c.zone = Zone.DISCARD_COMBAT
-                        self.player.discard_combat.append(c)
+                    if declare_action(g, dfd, nome_acao,
+                                     carta_combate=c):
+                        c.zone = Zone.OUT_OF_PLAY
                         if c in self.player.combat_hand:
                             self.player.combat_hand.remove(c)
                         g.add_log(

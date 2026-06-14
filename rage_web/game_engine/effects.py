@@ -1364,6 +1364,8 @@ class ResolvedorEfeitos:
 
         origem.zone = Zone.OUT_OF_PLAY
         alvo.attached_equipment.append(origem)
+        # 🔧 Registra referencia reversa: equipamento -> criatura
+        origem.attached_to = alvo
         self.game.add_log(f'{origem.name} equipado em {alvo.name}')
         return True
 
@@ -2527,6 +2529,12 @@ class ResolvedorEfeitos:
         """Permite uma acao de combate extra por rodada.
 
         Usado por Devilwhip (Rg2 ou menos) e Improvised Weapon (2 danos).
+
+        🔧 Bugfix: O contador de acoes extras e colocado na **criatura**
+        (alvo final ou quem tem o equipamento anexado), nao no equipamento
+        em si. Para equipamentos, a origem (o card equipamento) deve
+        encontrar a criatura que o possui.
+
         params:
         - 'max_rage': rage maximo da acao extra
         - 'qtd_acoes': numero de acoes extras
@@ -2535,20 +2543,43 @@ class ResolvedorEfeitos:
         params = efeito.params or {}
         max_rage = params.get('max_rage', 2)
         qtd = params.get('qtd_acoes', 1)
-        usado_key = f'{id(origem)}_acao_extra_rodada'
+        unblockable = params.get('unblockable', False)
 
-        # Marca disponibilidade no personagem equipado
-        rodada_atual = getattr(self.game, 'combat_round', 0)
-        if getattr(origem, usado_key, -1) >= rodada_atual:
+        # 🔧 Determina em qual criatura colocar o buff:
+        # Se origem esta attached a uma criatura, usa ela.
+        # Senao, usa o proprio origem (se for uma criatura) ou o alvo.
+        criatura_alvo = None
+        if hasattr(origem, 'attached_to') and origem.attached_to:
+            criatura_alvo = origem.attached_to
+        elif hasattr(origem, 'card_type') and 'character' in (origem.card_type or '').lower():
+            criatura_alvo = origem
+        elif isinstance(alvo, CardInstance):
+            criatura_alvo = alvo
+
+        if not criatura_alvo:
+            self.game.add_log(f'{origem.name}: nenhuma criatura alvo para acao extra')
             return False
 
-        setattr(origem, usado_key, rodada_atual)
-        setattr(origem, 'acoes_extras_disponiveis',
-                getattr(origem, 'acoes_extras_disponiveis', 0) + qtd)
-        setattr(origem, 'acoes_extras_max_rage', max_rage)
+        usado_key = f'ac_extra_{id(criatura_alvo)}'
+        rodada_atual = getattr(self.game, 'combat_round', 0)
+
+        # Ja usou esta rodada?
+        if getattr(self.game, usado_key, -1) >= rodada_atual:
+            return False
+
+        # Marca que a criatura ja recebeu o bonus nesta rodada
+        setattr(self.game, usado_key, rodada_atual)
+
+        # Incrementa acoes extras na CRIATURA
+        extras_atuais = getattr(criatura_alvo, 'acoes_extras_disponiveis', 0)
+        setattr(criatura_alvo, 'acoes_extras_disponiveis', extras_atuais + qtd)
+        setattr(criatura_alvo, 'acoes_extras_max_rage', max_rage)
+        if unblockable:
+            setattr(criatura_alvo, 'acoes_extras_unblockable', True)
 
         self.game.add_log(
-            f'{origem.name}: +{qtd} acao(es) extra(s) (Rg<={max_rage})'
+            f'{criatura_alvo.name}: +{qtd} acao(es) extra(s) (Rg<={max_rage})'
+            f'{" [inbloqueavel]" if unblockable else ""}'
         )
         return True
 

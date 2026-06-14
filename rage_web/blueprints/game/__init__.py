@@ -23,7 +23,32 @@ bp = Blueprint('game', __name__, template_folder='templates',
                url_prefix='/game')
 
 # Partidas ativas em memoria
+# Tanto partidas criadas pelo web quanto pelo bot
 _games: dict[str, GameState] = {}
+
+
+def _get_bot_game(game_id: str) -> GameState | None:
+    """Tenta buscar partida do bot Telegram."""
+    try:
+        from rage_web.telegram_bot.handlers import game_manager
+        return game_manager.get_game(game_id)
+    except Exception:
+        return None
+
+
+def _get_bot_games_for_player(telegram_id: int) -> list:
+    """Retorna partidas ativas de um jogador no bot Telegram."""
+    try:
+        from rage_web.telegram_bot.handlers import game_manager
+        session = game_manager.get_player_session(telegram_id)
+        if session:
+            game = game_manager.get_game(session.game_id)
+            if game:
+                from rage_web.game_engine.state import GameState as GS
+                return [game]
+    except Exception:
+        pass
+    return []
 
 
 # ── Serializacao para templates ──
@@ -143,8 +168,11 @@ def view_game(game_id: str):
     """Tela principal da partida."""
     g = _games.get(game_id)
     if not g:
-        return render_template('errors/404.html',
-                               message='Partida nao encontrada'), 404
+        # Tenta buscar partida do bot
+        g = _get_bot_game(game_id)
+        if not g:
+            return render_template('errors/404.html',
+                                   message='Partida nao encontrada'), 404
 
     data = _game_for_template(g)
     return render_template('game/board.html', game=data)
@@ -155,7 +183,9 @@ def game_board_partial(game_id: str):
     """Partial do tabuleiro para refresh HTMX."""
     g = _games.get(game_id)
     if not g:
-        return 'Partida nao encontrada', 404
+        g = _get_bot_game(game_id)
+        if not g:
+            return 'Partida nao encontrada', 404
 
     data = _game_for_template(g)
     return render_template('game/_game_board.html', game=data)
@@ -169,7 +199,9 @@ def game_action(game_id: str):
     """
     g = _games.get(game_id)
     if not g:
-        return 'Partida nao encontrada', 404
+        g = _get_bot_game(game_id)
+        if not g:
+            return 'Partida nao encontrada', 404
 
     # Suporta form-urlencoded e JSON (hx-vals)
     if request.is_json:

@@ -1058,6 +1058,13 @@ def advance_combat_step(game: GameState) -> bool:
         game.combat.bluff_failed.clear()
         game.combat.damage_queue.clear()
         game.combat.attacker_withdrew = False
+        game.combat.extra_declarations.clear()
+        game.combat.played_combat_cards.clear()
+
+        # ── Reaplica efeitos de equipamento por rodada ──
+        # (ex: Devilwhip concede +1 acao extra por rodada)
+        _reaplicar_efeitos_equipamento_rodada(game)
+
         # Nova rodada
         game.combat.step = 'play_card'
         game.add_log(
@@ -1504,13 +1511,16 @@ def _registrar_acao_dano(game: GameState, card: CardInstance,
         'card_name': card.name,
     }
 
-    # Consome a carta da mao de combate
+    # ── Nao descarta a carta imediatamente (regra 6.4) ──
+    # A Combat Action revelada e anexada a criatura alvo como dano.
+    # Na Regeneracao, ela e desanexada e vai para o descarte de combate
+    # do dono da carta. Isso e feito pela funcao anexar_dano() na
+    # resolucao do combate, que usa played_combat_cards.
+    # Por enquanto, apenas remove da mao de combate.
     dono = _find_owner(game, card)
     if dono and card in dono.combat_hand:
         dono.combat_hand.remove(card)
-    card.zone = Zone.DISCARD_COMBAT
-    if dono:
-        dono.discard_combat.append(card)
+    card.zone = Zone.OUT_OF_PLAY
 
     game.add_log(f'  {card.name} registrado como acao de dano '
                  f'(dano: {dano_valor})')
@@ -1519,7 +1529,8 @@ def _registrar_acao_dano(game: GameState, card: CardInstance,
 
 
 def declare_action(game: GameState, card_id: str, action: str,
-                     acoes_extra: Optional[list[str]] = None) -> bool:
+                     acoes_extra: Optional[list[str]] = None,
+                     carta_combate: Optional[CardInstance] = None) -> bool:
     """Declara uma acao de combate para uma criatura.
 
     A ordem da declaracao importa: quem declara por ultimo
@@ -1531,6 +1542,11 @@ def declare_action(game: GameState, card_id: str, action: str,
         action: Nome da acao (ex: 'strike', 'block', 'dodge').
         acoes_extra: Lista opcional de acoes extras permitidas
                       (ex: Combat Actions especificas como 'tail_lash').
+        carta_combate: A carta de Combat Action real que foi jogada
+                       (ex: Surprise Attack, Reckless Swing).
+                       Se fornecida, a carta e rastreada em
+                       game.combat.played_combat_cards para que
+                       possa ser anexada como dano ao alvo (regra 6.4).
 
     Returns:
         True se a declaracao foi aceita.
@@ -1568,7 +1584,27 @@ def declare_action(game: GameState, card_id: str, action: str,
         game.add_log(f'Whip of the Wicked: {erro_whip}')
         return False
 
-    success = game.combat.declare(card_id, action)
+    # ── Verifica se e uma acao extra (Devilwhip, etc.) ──
+    criatura = _find_criatura(game, card_id)
+    is_extra = False
+    if criatura and card_id in game.combat.declarations:
+        # Criatura ja declarou — verifica se tem acoes extras
+        extras = getattr(criatura, 'acoes_extras_disponiveis', 0)
+        if extras > 0:
+            max_rage = getattr(criatura, 'acoes_extras_max_rage', 2)
+            is_extra = True
+            # Decrementa contador de acoes extras
+            setattr(criatura, 'acoes_extras_disponiveis', extras - 1)
+            unblockable = getattr(criatura, 'acoes_extras_unblockable', False)
+            game.add_log(
+                f'  [Acao Extra] {criatura.name} usa acao extra'
+                f' (Rg<={max_rage})'
+                f'{" [inbloqueavel]" if unblockable else ""}'
+            )
+        else:
+            return False  # Ja declarou e nao tem extras
+
+    success = game.combat.declare(card_id, action, extra=is_extra)
     if success:
         last = game.combat.last_to_declare
         card_declaring = _find_card(game, card_id)
@@ -1576,10 +1612,19 @@ def declare_action(game: GameState, card_id: str, action: str,
         # Resolve nome da acao para formato legivel
         from .action_descriptions import _resolve_action_name
         acao_nome = _resolve_action_name(action, card_name, game)
+        extra_tag = ' [EXTRA]' if is_extra else ''
         game.add_log(
-            f'{acao_nome}'
+            f'{acao_nome}{extra_tag}'
             f'{" (Ultimo a Declarar!)" if card_id == last else ""}'
         )
+
+    # ── Rastreia a carta de combate jogada (regra 6.4) ──
+    # Se uma Combat Action real foi usada (ex: Surprise Attack),
+    # armazena a referencia para que ela seja anexada como dano
+    # ao alvo na resolucao do combate, em vez de criar uma copia.
+    if carta_combate is not None and success:
+        game.combat.played_combat_cards[card_id] = carta_combate
+
     return success
 
 
@@ -1688,6 +1733,105 @@ def reveal_all(game: GameState) -> bool:
     # a limpeza de ilegais.
 
     return True
+
+
+def _reaplicar_efeitos_equipamento_rodada(game: GameState) -> None:
+    """Reaplica efeitos de equipamento que duram por rodada.
+
+    Chamado no inicio de cada rodada de combate (between_rounds -> play_card).
+    Percorre todas as criaturas em combate e verifica se possuem
+    equipamentos que concedem acoes extras ou outros efeitos por rodada.
+
+    Exemplos:
+    - Devilwhip (card_id 638): +1 acao extra de combate (Rg<=2, ou Rg<=3 para Bane)
+    """
+    from rage_web.game_engine.effects import CARTAS_EXEMPLO, EfeitoTipo
+
+    combat = game.combat
+    if not combat.is_active:
+        return
+
+    # Coleta todas as criaturas em combate (atacantes + defensores)
+    combatantes_ids = set()
+    for cid in combat.attackers + combat.defenders:
+        if cid != 'hg':
+            combatantes_ids.add(cid)
+
+    for cid in combatantes_ids:
+        criatura = _find_card(game, cid)
+        if not criatura:
+            continue
+
+        # Verifica se a criatura e Bane
+        criatura_type = (criatura.card_type or '').lower()
+        criatura_kw = (criatura.keywords or '').lower()
+        is_bane = 'bane' in criatura_type or 'bane' in criatura_kw
+
+        # Verifica equipamentos anexados
+        for eq in getattr(criatura, 'attached_equipment', []):
+            modelo_id = getattr(eq, 'modelo_id', None)
+            if not modelo_id:
+                continue
+
+            modelo = CARTAS_EXEMPLO.get(modelo_id)
+            if not modelo:
+                continue
+
+            # Procura o melhor efeito ACAO_EXTRA_POR_RODADA aplicavel
+            # (equipamentos com multiplos modos: escolhe o modo correto)
+            melhor_efeito = None
+            melhor_max_rage = -1
+
+            for modo in modelo.modos:
+                for efeito in modo.efeitos:
+                    if efeito.tipo == EfeitoTipo.ACAO_EXTRA_POR_RODADA:
+                        params = efeito.params or {}
+                        max_rage = params.get('max_rage', 2)
+
+                        # Se o modo requer Bane (Rg3+) e a criatura nao e Bane, pula
+                        if max_rage >= 3 and not is_bane:
+                            continue
+                        # Se a criatura e Bane e o modo e Rg2, pode usar mas prefere Rg3
+                        if is_bane and max_rage >= 3:
+                            if melhor_efeito is None or max_rage > melhor_max_rage:
+                                melhor_efeito = efeito
+                                melhor_max_rage = max_rage
+                        elif not is_bane and max_rage <= 2:
+                            if melhor_efeito is None:
+                                melhor_efeito = efeito
+                                melhor_max_rage = max_rage
+
+            if melhor_efeito is None:
+                # Fallback: usa o primeiro efeito encontrado
+                for modo in modelo.modos:
+                    for efeito in modo.efeitos:
+                        if efeito.tipo == EfeitoTipo.ACAO_EXTRA_POR_RODADA:
+                            melhor_efeito = efeito
+                            break
+                    if melhor_efeito:
+                        break
+
+            if not melhor_efeito:
+                continue
+
+            params = melhor_efeito.params or {}
+            max_rage = params.get('max_rage', 2)
+            qtd = params.get('qtd_acoes', 1)
+            unblockable = params.get('unblockable', False)
+
+            effective_max_rage = max_rage
+
+            # Aplica o buff na criatura
+            extras_atuais = getattr(criatura, 'acoes_extras_disponiveis', 0)
+            setattr(criatura, 'acoes_extras_disponiveis', extras_atuais + qtd)
+            setattr(criatura, 'acoes_extras_max_rage', effective_max_rage)
+            if unblockable:
+                setattr(criatura, 'acoes_extras_unblockable', True)
+
+            game.add_log(
+                f'  [Equip] {eq.name} em {criatura.name}: '
+                f'+{qtd} acao extra (Rg<={effective_max_rage})'
+            )
 
 
 def _find_card(game: GameState, card_id: str) -> Optional[CardInstance]:
@@ -2404,7 +2548,8 @@ def resolve_combat(game: GameState) -> bool:
         acao_alvo = game.combat.declarations.get(alvo_id, '')
 
         # Origem precisa acao ofensiva
-        if acao_origem not in ACOES_OFENSIVAS:
+        # Acoes virtuais de dano (dano_<uid>) sao sempre ofensivas
+        if acao_origem not in ACOES_OFENSIVAS and not acao_origem.startswith('dano_'):
             return
 
         # Calcula dono da origem (necessario para Head Butt bounce e dano)
@@ -2615,12 +2760,31 @@ def resolve_combat(game: GameState) -> bool:
                                 f'  Trinity Hive: {origem_card.name} '
                                 f'causa dano agravado!')
 
-        anexar_dano(alvo_card, origem_card, dano, dono_dono,
-                    is_aggravated=(war_knife_aggravated
-                                   or trinity_aggravated))
-        game.add_log(f'  {origem_card.name} causou {dano} de dano a '
-                     f'{alvo_card.name} '
-                     f'({alvo_card.health_current}/{alvo_card.health})')
+        # ── Usa a carta de combate original se disponivel (regra 6.4) ──
+        # Se uma Combat Action real foi jogada (ex: Surprise Attack),
+        # a carta original e anexada ao alvo em vez de criar uma copia.
+        carta_combate = game.combat.played_combat_cards.get(origem_id)
+        if carta_combate is not None:
+            # Usa a carta original como damage card
+            carta_combate.damage = str(dano)
+            carta_combate.is_aggravated = (war_knife_aggravated
+                                            or trinity_aggravated)
+            carta_combate.owner_id = dono_dono
+            alvo_card.attached_damage.append(carta_combate)
+            alvo_card.sync_health()
+            game.add_log(
+                f'  {origem_card.name} usou {carta_combate.name} '
+                f'causando {dano} de dano a {alvo_card.name} '
+                f'({alvo_card.health_current}/{alvo_card.health})')
+        else:
+            # Ataque normal (strike, claw, etc): cria damage card
+            anexar_dano(alvo_card, origem_card, dano, dono_dono,
+                        is_aggravated=(war_knife_aggravated
+                                       or trinity_aggravated))
+            game.add_log(
+                f'  {origem_card.name} causou {dano} de dano a '
+                f'{alvo_card.name} '
+                f'({alvo_card.health_current}/{alvo_card.health})')
 
         # Flip para Crinos: verifica threshold a cada dano aplicado
         # (regra: dano acumulado >= min(rage, health) da forma breed)
@@ -2778,9 +2942,11 @@ def resolve_combat(game: GameState) -> bool:
                 continue
             acao_a = game.combat.declarations.get(a_id, '')
             props_a = COMBAT_ACTION_PROPS.get(acao_a, {})
-            if props_a.get('speed', 'normal') != velocidade:
+            # Acoes virtuais (dano_<uid>) usam speed normal
+            if not acao_a.startswith('dano_') and props_a.get('speed', 'normal') != velocidade:
                 continue
-            if acao_a not in ACOES_OFENSIVAS:
+            if acao_a not in ACOES_OFENSIVAS and not acao_a.startswith('dano_'):
+                continue
                 continue
             # Pack combat: usa target especifico, fallback para pareamento por indice
             d_id = game.combat.targets.get(a_id)
@@ -2800,9 +2966,11 @@ def resolve_combat(game: GameState) -> bool:
                 continue
             acao_d = game.combat.declarations.get(d_id, '')
             props_d = COMBAT_ACTION_PROPS.get(acao_d, {})
-            if props_d.get('speed', 'normal') != velocidade:
+            # Acoes virtuais (dano_<uid>) usam speed normal
+            if not acao_d.startswith('dano_') and props_d.get('speed', 'normal') != velocidade:
                 continue
-            if acao_d not in ACOES_OFENSIVAS:
+            if acao_d not in ACOES_OFENSIVAS and not acao_d.startswith('dano_'):
+                continue
                 continue
             # Pack combat: usa target especifico, fallback para pareamento por indice
             a_id = game.combat.targets.get(d_id)
@@ -3234,8 +3402,8 @@ def _check_hyenas_escape(game: GameState):
 def _check_caern_unwashed_child(game: GameState):
     """Caern of the Unwashed Child (586): oponentes perdem 2 Rage/Gnosis
 
-    "Opponents facing your pack lose either 2 Gnosis or 2 Rage for
-     the duration of the combat (caern holder chooses which)."
+    \"Opponents facing your pack lose either 2 Gnosis or 2 Rage for
+     the duration of the combat (caern holder chooses which).\"""
 
     Aplica o debuff aos personagens do atacante se o defensor
     tiver este Caern. Armazena valores originais em combat_triggers
