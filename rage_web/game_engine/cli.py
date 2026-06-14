@@ -474,6 +474,84 @@ class RageCLI(cmd.Cmd):
 
         print(f'  Jogou: {card.name} ({card.card_type}) no Pack Home')
 
+    def do_RECRUIT_STATUS(self, arg):
+        """RECRUIT_STATUS - Mostra inimigos disponiveis no Hunting Grounds."""
+        g = self.game
+        cp = g.current_player
+        if not cp.hunting_grounds:
+            print('Nenhum inimigo no Hunting Grounds.')
+            return
+        print('\n  Inimigos no Hunting Grounds:')
+        for c in cp.hunting_grounds:
+            ren = getattr(c, 'renown', 1) or 1
+            vivo = '❤️' if c.health_current > 0 else '💀'
+            print(f'    [{c.card_id}] {vivo} {c.name:30s} '
+                  f'Renown {ren}  HP {c.health_current}/{c.health}')
+
+    def do_RECRUIT(self, arg):
+        """RECRUIT <id1> [id2 ...] - Pre-seleciona alvos para Allies Below.
+
+        Antes de usar ANUNCIAR com Allies Below, defina exatamente
+        quais inimigos do HG recrutar. Se nao usar, o motor
+        auto-seleciona os de menor Renome (maximiza quantidade).
+
+        Exemplos:
+          RECRUIT_STATUS          - lista inimigos disponiveis
+          RECRUIT 1001 1003       - recruta apenas Snake e Lion
+          RECRUIT clear           - limpa selecao (volta a auto)
+        """
+        g = self.game
+        cp = g.current_player
+
+        if not arg.strip():
+            print('Uso: RECRUIT <id1> [id2 ...] | RECRUIT_STATUS | RECRUIT clear')
+            return
+
+        arg = arg.strip().lower()
+        if arg == 'clear':
+            chave = f'recrutar_{cp.id}'
+            if chave in g.pending_targets:
+                del g.pending_targets[chave]
+            print('Selecao de recrutamento limpa. Volta ao auto-select.')
+            return
+
+        if arg == 'status':
+            # Redireciona para RECRUIT_STATUS
+            return self.do_RECRUIT_STATUS('')
+
+        try:
+            ids = [int(x) for x in arg.split()]
+        except ValueError:
+            print('IDs invalidos. Use: RECRUIT <id1> [id2 ...]')
+            return
+
+        # Valida que os alvos existem no HG do jogador
+        alvos = []
+        for cid in ids:
+            encontrado = None
+            for c in cp.hunting_grounds:
+                if c.card_id == cid and c.health_current > 0:
+                    encontrado = c
+                    break
+            if not encontrado:
+                print(f'  Inimigo {cid} nao encontrado no HG ou esta morto.')
+                return
+            alvos.append(encontrado)
+
+        # Verifica limite de 10 Renown
+        total_ren = sum(getattr(c, 'renown', 1) or 1 for c in alvos)
+        if total_ren > 10:
+            print(f'  Renome total ({total_ren}) excede o limite de 10.')
+            return
+
+        # Salva pre-selecao
+        chave = f'recrutar_{cp.id}'
+        g.pending_targets[chave] = alvos
+        nomes = ', '.join(c.name for c in alvos)
+        print(f'  Alvos pre-selecionados para recrutamento: {nomes}')
+        print(f'  Renome total: {total_ren}/10')
+        print(f'  Use ANUNCIAR <indice> com Allies Below para aplicar.')
+
     def do_ANUNCIAR(self, arg):
         """ANUNCIAR <indice> - Anuncia uma carta de efeito da mao.
 

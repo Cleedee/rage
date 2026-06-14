@@ -2995,31 +2995,51 @@ class ResolvedorEfeitos:
                  if c.health_current > 0]
         if not alvos:
             self.game.add_log(
-                f'{origem.name}: nenhum inimigo no Hunting Grounds para recrutar'
-            )
+                f'{origem.name}: nenhum inimigo no Hunting Grounds para '
+                f'recrutar')
             return False
 
-        # Filtra por Renome (ate max_renown)
-        # Ordena por menor Renome primeiro para maximizar quantidade
-        alvos.sort(key=lambda c: getattr(c, 'renown', 1) or 1)
-        recrutados = []
-        renown_total = 0
-        for c in alvos:
-            ren = getattr(c, 'renown', 1) or 1
-            if renown_total + ren <= max_renown:
-                recrutados.append(c)
-                renown_total += ren
-            else:
-                break
+        # Verifica se o jogador pre-selecionou alvos via game.pending_targets
+        chave_pend = f'recrutar_{jogador.id}'
+        alvos_pendentes = self.game.pending_targets.pop(chave_pend, None)
+        if alvos_pendentes is not None:
+            # Filtra apenas os pre-selecionados que estao no HG
+            ids_pend = set(str(c.card_id) for c in alvos_pendentes)
+            recrutar = [c for c in alvos if str(c.card_id) in ids_pend]
+            if not recrutar:
+                self.game.add_log(
+                    f'{origem.name}: nenhum dos alvos pre-selecionados '
+                    f'foi encontrado no HG')
+                return False
+            # Verifica limite de Renome
+            renown_total = sum(
+                getattr(c, 'renown', 1) or 1 for c in recrutar)
+            if renown_total > max_renown:
+                self.game.add_log(
+                    f'{origem.name}: alvos pre-selecionados excedem '
+                    f'{max_renown} Renome ({renown_total})')
+                return False
+        else:
+            # Auto-seleciona: prioriza menor Renome para maximizar quantidade
+            alvos.sort(key=lambda c: getattr(c, 'renown', 1) or 1)
+            recrutar = []
+            renown_total = 0
+            for c in alvos:
+                ren = getattr(c, 'renown', 1) or 1
+                if renown_total + ren <= max_renown:
+                    recrutar.append(c)
+                    renown_total += ren
+                else:
+                    break
 
-        if not recrutados:
+        if not recrutar:
             self.game.add_log(
                 f'{origem.name}: nenhum inimigo cabe no limite de '
                 f'{max_renown} Renome')
             return False
 
         # ── Move do HG para PACK_HOME (temporario) ──
-        for c in recrutados:
+        for c in recrutar:
             if c in jogador.hunting_grounds:
                 jogador.hunting_grounds.remove(c)
             c.zone = Zone.PACK_HOME
@@ -3029,16 +3049,16 @@ class ResolvedorEfeitos:
                 c.restricoes.append('recrutado_temporario')
 
         # ── Compra combat cards ──
-        total_comprar = len(recrutados) * comprar_por
+        total_comprar = len(recrutar) * comprar_por
         if total_comprar > 0:
             jogador.draw_combat(total_comprar)
             self.game.add_log(
-                f'{origem.name}: recrutou {len(recrutados)} inimigos '
+                f'{origem.name}: recrutou {len(recrutar)} inimigos '
                 f'({renown_total} Renome), comprou {total_comprar} '
                 f'combat cards')
         else:
             self.game.add_log(
-                f'{origem.name}: recrutou {len(recrutados)} inimigos '
+                f'{origem.name}: recrutou {len(recrutar)} inimigos '
                 f'({renown_total} Renome)')
 
         # ── Marca como usado (once per game) ──

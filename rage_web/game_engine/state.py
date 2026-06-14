@@ -1052,6 +1052,9 @@ class GameState:
 
     # Rastreio de alpha por turno (ex: Allonzo Montoya nao pode 2x seguido)
     last_alpha_per_player: dict = field(default_factory=dict)
+
+    # Alvos pre-selecionados para efeitos (ex: Allies Below - escolha do jogador)
+    pending_targets: dict = field(default_factory=dict)
     """player_id -> card_id do alpha do ultimo combate."""
 
     # Efeitos ja usados neste turno (ex: Owl 1x/turno)
