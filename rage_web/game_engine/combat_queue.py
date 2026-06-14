@@ -2770,8 +2770,10 @@ def resolve_combat(game: GameState) -> bool:
             carta_combate.is_aggravated = (war_knife_aggravated
                                             or trinity_aggravated)
             carta_combate.owner_id = dono_dono
+            carta_combate.zone = Zone.OUT_OF_PLAY
             alvo_card.attached_damage.append(carta_combate)
             alvo_card.sync_health()
+            del game.combat.played_combat_cards[origem_id]
             game.add_log(
                 f'  {origem_card.name} usou {carta_combate.name} '
                 f'causando {dano} de dano a {alvo_card.name} '

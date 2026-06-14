@@ -250,7 +250,7 @@ def criar_carta_dano(origem: CardInstance, valor: int,
     distinguivel da carta original na analise e debug.
     """
     return CardInstance(
-        card_id=origem.card_id,
+        card_id=0,
         name=origem.name,
         card_type='Damage Card',
         zone=Zone.OUT_OF_PLAY,
