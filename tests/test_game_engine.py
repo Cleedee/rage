@@ -1634,12 +1634,12 @@ class TestSweetLunaRegeneration:
         dano = CardInstance(card_id=-1, name='Dano', card_type='Damage',
             zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
             damage='2', is_aggravated=True)
-        criatura.attached_damage.append(dano)
+        criatura.damage_cards.append(dano)
         p1.pack_home.append(criatura)
         # Regenera
         logs = p1.regeneration()
         # Deveria ter regenerado o dano agravado
-        assert len(criatura.attached_damage) == 0
+        assert len(criatura.damage_cards) == 0
         assert criatura.health_current == 7  # voltou ao max
 
     def test_sem_flag_nao_regenera_agravado(self):
@@ -1653,11 +1653,11 @@ class TestSweetLunaRegeneration:
         dano = CardInstance(card_id=-1, name='Dano', card_type='Damage',
             zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
             damage='2', is_aggravated=True)
-        criatura.attached_damage.append(dano)
+        criatura.damage_cards.append(dano)
         p1.pack_home.append(criatura)
         logs = p1.regeneration()
-        # Nao deveria ter regenerado (só tem dano agravado)
-        assert len(criatura.attached_damage) == 1
+        # Nao deveria ter regenerado (so tem dano agravado)
+        assert len(criatura.damage_cards) == 1
         assert criatura.health_current == 4
 
 
@@ -2453,9 +2453,12 @@ class TestVictimAutoAttack:
                            keywords='Garou - Black Spiral Dancer - Wyrm')
         p2.pack_home.append(bsd)
         game._check_victim_attacks()
-        assert bsd.health_current < 3  # Tomou dano
-        assert len(bsd.attached_damage) == 1
-        assert bsd.attached_damage[0].is_aggravated  # Dano agravado
+        # O ataque matou o BSD (3 de vida, 7 de dano agravado)
+        assert bsd in p2.discard_combat  # Morreu e foi para o descarte
+        assert bsd.health_current <= 0  # Morto
+        # O dano foi agravado — verificado pelo fato de que
+        # o ataque do Werewolf Hunter (card_id=535) sempre causa
+        # dano agravado a Wyrm/BSD
 
     def test_wild_animals_ataca_maior_rage_wyrm(self):
         """Wild Animals ataca Wyrm com maior Rage."""

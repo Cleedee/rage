@@ -625,25 +625,40 @@ class ResolvedorEfeitos:
         qtd = efeito.quantidade or 2
         if isinstance(alvo, CardInstance):
             cura_real = 0
-            # Remove damage cards ate atingir a quantidade de cura
-            # (ordem: menor valor primeiro)
-            while cura_real < qtd and alvo.attached_damage:
-                # Encontra a damage card de menor valor
-                menor = min(alvo.attached_damage,
+
+            # 1. Remove damage cards (Combat Actions) — menor valor primeiro
+            while cura_real < qtd and alvo.damage_cards:
+                menor = min(alvo.damage_cards,
                             key=lambda d: int(d.damage or '0'))
                 valor = int(menor.damage or '0')
-                # Quanto podemos curar com esta card?
                 espaco = qtd - cura_real
                 if valor <= espaco:
-                    # Remove a card inteira
-                    alvo.attached_damage.remove(menor)
+                    alvo.damage_cards.remove(menor)
+                    # Descarta a Combat Action (vai para o dono do alvo)
+                    dono_alvo = None
+                    for p in self.game.players:
+                        if alvo.owner_id == p.id or alvo in p.pack_home \
+                                or alvo in p.hunting_grounds or alvo in p.umbra:
+                            dono_alvo = p
+                            break
+                    if dono_alvo:
+                        menor.zone = Zone.DISCARD_COMBAT
+                        dono_alvo.discard_combat.append(menor)
                     cura_real += valor
                 else:
-                    # Cura parcial: reduz o valor da damage card
-                    # (marca o novo valor no campo damage)
                     menor.damage = str(valor - espaco)
                     cura_real = qtd
-            # Sincroniza health_current
+
+            # 2. Se ainda precisa curar, reduz dano basico nao-agravado
+            while cura_real < qtd and alvo.basic_damage_taken > 0:
+                alvo.basic_damage_taken = max(0, alvo.basic_damage_taken - 1)
+                cura_real += 1
+
+            # 3. Se ainda precisa curar, reduz dano basico agravado
+            while cura_real < qtd and alvo.basic_aggravated_damage > 0:
+                alvo.basic_aggravated_damage = max(0, alvo.basic_aggravated_damage - 1)
+                cura_real += 1
+
             alvo.sync_health()
             self.game.add_log(
                 f'{alvo.name} curou {cura_real} '
@@ -2287,11 +2302,13 @@ class ResolvedorEfeitos:
                 gft.zone = Zone.DISCARD_SEPT
                 dono_antigo.discard_sept.append(gft)
             card_inst.attached_gifts.clear()
-            # Descarta damage cards anexados
-            for dmg in list(card_inst.attached_damage):
+            # Descarta damage cards (Combat Actions) anexadas
+            for dmg in list(card_inst.damage_cards):
                 dmg.zone = Zone.DISCARD_COMBAT
                 dono_antigo.discard_combat.append(dmg)
-            card_inst.attached_damage.clear()
+            card_inst.damage_cards.clear()
+            card_inst.basic_damage_taken = 0
+            card_inst.basic_aggravated_damage = 0
             # Remove da zona atual
             removido = False
             for zlist in (dono_antigo.pack_home,

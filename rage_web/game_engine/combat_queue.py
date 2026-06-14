@@ -273,9 +273,11 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         descartar_anexos(alvo, dono_alvo)
     else:
         # Sem dono (HG global): descarta anexos sem dono
-        for anexo in list(alvo.attached_damage):
+        for anexo in list(alvo.damage_cards):
             anexo.zone = Zone.OUT_OF_PLAY
-        alvo.attached_damage.clear()
+        alvo.damage_cards.clear()
+        alvo.basic_damage_taken = 0
+        alvo.basic_aggravated_damage = 0
         for eq in list(alvo.attached_equipment):
             eq.zone = Zone.OUT_OF_PLAY
         alvo.attached_equipment.clear()
@@ -2584,7 +2586,8 @@ def resolve_combat(game: GameState) -> bool:
                 if acao_origem == 'head_butt':
                     keywords = (origem_card.keywords or '').lower()
                     if 'mokole' not in keywords:
-                        anexar_dano(origem_card, origem_card, 4, dono_dono)
+                        origem_card.basic_damage_taken += 4
+                        origem_card.sync_health()
                         _flipar_para_crinos(game, origem_card)
                         game.add_log(
                             f'  Head Butt esquivado! {origem_card.name} '
@@ -2603,7 +2606,8 @@ def resolve_combat(game: GameState) -> bool:
                 if acao_origem == 'head_butt':
                     keywords = (origem_card.keywords or '').lower()
                     if 'mokole' not in keywords:
-                        anexar_dano(origem_card, origem_card, 4, dono_dono)
+                        origem_card.basic_damage_taken += 4
+                        origem_card.sync_health()
                         _flipar_para_crinos(game, origem_card)
                         game.add_log(
                             f'  Head Butt bloqueado! {origem_card.name} '
@@ -2771,7 +2775,7 @@ def resolve_combat(game: GameState) -> bool:
                                             or trinity_aggravated)
             carta_combate.owner_id = dono_dono
             carta_combate.zone = Zone.OUT_OF_PLAY
-            alvo_card.attached_damage.append(carta_combate)
+            alvo_card.damage_cards.append(carta_combate)
             alvo_card.sync_health()
             del game.combat.played_combat_cards[origem_id]
             game.add_log(
@@ -2779,12 +2783,21 @@ def resolve_combat(game: GameState) -> bool:
                 f'causando {dano} de dano a {alvo_card.name} '
                 f'({alvo_card.health_current}/{alvo_card.health})')
         else:
-            # Ataque normal (strike, claw, etc): cria damage card
-            anexar_dano(alvo_card, origem_card, dano, dono_dono,
-                        is_aggravated=(war_knife_aggravated
-                                       or trinity_aggravated))
+            # Ataque normal (strike, claw, etc): aplica dano diretamente
+            # sem criar damage card virtual (regra 6.4 — so Combat Actions
+            # reais viram damage cards anexadas)
+            # Purity of Spirit: converte dano agravado em normal
+            eh_agravado = (war_knife_aggravated or trinity_aggravated)
+            if eh_agravado and getattr(alvo_card, 'ignorar_agravado', False):
+                eh_agravado = False
+            if eh_agravado:
+                alvo_card.basic_aggravated_damage += dano
+            else:
+                alvo_card.basic_damage_taken += dano
+            alvo_card.sync_health()
             game.add_log(
-                f'  {origem_card.name} causou {dano} de dano a '
+                f'  {origem_card.name} causou {dano} de dano '
+                f'{"agravado" if eh_agravado else ""} a '
                 f'{alvo_card.name} '
                 f'({alvo_card.health_current}/{alvo_card.health})')
 
@@ -2864,7 +2877,9 @@ def resolve_combat(game: GameState) -> bool:
                     # Cura todo dano
                     alvo_card.health_current = alvo_card.health
                     alvo_card.damage_aggravated = 0
-                    alvo_card.attached_damage.clear()
+                    alvo_card.damage_cards.clear()
+                    alvo_card.basic_damage_taken = 0
+                    alvo_card.basic_aggravated_damage = 0
                     # Move da zona do dono original para Pack Home do atacante
                     for zone_list in (dono_alvo.pack_home,
                                       dono_alvo.hunting_grounds,
@@ -3374,8 +3389,7 @@ def _check_hyenas_escape(game: GameState):
     """Clan of Hyenas (96): foge do combate se tomou >=3 dano neste round.
 
     Verifica todos os combatentes. Se um deles e o Clan of Hyenas
-    e tem >=3 de dano total anexado (attached_damage), remove-o
-    do combate e devolve ao pack home.
+    e tem >=3 de dano total, remove-o do combate e devolve ao pack home.
     """
     from rage_web.game_engine.combat_queue import get_combatants
     combatentes = get_combatants(game)
@@ -3383,8 +3397,7 @@ def _check_hyenas_escape(game: GameState):
         carta = _find_card(game, cid)
         if not carta or carta.card_id != 96:
             continue
-        dano_total = sum(getattr(d, 'rage', 0) or 0
-                        for d in carta.attached_damage)
+        dano_total = carta.total_dano
         if dano_total >= 3:
             dono = _find_owner(game, carta)
             if dono and carta in dono.pack_home:
@@ -3561,7 +3574,9 @@ def _check_caern_snow_leopard(game: GameState, alvo: CardInstance,
     alvo.zone = Zone.PACK_HOME
     alvo.zone_original = Zone.PACK_HOME
     alvo.health_current = alvo.health
-    alvo.attached_damage.clear()
+    alvo.damage_cards.clear()
+    alvo.basic_damage_taken = 0
+    alvo.basic_aggravated_damage = 0
     alvo.attached_equipment.clear()
     dono.pack_home.append(alvo)
 

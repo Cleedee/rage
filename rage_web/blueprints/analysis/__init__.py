@@ -134,8 +134,8 @@ def _card_info(c) -> dict:
         # Modificadores
         'modifiers': getattr(c, 'modifiers', {}),
         # Dano anexado
-        'total_dano_anexado': getattr(c, 'total_dano_anexado', 0),
-        'attached_damage_count': len(getattr(c, 'attached_damage', [])),
+        'total_dano_anexado': getattr(c, 'total_dano', 0),
+        'damage_cards_count': len(getattr(c, 'damage_cards', [])),
         # Equipamentos anexados
         'attached_equipment': [
             {

@@ -159,9 +159,8 @@ def _card_detail(card: CardInstance) -> str:
     if card.text:
         lines.append(f'   _{card.text[:80]}_')
     # Cartas anexadas (damage, equipment)
-    if card.attached_damage:
-        dano_total = sum(int(d.damage or '0') for d in card.attached_damage)
-        lines.append(f'   {ICONES["death"]} Dano anexado: {dano_total}')
+    if card.total_dano:
+        lines.append(f'   {ICONES["death"]} Dano: {card.total_dano}')
     if card.attached_equipment:
         eqs = ', '.join(e.name[:12] for e in card.attached_equipment)
         lines.append(f'   {ICONES["equip"]} {eqs}')
@@ -445,9 +444,8 @@ def render_card_portrait(card: CardInstance) -> str:
 
     # Dano anexado
     dmg_str = ''
-    if card.attached_damage:
-        total = sum(int(d.damage or '0') for d in card.attached_damage)
-        dmg_str = f'{ICONES["death"]} Dano: {total}'
+    if card.total_dano:
+        dmg_str = f'{ICONES["death"]} Dano: {card.total_dano}'
     eq_str = ''
     if card.attached_equipment:
         eqs = ', '.join(e.name[:10] for e in card.attached_equipment)

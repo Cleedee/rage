@@ -129,8 +129,10 @@ class CardInstance:
     restricoes: list[str] = field(default_factory=list)
     # Restricoes ativas: 'nao_jogar_rage_3+', 'nao_fugir', etc.
     is_frenzied: bool = False
-    attached_damage: list[CardInstance] = field(default_factory=list)
-    # Cartas de dano anexadas a esta criatura (regra 6.4)
+    basic_damage_taken: int = 0  # Dano acumulado de ataques basicos (strike, claw, etc)
+    basic_aggravated_damage: int = 0  # Dano agravado de ataques basicos
+    damage_cards: list[CardInstance] = field(default_factory=list)
+    # Cartas de combate reais (Combat Actions) anexadas como dano (regra 6.4)
     attached_equipment: list[CardInstance] = field(default_factory=list)
     attached_to: Optional[CardInstance] = None  # Se for equipamento, referencia a criatura que o possui
     # Equipamentos anexados a esta criatura
@@ -143,12 +145,12 @@ class CardInstance:
 
     @property
     def total_dano(self) -> int:
-        """Soma do valor de todas as damage cards anexadas.
+        """Soma de todo o dano sofrido: damage_cards (Combat Actions) + ataques basicos.
 
-        Regra (6.4): cada damage card tem um valor (dano causado).
         A criatura morre quando total_dano >= health.
         """
-        return sum(int(d.damage or '0') for d in self.attached_damage)
+        dano_cartas = sum(int(d.damage or '0') for d in self.damage_cards)
+        return dano_cartas + self.basic_damage_taken + self.basic_aggravated_damage
 
     def sync_health(self) -> int:
         """Recalcula health_current a partir de health - total_dano.
@@ -238,52 +240,36 @@ class CardInstance:
             self.buff_reducao_dano = max(0, self.buff_reducao_dano - valor)
 
 
-def criar_carta_dano(origem: CardInstance, valor: int,
-                     dono_id: str, is_aggravated: bool = False
-                     ) -> CardInstance:
-    """Cria uma carta de dano a partir da origem.
-
-    Regra (6.4): quando um card causa dano a uma criatura,
-    ele se torna uma damage card anexada sob a criatura.
-
-    A damage card recebe card_type='Damage Card' para ser
-    distinguivel da carta original na analise e debug.
-    """
-    return CardInstance(
-        card_id=0,
-        name=origem.name,
-        card_type='Damage Card',
-        zone=Zone.OUT_OF_PLAY,
-        owner_id=dono_id,
-        controller_id=dono_id,
-        damage=str(valor),
-        is_aggravated=is_aggravated,
-    )
-
-
 def anexar_dano(alvo: CardInstance, origem: CardInstance,
                 valor: int, dono_id: str,
-                is_aggravated: bool = False) -> CardInstance:
-    """Aplica dano e anexa a damage card a uma criatura.
+                is_aggravated: bool = False,
+                carta_combate: Optional[CardInstance] = None) -> None:
+    """Aplica dano a uma criatura.
 
-    1. Cria a damage card a partir da origem (regra 6.4).
-    2. Anexa a `alvo.attached_damage`.
-    3. Recalcula `health_current` via sync_health().
+    Se `carta_combate` for fornecido (Combat Action real), a carta
+    e anexada a `alvo.damage_cards` como evidencia do dano.
+    Caso contrario (ataque basico: strike, claw, etc), incrementa
+    `basic_damage_taken` — sem criar card virtual no descarte.
 
     Se o alvo tiver modifier 'ignorar_agravado' (Purity of Spirit),
     dano agravado e convertido em normal.
-
-    Returns:
-        A damage card criada.
     """
     # Purity of Spirit: converte dano agravado em normal
     if is_aggravated and getattr(alvo, 'ignorar_agravado', False):
         is_aggravated = False
 
-    damage_card = criar_carta_dano(origem, valor, dono_id, is_aggravated)
-    alvo.attached_damage.append(damage_card)
+    if carta_combate is not None:
+        # Combat Action real anexada como dano
+        carta_combate.damage = str(valor)
+        carta_combate.is_aggravated = is_aggravated
+        carta_combate.owner_id = dono_id
+        carta_combate.zone = Zone.OUT_OF_PLAY
+        alvo.damage_cards.append(carta_combate)
+    else:
+        # Ataque basico: so incrementa contador
+        alvo.basic_damage_taken += valor
+
     alvo.sync_health()
-    return damage_card
 
 
 def descartar_anexos(card: CardInstance, dono: PlayerState):
@@ -298,8 +284,8 @@ def descartar_anexos(card: CardInstance, dono: PlayerState):
     """
     from rage_web.game_engine.rules import zona_descarte
 
-    # Descarta damage cards (regra 6.4)
-    for anexo in card.attached_damage:
+    # Descarta damage cards (sao Combat Actions reais anexadas como dano)
+    for anexo in card.damage_cards:
         zona = zona_descarte(anexo.card_type or '')
         if zona == 'discard_combat':
             anexo.zone = Zone.DISCARD_COMBAT
@@ -307,7 +293,9 @@ def descartar_anexos(card: CardInstance, dono: PlayerState):
         else:
             anexo.zone = Zone.DISCARD_SEPT
             dono.discard_sept.append(anexo)
-    card.attached_damage.clear()
+    card.damage_cards.clear()
+    card.basic_damage_taken = 0
+    card.basic_aggravated_damage = 0  # Reseta dano de ataques basicos
     # Descarta equipamentos anexados (regra 6.4.2)
     for eq in card.attached_equipment:
         zona = zona_descarte(eq.card_type or '')
@@ -560,7 +548,8 @@ class PlayerState:
         for c in self.pack_home:
             if not self._pode_regenerar(c):
                 continue
-            if not c.attached_damage:
+            # Verifica se ha dano para regenerar
+            if not c.damage_cards and c.basic_damage_taken <= 0:
                 continue
             # Trinity Hive: BSD so regeneram na Umbra
             if trinity_hive_ativa:
@@ -574,26 +563,39 @@ class PlayerState:
                     if 'pode_regenerar_agravado' not in c.restricoes:
                         c.restricoes.append('pode_regenerar_agravado')
 
-            # Filtra damage cards: so pode regenerar nao-agravadas,
-            # a menos que a criatura tenha 'pode_regenerar_agravado'
+            # Tenta regenerar dano de Combat Actions primeiro
             pode_agravado = 'pode_regenerar_agravado' in c.restricoes
-            if pode_agravado:
-            # Pode regenerar qualquer dano (incluindo agravado)
-                normais = list(c.attached_damage)
-            else:
-                # Filtra apenas damage cards nao-agravadas
-                normais = [d for d in c.attached_damage
-                           if not d.is_aggravated]
-            if not normais:
-                logs.append(f'{c.name} tem apenas dano agravado')
-                continue
-            # Remove a de menor valor
-            menor = min(normais, key=lambda d: int(d.damage or '0'))
-            valor = int(menor.damage or '0')
-            c.attached_damage.remove(menor)
-            c.health_current = min(c.health_current + valor, c.health)
-            logs.append(f'{c.name} regenerou {valor} de dano '
-                        f'({c.health_current}/{c.health})')
+            if c.damage_cards:
+                if pode_agravado:
+                    candidatas = list(c.damage_cards)
+                else:
+                    candidatas = [d for d in c.damage_cards
+                                  if not d.is_aggravated]
+                if candidatas:
+                    menor = min(candidatas,
+                                key=lambda d: int(d.damage or '0'))
+                    valor = int(menor.damage or '0')
+                    c.damage_cards.remove(menor)
+                    menor.zone = Zone.DISCARD_COMBAT
+                    self.discard_combat.append(menor)
+                    c.health_current = min(c.health_current + valor,
+                                           c.health)
+                    logs.append(f'{c.name} regenerou {valor} de dano '
+                                f'({c.health_current}/{c.health})')
+                    continue
+
+            # Se nao ha Combat Actions para regenerar, regenera dano basico
+            if c.basic_damage_taken > 0:
+                # Regenera 1 de dano basico nao-agravado por vez
+                c.basic_damage_taken = max(0, c.basic_damage_taken - 1)
+                c.sync_health()
+                logs.append(f'{c.name} regenerou 1 de dano basico '
+                            f'({c.health_current}/{c.health})')
+            elif pode_agravado and c.basic_aggravated_damage > 0:
+                c.basic_aggravated_damage = max(0, c.basic_aggravated_damage - 1)
+                c.sync_health()
+                logs.append(f'{c.name} regenerou 1 de dano agravado '
+                            f'({c.health_current}/{c.health})')
         return logs
 
     def pagar_custo_rage(self, custo: int) -> Optional[str]:
