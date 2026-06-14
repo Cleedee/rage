@@ -33,6 +33,64 @@ def _get_active_equipment(card) -> list:
     return [eq for eq in card.attached_equipment if id(eq) not in disabled]
 
 
+# ── Listas de "acoes" vs "nao-acoes" (Sidebar: Actions and actions) ──
+# Acoes: sao bloqueadas por efeitos de 'impedir_acoes'
+ACOES_QUE_SAO_ACAO: set[str] = {
+    'play_action',          # Jogar Action card
+    'play_gift',            # Jogar Gift card
+    'play_rite',            # Jogar Rite card
+    'play_caern_territory', # Jogar Caern ou Territory
+    'equipar',              # Equipar
+    'ally_recruit',         # Trazer Ally ao jogo
+    'step_sideways',        # Stepping sideways
+    'play_moot_bm',         # Jogar Moot ou Board Meeting
+    'votar_junta',          # Votar numa Junta
+    'alpha_action',         # Undertaking an alpha action
+    'step_in',              # Stepping in
+    'defender_territorio',  # Defending a Territory
+    'defender_battlefield', # Defending a Battlefield
+    'combat_action',        # Playing a Combat Action
+}
+# Naoo-acoes: NAO sao bloqueadas por impedir_acoes
+ACOES_QUE_NAO_SAO_ACAO: set[str] = {
+    'use_ability',          # Usar habilidade especial
+    'play_event',           # Jogar Event card
+    'play_quest',           # Jogar Quest card
+    'play_past_life',       # Jogar Past Life
+    'use_equipment',        # Usar Equipment
+    'play_battlefield',     # Jogar Battlefield
+    'bring_prey',           # Trazer Prey ao jogo
+    'use_caern_ability',    # Usar habilidade de Caern/Territory
+    'regenerar',            # Regenerating
+    'combat_event',         # Jogar Combat Event
+    'ser_alpha',            # Being Alpha
+    'withdraw',             # Withdrawing do combate
+}
+
+
+def pode_tomar_acao(criatura, tipo_acao: str) -> bool:
+    """Verifica se a criatura pode tomar um tipo de acao.
+
+    Regra "Sidebar: Actions and actions":
+    - Se 'impedir_acoes' bloqueia a criatura, apenas acoes
+      na lista ACOES_QUE_NAO_SAO_ACAO sao permitidas.
+    - ACOES_QUE_SAO_ACAO sao bloqueadas.
+
+    Args:
+        criatura: CardInstance da criatura.
+        tipo_acao: String identificando o tipo de acao.
+
+    Returns:
+        True se a criatura pode realizar a acao.
+    """
+    if not hasattr(criatura, 'restricoes'):
+        return True
+    if 'nao_pode_agir' not in criatura.restricoes:
+        return True
+    # Se esta impedido de agir, so permite "nao-acoes"
+    return tipo_acao in ACOES_QUE_NAO_SAO_ACAO
+
+
 def _eh_pack_gaia(dono: Optional[PlayerState]) -> bool:
     """Verifica se o dono e um pack Gaia.
     Heuristica: personagens com 'Gaia' no tipo.
@@ -1590,6 +1648,17 @@ def declare_action(game: GameState, card_id: str, action: str,
                 if erro:
                     game.add_log(f'Acao recusada: {erro}')
                     return False
+
+    # ── Sidebar: Actions and actions — Combat Action e ACTION ──
+    # Criaturas impedidas de agir nao podem declarar Combat Actions
+    # (excecao: Combat Events NAO sao acoes — permitidos)
+    if not action.startswith('ce_') and not action.startswith('dano_'):
+        criatura = _find_criatura(game, card_id)
+        if criatura and not pode_tomar_acao(criatura, 'combat_action'):
+            game.add_log(
+                f'{criatura.name} nao pode declarar {action} '
+                f'(impedido de agir)')
+            return False
 
     # Whip of the Wicked (720): oponente deve declarar block/dodge primeiro
     erro_whip = _validar_whip_constraint(game, card_id, action)

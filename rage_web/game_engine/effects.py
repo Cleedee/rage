@@ -1387,6 +1387,14 @@ class ResolvedorEfeitos:
         if not isinstance(alvo, CardInstance):
             return False
 
+        # 4.3.2: Equipar e uma ACTION — criaturas impedidas de agir nao podem equipar
+        from rage_web.game_engine.combat_queue import pode_tomar_acao
+        if not pode_tomar_acao(alvo, 'equipar'):
+            self.game.add_log(
+                f'{alvo.name} nao pode equipar {origem.name} '
+                f'(impedido de agir)')
+            return False
+
         # Valida restricoes de forma do equipamento
         if not self._validar_restricoes_equipamento(origem, alvo):
             return False
