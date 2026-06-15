@@ -6,11 +6,11 @@
   "modos": [
     {
       "descricao": "Proteger Ahroun de dano agravado na Umbra (Gn5)",
-      "condicao_alvo": "criatura_aliada",
+      "condicao_alvo": "umbra_aliada",
       "efeitos": [
         {
           "tipo": "ignorar_dano_agravado",
-          "condicao_alvo": "criatura_aliada",
+          "alvo": "self",
           "params": {
             "duracao": "end_of_turn"
           }

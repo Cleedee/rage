@@ -607,7 +607,8 @@ class ResolvedorEfeitos:
                 damage=str(qtd),
             )
             anexar_dano(alvo, origem, qtd, jogador.id,
-                        carta_combate=carta_dano)
+                        carta_combate=carta_dano,
+                        game=self.game)
             # Registra o dano no log ANTES de processar morte
             # para manter ordem cronologica: dano → destruicao
             self.game.add_log(
@@ -1142,35 +1143,21 @@ class ResolvedorEfeitos:
             )
             return False
 
-        duracao = efeito.params.get('duracao', 'end_of_turn')
-
         # Ativa a protecao contra dano agravado
         alvo.ignorar_agravado = True
 
-        # Registra GameModifier para cleanup no fim do turno
-        modifier = GameModifier(
-            card_uid=id(alvo),
-            modifier='ignorar_agravado',
-            duration=duracao,
-        )
-        self.game.game_modifiers.append(modifier)
-
-        # Remove o Gift da mao e descarta (ja foi usado)
-        self.game.add_log(
-            f'  ✨ {alvo.name} protegido por Purity of Spirit: '
-            f'dano agravado convertido em normal por um turno'
-        )
-
-        # Descarta o Gift apos o efeito
+        # Anexa o Gift a criatura (fica ate descartado apos primeiro uso)
         if origem in jogador.hand:
             jogador.hand.remove(origem)
         elif origem in jogador.combat_hand:
             jogador.combat_hand.remove(origem)
-        origem.zone = Zone.DISCARD_SEPT
-        jogador.discard_sept.append(origem)
+        origem.zone = Zone.PACK_HOME
+        jogador.pack_home.append(origem)
+        alvo.attached_gifts.append(origem)
         self.game.add_log(
-            f'  {origem.name} descartado apos proteger {alvo.name}'
-        )
+            f'  ✨ {alvo.name} protegido por Purity of Spirit: '
+            f'dano agravado convertido em normal ate ocorrer pela '
+            f'primeira vez')
 
         return True
 

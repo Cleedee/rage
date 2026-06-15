@@ -245,7 +245,8 @@ class CardInstance:
 def anexar_dano(alvo: CardInstance, origem: CardInstance,
                 valor: int, dono_id: str,
                 is_aggravated: bool = False,
-                carta_combate: CardInstance = None) -> None:
+                carta_combate: CardInstance = None,
+                game: Optional['GameState'] = None) -> None:
     """Anexa uma Combat Action real como damage card a uma criatura.
 
     Regra (6.4): quando uma Combat Action causa dano, a carta e
@@ -260,9 +261,11 @@ def anexar_dano(alvo: CardInstance, origem: CardInstance,
                          '(Combat Action real). Acoes sinteticas '
                          'foram removidas do motor.')
 
-    # Purity of Spirit: converte dano agravado em normal
+    # Purity of Spirit: converte dano agravado em normal e descarta o Gift
+    destruiu_purity = False
     if is_aggravated and getattr(alvo, 'ignorar_agravado', False):
         is_aggravated = False
+        destruiu_purity = True
 
     carta_combate.damage = str(valor)
     carta_combate.is_aggravated = is_aggravated
@@ -271,6 +274,39 @@ def anexar_dano(alvo: CardInstance, origem: CardInstance,
     alvo.damage_cards.append(carta_combate)
     alvo.sync_health()
 
+    # Descarta Purity of Spirit apos primeiro uso (se converteu dano)
+    if destruiu_purity:
+        for gift in list(alvo.attached_gifts):
+            if getattr(gift, 'modelo_id', '') == 'purity-of-spirit':
+                alvo.attached_gifts.remove(gift)
+                gift.zone = Zone.DISCARD_SEPT
+                # Encontra o dono do gift
+                dono_gift = None
+                if game:
+                    for p in game.players:
+                        if p.id == gift.owner_id:
+                            dono_gift = p
+                            break
+                        if gift in p.pack_home:
+                            dono_gift = p
+                            break
+                if dono_gift is None:
+                    # Fallback: usa dono_id do alvo
+                    if game:
+                        for p in game.players:
+                            if p.id == alvo.owner_id:
+                                dono_gift = p
+                                break
+                if dono_gift:
+                    dono_gift.discard_sept.append(gift)
+                    if game:
+                        game.add_log(
+                            f'Purity of Spirit descartado apos proteger '
+                            f'{alvo.name} de dano agravado')
+                else:
+                    # Ultimo fallback: discarta sem dono
+                    pass
+                break
 
 def descartar_anexos(card: CardInstance, dono: PlayerState,
                      game: Optional[GameState] = None):
@@ -1473,7 +1509,8 @@ class GameState:
                 )
                 anexar_dano(alvo, vitima, dano_base, dono_alvo.id,
                             is_aggravated=agravado,
-                            carta_combate=carta_virtual)
+                            carta_combate=carta_virtual,
+                            game=self)
                 # Flip para Crinos se threshold atingido
                 from rage_web.game_engine.combat_queue import _flipar_para_crinos
                 _flipar_para_crinos(self, alvo)
