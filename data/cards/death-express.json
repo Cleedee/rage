@@ -1,15 +1,15 @@
 {
-  "id": "entrail-rend",
-  "nome": "Entrail Rend",
+  "id": "death-express",
+  "nome": "Death Express",
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 8 de dano (Rage 10+)",
+      "descricao": "Causar 5 de dano; inevitável (Undodgeable)",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
-          "quantidade": 8
+          "quantidade": 5
         }
       ],
       "condicao_uso": ""
@@ -17,14 +17,15 @@
   ],
   "_metadata": {
     "fonte": "gerado_analise",
-    "card_id": 315,
-    "texto_original": "Almost nobody can receive an Entrail Rend and walk away from it.",
-    "keywords": "",
-    "damage": "8",
+    "card_id": 1612,
+    "texto_original": "Undodgeable.",
+    "keywords": "Undodgeable",
+    "damage": "5",
     "rage": 10,
     "gnosis": 0,
     "health": 0,
+    "requires": "",
     "precisa_revisao": false,
-    "slug": "entrail-rend"
+    "slug": "death-express"
   }
 }

@@ -1,0 +1,31 @@
+{
+  "id": "lung-burst",
+  "nome": "Lung Burst",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 6 de dano; alvo joga Combat Actions a +1 Rage ate o fim do combate",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 6
+        }
+      ],
+      "condicao_uso": ""
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado_analise",
+    "card_id": 1450,
+    "texto_original": "A creature damaged by this attack can barely breath and has trouble moving. All Combat Actions it plays until the end of combat cost +1 Rage.",
+    "keywords": "",
+    "damage": "6",
+    "rage": 9,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "Not bluffed",
+    "precisa_revisao": false,
+    "slug": "lung-burst"
+  }
+}

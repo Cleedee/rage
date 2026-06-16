@@ -8,11 +8,28 @@ from rage_web.ext.database import db
 from rage_web.models.card import deck_cards
 
 
+# Estrategias de deck para o bot
+ESTRATEGIAS_DECK = {
+    'aggro': 'Agressivo: atacar cedo e com frequencia',
+    'swarm': 'Enxame: muitas criaturas fracas, sobrecarregar oponente',
+    'control': 'Controle: sobreviver, eliminar ameacas',
+    'vp_race': 'Corrida de VP: pontuar por quests/vitoria',
+    'midrange': 'Equilibrado: desenvolvimento e combate balanceados',
+    'combo': 'Combo: usar cartas em sinergia',
+    'defensive': 'Defensivo: priorizar bloqueio e esquiva',
+}
+
+
 class Deck(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     description: Mapped[str] = mapped_column(nullable=True)
     renown_cap: Mapped[int] = mapped_column(default=20)
+
+    # ── Estrategia do deck para o bot ──
+    strategy: Mapped[str] = mapped_column(
+        String(20), default='midrange', server_default='midrange'
+    )
 
     # ── Galeria social ──
     is_public: Mapped[bool] = mapped_column(default=False, server_default='0')

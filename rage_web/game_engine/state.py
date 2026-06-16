@@ -375,6 +375,7 @@ class PlayerState:
     gnosis_pool: int = 0
     victory_points: int = 0
     renown_level: int = 20
+    deck_strategy: str = 'midrange'
     has_passed: bool = False
     hand_size_sept: int = 5
     hand_size_combat: int = 5
@@ -1155,6 +1156,9 @@ class GameState:
             for l in logs_exp:
                 self.add_log(l)
             self.phase = nova_fase
+            # Reseta passes ao entrar em cada nova fase
+            for p in self.players:
+                p.reset_pass()
             # Executa acoes automaticas na transicao
             if self.phase == 'regeneration':
                 for p in self.players:

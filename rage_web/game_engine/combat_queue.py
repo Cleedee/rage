@@ -3892,6 +3892,11 @@ def end_combat(game: GameState) -> bool:
                 p.pack_home.remove(c)
 
     game.combat = CombatState()
+    # Reset has_passed para todos (jogadores podem ter passado
+    # durante o combate como defensores, e precisam de nova chance
+    # para agir na fase de combate apos o encerramento - regra 6.3)
+    for p in game.players:
+        p.reset_pass()
     game.add_log('--- Fim do combate ---')
     return True
 

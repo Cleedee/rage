@@ -4,7 +4,7 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 2 de dano",
+      "descricao": "Causar 2 de dano; personagem joga Combat Actions a -1 Rage no prox. round",
       "efeitos": [
         {
           "tipo": "dano",
@@ -13,22 +13,12 @@
         }
       ],
       "condicao_uso": ""
-    },
-    {
-      "descricao": "Reduzir custo de Rage em 1",
-      "efeitos": [
-        {
-          "tipo": "modificar_rage",
-          "condicao_alvo": "criatura_aliada",
-          "quantidade": -1
-        }
-      ]
     }
   ],
   "_metadata": {
-    "fonte": "analise_v2+revisado",
+    "fonte": "gerado_analise",
     "card_id": 1286,
-    "texto_original": "The character playing this card plays Combat Actions at -1 Rage for the next round of combat.",
+    "texto_original": "The character playing this card plays Combat Actions at -1 Rage for the next round.",
     "keywords": "",
     "damage": "2",
     "rage": 1,

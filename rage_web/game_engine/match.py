@@ -213,11 +213,15 @@ def _run_match_impl(seed, max_turns, max_steps_override,
         deck_info = ' | Deck: Sample'
     diffs_str = ', '.join(d.upper() for d in diffs)
     vp_info = ''
+    strategy_info = ''
     if game.players:
         vp_strs = [f'J{p.id[-1]}: {p.renown_level}' for p in game.players]
         vp_info = ' | VP: ' + ', '.join(vp_strs)
+        strat_strs = [f'{p.name.split(" (")[0]}:{p.deck_strategy}'
+                      for p in game.players]
+        strategy_info = ' | Estrat: ' + ', '.join(strat_strs)
     vlog(1, f'  {diffs_str}{deck_info} | {n_players} jogadores | '
-          f'Max: {max_turns}t{vp_info}')
+          f'Max: {max_turns}t{vp_info}{strategy_info}')
     vsep(1)
     if _VERBOSE >= 1:
         print_board(game)

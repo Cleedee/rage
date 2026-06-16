@@ -1,0 +1,31 @@
+{
+  "id": "shred",
+  "nome": "Shred",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 7 de dano; ignora armadura (Shred ignores armor)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 7
+        }
+      ],
+      "condicao_uso": ""
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerado_analise",
+    "card_id": 1735,
+    "texto_original": "Shred ignores armor. Destroy all armor on any creature it damages.",
+    "keywords": "Slow Striking",
+    "damage": "7",
+    "rage": 9,
+    "gnosis": 0,
+    "health": 0,
+    "requires": "",
+    "precisa_revisao": false,
+    "slug": "shred"
+  }
+}

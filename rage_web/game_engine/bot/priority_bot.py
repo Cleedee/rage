@@ -59,6 +59,15 @@ class PriorityBot:
                 return p
         raise ValueError(f'Jogador {self.player_id} nao encontrado')
 
+    @property
+    def _deck_strategy(self) -> str:
+        """Retorna a estrategia do deck deste bot."""
+        return self.player.deck_strategy or 'midrange'
+
+    def _is_strategy(self, strategy: str) -> bool:
+        """Verifica se a estrategia do bot corresponde."""
+        return self._deck_strategy == strategy
+
     # ------------------------------------------------------------------
     # Arvore de decisao principal
     # ------------------------------------------------------------------
@@ -907,13 +916,21 @@ class PriorityBot:
         meu_alpha = g.combat.alphas.get(self.player_id)
 
         if alfa_atual and meu_alpha and alfa_atual == meu_alpha:
-            action = self._agir_alpha()
-            if action:
+            # 🛑 Regra 6.3: se ja atacamos e combate encerrou, alpha nao ataca de novo
+            if not g.combat.is_active and self._ataques_feitos:
                 g.combat.current_alpha_index += 1
-                return action
-            # Alpha nao pode agir (sem alvos, etc) — avanca o index
-            # para evitar loop infinito no match.py
-            g.combat.current_alpha_index += 1
+                g.add_log(f'[BOT] {me.name}: alpha passou (ja atacou - regra 6.3)')
+            else:
+                action = self._agir_alpha()
+                if action:
+                    g.combat.current_alpha_index += 1
+                    return action
+                # Alpha nao agiu (sem alvos). Remove de _ataques_feitos
+                # para permitir que _try_attack() funcione.
+                meu_alpha_id = g.combat.alphas.get(self.player_id)
+                if meu_alpha_id and meu_alpha_id in self._ataques_feitos:
+                    self._ataques_feitos.discard(meu_alpha_id)
+                g.combat.current_alpha_index += 1
 
         # ── RESTO DO COMBATE (cartas, eliminar, atacar) ──
         # Se o combate esta ativo, declarar acoes de combate
@@ -930,9 +947,50 @@ class PriorityBot:
         # Acoes de ataque/eliminar sempre sao permitidas (sem limite).
         # So jogar cartas da mao tem limite de 3 por turno.
 
-        # Se deck lento, inverte prioridades: atacar > sobreviver
-        if lento:
-            # Lento: eliminar > atacar > sobreviver
+        # ── ORDEM DE PRIORIDADES POR ESTRATEGIA ──
+        strategy = self._deck_strategy
+
+        if strategy == 'control':
+            # Control: sobreviver > eliminar > desenvolver > atacar
+            action = self._try_survive()
+            if action:
+                return action
+            action = self._try_eliminate_threat()
+            if action:
+                return action
+            action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+            action = self._try_attack()
+            if action:
+                return action
+
+        elif strategy == 'aggro':
+            # Aggro: eliminar > atacar > desenvolver > sobreviver
+            action = self._try_eliminate_threat()
+            if action:
+                return action
+            action = self._try_attack()
+            if action:
+                return action
+            action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+            action = self._try_survive()
+            if action:
+                return action
+
+        elif strategy == 'vp_race':
+            # VP Race: desenvolver (quests/VP) > sobreviver > eliminar > atacar
+            action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+            action = self._try_survive()
+            if action:
+                return action
             action = self._try_eliminate_threat()
             if action:
                 return action
@@ -940,41 +998,34 @@ class PriorityBot:
             if action:
                 return action
 
-        # 1. SOBREVIVER
-        action = self._try_survive()
-        if action:
-            return action
-
-        # 2. Usar cartas de efeito (limite 3)
-        if self._cards_played_this_turn < 3:
-            for i, card in enumerate(me.hand):
-                if card.modelo_id and card.card_type:
-                    modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                    if self._pode_pagar_custos(card):
-                        self._cards_played_this_turn += 1
-                        return self._usar_carta_efeito(i, modo_idx, card)
-
-        # 3. Outros efeitos (limite 3)
-        if self._cards_played_this_turn < 3:
-            action = self._try_develop_board()
-            if action:
-                self._cards_played_this_turn += 1
-                return action
-
-        # 3.5 GIFTS PARA PRESA (se nao for o atacante)
-        if self._cards_played_this_turn < 3:
-            action = self._try_prey_gift()
-            if action:
-                self._cards_played_this_turn += 1
-                return action
-
-        # 4. ELIMINAR AMEACA (sempre permitido)
-        if not lento:
+        elif lento or strategy == 'swarm':
+            # Lento/Swarm: eliminar > atacar > sobreviver > desenvolver
             action = self._try_eliminate_threat()
             if action:
                 return action
+            action = self._try_attack()
+            if action:
+                return action
+            action = self._try_survive()
+            if action:
+                return action
+            action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
+            if action:
+                self._cards_played_this_turn += 1
+                return action
 
-            # 5. ATACAR (sempre permitido)
+        else:
+            # midrange / default: sobreviver > desenvolver > eliminar > atacar
+            action = self._try_survive()
+            if action:
+                return action
+            action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+            action = self._try_eliminate_threat()
+            if action:
+                return action
             action = self._try_attack()
             if action:
                 return action
@@ -2429,10 +2480,52 @@ class PriorityBot:
         Com N jogadores, ataca criaturas do lider em VP primeiro.
         Regra 6.5.1: apenas o Alpha pode iniciar ataque; ataque
         de nao-Alpha requer card ability.
+
+        Estrategia:
+        - aggro: ataca mesmo com chance menor (50% do Rage)
+        - swarm: ataca mesmo sem chance de matar (desgasta)
+        - control: so ataca se pode eliminar
+        - vp_race: evita combate arriscado
         """
         me = self.player
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
+        strategy = self._deck_strategy
+
+        # Swarm: ataca mesmo sem chance de matar (desgaste)
+        if strategy == 'swarm':
+            all_attackers = [c for c in me.pack_home
+                             if self._pode_atacar(c)]
+            if all_attackers:
+                atacante = max(all_attackers, key=lambda c: c.rage)
+                self.game.add_log(
+                    f'[SWARM] {me.name} ataque enxame '
+                    f'com {atacante.name} (Rg {atacante.rage})')
+                # Ataca o Hunting Grounds se tiver presa
+                from rage_web.game_engine.combat_queue import _eh_pack_gaia
+                eh_gaia = _eh_pack_gaia(me)
+                hg_targets = [c for c in self.game.hunting_grounds_cards
+                              if c.health_current > 0]
+                for hg in hg_targets:
+                    ct = (hg.card_type or '').lower()
+                    # Gaia nao ganha VP matando Victim, mas ataca assim mesmo
+                    self._attack(str(atacante.card_id), str(hg.card_id))
+                    return (f'swarm_hg_{atacante.card_id}'
+                            f'_vs_{hg.card_id}')
+                # Sem presa no HG, ataca personagem mais fraco do oponente
+                for opp in opponents:
+                    alvos = sorted(
+                        [c for c in opp.pack_home if c.health_current > 0],
+                        key=lambda c: c.health_current)
+                    if alvos:
+                        alvo = alvos[0]
+                        self._attack(
+                            str(atacante.card_id),
+                            str(alvo.card_id))
+                        return (f'swarm_attack_'
+                                f'{atacante.card_id}'
+                                f'_vs_{alvo.card_id}')
+            return None
 
         available = [c for c in me.pack_home
                      if self._pode_atacar(c)]
@@ -2478,11 +2571,13 @@ class PriorityBot:
             ameacas = sorted(todas_ameacas,
                              key=self.prioritizer.rate_threat,
                              reverse=True)
+            # Estrategia: aggro usa threshold menor (modo_lento=True)
+            modo_lento_eff = lento or self._is_strategy('aggro')
             for alvo in ameacas:
                 atacante = self.prioritizer.best_attacker_for(alvo, available)
                 if atacante:
                     if self.prioritizer.pode_eliminar(atacante, alvo,
-                                                       modo_lento=lento):
+                                                       modo_lento=modo_lento_eff):
                         self._attack(str(atacante.card_id), str(alvo.card_id))
                         return (f'eliminate_{atacante.card_id}'
                                 f'_vs_{alvo.card_id}')
