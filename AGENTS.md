@@ -681,7 +681,7 @@ que já têm resolvedor.
 | 160 | Mokole | Gaia com quests, morte e recrutamento |
 | 416 | Questor | Vigilante que pontua matando menor Renome |
 | 465 | Apocalypse: First Team 28 | Wyrm squad, ataque HG em massa |
-| 484 | Ajaba Aggression | Hienas que fogem de dano alto |
+| 484 | Ajaba Aggression | **Control** — disrupção (Laughter/Dust Storm), bloqueio (Blur of Milky Eye), VP via Scavenger's Quest + Enemies, Clan of Hyenas Rg6 como atacante principal |
 | 524 | Classic: Wailer special | Aliados + pack attack |
 | **1050** | **Assombração dos Passos da Morte** | **Pack Ragabash Silent Striders — Stalks Death + truques** |
 
