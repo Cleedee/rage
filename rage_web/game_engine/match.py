@@ -228,6 +228,8 @@ def _run_match_impl(seed, max_turns, max_steps_override,
     stale_steps = 0
     last_turn = game.turn_number
     last_phase = game.phase
+    _displayed_phase = game.phase  # para log de mudanca de fase
+    _displayed_turn = game.turn_number
     last_log_len = 0
     max_steps = max_steps_override if max_steps_override else max_turns * 50
     if max_steps_override and _VERBOSE >= 2:
@@ -487,16 +489,16 @@ def _run_match_impl(seed, max_turns, max_steps_override,
                 return p.id
 
         # Tabuleiro na mudanca de fase/turno
-        if game.phase != last_phase or game.turn_number != last_turn:
-            if game.turn_number != last_turn and _VERBOSE >= 1:
+        if game.phase != _displayed_phase or game.turn_number != _displayed_turn:
+            if game.turn_number != _displayed_turn and _VERBOSE >= 1:
                 vlog(1, f'\n  ════ TURNO {game.turn_number} ════\n')
             if _VERBOSE >= 1:
                 _log_fase(game, game.turn_number, game.phase)
                 vsep(1, '-', 40)
                 print_board(game)
             time.sleep(delay)
-            last_turn = game.turn_number
-            last_phase = game.phase
+            _displayed_turn = game.turn_number
+            _displayed_phase = game.phase
 
         step += 1
 

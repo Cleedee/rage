@@ -776,3 +776,7 @@ PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py --dry-run
     - `withdrawal` não é mais auto-advance (6.3.1)
     - `bluff` processa ilegais (6.9.1) antes de bluffs (6.9.2)
     - 320 testes passando, partidas bot-vs-bot testadas com `rage-match`
+24. ~~Bot iniciava múltiplos combates no mesmo turno (violava regra 6.3)~~ ✅ Corrigido:
+    - Após `end_combat()`, bot passa a vez em vez de atacar novamente
+    - Defensor pode selecionar alpha e contra-atacar (6.3)
+    - Função `_agir_combat_fallback` duplicada removida
