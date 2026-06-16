@@ -1223,23 +1223,40 @@ class PriorityBot:
                              [str(alpha_inimigo.card_id)])
                 return f'alpha_attack_alpha_{meu_alpha_id}'
 
-        # 2. Agrega ameacas de TODOS os oponentes, ordenadas por
-        #    threat rating (que ja inclui VP weight)
-        todas_ameacas = []
+        # 2. Ataca personagens que dao VP (Character) primeiro.
+        #    Prioriza menor HP para kills faceis.
+        alvos_character = []
+        alvos_outros = []
         for opp in opponents:
             for c in opp.pack_home:
                 if c.health_current > 0:
-                    todas_ameacas.append(c)
+                    ct = (c.card_type or '').lower()
+                    if 'character' in ct:
+                        alvos_character.append(c)
+                    else:
+                        alvos_outros.append(c)
 
-        if todas_ameacas:
-            ameacas = sorted(todas_ameacas,
-                             key=self.prioritizer.rate_threat,
-                             reverse=True)
-            for alvo in ameacas:
+        # Characters: menor HP primeiro (kills faceis = VP rapido)
+        if alvos_character:
+            alvos_character.sort(key=lambda c: c.health_current)
+            for alvo in alvos_character:
                 if self.prioritizer.pode_eliminar(alpha_card, alvo):
                     self.game.add_log(
                         f'[BOT] Alpha {alpha_card.name} atacou '
-                        f'{alvo.name}')
+                        f'personagem {alvo.name} (HP {alvo.health_current})')
+                    start_combat(self.game, [meu_alpha_id],
+                                 [str(alvo.card_id)])
+                    return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
+
+        # Fallback: ataca nao-Characters (nao dao VP, mas eliminam ameacas)
+        if alvos_outros:
+            alvos_outros.sort(key=self.prioritizer.rate_threat,
+                              reverse=True)
+            for alvo in alvos_outros:
+                if self.prioritizer.pode_eliminar(alpha_card, alvo):
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} atacou '
+                        f'{alvo.name} (nao-Character)')
                     start_combat(self.game, [meu_alpha_id],
                                  [str(alvo.card_id)])
                     return f'alpha_attack_{meu_alpha_id}_vs_{alvo.card_id}'
@@ -2212,28 +2229,41 @@ class PriorityBot:
             return None
 
         # Agrega ameacas de todos os oponentes
-        todas_ameacas = []
+        # Prioriza Characters (dao VP) sobre nao-Characters
+        alvos_character = []
+        alvos_outros = []
         for opp in opponents:
             for c in opp.pack_home:
                 if c.health_current > 0:
-                    todas_ameacas.append(c)
+                    ct = (c.card_type or '').lower()
+                    if 'character' in ct:
+                        alvos_character.append(c)
+                    else:
+                        alvos_outros.append(c)
 
-        if not todas_ameacas:
-            return None
+        # Characters: menor HP primeiro (kill facil = VP rapido)
+        if alvos_character:
+            alvos_character.sort(key=lambda c: c.health_current)
+            for alvo in alvos_character:
+                atacante = self.prioritizer.best_attacker_for(alvo, available)
+                if atacante:
+                    pode = self.prioritizer.pode_eliminar(atacante, alvo,
+                                                           modo_lento=lento)
+                    if pode:
+                        self._attack(str(atacante.card_id), str(alvo.card_id))
+                        return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
 
-        # rate_threat ja inclui VP weight -> lider sai primeiro
-        ameacas = sorted(todas_ameacas,
-                         key=self.prioritizer.rate_threat,
-                         reverse=True)
-
-        for alvo in ameacas:
-            atacante = self.prioritizer.best_attacker_for(alvo, available)
-            if atacante:
-                pode = self.prioritizer.pode_eliminar(atacante, alvo,
-                                                       modo_lento=lento)
-                if pode:
-                    self._attack(str(atacante.card_id), str(alvo.card_id))
-                    return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
+        # Fallback: nao-Characters
+        if alvos_outros:
+            alvos_outros.sort(key=self.prioritizer.rate_threat, reverse=True)
+            for alvo in alvos_outros:
+                atacante = self.prioritizer.best_attacker_for(alvo, available)
+                if atacante:
+                    pode = self.prioritizer.pode_eliminar(atacante, alvo,
+                                                           modo_lento=lento)
+                    if pode:
+                        self._attack(str(atacante.card_id), str(alvo.card_id))
+                        return f'eliminate_{atacante.card_id}_vs_{alvo.card_id}'
 
         return None
 
@@ -2545,11 +2575,12 @@ class PriorityBot:
                                 break
 
         todas_ameacas = []
+        alvos_character = []  # VP-giving targets
+        alvos_nao_character = []  # non-VP targets (Allies, etc.)
         for opp in opponents:
             # Sky River: so pode atacar o Alpha (maior Renown)
             if opp.id in sky_river_packs:
                 alvos_permitidos = []
-                # Alpha = maior renown ou primeiro char
                 alpha = max(
                     [c for c in opp.pack_home if c.health_current > 0],
                     key=lambda x: x.renown,
@@ -2557,7 +2588,6 @@ class PriorityBot:
                 )
                 if alpha:
                     alvos_permitidos.append(alpha)
-                # Tambem pode atacar criaturas no HG (Enemy/Victim)
                 for c in self.game.hunting_grounds_cards:
                     if c.health_current > 0:
                         alvos_permitidos.append(c)
@@ -2565,15 +2595,30 @@ class PriorityBot:
             else:
                 for c in opp.pack_home:
                     if c.health_current > 0:
-                        todas_ameacas.append(c)
+                        ct = (c.card_type or '').lower()
+                        if 'character' in ct:
+                            alvos_character.append(c)
+                        else:
+                            alvos_nao_character.append(c)
 
-        if todas_ameacas:
-            ameacas = sorted(todas_ameacas,
-                             key=self.prioritizer.rate_threat,
-                             reverse=True)
-            # Estrategia: aggro usa threshold menor (modo_lento=True)
+        # Prioriza alvos que dao VP (Characters): menor HP primeiro
+        if alvos_character:
+            alvos_character.sort(key=lambda c: c.health_current)
             modo_lento_eff = lento or self._is_strategy('aggro')
-            for alvo in ameacas:
+            for alvo in alvos_character:
+                atacante = self.prioritizer.best_attacker_for(alvo, available)
+                if atacante:
+                    if self.prioritizer.pode_eliminar(atacante, alvo,
+                                                       modo_lento=modo_lento_eff):
+                        self._attack(str(atacante.card_id), str(alvo.card_id))
+                        return (f'eliminate_{atacante.card_id}'
+                                f'_vs_{alvo.card_id}')
+
+        # Fallback: ataca nao-Characters (nao dao VP, mas eliminam ameacas)
+        if alvos_nao_character:
+            alvos_nao_character.sort(key=self.prioritizer.rate_threat,
+                              reverse=True)
+            for alvo in alvos_nao_character:
                 atacante = self.prioritizer.best_attacker_for(alvo, available)
                 if atacante:
                     if self.prioritizer.pode_eliminar(atacante, alvo,
