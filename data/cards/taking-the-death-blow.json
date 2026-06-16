@@ -4,12 +4,15 @@
   "tipo": "Combat Event",
   "modos": [
     {
-      "descricao": "Redirecionar ferimento mortal",
+      "descricao": "Redirecionar ferimento mortal para um packmate",
       "efeitos": [
         {
-          "tipo": "curar",
+          "tipo": "redirecionar",
           "condicao_alvo": "criatura_aliada_ferida",
-          "quantidade": 999
+          "quantidade": 0,
+          "params": {
+            "tipo_redirecionamento": "ferimento_mortal"
+          }
         }
       ]
     }
@@ -17,7 +20,7 @@
   "_metadata": {
     "fonte": "analise_v2+revisado",
     "card_id": 1322,
-    "texto_original": "Play this card when 1 of your characters receives a mortal wound. Select another member of your pack to take the wound instead. Combat may continue with the new pack member in place of the old. The new pack member is considered to be alpha for the remaind",
+    "texto_original": "Play this card when 1 of your characters receives a mortal wound. Select another member of your pack to take the wound instead. Combat may continue with the new pack member in place of the old. The new pack member is considered to be alpha for the remainder of combat.",
     "keywords": "",
     "damage": "",
     "rage": 0,

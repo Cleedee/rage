@@ -4,16 +4,17 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Bênção +1 Gnosis",
+      "descricao": "Remove todos personagens de Renown <= 2 do jogo",
       "efeitos": [
         {
-          "tipo": "modificar_atributo_passivo",
-          "condicao_alvo": "criatura_aliada",
+          "tipo": "remover_renome_baixo",
+          "params": {}
+        },
+        {
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "self",
           "params": {
-            "atributos": [
-              "gnosis"
-            ],
-            "valor": 1
+            "descarte_apos_uso": true
           }
         }
       ]
@@ -23,7 +24,7 @@
     "fonte": "deckajaba",
     "card_id": 940,
     "texto_original": "All characters of Renown 1 and 2 are removed from play. Discard this Gift after its effect takes place.",
-    "precisa_revisao": true,
+    "precisa_revisao": false,
     "slug": "breath-of-the-defiled"
   }
 }

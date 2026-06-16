@@ -94,10 +94,13 @@ class EfeitoTipo(str, Enum):
     MODIFICAR_ATRIBUTO_PASSIVO = 'modificar_atributo_passivo'  # Buff passivo persistente (John)
     MODIFICAR_GAUNTLET = 'modificar_gauntlet'  # Modifica o Gauntlet (Shadow-Weaver)
     MODIFICAR_HAND_SIZE = 'modificar_hand_size'  # Modifica hand size (Old Storm Chaser)
+    REMOVER_RENOME_BAIXO = 'remover_renome_baixo'  # Remove todos personagens com Renome <=2 (Breath of the Defiled)
+    ROUBAR_EQUIPAMENTO = 'roubar_equipamento'  # Roubar equipamento de criatura inimiga (Sticky Paws)
     ADICIONAR_MODIFIER = 'adicionar_modifier'  # Adicionar modifier string a uma criatura (Heightened Senses)
     MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
     DESCARTAR_EQUIPAMENTOS = 'descartar_equipamentos'  # Spirit Backlash: descarta fetishes com Gnosis 5+
     IGNORAR_DANO_AGRAVADO = 'ignorar_dano_agravado'  # Purity of Spirit: converter dano agravado em normal por um turno
+    IMPEDIR_REGENERACAO = 'impedir_regeneracao'  # Impedir regeneracao (Pentex Refinery)
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
     MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
@@ -264,6 +267,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.RESTRICAO: self._resolver_restringir,
             EfeitoTipo.COMPRAR_ATE: self._resolver_comprar_ate,
             EfeitoTipo.FUGIR: self._resolver_fugir,
+            EfeitoTipo.ROUBAR_EQUIPAMENTO: self._resolver_roubar_equipamento,
     EfeitoTipo.MODIFICAR_ATRIBUTO: self._resolver_modificar_atributo,
     EfeitoTipo.USAR_GIFT: self._resolver_usar_gift,
     EfeitoTipo.QUEST_CHECK: self._resolver_quest_check,
@@ -305,7 +309,10 @@ class ResolvedorEfeitos:
             EfeitoTipo.MOOT_RESTRICAO_GLOBAL: self._resolver_moot_restricao_global,
             EfeitoTipo.MOOT_REBAIXAR_FORMA: self._resolver_moot_rebaixar_forma,
             EfeitoTipo.MOOT_CONSTRUIR_CAERN: self._resolver_moot_construir_caern,
+            EfeitoTipo.REMOVER_RENOME_BAIXO: self._resolver_remover_renome_baixo,
+            EfeitoTipo.IMPEDIR_REGENERACAO: self._resolver_impedir_regeneracao,
             EfeitoTipo.RECRUTAR_TEMPORARIO: self._resolver_recrutar_temporario,
+            EfeitoTipo.REDIRECIONAR: self._resolver_redirecionar,
         }
         return resolvedores.get(tipo)
 
@@ -331,11 +338,22 @@ class ResolvedorEfeitos:
 
         oponentes = self._get_oponentes(jogador)
 
+        def _eh_criatura_com_combate(card: CardInstance) -> bool:
+            """Verifica se uma carta e uma criatura viavel (nao Caern/Territory/etc)."""
+            ct = (card.card_type or '').lower()
+            return any(t in ct for t in (
+                'character', 'ally', 'enemy', 'victim', 'spirit'
+            ))
+
         def _criaturas_inimigas() -> list[CardInstance]:
-            """Agrega criaturas de todos os oponentes."""
+            """Agrega criaturas de todos os oponentes.
+            Filtra apenas cartas viaveis (Character/Ally/Enemy/Victim/Spirit).
+            """
             resultado = []
             for op in oponentes:
-                resultado.extend(op.pack_home)
+                for c in op.pack_home:
+                    if _eh_criatura_com_combate(c):
+                        resultado.append(c)
             return resultado
 
         def _criaturas_inimigas_feridas() -> list[CardInstance]:
@@ -343,7 +361,7 @@ class ResolvedorEfeitos:
             resultado = []
             for op in oponentes:
                 for c in op.pack_home:
-                    if c.health_current < c.health:
+                    if _eh_criatura_com_combate(c) and c.health_current < c.health:
                         resultado.append(c)
             return resultado
 
@@ -351,14 +369,21 @@ class ResolvedorEfeitos:
             """Agrega criaturas na Umbra de todos os oponentes."""
             resultado = []
             for op in oponentes:
-                resultado.extend(op.umbra)
+                for c in op.umbra:
+                    if _eh_criatura_com_combate(c):
+                        resultado.append(c)
             return resultado
 
         def _todas_criaturas() -> list[CardInstance]:
             """Agrega criaturas de todos os jogadores."""
-            resultado = list(jogador.pack_home)
+            resultado = []
+            for c in jogador.pack_home:
+                if _eh_criatura_com_combate(c):
+                    resultado.append(c)
             for op in oponentes:
-                resultado.extend(op.pack_home)
+                for c in op.pack_home:
+                    if _eh_criatura_com_combate(c):
+                        resultado.append(c)
             return resultado
 
         def _vitimas_inimigas() -> list[CardInstance]:
@@ -393,7 +418,8 @@ class ResolvedorEfeitos:
             'todos': lambda: 'todos',  # Efeitos globais (New Moon: impedir_frenzy)
             'criatura_inimiga_moot': lambda: _criaturas_inimigas_moot(),
             'criatura_aliada': lambda: self._escolher_criatura(
-                jogador.pack_home
+                [c for c in jogador.pack_home
+                 if _eh_criatura_com_combate(c)]
             ),
             'qualquer_criatura': lambda: self._escolher_criatura(
                 _todas_criaturas()
@@ -403,7 +429,8 @@ class ResolvedorEfeitos:
             ),
             'criatura_aliada_ferida': lambda: self._escolher_criatura(
                 [c for c in jogador.pack_home
-                 if c.health_current < c.health]
+                 if _eh_criatura_com_combate(c)
+                 and c.health_current < c.health]
             ),
             'jogador_inimigo': lambda: self._escolher_jogador(
                 oponentes
@@ -415,7 +442,8 @@ class ResolvedorEfeitos:
             'mao_aliada': lambda: jogador.hand,
             'hunting_grounds': lambda: 'hg',
             'umbra_aliada': lambda: self._escolher_criatura(
-                jogador.umbra
+                [c for c in jogador.umbra
+                 if _eh_criatura_com_combate(c)]
             ),
             'umbra_inimiga': lambda: self._escolher_criatura(
                 _umbra_inimiga()
@@ -593,6 +621,10 @@ class ResolvedorEfeitos:
         (Combat Action, Gift, etc.) anexada como damage card.
         """
         qtd = efeito.quantidade or 2
+        params_dano = efeito.params or {}
+        eh_agravado = params_dano.get('dano_agravado', False)
+        auto_destruir = params_dano.get('auto_destruir', False)
+
         if isinstance(alvo, CardInstance):
             # Cria CardInstance para o dano do efeito (regra 6.4)
             # Usa os dados da carta de origem do efeito
@@ -608,13 +640,33 @@ class ResolvedorEfeitos:
             )
             anexar_dano(alvo, origem, qtd, jogador.id,
                         carta_combate=carta_dano,
+                        is_aggravated=eh_agravado,
                         game=self.game)
             # Registra o dano no log ANTES de processar morte
             # para manter ordem cronologica: dano → destruicao
+            agravado_str = ' agravado' if eh_agravado else ''
             self.game.add_log(
-                f'{alvo.name} sofreu {qtd} de dano '
+                f'{alvo.name} sofreu {qtd} de dano{agravado_str} '
                 f'({alvo.health_current}/{alvo.health})'
             )
+            # ── Auto-destruir: origem se queima (Flame Spirit) ──
+            if auto_destruir and origem.zone != Zone.OUT_OF_PLAY \
+                    and origem.zone != Zone.VICTORY_PILE:
+                dono_origem_obj = None
+                for p in self.game.players:
+                    for lista in (p.pack_home, p.hunting_grounds,
+                                  p.umbra, p.hand):
+                        if origem in lista:
+                            lista.remove(origem)
+                            dono_origem_obj = p
+                            break
+                    if dono_origem_obj:
+                        break
+                if dono_origem_obj:
+                    origem.zone = Zone.DISCARD_SEPT
+                    dono_origem_obj.discard_sept.append(origem)
+                    self.game.add_log(
+                        f'{origem.name} se queimou (auto-destruir)')
             # Verifica flip para Crinos
             from rage_web.game_engine.combat_queue import _flipar_para_crinos
             _flipar_para_crinos(self.game, alvo)
@@ -643,8 +695,60 @@ class ResolvedorEfeitos:
         Regra (6.4): curar remove cartas de dano anexadas a
         criatura (da menor para a maior). health_current e
         recalculado via sync_health() apos cada remocao.
+
+        Suporta params:
+        - 'todos_na_umbra': bool — cura TODOS os aliados na Umbra
+        - 'apenas_na_umbra': bool — so cura se o alvo estiver na Umbra
         """
         qtd = efeito.quantidade or 2
+        params = efeito.params or {}
+
+        # Gaia's Breath: cura todos os aliados na Umbra
+        if params.get('todos_na_umbra'):
+            alvos_umbra = [c for c in jogador.umbra
+                           if c.health_current < c.health]
+            if not alvos_umbra:
+                self.game.add_log(
+                    'Nenhum aliado ferido na Umbra para curar')
+                return True
+            curados = 0
+            for c in alvos_umbra:
+                cura_real = 0
+                while cura_real < qtd and c.damage_cards:
+                    menor = min(c.damage_cards,
+                                key=lambda d: int(d.damage or '0'))
+                    valor = int(menor.damage or '0')
+                    espaco = qtd - cura_real
+                    if valor <= espaco:
+                        c.damage_cards.remove(menor)
+                        dono_dano = None
+                        for p in self.game.players:
+                            if c.owner_id == p.id or c in p.pack_home \
+                                    or c in p.hunting_grounds or c in p.umbra:
+                                dono_dano = p
+                                break
+                        if dono_dano:
+                            menor.zone = Zone.DISCARD_COMBAT
+                            dono_dano.discard_combat.append(menor)
+                        cura_real += valor
+                    else:
+                        menor.damage = str(valor - espaco)
+                        cura_real = qtd
+                c.sync_health()
+                curados += 1
+                self.game.add_log(
+                    f'{c.name} curou {cura_real} '
+                    f'({c.health_current}/{c.health}) [Gaia\'s Breath]')
+            return True
+
+        # Verifica apenas_na_umbra: so cura se o alvo estiver na Umbra
+        if params.get('apenas_na_umbra'):
+            if not isinstance(alvo, CardInstance) or alvo.zone != Zone.UMBRA:
+                self.game.add_log(
+                    f'{getattr(alvo, "name", "alvo")} '
+                    f'não esta na Umbra, cura ignorada')
+                return True
+
         if isinstance(alvo, CardInstance):
             cura_real = 0
 
@@ -670,10 +774,6 @@ class ResolvedorEfeitos:
                 else:
                     menor.damage = str(valor - espaco)
                     cura_real = qtd
-
-            # 2. Nao ha mais dano basico — se nao ha Combat Actions
-            #    para curar, termina.
-            #    (Acoes sinteticas foram removidas do motor.)
 
             alvo.sync_health()
             self.game.add_log(
@@ -953,6 +1053,141 @@ class ResolvedorEfeitos:
             return True
         return False
 
+    def _resolver_redirecionar(self, efeito: Efeito, origem: CardInstance,
+                                jogador: PlayerState, alvo) -> bool:
+        """Redireciona um ferimento mortal para outro packmate.
+
+        Taking the Death Blow (card_id=1322):
+        Quando um personagem recebe um ferimento mortal, seleciona outro
+        membro do pack para tomar o ferimento no lugar.
+
+        Mecanica:
+        1. O alvo e uma criatura aliada ferida (com damage cards)
+        2. Transfere TODAS as damage cards do alvo para outro packmate
+        3. O packmate que recebe o dano se torna alpha pelo resto do combate
+        4. A criatura original e salva (sem dano)
+
+        A transferencia move as cartas de dano (Combat Actions) de uma
+        criatura para outra, respeitando a regra 6.4 (damage cards).
+        """
+        if not isinstance(alvo, CardInstance):
+            return False
+
+        # Verifica se o alvo tem dano para redirecionar
+        if not alvo.damage_cards:
+            self.game.add_log(
+                f'{alvo.name} nao tem ferimentos para redirecionar'
+            )
+            return False
+
+        # Escolhe um packmate para transferir o dano
+        packmates = [c for c in jogador.pack_home
+                     if c is not alvo and c.health_current > 0]
+        if not packmates:
+            self.game.add_log(
+                f'{jogador.name} nao tem packmates validos '
+                f'para redirecionar o ferimento'
+            )
+            return False
+
+        alvo_dano = self._escolher_criatura(packmates)
+
+        # Transfere todas as damage cards
+        dano_transferido = len(alvo.damage_cards)
+        for dc in list(alvo.damage_cards):
+            alvo.damage_cards.remove(dc)
+            alvo_dano.damage_cards.append(dc)
+
+        # Sync health em ambas as criaturas
+        alvo.sync_health()
+        alvo_dano.sync_health()
+
+        # Substituicao em combate (regra 6.10.3):
+        # "Some redirection abilities substitute the new creature for
+        #  old. This has no effect if both creatures are in combat.
+        #  If the new creature was not originally in combat, the
+        #  original target is removed from combat."
+        alvo_id_str = str(alvo.card_id)
+        alvo_dano_id_str = str(alvo_dano.card_id)
+        em_combate = False
+        if self.game.combat and self.game.combat.is_active:
+            if alvo_id_str in self.game.combat.combatants:
+                em_combate = True
+                # O packmate novo estava em combate?
+                if alvo_dano_id_str not in self.game.combat.combatants:
+                    # Novo packmate nao estava em combate:
+                    # substitue o antigo pelo novo nas listas
+                    def _substituir_em_lista(lista, antigo, novo):
+                        if antigo in lista:
+                            idx = lista.index(antigo)
+                            lista[idx] = novo
+                    for lista_name in ('attackers', 'defenders',
+                                       'combatants', 'original_attackers',
+                                       'original_defenders'):
+                        lista = getattr(self.game.combat, lista_name, None)
+                        if lista is not None:
+                            _substituir_em_lista(lista, alvo_id_str,
+                                                  alvo_dano_id_str)
+                    # Atualiza declaracoes: transfere a acao do antigo
+                    # para o novo
+                    if alvo_id_str in self.game.combat.declarations:
+                        acao = self.game.combat.declarations.pop(
+                            alvo_id_str, None)
+                        if acao:
+                            self.game.combat.declarations[
+                                alvo_dano_id_str] = acao
+                    # Transfere alvo de ataques
+                    if alvo_id_str in self.game.combat.targets:
+                        target = self.game.combat.targets.pop(
+                            alvo_id_str, None)
+                        if target:
+                            self.game.combat.targets[
+                                alvo_dano_id_str] = target
+                    # Atualiza combat_triggers
+                    if 'territory_targets' in self.game.combat_triggers:
+                        if alvo_id_str in \
+                                self.game.combat_triggers[
+                                    'territory_targets']:
+                            self.game.combat_triggers[
+                                'territory_targets'][
+                                alvo_dano_id_str] = \
+                                self.game.combat_triggers[
+                                    'territory_targets'].pop(
+                                    alvo_id_str)
+                    self.game.add_log(
+                        f'{alvo.name} removido do combate, '
+                        f'{alvo_dano.name} tomou seu lugar'
+                    )
+                # else: ambos ja estao em combate — sem substituicao
+            # Atualiza o alpha do jogador para o novo packmate
+            self.game.combat.alphas[jogador.id] = alvo_dano_id_str
+            if em_combate:
+                self.game.add_log(
+                    f'{alvo_dano.name} agora e o alpha (substituto)!'
+                )
+            else:
+                self.game.add_log(
+                    f'{alvo_dano.name} agora e o alpha!'
+                )
+
+        # Remove a carta Taking the Death Blow da mao
+        if origem in jogador.hand:
+            jogador.hand.remove(origem)
+        elif origem in jogador.combat_hand:
+            jogador.combat_hand.remove(origem)
+        origem.zone = Zone.DISCARD_COMBAT
+        jogador.discard_combat.append(origem)
+
+        self.game.add_log(
+            f'{alvo.name} redirecionou {dano_transferido} ferimento(s) '
+            f'mortal(is) para {alvo_dano.name}! '
+            f'{alvo.name} foi salvo, {alvo_dano.name} tomou '
+            f'{dano_transferido} de dano (HP: '
+            f'{alvo_dano.health_current}/{alvo_dano.health})'
+        )
+
+        return True
+
     def _resolver_mover_para(self, efeito: Efeito, origem: CardInstance,
                             jogador: PlayerState, alvo) -> bool:
         """Move uma criatura entre zonas.
@@ -1110,17 +1345,76 @@ class ResolvedorEfeitos:
         self.game.check_death_triggers(alvo, melhor, jogador)
         return True
 
+    def _resolver_remover_renome_baixo(self, efeito: Efeito,
+                                        origem: CardInstance,
+                                        jogador: PlayerState,
+                                        alvo) -> bool:
+        """Breath of the Defiled: remove todos personagens de
+        Renown 1 e 2 do jogo.
+
+        "All characters of Renown 1 and 2 are removed from play.
+        Discard this Gift after its effect takes place."
+        """
+        removidos = 0
+        for p in self.game.players:
+            for zona in (p.pack_home, p.hunting_grounds, p.umbra):
+                for c in list(zona):
+                    ct = (c.card_type or '').lower()
+                    if 'character' in ct and c.renown <= 2:
+                        # Remove do jogo permanentemente
+                        zona.remove(c)
+                        c.zone = Zone.OUT_OF_PLAY
+                        p.out_of_play.append(c)
+                        removidos += 1
+                        self.game.add_log(
+                            f'{c.name} (Renown {c.renown}) removido '
+                            f'por Breath of the Defiled')
+
+        if removidos == 0:
+            self.game.add_log(
+                'Breath of the Defiled: nenhum personagem de '
+                'Renown <=2 encontrado')
+        else:
+            self.game.add_log(
+                f'Breath of the Defiled removeu {removidos} '
+                f'personagem(ns) de Renown <= 2')
+
+        return True
+
+    def _resolver_impedir_regeneracao(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState,
+                                       alvo) -> bool:
+        """Pentex Refinery: impede regeneracao de shapechangers.
+
+        Efeito passivo registrado via register_card_passives().
+        O efeito e global: enquanto a refinaria estiver em jogo,
+        nenhum shapechanger pode regenerar naturalmente.
+        Gifts (Mother's Touch, etc.) ainda funcionam pois usam
+        _resolver_curar, nao a regeneracao natural.
+
+        Este resolvedor e um stub pois o efeito real e processado
+        pelo modifier 'pentex_refinery_impede_regeneracao' checado
+        em PlayerState.regeneration().
+        """
+        if alvo == 'todos':
+            self.game.add_log(
+                f'{origem.name}: shapechangers nao podem regenerar '
+                f'enquanto {origem.name} estiver em jogo'
+            )
+            return True
+        return False
+
     def _resolver_ignorar_dano_agravado(self, efeito: Efeito,
                                         origem: CardInstance,
                                         jogador: PlayerState,
                                         alvo) -> bool:
         """Purity of Spirit: protege Ahroun de dano agravado na Umbra.
 
-        O Ahroun ainda sofre ferimentos, mas eles nao sao agravados.
-        O Gift e descartado apos o efeito (fim do turno).
-
-        params:
-        - duracao: 'end_of_turn' (padrao)
+        O alvo (resolvido via condicao_alvo='umbra_aliada') deve ser
+        um Ahroun na Umbra. O Gift fica anexado ao Ahroun ate que
+        ele receba dano agravado — entao converte o dano para normal
+        e e descartado (logica em state.py:anexar_dano).
         """
         if not isinstance(alvo, CardInstance):
             self.game.add_log(f'{origem.name}: alvo invalido para Purity of Spirit')
@@ -1232,10 +1526,16 @@ class ResolvedorEfeitos:
         - restricao: str — nome da restricao (se nao usar efeito.alvo)
         - exceto: list[str] — tipos que ignoram a restricao
         - duracao: str — duracao da restricao
+        - anexar_gift: bool — se True, move o Gift de HAND para PACK_HOME
+          e o anexa ao alvo ate a duracao expirar
+        - descarte_gift: bool — se True (e anexar_gift True), descarta
+          o Gift ao expirar a duracao
         """
         restricao = efeito.params.get('restricao', efeito.alvo or '')
         exceto = efeito.params.get('exceto', [])
         duracao = efeito.duracao or efeito.params.get('duracao', 'permanente_ate_cancelar')
+        anexar_gift = efeito.params.get('anexar_gift', False)
+        descarte_gift = efeito.params.get('descarte_gift', False)
 
         if not restricao:
             return False
@@ -1262,6 +1562,31 @@ class ResolvedorEfeitos:
                         turno_aplicado=self.game.turn_number,
                         fase_aplicada=self.game.phase,
                     ))
+
+                # Se solicitado, anexa o Gift ao alvo ate expirar
+                if anexar_gift:
+                    # Remove o Gift da mao
+                    if origem in jogador.hand:
+                        jogador.hand.remove(origem)
+                    elif origem in jogador.combat_hand:
+                        jogador.combat_hand.remove(origem)
+                    # Move para o pack
+                    origem.zone = Zone.PACK_HOME
+                    jogador.pack_home.append(origem)
+                    alvo.attached_gifts.append(origem)
+                    # Agenda descarte do Gift ao expirar
+                    if descarte_gift and duracao and duracao != 'permanente_ate_cancelar':
+                        self.game.pendencias.append(PendenciaEfeito(
+                            card_uid=id(origem), atributo='discard_gift',
+                            delta=0, valor_str='discard_sept',
+                            duracao=duracao,
+                            turno_aplicado=self.game.turn_number,
+                            fase_aplicada=self.game.phase,
+                        ))
+                    self.game.add_log(
+                        f'{origem.name} anexado a {alvo.name} '
+                        f'ate {duracao}')
+
                 self.game.add_log(
                     f'{alvo.name} recebeu restricao "{restricao}"'
                     f'{" ate " + duracao if duracao else ""}'
@@ -2783,6 +3108,91 @@ class ResolvedorEfeitos:
         self.game.add_log(
             f'{origem.name}: modifier "{modifier_name}" em {aplicados} criatura(s)'
         )
+        return True
+
+    def _resolver_roubar_equipamento(self, efeito: Efeito,
+                                       origem: CardInstance,
+                                       jogador: PlayerState, alvo) -> bool:
+        """Rouba um equipamento de uma criatura inimiga.
+
+        Sticky Paws (card_id=1061): o usuario do Gift rouba
+        1 equipamento de outra criatura. O equipamento vai para
+        o pack do jogador (anexado a quem puder usar).
+
+        Args:
+            efeito: efeito com params opcionais:
+                - 'anexar_em': card_id da criatura alvo para anexar
+            origem: a carta Gift
+            jogador: o jogador que controla o Gift
+            alvo: a criatura inimiga (resolvida por _resolver_alvo)
+
+        Returns:
+            True se roubou com sucesso.
+        """
+        if not isinstance(alvo, CardInstance):
+            self.game.add_log(
+                'Sticky Paws: alvo invalido (nao e uma criatura)')
+            return False
+
+        # Verifica se o alvo tem equipamentos
+        equipamentos = list(getattr(alvo, 'attached_equipment', []))
+        if not equipamentos:
+            self.game.add_log(
+                f'{alvo.name} nao tem equipamentos para roubar')
+            return True
+
+        # Escolhe um equipamento aleatorio
+        eq = self.rng.choice(equipamentos)
+
+        # Remove o equipamento do alvo
+        alvo.attached_equipment.remove(eq)
+
+        # Encontra um aliado viavel para anexar o equipamento
+        # Prioridade: quem ja tem o Gift equipado? Nao, o Gift e
+        # descartado. O equipamento vai para um packmate viavel.
+        # Se params['anexar_em'] for especificado, usa aquele.
+        params = efeito.params or {}
+        anexar_em_id = params.get('anexar_em')
+
+        destino = None
+        if anexar_em_id:
+            for c in jogador.pack_home:
+                if str(c.card_id) == str(anexar_em_id):
+                    destino = c
+                    break
+
+        # Se nao especificou, tenta o alpha (ou primeiro da lista)
+        if not destino:
+            if jogador.pack_home:
+                # Tenta quem pode usar o equipamento
+                candidatos = [c for c in jogador.pack_home
+                              if c.health_current > 0]
+                if candidatos:
+                    destino = candidatos[0]  # alpha
+
+        if not destino:
+            # Sem packmate viavel: equipamento vai para o descarte
+            eq.zone = Zone.DISCARD_COMBAT
+            jogador.discard_combat.append(eq)
+            self.game.add_log(
+                f'{eq.name} roubado de {alvo.name}, mas '
+                f'sem aliado viavel — descartado')
+            return True
+
+        # Anexa o equipamento ao aliado
+        eq.zone = Zone.OUT_OF_PLAY
+        eq.attached_to = destino
+        destino.attached_equipment.append(eq)
+
+        # Marca como roubado para tracking (recuperacao se dono
+        # original vencer o combate)
+        if not hasattr(eq, 'stolen_from'):
+            eq.stolen_from = alvo.owner_id
+        eq.stolen_from = alvo.owner_id
+
+        self.game.add_log(
+            f'{jogador.name} roubou {eq.name} de {alvo.name} '
+            f'com Sticky Paws! Equipado em {destino.name}')
         return True
 
     def _resolver_modificar_gauntlet(self, efeito: Efeito,

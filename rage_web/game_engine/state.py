@@ -276,6 +276,7 @@ def anexar_dano(alvo: CardInstance, origem: CardInstance,
 
     # Descarta Purity of Spirit apos primeiro uso (se converteu dano)
     if destruiu_purity:
+        alvo.ignorar_agravado = False
         for gift in list(alvo.attached_gifts):
             if getattr(gift, 'modelo_id', '') == 'purity-of-spirit':
                 alvo.attached_gifts.remove(gift)
@@ -588,8 +589,20 @@ class PlayerState:
             for caern in self.pack_home + self.hunting_grounds
         )
 
+        # Pentex Refinery (520): impede regeneracao de shapechangers
+        # Enquanto a refinaria estiver em jogo, nenhum shapechanger
+        # pode regenerar naturalmente. Gifts (Mother's Touch, etc)
+        # ainda funcionam pois usam _resolver_curar.
+        pentex_refinery_ativa = game and game.has_modifier(
+            'pentex_refinery_impede_regeneracao')
+
         for c in self.pack_home:
             if not self._pode_regenerar(c):
+                continue
+            # Pentex Refinery: bloqueia regeneracao natural
+            if pentex_refinery_ativa:
+                logs.append(
+                    f'{c.name} nao pode regenerar (Pentex Refinery)')
                 continue
             # Verifica se ha dano para regenerar (damage_cards de Combat Actions)
             if not c.damage_cards:
@@ -732,14 +745,17 @@ class CombatState:
     - declaration: Declarar atacante+alvo; abilities na declaracao
     - pre_combat: Pack actions, redirect, cancel, step in (Closed Play)
     - beginning_of_combat: Open Play pre-rodadas
-    - play_card: Cada criatura joga combat card face-down
-    - targeting: Atribuir alvos
-    - reveal: Revelar + feinting + instinctive + alternative
-    - bluff: Verificar requisitos, descartar ilegais
-    - resolution: Fast -> Normal -> Slow, aplicar dano
-    - withdrawal: Atacante pode retirar
-    - between_rounds: Open Play entre rodadas
-    - end: Fim do combate
+    - play_card (6.2.1): Cada criatura joga combat card face-down
+    - targeting (6.2.2): Atribuir alvos
+    - reveal (6.2.3): Revelar cartas + sub-steps: feinting (6.8.1),
+      instinctive (6.8.2), alternative (6.6.5)
+    - bluff (6.2.4): Verificar requisitos (6.9.1: ilegais),
+      verificar bluffs (6.9.2: sucesso/falha)
+    - resolution (6.2.5): Fast -> Normal -> Slow, aplicar dano
+    - withdrawal (6.2.6): Atacante pode retirar (6.3.1)
+    - between_rounds (6.2.7): Open Play entre rodadas;
+      loop para play_card se combate continua
+    - end: Fim do combate, cleanup (6.3)
     """
     is_active: bool = False
     step: str = ''
@@ -775,6 +791,15 @@ class CombatState:
     # Usado para rastrear qual Combat Action real foi usada (ex: Surprise Attack)
     # para que a carta original seja anexada como dano ao alvo (regra 6.4)
     played_combat_cards: dict[str, 'CardInstance'] = field(default_factory=dict)
+
+    # --- Reveal Step Feint Sub-step (6.2.3 / 6.8) ---
+    # Rastreia em qual mini-step do Reveal estamos:
+    # '' = revelacao normal (antes de feinting/instinctive)
+    # 'feinting' = janela de Feinting (6.8.1)
+    # 'instinctive' = Instinctive Combat Actions (6.8.2)
+    # 'alternative' = Alternative Combat Actions (6.6.5)
+    # 'targeting_extra' = atribuir alvos das cartas extras (6.8.4)
+    feint_substep: str = ''
     # face_down_order: ordem em que os cards foram jogados
     face_down_order: list[str] = field(default_factory=list)
 
@@ -1581,8 +1606,9 @@ class GameState:
         """Executa efeitos de fim de turno.
 
         - Mage of the Celestial Chorus (503): remove lowest Renown victim.
-        - Purity of Spirit: limpa flag ignorar_agravado.
         - GameModifiers com duracao='end_of_turn': remove.
+        - Purity of Spirit: fica anexado ate converter dano agravado;
+          nao e limpo no fim do turno.
         """
         from rage_web.game_engine.combat_queue import _remove_creature
 
@@ -1592,11 +1618,10 @@ class GameState:
             if getattr(m, 'duration', '') != 'end_of_turn'
         ]
 
-        # Limpa flag ignorar_agravado de todas as cartas
-        for p in self.players:
-            for c in p.pack_home + p.hunting_grounds + p.umbra:
-                if getattr(c, 'ignorar_agravado', False):
-                    c.ignorar_agravado = False
+        # Nota: Purity of Spirit NAO e limpo no fim do turno.
+        # O Gift fica anexado ate converter dano agravado em normal
+        # (ocorre em state.py:anexar_dano, que descarta o Gift
+        #  automaticamente apos o primeiro uso).
 
         # Procura Mage of the Celestial Chorus em qualquer HG
         mages = []
@@ -1736,6 +1761,13 @@ class GameState:
                 card.restricoes.append('nao_pode_ser_vinculado')
             self.add_log(
                 f'{card.name}: imune a ataques nao-umbrais e nao pode ser vinculado')
+
+        elif slug == 'flame-spirit_r6':  # Flame Spirit (402)
+            # So pode ser afetado por ataques Umbrais e Gifts
+            if 'imune_fora_umbra' not in card.restricoes:
+                card.restricoes.append('imune_fora_umbra')
+            self.add_log(
+                f'{card.name}: imune a ataques nao-umbrais (so Gifts e Umbra)')
 
         elif card.card_id == 630:  # Chronicle of the Black Labyrinth
             modifier = GameModifier(
@@ -1915,6 +1947,16 @@ class GameState:
             self.add_log(
                 f'{card.name}: BSD causam dano agravado. '
                 f'Regeneram apenas na Umbra.')
+
+        elif card.card_id == 520:  # Pentex Refinery
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='pentex_refinery_impede_regeneracao',
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: shapechangers nao podem regenerar '
+                f'enquanto estiver em jogo')
 
         elif slug == 'sky-river-caern':  # Sky River Caern (card_id=597)
             modifier = GameModifier(
@@ -2202,6 +2244,19 @@ class GameState:
             self.add_log(
                 f'{card.name}: imune a equipamentos nao-fetiche, '
                 f'pode usar Gifts Metis')
+
+        elif slug == 'carleson-ruah_r4':  # Carleson Ruah (4)
+            # Carleson pode interromper a acao de outro alpha para
+            # permitir que o alpha do seu pack aja primeiro, desde que
+            # o alpha ataque uma criatura Wyrm.
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='carleson_ruah'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pode interromper alpha para agir '
+                f'primeiro vs Wyrm')
 
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""
@@ -2687,6 +2742,26 @@ class GameState:
                         if pend.valor_str in c.restricoes:
                             c.restricoes.remove(pend.valor_str)
                             log.append(f'{c.name}: restricao "{pend.valor_str}" expirou')
+                    elif pend.atributo == 'discard_gift':
+                        # Descarta o Gift apos expiracao (ex: Patagia)
+                        # Remove de attached_gifts se ainda estiver anexado
+                        for p in self.players:
+                            for zona_lista in (p.pack_home, p.hunting_grounds, p.umbra):
+                                for criatura in zona_lista:
+                                    if c in criatura.attached_gifts:
+                                        criatura.attached_gifts.remove(c)
+                                        log.append(
+                                            f'{c.name} removido de '
+                                            f'{criatura.name} (expiracao)')
+                                        break
+                        # Move para descarte
+                        c.zone = Zone.DISCARD_SEPT
+                        dono = self._find_player(c.owner_id)
+                        if dono:
+                            dono.discard_sept.append(c)
+                        elif self.players:
+                            self.players[0].discard_sept.append(c)
+                        log.append(f'{c.name} descartado (fim do efeito)')
                     elif pend.atributo == 'zona' and pend.valor_str:
                         # Move a carta de volta para a zona original
                         zonas_rev = {

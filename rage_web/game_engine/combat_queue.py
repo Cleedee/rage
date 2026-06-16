@@ -339,6 +339,37 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         if dano_total >= hack_threshold:
             eh_hacked_apart = True  # Dano suficiente: morre de vez
     
+    # Sticky Paws (6.10.4): recuperar equipamento roubado
+    # Se o dono original derrota o ladrao em combate, recupera
+    # a propriedade. So ocorre se em_combate=True e o dono_origem
+    # e o mesmo do stolen_from.
+    if em_combate and dono_origem:
+        for eq in list(alvo.attached_equipment):
+            stolen_from = getattr(eq, 'stolen_from', None)
+            if stolen_from is not None and dono_origem.id == stolen_from:
+                # Dono original derrotou o ladrao: recupera!
+                alvo.attached_equipment.remove(eq)
+                eq.stolen_from = None  # Limpa marcacao
+                # Anexa de volta a um packmate viavel do dono original
+                anexado = False
+                for c in dono_origem.pack_home:
+                    if c.health_current > 0:
+                        c.attached_equipment.append(eq)
+                        eq.attached_to = c
+                        eq.zone = Zone.OUT_OF_PLAY
+                        anexado = True
+                        game.add_log(
+                            f'{eq.name} recuperado por {dono_origem.name} '
+                            f'(Sticky Paws) — anexado em {c.name}')
+                        break
+                if not anexado:
+                    # Sem packmate vivo: vai pro descarte
+                    eq.zone = Zone.DISCARD_SEPT
+                    dono_origem.discard_sept.append(eq)
+                    game.add_log(
+                        f'{eq.name} recuperado por {dono_origem.name} '
+                        f'mas sem packmate — descartado')
+
     if dono_alvo:
         descartar_anexos(alvo, dono_alvo, game=game)
     else:
@@ -987,6 +1018,39 @@ def calcular_ordem_alfa(game: GameState) -> list[str]:
     # Ordena por Renome decrescente, desempatando aleatoriamente
     game.rng.shuffle(alphas)  # Embaralha para desempate aleatorio
     alphas.sort(key=lambda cid: _get_renown(cid), reverse=True)
+    # ── Carleson Ruah: interrompe ordem para alpha agir 1o vs Wyrm ──
+    # Se o pack de Carleson tem um alpha e ha Wyrm no oponente,
+    # este alpha age primeiro (independente de Renome).
+    if game.has_modifier('carleson_ruah'):
+        for p in game.players:
+            # Verifica se Carleson esta no pack deste jogador
+            tem_carleson = any(
+                c.card_id == 4 for c in p.pack_home)
+            if not tem_carleson:
+                continue
+            meu_alpha_id = game.combat.alphas.get(p.id)
+            if not meu_alpha_id:
+                continue
+            # Verifica se algum oponente tem criatura Wyrm
+            for opp in game.players:
+                if opp.id == p.id:
+                    continue
+                tem_wyrm = False
+                for oc in opp.pack_home + opp.hunting_grounds + opp.umbra:
+                    ct = (oc.card_type or '').lower()
+                    if 'character' in ct and 'wyrm' in ct:
+                        tem_wyrm = True
+                        break
+                if tem_wyrm:
+                    # Bota o alpha de Carleson como primeiro
+                    if meu_alpha_id in alphas:
+                        alphas.remove(meu_alpha_id)
+                        alphas.insert(0, meu_alpha_id)
+                    game.add_log(
+                        f'  Carleson Ruah: alpha de {p.name} '
+                        f'age primeiro (interrompe vs Wyrm)')
+                    break
+
     game.combat.alpha_order = alphas
     game.combat.current_alpha_index = 0
     game.combat.alpha_actions_taken = 0
@@ -1039,14 +1103,19 @@ def advance_combat_step(game: GameState) -> bool:
     """Avanca a maquina de steps de combate.
 
     Gerencia as transicoes entre steps do Capitulo 6:
-    - Steps de auto-advance sao pulados automaticamente
-      (pre_combat, beginning_of_combat, bluff, withdrawal)
-    - Steps com acao do jogador esperam o bot agir
-      (play_card, targeting, reveal)
-    - Entre rounds: verifica se combate continua
+    - Steps de auto-advance (pre_combat, beginning_of_combat, bluff):
+      processados automaticamente (ações padrão).
+    - Steps com ação do jogador (play_card, targeting, reveal):
+      retornam False para que o bot/jogador decida.
+    - Declaration step: transita automaticamente (já resolvido
+      em start_combat), mas permite Hunting Party/Shieldmate.
+    - Withdrawal step: verifica se atacante se retira ou continua.
+    - between_rounds: verifica condições de fim; se continuar,
+      faz loop para play_card (nova rodada).
 
     Returns:
-        True se o step foi avancado, False se precisa de acao do jogador.
+        True se o step foi avançado (transição automática feita),
+        False se precisa de ação do jogador/bot.
     """
     if not game.combat.is_active:
         return False
@@ -1059,89 +1128,119 @@ def advance_combat_step(game: GameState) -> bool:
         step = OLD_STEP_MAP[step]
         game.combat.step = step
 
-    # ---- Steps de auto-advance (passam direto) ----
+    # ─── Steps de auto-advance ───
+    # Estes steps têm transições automáticas (sem ação do jogador).
     if step in COMBAT_STEPS_AUTO:
         if step == 'pre_combat':
-            # Stepping In (6.5.9): alpha substitui Presa
-            if _preparar_stepping_in(game):
-                game.add_log('  [Pre-Combat] Stepping In executado')
-            else:
-                game.add_log('  [Pre-Combat] Sem stepping in (auto)')
-        elif step == 'beginning_of_combat':
-            game.add_log('  [Beginning-of-Combat] Sem gifts pre-combate (auto)')
-        elif step == 'bluff':
-            _processar_bluff(game)
-        elif step == 'withdrawal':
-            if _processar_withdrawal(game):
-                game.add_log('  [Withdrawal] Atacante retirou-se')
-                # Com withdrawal, combate termina imediatamente
-                game.combat.step = 'end'
-                game.add_log('  [Withdrawal] Combate encerrado')
-                return True
-            game.add_log('  [Withdrawal] Atacante continua (auto)')
+            # 6.1.2: Stepping In (6.5.9), pack actions, combat cancelling
+            _preparar_stepping_in(game)
+            game.add_log('  [Pre-Combat] Auto')
 
-        # Avanca para o proximo step
+        elif step == 'beginning_of_combat':
+            # 6.1.3: Open Play — gifts pré-combate, frenzy inicial
+            # (Bot pode jogar Spirit of the Fray etc. aqui)
+            game.add_log('  [Beginning-of-Combat] Open Play (auto)')
+
+        elif step == 'bluff':
+            # 6.2.4: Processa ilegais (6.9.1) + bluffs (6.9.2)
+            _processar_bluff(game)
+
+        # Avança para o próximo step na sequência
         idx = COMBAT_STEPS.index(step)
         if idx + 1 < len(COMBAT_STEPS):
             prox = COMBAT_STEPS[idx + 1]
             game.combat.step = prox
-            game.add_log(f'  Step: {step} -> {prox}')
+            game.add_log(f'  Step: {step} → {prox}')
             return True
         else:
-            # Fim dos steps - deve ir para end
             game.combat.step = 'end'
             return True
 
-    # ---- Steps de inicio de combate ----
+    # ─── Steps de transição manual ───
+
     if step == 'declaration':
-        # Declaration step: atacante declarado, alvo definido
-        # (ja foi feito em start_combat)
-        # Avanca para pre_combat
+        # 6.1.1: Declaration step — atacante/alvo já definido em start_combat.
+        # Avança para pre_combat. As cartas de declaração (Hunting Party,
+        # Shieldmate) podem ser jogadas aqui — implementado via efeitos.
         game.combat.step = 'pre_combat'
-        game.add_log('  [Declaration] Alvo declarado, avancando...')
+        game.add_log('  [Declaration] → pre_combat')
+        return True
+
+    if step == 'withdrawal':
+        # 6.2.6 / 6.3.1: Atacante decide retirar ou continuar.
+        if _processar_withdrawal(game):
+            game.add_log('  [Withdrawal] Atacante retirou-se — combate encerrado')
+            game.combat.step = 'end'
+            return True
+        # Se não retirou, avança para between_rounds
+        game.add_log('  [Withdrawal] Atacante continua')
+        game.combat.step = 'between_rounds'
         return True
 
     if step == 'between_rounds':
-        # Verifica condicoes de fim (6.3)
+        # 6.2.7 / 6.3: Verifica condições de fim de combate.
+        # Se combate continua, faz loop para play_card (nova rodada).
+
+        # (a) Sem atacantes ou defensores → encerra
         if not combat.attackers or not combat.defenders:
-            game.add_log('  Sem atacantes ou defensores - fim do combate')
+            game.add_log('  Sem atacantes ou defensores — encerrando combate')
             game.combat.step = 'end'
             return True
 
-        # ── Multi-round combat (6.2): loop back to play_card ──
+        # (b) Limite de segurança: max 10 rodadas
         if combat.round_number >= 10:
-            # Limite de seguranca: max 10 rounds
-            game.add_log('  Limite de 10 rodadas atingido - encerrando combate')
+            game.add_log('  Limite de 10 rodadas atingido — encerrando combate')
             game.combat.step = 'end'
             return True
 
-        game.combat.round_number += 1
-        # Reseta estado da rodada anterior
-        game.combat.declarations.clear()
-        game.combat.declaration_order.clear()
-        game.combat.played_cards.clear()
-        game.combat.face_down_order.clear()
-        game.combat.targets.clear()
-        game.combat.ce_face_down.clear()
-        game.combat.illegal_cards.clear()
-        game.combat.bluff_cards.clear()
-        game.combat.bluff_failed.clear()
-        game.combat.damage_queue.clear()
-        game.combat.attacker_withdrew = False
-        game.combat.extra_declarations.clear()
-        game.combat.played_combat_cards.clear()
+        # (c) 6.3: Nenhuma Combat Action válida na rodada → encerra
+        # Verifica se alguma criatura jogou uma Combat Action real
+        # (exclui None e ''). Ilegais e blefes falhos já foram removidos.
+        actions_validas = any(
+            v is not None and v != ''
+            for v in combat.declarations.values()
+        )
+        if not actions_validas:
+            game.add_log(
+                '  Nenhuma Combat Action válida — '
+                'encerrando combate (6.3)')
+            game.combat.step = 'end'
+            return True
 
-        # ── Reaplica efeitos de equipamento por rodada ──
-        # (ex: Devilwhip concede +1 acao extra por rodada)
+        # (d) Inicia nova rodada
+        combat.round_number += 1
+        game.add_log(
+            f'  ⏳ Rodada {combat.round_number} — preparando...')
+
+        # Limpa estado da rodada anterior
+        combat.declarations.clear()
+        combat.declaration_order.clear()
+        combat.played_cards.clear()
+        combat.face_down_order.clear()
+        combat.targets.clear()
+        combat.ce_face_down.clear()
+        combat.illegal_cards.clear()
+        combat.bluff_cards.clear()
+        combat.bluff_failed.clear()
+        combat.damage_queue.clear()
+        combat.attacker_withdrew = False
+        combat.extra_declarations.clear()
+        combat.played_combat_cards.clear()
+        combat.dano_actions.clear()
+
+        # Reaplica efeitos de equipamento por rodada
+        # (ex: Devilwhip concede +1 ação extra por rodada)
         _reaplicar_efeitos_equipamento_rodada(game)
 
-        # Nova rodada
+        # Loop: volta para play_card
         game.combat.step = 'play_card'
-        game.add_log(
-            f'  ⏳ Rodada {combat.round_number} - ')
         return True
 
-    # Steps que precisam de acao do jogador: retorna False
+    # ─── Steps que precisam de ação do jogador ───
+    # Estes steps esperam o bot ou jogador interagir:
+    # - play_card (6.2.1): jogar combat card face-down
+    # - targeting (6.2.2): atribuir alvos
+    # - reveal (6.2.3): revelar cartas + feinting
     return False
 
 
@@ -1149,7 +1248,15 @@ def start_combat(game: GameState, attackers: list[str],
                  defenders: list[str],
                  attack_type: str = 'creature',
                  target_card_id: Optional[str] = None) -> bool:
-    """Inicia um combate entre atacantes e defensores.
+    """Inicia um combate entre atacantes e defensores (6.1).
+
+    Regra (6.1):
+    - O combate começa quando um alpha declara um ataque.
+    - Declaration step (6.1.1): attacker declara alvo;
+      atacante pode jogar Hunting Party; defensor pode Shieldmate.
+    - Pre-Combat step (6.1.2): pack actions, stepping in, redirect.
+    - Beginning-of-Combat step (6.1.3): Open Play para gifts.
+    - Em seguida começam as rodadas de combate (6.2).
 
     Args:
         game: Estado da partida.
@@ -1210,7 +1317,6 @@ def start_combat(game: GameState, attackers: list[str],
     # ── Sky River Caern: bloqueia ataque a nao-alfa ANTES do Frenar ──
     if game.has_modifier('sky_river_caern'):
         alphas_atuais = dict(game.combat.alphas) if game.combat else {}
-        # Descobre quais packs tem Caern
         packs_caern = set()
         for mod in list(game.game_modifiers):
             if mod.modifier == 'sky_river_caern':
@@ -1219,7 +1325,6 @@ def start_combat(game: GameState, attackers: list[str],
                         if id(c) == mod.card_uid:
                             packs_caern.add(p.id)
                             break
-        # Se algum defensor original e nao-alfa em pack protegido, bloqueia
         for dfd in list(defenders):
             if dfd == 'hg':
                 continue
@@ -1228,11 +1333,9 @@ def start_combat(game: GameState, attackers: list[str],
                 continue
             if dfd_card.owner_id not in packs_caern:
                 continue
-            # E alpha? Caern permite ataque ao alpha
             alpha_card_id = alphas_atuais.get(dfd_card.owner_id)
             if alpha_card_id and str(dfd_card.card_id) == alpha_card_id:
                 continue
-            # Nao-alfa em pack protegido — bloqueia antes do Frenar
             game.add_log(
                 f'Sky River Caern: {dfd_card.name} nao pode ser atacado '
                 f'(nao e o Alpha do pack)')
@@ -1248,11 +1351,9 @@ def start_combat(game: GameState, attackers: list[str],
             dfd_card = _find_card(game, dfd)
             if not dfd_card:
                 continue
-            # Verifica se o defensor e o alpha de algum jogador
             for pid, alpha_id in alphas_atuais.items():
                 if dfd != alpha_id:
                     continue
-                # Alpha esta sendo atacado! Frenar pode trocar.
                 dono_alpha = _find_owner(game, dfd_card)
                 if not dono_alpha:
                     continue
@@ -1260,7 +1361,6 @@ def start_combat(game: GameState, attackers: list[str],
                     if c.health_current <= 0:
                         continue
                     if getattr(c, 'modelo_id', '') == 'frenar_r1':
-                        # Frenar troca de lugar com o alpha
                         i = novos_defensores.index(dfd)
                         novos_defensores[i] = str(c.card_id)
                         game.add_log(
@@ -1273,26 +1373,22 @@ def start_combat(game: GameState, attackers: list[str],
 
     # Preserva alphas do estado de combate anterior
     alphas_anteriores = dict(game.combat.alphas) if game.combat else {}
-    # Reseta tracking de vitimas para Vigilante
     game._lowest_renown_victim_killed = None
     game.combat = CombatState(
         is_active=True,
-        step='declaration',  # Novo: comeca pelo Declaration Step (6.1)
+        step='declaration',
         attackers=attackers,
         defenders=defenders,
         original_attackers=list(attackers),
         original_defenders=list(defenders),
-        round_number=1,  # Primeira rodada
+        round_number=1,
         alphas=alphas_anteriores,
         attack_type=attack_type,
-        territory_target=target_card_id if attack_type == 'territory'
-                         else None,
-        battlefield_target=target_card_id if attack_type == 'battlefield'
-                           else None,
+        territory_target=target_card_id if attack_type == 'territory' else None,
+        battlefield_target=target_card_id if attack_type == 'battlefield' else None,
         bind_target=target_card_id if attack_type == 'bind' else None,
     )
 
-    # Popula combatants com atacantes + defensores
     game.combat.combatants = list(attackers) + [d for d in defenders if d not in attackers]
 
     game.add_log(
@@ -1300,19 +1396,10 @@ def start_combat(game: GameState, attackers: list[str],
         f'{len(defenders)} defensor(es)'
     )
 
-    # Prey no HG se defende automaticamente (Block)
-    # Tzinzie (1348): trigger de inicio de combate
     _check_tzinzie_trigger(game)
-
-    # Caern of the Unwashed Child (586): oponentes perdem 2 Rage ou Gnosis
     _check_caern_unwashed_child(game)
 
-    # NOTA: _check_sky_river_caern removido daqui — a verificacao
-    #       e feita ANTES do Frenar (acima), para evitar falso
-    #       bloqueio quando Frenar troca com o alpha.
-
     # Trata ataque a Territory: substitui defensor pelo alpha do dono
-    # Regra (Quickstart): o alpha do pack controlador pode defender
     novos_defensores = []
     for dfd in defenders:
         card = _find_card(game, dfd)
@@ -1323,22 +1410,17 @@ def start_combat(game: GameState, attackers: list[str],
                 if dono:
                     alpha_id = game.combat.alphas.get(dono.id)
                     if alpha_id:
-                        # Substitui Territory pelo alpha defensor
                         novos_defensores.append(alpha_id)
                         alpha_card = _find_card(game, alpha_id)
                         alpha_name = alpha_card.name if alpha_card else alpha_id
                         game.add_log(
                             f'  {card.name} (Territory) defendido por '
                             f'alpha {alpha_name}')
-                        # Marca Territory para destruicao se alpha morrer
                         if 'territory_targets' not in game.combat_triggers:
                             game.combat_triggers['territory_targets'] = {}
                         game.combat_triggers['territory_targets'][alpha_id] = card
                         continue
-                # Sem alpha defensor: Territory destruido imediatamente
-                game.add_log(
-                    f'  {card.name} (Territory) sem defensor - '
-                    f'destruido!')
+                game.add_log(f'  {card.name} (Territory) sem defensor - destruido!')
                 _remove_creature(game, card)
                 if dono:
                     dono.discard_sept.append(card)
@@ -1346,7 +1428,6 @@ def start_combat(game: GameState, attackers: list[str],
                 continue
         novos_defensores.append(dfd)
 
-    # Atualiza defensores
     if novos_defensores != defenders:
         game.combat.defenders = novos_defensores
         if not novos_defensores:
@@ -1358,7 +1439,6 @@ def start_combat(game: GameState, attackers: list[str],
     if attack_type == 'battlefield' and target_card_id:
         bf_card = _find_card(game, target_card_id)
         if bf_card:
-            # Verifica se algum defensor e o alpha do dono
             dono_bf = _find_owner(game, bf_card)
             alpha_defendeu = False
             if dono_bf:
@@ -1366,10 +1446,7 @@ def start_combat(game: GameState, attackers: list[str],
                 if alpha_id and alpha_id in game.combat.defenders:
                     alpha_defendeu = True
             if not alpha_defendeu:
-                # Autodefesa: Battlefield vira combatente com
-                # Rage/Gnosis/Health = Renown
                 bf_renown = getattr(bf_card, 'renown', 3) or 3
-                # Cria uma entrada para o Battlefield como combatente
                 game.combat.battlefield_self_defense[target_card_id] = {
                     'rage': bf_renown,
                     'gnosis': bf_renown,
@@ -1378,7 +1455,6 @@ def start_combat(game: GameState, attackers: list[str],
                     'renown': bf_renown,
                     'card': bf_card,
                 }
-                # Adiciona o Battlefield como defensor
                 if target_card_id not in game.combat.defenders:
                     game.combat.defenders.append(target_card_id)
                 if target_card_id not in game.combat.combatants:
@@ -1501,7 +1577,7 @@ def _jogar_ce_face_down(game: GameState, criatura_id: str,
     if ce_card in dono.hand:
         dono.hand.remove(ce_card)
     elif ce_card in dono.combat_hand:
-        dono.combat_hand.remove(ce_card)
+        dono.hand.remove(ce_card)
     else:
         return False
 
@@ -1589,8 +1665,8 @@ def _registrar_acao_dano(game: GameState, card: CardInstance,
     # resolucao do combate, que usa played_combat_cards.
     # Por enquanto, apenas remove da mao de combate.
     dono = _find_owner(game, card)
-    if dono and card in dono.combat_hand:
-        dono.combat_hand.remove(card)
+    if dono and card in dono.hand:
+        dono.hand.remove(card)
     card.zone = Zone.OUT_OF_PLAY
 
     game.add_log(f'  {card.name} registrado como acao de dano '
@@ -1777,7 +1853,10 @@ def reveal_all(game: GameState) -> bool:
         return False  # Nem todos declararam
 
     game.combat.step = 'reveal'
-    game.add_log('Acoes reveladas!')
+    game.combat.feint_substep = 'feinting'  # 6.8: abre janela de Feinting
+    game.add_log('Acoes reveladas! (janela de Feinting aberta)')
+    game.add_log('  [Reveal] Feinting (6.8.1), Instinctive (6.8.2) '
+                 'e Alternative (6.6.5) disponiveis neste sub-step.')
     for cid, action in game.combat.declarations.items():
         if action:
             card_revealed = _find_card(game, cid)
@@ -2027,6 +2106,145 @@ def _find_owner(game: GameState, card: CardInstance) -> Optional[PlayerState]:
     return _find_player(game, card.owner_id)
 
 
+def _processar_flee_e_step_sideways(game: GameState,
+                                      velocidade: str) -> int:
+    """Processa acoes de combate flee/step_sideways (Parting Shots 6.10.4).
+
+    Regra (6.10.4): "A creature using a Combat Action that removes it
+    from combat (or makes it step sideways) is still affected by Combat
+    Actions targeting him that resolve at the same time."
+
+    Esta funcao deve ser chamada DEPOIS que todos os ataques e
+    contra-ataques da velocidade atual ja resolveram, mas ainda dentro
+    do mesmo passo de velocidade. Assim, a criatura que declarou flee
+    ou step_sideways ja tomou todo o dano de ataques simultaneos antes
+    de ser removida.
+
+    Args:
+        game: Estado da partida.
+        velocidade: 'fast', 'normal' ou 'slow'.
+
+    Returns:
+        Numero de criaturas que fugiram / step sideways.
+    """
+    if not game.combat.is_active:
+        return 0
+
+    processados = 0
+    combat = game.combat
+
+    # Reune todos os combatentes vivos
+    combatentes = set()
+    for cid in combat.combatants:
+        if cid == 'hg':
+            continue
+        card = _find_card(game, cid)
+        if card and card.health_current > 0:
+            combatentes.add(cid)
+
+    for cid in combatentes:
+        acao = combat.declarations.get(cid, '')
+        if not acao:
+            continue
+
+        # So processa acoes desta velocidade
+        acao_speed = 'normal'
+        if acao.startswith('dano_'):
+            dano_info = combat.dano_actions.get(acao, {})
+            acao_speed = dano_info.get('speed', 'normal')
+        else:
+            props = COMBAT_ACTION_PROPS.get(acao, {})
+            acao_speed = props.get('speed', 'normal')
+        if acao_speed != velocidade:
+            continue
+
+        card = _find_card(game, cid)
+        if not card or card.health_current <= 0:
+            continue  # Mortos nao fogem
+
+        def _remover_de_listas(card_id_str: str):
+            """Helper: remove card_id de todas as listas de combate."""
+            for lista in (combat.attackers, combat.defenders,
+                          combat.combatants):
+                if card_id_str in lista:
+                    lista.remove(card_id_str)
+            combat.declarations.pop(card_id_str, None)
+            combat.targets.pop(card_id_str, None)
+            # Remove de lista de combat cards jogados
+            combat.played_combat_cards.pop(card_id_str, None)
+            combat.played_cards.pop(card_id_str, None)
+            combat.ce_face_down.pop(card_id_str, None)
+            if card_id_str in combat.face_down_order:
+                combat.face_down_order.remove(card_id_str)
+            # damage_queue e uma lista de tuplas (origem, alvo, dano, speed)
+            combat.damage_queue = [
+                d for d in combat.damage_queue if d[0] != card_id_str
+            ]
+            if hasattr(combat, 'dano_actions'):
+                for k in list(combat.dano_actions.keys()):
+                    if card_id_str in k:
+                        combat.dano_actions.pop(k, None)
+
+        if acao == 'flee':
+            cid_str = str(card.card_id)
+            dono = _find_owner(game, card)
+            # Remove da zona atual e move para descarte
+            if dono:
+                for zone_list in (dono.pack_home, dono.hunting_grounds,
+                                  dono.umbra):
+                    if card in zone_list:
+                        zone_list.remove(card)
+                        break
+            from rage_web.game_engine.rules import zona_descarte
+            zona = zona_descarte(card.card_type or '')
+            if zona == 'discard_combat':
+                card.zone = Zone.DISCARD_COMBAT
+                if dono:
+                    dono.discard_combat.append(card)
+            else:
+                card.zone = Zone.DISCARD_SEPT
+                if dono:
+                    dono.discard_sept.append(card)
+            _remover_de_listas(cid_str)
+            game.add_log(
+                f'  {card.name} fugiu do combate (Parting Shot)!'
+            )
+            processados += 1
+
+        elif acao == 'step_sideways':
+            cid_str = str(card.card_id)
+            dono = _find_owner(game, card)
+            if dono:
+                # Move da zona atual para Umbra
+                for zone_list in (dono.pack_home,
+                                  dono.hunting_grounds):
+                    if card in zone_list:
+                        zone_list.remove(card)
+                        break
+                card.zone = Zone.UMBRA
+                dono.umbra.append(card)
+            _remover_de_listas(cid_str)
+            game.add_log(
+                f'  {card.name} step sideways para a Umbra '
+                f'(Parting Shot)!'
+            )
+            processados += 1
+
+    if processados:
+        # Limpa combatentes que morreram apos as remocoes
+        mortos_ids = set()
+        for cid in list(combat.combatants):
+            if cid == 'hg':
+                continue
+            card = _find_card(game, cid)
+            if card and card.health > 0 and card.health_current <= 0:
+                mortos_ids.add(cid)
+        if mortos_ids:
+            game.combat.limpar_combatentes_mortos(mortos_ids)
+
+    return processados
+
+
 def _preparar_stepping_in(game: GameState) -> bool:
     """Processa Stepping In (6.5.9) no Pre-Combat Step.
 
@@ -2118,6 +2336,14 @@ def _processar_withdrawal(game: GameState) -> bool:
     Maim impede withdrawal.
     Frenzied nao pode withdrawal.
 
+    A decisao de retirar e estrategica:
+    - Se o atacante tem cartas de combate na mao, NAO retira
+      (quer continuar lutando)
+    - Se o atacante esta em desvantagem numerica ou o alpha
+      esta muito ferido, retira
+    - Se nao ha carta de combate E alpha esta saudavel,
+      retira (nao vale a pena continuar)
+
     Returns:
         True se o combate foi encerrado por withdrawal.
     """
@@ -2139,7 +2365,84 @@ def _processar_withdrawal(game: GameState) -> bool:
     # Verifica Maim (impede withdrawal)
     # TODO: implementar Maim check
 
-    # Atacante retira do combate (6.3.1)
+    # ── Verificacao de vitoria ──
+    # Se nao ha mais defensores vivos, combate encerra
+    # (atacante venceu)
+    defensores_vivos = []
+    for def_id in combat.defenders:
+        if def_id == 'hg':
+            continue
+        card = _find_card(game, def_id)
+        if card and card.health_current > 0:
+            defensores_vivos.append(def_id)
+
+    if not defensores_vivos:
+        game.add_log(
+            '  [Withdrawal] Nenhum defensor vivo — combat encerrado')
+        game.add_log('  [Withdrawal] Atacante retirou-se do combate')
+        return True
+
+    # Verifica se atacantes ainda estao vivos
+    atacantes_vivos = []
+    for atk_id in combat.attackers:
+        if atk_id == 'hg':
+            continue
+        card = _find_card(game, atk_id)
+        if card and card.health_current > 0:
+            atacantes_vivos.append(atk_id)
+
+    if not atacantes_vivos:
+        game.add_log(
+            '  [Withdrawal] Nenhum atacante vivo — combat encerrado')
+        return True
+
+    # ── Decisao estrategica de withdrawal ──
+    # Encontra o jogador atacante
+    jogador_atacante = None
+    alpha_atacante = None
+    if atacantes_vivos:
+        atk_id = atacantes_vivos[0]
+        card = _find_card(game, atk_id)
+        if card:
+            for p in game.players:
+                if p.id == card.owner_id:
+                    jogador_atacante = p
+                    alpha_atacante = card
+                    break
+
+    if jogador_atacante:
+        # 1. Se tem cartas de combate na mao → NAO retira
+        if jogador_atacante.combat_hand:
+            game.add_log(
+                f'  [Withdrawal] {jogador_atacante.name} tem '
+                f'{len(jogador_atacante.combat_hand)} carta(s) de '
+                f'combate — continua lutando')
+            return False
+
+        # 2. Se o alpha esta muito ferido (HP <= 30%) → retira
+        if alpha_atacante and alpha_atacante.health > 0:
+            hp_ratio = (alpha_atacante.health_current /
+                        alpha_atacante.health)
+            if hp_ratio <= 0.3:
+                game.add_log(
+                    f'  [Withdrawal] {alpha_atacante.name} muito ferido '
+                    f'({alpha_atacante.health_current}/'
+                    f'{alpha_atacante.health}) — retirando')
+                game.add_log('  [Withdrawal] Atacante retirou-se do combate')
+                return True
+
+        # 3. Se esta em desvantagem numerica (mais defensores) → retira
+        if (len(combat.attackers) > 0 and
+                len(combat.defenders) > len(combat.attackers)):
+            game.add_log(
+                f'  [Withdrawal] Atacante em desvantagem numerica '
+                f'({len(combat.attackers)}x{len(combat.defenders)})'
+                f' — retirando')
+            game.add_log('  [Withdrawal] Atacante retirou-se do combate')
+            return True
+
+    # 4. Sem cartas de combate e sem desvantagem critica →
+    #    retira mesmo assim (nao vale a pena continuar)
     game.add_log('  [Withdrawal] Atacante retirou-se do combate')
     return True
 
@@ -2628,10 +2931,18 @@ def _processar_bluff(game: GameState) -> bool:
     return True
 
 
-ACOES_OFENSIVAS = {'strike', 'claw', 'bite', 'weapon_strike',
-                    'ranged_strike', 'use_gift',
-                    'head_butt', 'tail_lash', 'anatomy_lesson',
-                    'savage_beatdown', 'submission_hold'}
+ACOES_OFENSIVAS = {
+    'head_butt', 'tail_lash', 'anatomy_lesson',
+    'savage_beatdown', 'submission_hold',
+    'careful_strike', 'fast_strike', 'planned_strike',
+    'stunning_strike', 'aggressive_bite', 'spirited_strike',
+    'body_slam', 'lucky_blow', 'off_balanced', 'overextended',
+    'reckless_swing', 'sap_spirit', 'stinging_wound',
+    'surprise_attack', 'blood_atami', 'mitey_bitey',
+    'evade_and_strike', 'block_and_strike',
+    'forceful_wind', 'bum_rush', 'attacking_the_wyrm',
+    'block_and_roll',
+}
 
 
 def resolve_combat(game: GameState) -> bool:
@@ -2809,9 +3120,29 @@ def resolve_combat(game: GameState) -> bool:
         else:
             hogling_blocks = False
 
+        # Patagia (1016): so pode ser atingido por Weapon Equipment
+        # Verifica se o alvo tem restricao 'patagia_active'
+        patagia_blocks = 'patagia_active' in getattr(alvo_card, 'restricoes', [])
+        if patagia_blocks:
+            # Verifica se o atacante tem algum Weapon Equipment ativo
+            atacante_tem_weapon = False
+            for eq in _get_active_equipment(origem_card):
+                kw = (getattr(eq, 'keywords', '') or '').lower()
+                ct = (getattr(eq, 'card_type', '') or '').lower()
+                if 'weapon' in kw or 'weapon' in ct:
+                    atacante_tem_weapon = True
+                    break
+            if not atacante_tem_weapon:
+                patagia_blocks = True
+                game.add_log(
+                    f'  Patagia: {alvo_card.name} imune a dano de '
+                    f'{origem_card.name} (sem Weapon Equipment)')
+            else:
+                patagia_blocks = False
+
         # Aplica dano e cria damage card (regra 6.4)
         # Calcula dano base: primeiro da acao, depois Rage da criatura
-        if skin_blocks or hogling_blocks:
+        if skin_blocks or hogling_blocks or patagia_blocks:
             dano = 0
         else:
             # Dano basico: usa damage da acao (se definido) ou Rage da criatura
@@ -3174,6 +3505,16 @@ def resolve_combat(game: GameState) -> bool:
 
         mortos = _get_dead_ids()
         game.combat.limpar_combatentes_mortos(mortos)
+
+        # ── Parting Shots (6.10.4): processa flee/step_sideways ──
+        # Regra: "A creature using a Combat Action that removes it from
+        #  combat (or makes it step sideways) is still affected by
+        #  Combat Actions targeting him that resolve at the same time."
+        # A remocao so acontece DEPOIS que todos os ataques e
+        # contra-ataques desta velocidade ja resolveram, garantindo
+        # que a criatura ainda sofre dano antes de fugir.
+        _processar_flee_e_step_sideways(game, velocidade)
+
         if mortos:
             game.add_log(f'  [Fim {velocidade}] {len(mortos)} criatura(s) removida(s)')
 

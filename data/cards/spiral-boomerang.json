@@ -18,7 +18,7 @@
         },
         {
           "tipo": "remover_do_jogo",
-          "condicao_alvo": "criatura_aliada",
+          "condicao_alvo": "self",
           "params": {
             "descarte_apos_uso": true
           }

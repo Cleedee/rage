@@ -45,6 +45,9 @@ EFEITOS_IMPLEMENTADOS = {
     'ataque_imediato', 'remover_do_combate', 'forcar_bluff',
     'impedir_frenzy', 'olhar_topo_deck', 'descartar_mao_combate',
     'registrar_trigger_combate',
+    'impedir_regeneracao',
+    'roubar_equipamento',
+    'remover_renome_baixo',
     # Efeitos de estado
     'entrar_em_frenesi', 'tapar', 'destapar',
     # Efeitos de setup / passivos

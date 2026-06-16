@@ -4,15 +4,20 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Roubar 1 equipamento de outra criatura (Gn3)",
+      "descricao": "Roubar 1 equipamento de criatura inimiga (Gn3)",
       "efeitos": [
         {
-          "tipo": "adicionar_modifier",
-          "condicao_alvo": "criatura_aliada",
+          "tipo": "roubar_equipamento",
+          "condicao_alvo": "criatura_inimiga",
           "params": {
-            "modifier": "sticky_paws_active",
-            "alvos": "self",
-            "descricao": "Pode roubar 1 equipamento de outra criatura (requer requisitos do item)"
+            "descricao": "Rouba 1 equipamento de criatura inimiga e anexa ao pack"
+          }
+        },
+        {
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "self",
+          "params": {
+            "descarte_apos_uso": true
           }
         }
       ]

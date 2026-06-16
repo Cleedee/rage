@@ -1416,70 +1416,14 @@ class PriorityBot:
                                     action = acao_forcada
                                     break
                     if not result:
-                        # Tenta jogar CE face-down como blefe (ultimo recurso)
+                        # Tenta jogar CE face-down (Combat Events sao jogados
+                        # face-down por natureza — acao legitima, nao blefe)
                         from rage_web.game_engine.combat_queue import \
                             _jogar_ce_face_down
                         ce_jogado = self._tentar_ce_face_down(card)
                         if ce_jogado:
                             return ce_jogado
 
-                    if not result:
-                        # Blefe: tenta jogar qualquer carta da mao de combate
-                        # (se revelada e invalida, vira blefe).
-                        # Regra: jogador sempre pode jogar um Combat Action
-                        # mesmo que nao cumpra requisitos — sera blefe.
-                        if self.player.combat_hand:
-                            from rage_web.game_engine.combat_queue import (
-                                _registrar_acao_dano, _jogar_ce_face_down)
-                            carta_bluff = self.player.combat_hand[-1]
-
-                            # ── Verifica se a carta pode ser blefada ──
-                            # Cartas com 'Not bluffed' no requires ou
-                            # 'nao_bluffavel': true nao podem ser blefadas
-                            reqs = (carta_bluff.requires or '').lower()
-                            pode_blefar = True
-                            if 'not bluffed' in reqs or 'nao bluffavel' in reqs:
-                                pode_blefar = False
-                            if hasattr(carta_bluff, '_metadata'):
-                                meta = carta_bluff._metadata or {}
-                                if meta.get('nao_bluffavel') or \
-                                   ('not bluffed' in (meta.get('texto_original', '') or '').lower()):
-                                    pode_blefar = False
-                            if not pode_blefar:
-                                g.add_log(f'[Bluff] {carta_bluff.name} '
-                                          f'não pode ser blefada — ignorada')
-                                # Tenta prox carta da mao
-                                if carta_bluff in self.player.hand:
-                                    pass  # Mantem na mao para uso legitimo
-                                continue
-
-                            resultado_bluff = False
-                            ct = (carta_bluff.card_type or '').lower()
-                            if 'combat event' in ct or ct == 'combat_event':
-                                # CE face-down
-                                resultado_bluff = _jogar_ce_face_down(
-                                    g, cid, str(carta_bluff.card_id))
-                            else:
-                                # Combat Action: cria acao virtual dano_<uid>
-                                acao_bluff = _registrar_acao_dano(
-                                    g, carta_bluff, str(card.card_id))
-                                if acao_bluff:
-                                    if carta_bluff in self.player.hand:
-                                        self.player.hand.remove(carta_bluff)
-                                        carta_bluff.zone = Zone.OUT_OF_PLAY
-                                    resultado_bluff = declare_action(
-                                        g, cid, acao_bluff,
-                                        carta_combate=carta_bluff)
-                                    if resultado_bluff:
-                                        g.add_log(f'{self.player.name} jogou '
-                                                  f'{carta_bluff.name} como blefe')
-                                        self._usou_carta_combate = True
-                                        return f'bluff_{cid}_{carta_bluff.card_id}'
-                            if resultado_bluff:
-                                g.add_log(f'{self.player.name} jogou '
-                                          f'{carta_bluff.name} como CE blefe')
-                                self._usou_carta_combate = True
-                                return f'bluff_{cid}_{carta_bluff.card_id}'
                     if not result:
                         # Ainda falhou: marca como passou (impede loop)
                         g.combat.played_cards[cid] = ''
@@ -2624,28 +2568,10 @@ class PriorityBot:
         if tem_chainsaw:
             nivel_restrito = max(nivel_restrito or 0, 10)
 
-        # Calcula o dano da melhor acao basica para comparacao
-        melhor_dano_basico = card.effective_rage  # 'strike' = Rage
-        for acao_basica in ('head_butt', 'anatomy_lesson',
-                            'savage_beatdown', 'tail_lash',
-                            'submission_hold', 'claw', 'bite'):
-            props = COMBAT_ACTION_PROPS.get(acao_basica, {})
-            req = props.get('rage_requirement', 0)
-            if card.effective_rage < req:
-                continue
-            if nivel_restrito is not None and req > nivel_restrito:
-                continue
-            acao_dano = props.get('damage')
-            if acao_dano is None:
-                acao_dano = card.effective_rage
-            if acao_basica == 'tail_lash':
-                keywords = (card.keywords or '').lower()
-                if 'rokea' in keywords or 'mokole' in keywords:
-                    acao_dano += props.get('bonus_dano', 0)
-            if acao_dano > melhor_dano_basico:
-                melhor_dano_basico = acao_dano
-
-        ACES_DEFENSIVAS = {'block', 'dodge', 'flee', 'ranged_strike'}
+        # No Rage CCG nao existem acoes basicas intrinsecas
+        # (strike, block, dodge, etc). Toda acao de combate
+        # requer uma carta de Combat Action real.
+        # Portanto nao ha 'melhor dano basico' para comparar.
 
         melhor_acao = None
         melhor_carta = None
@@ -2664,11 +2590,9 @@ class PriorityBot:
                 nome_slug = MAPA_NOMES_CARTA_PARA_ACAO[nome_slug]
 
             # ── P4: Checa se nome mapeia para COMBAT_ACTION ──
+            # Todas as acoes sao cartas reais; nao ha acoes basicas
+            # (block, dodge, etc) para pular.
             if nome_slug in COMBAT_ACTION_PROPS:
-                # Pula acoes defensivas (deixa _choose_combat_action decidir)
-                if nome_slug in ACES_DEFENSIVAS:
-                    continue
-
                 props = COMBAT_ACTION_PROPS.get(nome_slug, {})
                 req = props.get('rage_requirement', 0)
 
@@ -2699,9 +2623,9 @@ class PriorityBot:
                     if 'rokea' in keywords or 'mokole' in keywords:
                         acao_dano += props.get('bonus_dano', 0)
 
-                # So retorna se dano > 0 E pelo menos tao bom quanto a melhor basica
-                # (>= para usar cartas com propriedades especiais tipo head_butt bounce)
-                if acao_dano > 0 and acao_dano >= melhor_dano_basico and acao_dano > melhor_dano:
+                # No Rage CCG toda acao requer uma carta real.
+                # Usa qualquer carta com dano > 0.
+                if acao_dano > 0 and acao_dano > melhor_dano:
                     melhor_acao = nome_slug
                     melhor_carta = carta_combate
                     melhor_dano = acao_dano
@@ -2715,10 +2639,7 @@ class PriorityBot:
                 if nome_slug in MAPA_NOMES_CARTA_PARA_ACAO:
                     nome_slug = MAPA_NOMES_CARTA_PARA_ACAO[nome_slug]
                 if nome_slug in COMBAT_ACTION_PROPS:
-                    if nome_slug not in ACES_DEFENSIVAS:
-                        continue  # Ja foi considerada em P4
-                if nome_slug in ACES_DEFENSIVAS:
-                    continue
+                    continue  # Ja foi considerada em P4
 
                 # Verifica se o modelo da carta tem efeito 'dano'
                 if not carta_combate.modelo_id:
@@ -2753,9 +2674,8 @@ class PriorityBot:
                 if 'crino' in reqs and not card.is_crinos:
                     continue
 
-                # So usa se dano >= melhor basica (ou se basica for strike puro e dano for util)
-                if dano_valor < melhor_dano_basico:
-                    continue
+                # No Rage CCG nao ha ataque basico — toda acao
+                # requer carta real. Qualquer dano > 0 e util.
 
                 # Registra acao virtual
                 acao_virtual = _registrar_acao_dano(self.game, carta_combate,
@@ -2853,55 +2773,12 @@ class PriorityBot:
         melhor_acao = ''
         melhor_dano = -1
 
-        # Atacantes tem fallback para strike; defensores nao
-        cid_str = str(card.card_id)
-        is_attacker = cid_str in self.game.combat.attackers
-        acoes_base = ()
         # Per 6.6/6.9.2: nao existe Strike/Claw/Bite intrinseco.
-        # Toda acao precisa ser uma carta de Combat Action.
-        # O fallback e' via bluff (jogar carta invalida) no
-        # play_card step, nao via acao intrinseca.
-
-        for acao in ('anatomy_lesson', 'head_butt', 'savage_beatdown',
-                     'tail_lash', 'submission_hold') + acoes_base:
-            props = COMBAT_ACTION_PROPS.get(acao, {})
-            req = props.get('rage_requirement', 0)
-            if card.effective_rage < req:
-                continue  # Nao atende requisito de Rage
-            # 6.6.6a: Restricted Play
-            if nivel_restrito is not None and req > nivel_restrito:
-                continue  # Restricao impede esta acao
-            # Verifica validadores especificos (ex: Tail Lash so Rokea/Mokole)
-            from rage_web.game_engine.combat_queue import COMBAT_ACTION_VALIDATORS
-            validators = COMBAT_ACTION_VALIDATORS.get(acao, [])
-            if validators:
-                # Pula acao se algum validador rejeitar
-                rejeitada = False
-                for validador in validators:
-                    erro = validador(self.game, card)
-                    if erro:
-                        rejeitada = True
-                        break
-                if rejeitada:
-                    continue
-
-            # Calcula dano esperado
-            acao_dano = props.get('damage')
-            if acao_dano is None:
-                acao_dano = card.effective_rage  # Fallback: Rage da criatura
-
-            # Bonus de Tail Lash
-            if acao == 'tail_lash':
-                keywords = (card.keywords or '').lower()
-                if 'rokea' in keywords or 'mokole' in keywords:
-                    acao_dano += props.get('bonus_dano', 0)
-
-            if acao_dano > melhor_dano:
-                melhor_acao = acao
-                melhor_dano = acao_dano
-
-        # Nao ha mais fallback para acoes sinteticas (strike, dodge, etc).
-        # Toda acao requer uma Combat Action real.
+        # Toda acao de combate requer uma carta de Combat Action real.
+        # Nomes como anatomy_lesson, head_butt, tail_lash, etc. sao
+        # CARTAS ESPECIFICAS, nao acoes basicas — o bot so pode
+        # declara-las se encontrar a carta viavel via P4/P8.
+        # Sem carta viavel, a criatura simplesmente nao age.
         return ''  # Criatura nao age sem carta de combate
 
     def _tentar_ce_face_down(self, card: CardInstance) -> Optional[str]:

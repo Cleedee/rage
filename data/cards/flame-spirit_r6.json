@@ -4,12 +4,16 @@
   "tipo": "Ally",
   "modos": [
     {
-      "descricao": "Queimar-se em ataque de 3 de dano",
+      "descricao": "Queimar-se em ataque de 3 de dano (agravado)",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
-          "quantidade": 3
+          "quantidade": 3,
+          "params": {
+            "dano_agravado": true,
+            "auto_destruir": true
+          }
         }
       ]
     }

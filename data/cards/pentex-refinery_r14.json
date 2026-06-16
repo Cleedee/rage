@@ -4,11 +4,15 @@
   "tipo": "Enemy",
   "modos": [
     {
-      "descricao": "Inimigo (H15)",
+      "descricao": "Impedir regeneracao de shapechangers",
       "efeitos": [
         {
-          "tipo": "anular",
-          "condicao_alvo": "criatura_inimiga"
+          "tipo": "impedir_regeneracao",
+          "condicao_alvo": "todos",
+          "params": {
+            "exceto_gifts": true,
+            "global": true
+          }
         }
       ]
     }

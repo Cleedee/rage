@@ -73,8 +73,41 @@ COMBAT_STEPS = [
 ]
 
 # Steps de auto-advance (sem acao do jogador, apenas transicao)
+COMBAT_STEPS = [
+    'select_alpha',        # 2.2.6: Escolher alfa (maior Renome age primeiro)
+    'alpha_action',        # 6.5: Alpha declara ataque, challenge, ou passa
+    # --- DECLARACAO DE COMBATE (6.1) ---
+    'declaration',         # 6.1.1: Declarar atacante+alvo; atacante (Hunting Party) e
+                           #        defensor (Shieldmate) podem jogar cards
+    'pre_combat',          # 6.1.2: Pack actions, redirect, step in for Prey,
+                           #        combat cancelling (Closed Play)
+    'beginning_of_combat', # 6.1.3: Open Play (gifts pre-combate, frenzy, etc.)
+    # --- RODADAS DE COMBATE (6.2) ---
+    'play_card',           # 6.2.1: Cada criatura joga combat card face-down;
+                           #        weapons são declarados aqui
+    'targeting',           # 6.2.2: Atribuir alvos às combat cards
+                           #        (devem estar no mesmo mundo / Gauntlet)
+    'reveal',              # 6.2.3: Revelar cartas + Feinting (6.8.1) +
+                           #        Instinctive (6.8.2) + Alternative (6.6.5)
+    'bluff',               # 6.2.4: Verificar requisitos (6.9.1: ilegais),
+                           #        depois bluffs (6.9.2: sucesso/falha)
+    'resolution',          # 6.2.5: Fast Striking -> Normal -> Slow Striking,
+                           #        aplicar dano, morte -> Victory Pile
+    'withdrawal',          # 6.2.6: Atacante pode retirar (6.3.1)
+                           #        Se retirar → combat ends
+    'between_rounds',      # 6.2.7: Open Play entre rodadas.
+                           #        Se combate continua → loop para play_card
+    'end',                 # Fim do combate, cleanup (6.3)
+]
+
+# Steps de auto-advance (transicoes sem acao do jogador)
+# Estes steps sao processados automaticamente pelo motor.
+# - declaration e pre_combat: processam stepping in, pack actions, etc.
+# - beginning_of_combat: abre espaco para gifts, mas auto-pass se nada
+# - bluff: processa ilegais e bluffs automaticamente
+# - withdrawal: decisao automatica (bot) ou manual (player)
 COMBAT_STEPS_AUTO = {
-    'pre_combat', 'beginning_of_combat', 'bluff', 'withdrawal',
+    'pre_combat', 'beginning_of_combat', 'bluff',
 }
 
 # Tipos de carta no jogo

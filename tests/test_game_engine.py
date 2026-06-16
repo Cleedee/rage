@@ -2222,7 +2222,7 @@ class TestDeck416Effects:
         p1.pack_home.append(boomerang)
         r = self._get_resolvedor(game)
         efeito = self._make_efeito('REMOVER_DO_JOGO', quantidade=1,
-                        condicao='criatura_aliada',
+                        condicao='self',
                         params={'descarte_apos_uso': True})
         assert r.aplicar_efeito(efeito, boomerang, p1)
         assert boomerang.zone == Zone.DISCARD_COMBAT
@@ -3251,7 +3251,7 @@ class TestWithdrawal:
     """Testes do Withdrawal Step (6.3.1)."""
 
     def test_withdrawal_nao_ocorre_por_padrao(self):
-        """Withdrawal retorna False por padrao (atacante continua)."""
+        """Withdrawal nao ocorre se atacante tem cartas de combate."""
         from rage_web.game_engine.cli import build_game_from_decks
         from rage_web.game_engine.combat_queue import (
             start_combat, _processar_withdrawal, resolve_combat
@@ -3271,9 +3271,19 @@ class TestWithdrawal:
             game.combat.step = step
             advance_combat_step(game)
         resolve_combat(game)
-        # So verifica se a funcao existe e retorna False sem erro
+
+        # Se o atacante tem cartas de combate, NAO retira
         result = _processar_withdrawal(game)
-        assert result is True, 'Withdrawal padrao = True (atacante pode retirar)'
+        # Deve retornar False se houver combat_hand
+        atacante = game.players[0] if str(game.players[0].pack_home[0].card_id) in game.combat.attackers else game.players[1]
+        if atacante.combat_hand:
+            assert result is False, (
+                f'Com {len(atacante.combat_hand)} carta(s) de combate, '
+                f'nao deveria retirar')
+        else:
+            # Sem cartas de combate, deve retirar
+            assert result is True, (
+                'Sem cartas de combate, deveria retirar')
 
 
 class TestCombatEventFaceDown:
@@ -3366,3 +3376,263 @@ class TestCombatEventFaceDown:
         # CE deve estar no descarte
         found = any(c.card_id == 9002 for c in p1.discard_combat)
         assert found, 'CE deve estar no discard_combat'
+
+    def test_carleson_ruah_inverte_ordem_alpha_contra_wyrm(self):
+        """Carleson Ruah faz o alpha do pack agir primeiro contra Wyrm."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            selecionar_alfa, calcular_ordem_alfa)
+
+        # Deck 705 (Gaia Weenie — tem Carleson Ruah)
+        # Deck 1052 (Assombração — Wyrm)
+        game = build_game_from_decks(705, 1052, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+
+        # Confirma que Carleson esta em jogo
+        assert game.has_modifier('carleson_ruah'), \
+            'Modifier carleson_ruah deve estar registrado'
+        assert any(c.card_id == 4 for c in p1.pack_home), \
+            'Carleson deve estar no pack de p1'
+
+        # Confirma que p2 tem criaturas Wyrm
+        tem_wyrm = any(
+            'character' in (c.card_type or '').lower()
+            and 'wyrm' in (c.card_type or '').lower()
+            for c in p2.pack_home)
+        assert tem_wyrm, 'p2 deve ter criaturas Wyrm'
+
+        # Seleciona alphas
+        p1_alpha_id = str(max(
+            (c for c in p1.pack_home
+             if 'character' in (c.card_type or '').lower()),
+            key=lambda c: c.renown
+        ).card_id)
+        p2_alpha_id = str(max(
+            (c for c in p2.pack_home
+             if 'character' in (c.card_type or '').lower()),
+            key=lambda c: c.renown
+        ).card_id)
+
+        selecionar_alfa(game, p1.id, p1_alpha_id)
+        selecionar_alfa(game, p2.id, p2_alpha_id)
+
+        order = calcular_ordem_alfa(game)
+
+        # Carleson deve fazer p1 alpha agir PRIMEIRO
+        # (mesmo com Renown menor que p2 alpha)
+        assert order[0] == p1_alpha_id, (
+            f'Carleson: alpha de p1 ({p1_alpha_id}) deve ser 1o, '
+            f'mas ordem e {order}')
+        assert order[1] == p2_alpha_id, (
+            f'Carleson: alpha de p2 ({p2_alpha_id}) deve ser 2o')
+
+    def test_carleson_ruah_nao_afeta_ordem_sem_wyrm(self):
+        """Carleson Ruah nao altera ordem se oponente nao tem Wyrm."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            selecionar_alfa, calcular_ordem_alfa)
+
+        # Deck 705 (Gaia Weenie — tem Carleson)
+        # Deck 90 (Classic Cliath — sem Wyrm)
+        game = build_game_from_decks(705, 90, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+
+        assert game.has_modifier('carleson_ruah'), \
+            'Modifier deve estar registrado'
+
+        # p2 nao tem Wyrm
+        sem_wyrm = not any(
+            'character' in (c.card_type or '').lower()
+            and 'wyrm' in (c.card_type or '').lower()
+            for c in p2.pack_home)
+        assert sem_wyrm, 'p2 nao deve ter Wyrm'
+
+        # Seleciona alphas
+        p1_alpha_id = str(max(
+            (c for c in p1.pack_home
+             if 'character' in (c.card_type or '').lower()),
+            key=lambda c: c.renown
+        ).card_id)
+        p2_alpha_id = str(max(
+            (c for c in p2.pack_home
+             if 'character' in (c.card_type or '').lower()),
+            key=lambda c: c.renown
+        ).card_id)
+
+        p1_renown = next(c.renown for c in p1.pack_home
+                         if str(c.card_id) == p1_alpha_id)
+        p2_renown = next(c.renown for c in p2.pack_home
+                         if str(c.card_id) == p2_alpha_id)
+
+        selecionar_alfa(game, p1.id, p1_alpha_id)
+        selecionar_alfa(game, p2.id, p2_alpha_id)
+
+        order = calcular_ordem_alfa(game)
+
+        # Sem Wyrm, a ordem deve seguir Renome (maior primeiro)
+        if p1_renown >= p2_renown:
+            assert order[0] == p1_alpha_id
+        else:
+            assert order[0] == p2_alpha_id, \
+                f'Sem Carleson: maior Renome deve ser 1o (Ren {p2_renown} > {p1_renown})'
+
+    def test_combate_encerra_sem_combat_action_na_rodada(self):
+        """Regra 6.3: combate encerra se nenhuma Combat Action foi jogada."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.combat_queue import (
+            start_combat, advance_combat_step, get_combatants)
+
+        game = build_game_from_decks(705, 1052, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+
+        # Inicia combate
+        start_combat(game, [str(p1.pack_home[0].card_id)],
+                     [str(p2.pack_home[0].card_id)])
+
+        # Avanca ate play_card
+        for step_nome in ('declaration', 'pre_combat', 'beginning_of_combat'):
+            game.combat.step = step_nome
+            advance_combat_step(game)
+        game.combat.step = 'play_card'
+
+        # Nao declara nenhuma Combat Action — todos passam
+        combatentes = get_combatants(game)
+        for cid in combatentes:
+            game.combat.played_cards[cid] = ''
+            game.combat.declarations[cid] = None
+
+        # Avanca ate between_rounds (targeting, reveal, bluff, resolution, withdrawal)
+        for step_nome in ('targeting', 'reveal', 'bluff', 'resolution',
+                          'withdrawal', 'between_rounds'):
+            game.combat.step = step_nome
+            advance_combat_step(game)
+
+        # Deve ter encerrado por 6.3 (sem Combat Action)
+        assert game.combat.step == 'end', \
+            f'Combate deveria ter encerrado (sem actions), mas step={game.combat.step}'
+
+    def test_flame_spirit_dano_agravado_e_auto_destruir(self):
+        """Flame Spirit causa 3 de dano agravado e se queima"""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.effects import (
+            ResolvedorEfeitos, CARTAS_EXEMPLO, EfeitoTipo)
+        from rage_web.game_engine.state import Zone, CardInstance
+
+        game = build_game_from_decks(705, 1052, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+        p2 = game.players[1]
+
+        # Encontra Flame Spirit no pack de p1 (deck 705 tem 1 copia)
+        fs = None
+        for c in p1.pack_home:
+            if c.card_id == 402:
+                fs = c
+                break
+        if not fs:
+            # Cria Flame Spirit manualmente
+            fs = CardInstance(
+                card_id=402, name='Flame Spirit',
+                card_type='Ally',
+                zone=Zone.PACK_HOME, owner_id=p1.id,
+                controller_id=p1.id,
+                rage=1, gnosis=5, health=3, health_current=3,
+                renown=6, damage='3',
+                modelo_id='flame-spirit_r6',
+            )
+            p1.pack_home.append(fs)
+
+        # Guarda HPs antes da aplicacao
+        hps_antes = {str(c.card_id): c.health_current for c in p2.pack_home}
+
+        # Verifica estrutura do modelo
+        modelo = CARTAS_EXEMPLO.get('flame-spirit_r6')
+        assert modelo is not None, 'Modelo flame-spirit_r6 deve existir'
+        assert modelo.modos, 'Deve ter pelo menos 1 modo'
+
+        efeito = modelo.modos[0].efeitos[0]
+        assert efeito.tipo == EfeitoTipo.DANO, 'Primeiro efeito deve ser dano'
+        assert efeito.quantidade == 3, 'Dano deve ser 3'
+        assert efeito.params.get('dano_agravado'), 'Dano deve ser agravado'
+        assert efeito.params.get('auto_destruir'), 'Deve ter auto-destruir'
+
+        # Aplica o efeito (alvo e aleatorio entre inimigos)
+        resolvedor = ResolvedorEfeitos(game)
+        resultado = resolvedor.aplicar_efeito(efeito, fs, p1)
+        assert resultado, 'Efeito deve ser aplicado'
+
+        # Verifica dano: pelo menos uma criatura inimiga deve ter sofrido 3
+        dano_aplicado = False
+        for c in p2.pack_home:
+            hp_antes = hps_antes.get(str(c.card_id), c.health)
+            if c.health_current < hp_antes:
+                dano_aplicado = True
+                # Verifica se o dano e agravado
+                if c.damage_cards:
+                    ultimo_dano = c.damage_cards[-1]
+                    assert getattr(ultimo_dano, 'is_aggravated', False), \
+                        'Dano deve ser marcado como agravado'
+                break
+        assert dano_aplicado, (
+            f'Nenhuma criatura sofreu dano. HPs: '
+            f'{ {c.name: c.health_current for c in p2.pack_home} }')
+
+        # Verifica auto-destruir: Flame Spirit deve ter sido descartado
+        fs_discard = any(
+            c.card_id == 402 for c in p1.discard_sept)
+        assert fs_discard, \
+            'Flame Spirit deve estar no discard_sept (auto-destruir)'
+        assert fs.zone == Zone.DISCARD_SEPT, \
+            'Flame Spirit deve ter zone=DISCARD_SEPT'
+        assert fs not in p1.pack_home, \
+            'Flame Spirit nao deve mais estar no pack_home'
+
+    def test_flame_spirit_imune_fora_umbra(self):
+        """Flame Spirit so pode ser afetado por ataques Umbrais e Gifts."""
+        from rage_web.game_engine.cli import build_game_from_decks
+        from rage_web.game_engine.state import Zone, CardInstance
+
+        game = build_game_from_decks(705, 1052, seed=42)
+        for p in game.players:
+            for c in p.pack_home:
+                game.register_card_passives(c, p)
+        p1 = game.players[0]
+
+        # Cria um Flame Spirit manualmente se nao estiver no deck
+        fs = None
+        for c in p1.pack_home:
+            if c.card_id == 402:
+                fs = c
+                break
+        if not fs:
+            fs = CardInstance(
+                card_id=402, name='Flame Spirit',
+                card_type='Ally',
+                zone=Zone.PACK_HOME, owner_id=p1.id,
+                controller_id=p1.id,
+                rage=1, gnosis=5, health=3, health_current=3,
+                renown=6, damage='3',
+                modelo_id='flame-spirit_r6',
+            )
+            p1.pack_home.append(fs)
+
+        # Forca o registro da passiva chamando register_card_passives
+        game.register_card_passives(fs, p1)
+
+        # Verifica restricao
+        assert 'imune_fora_umbra' in fs.restricoes, \
+            'Flame Spirit deve ter restricao imune_fora_umbra'

@@ -257,14 +257,15 @@ def _run_match_impl(seed, max_turns, max_steps_override,
             _alpha_phase = False
 
         if _alpha_phase and _alpha_order and _alpha_index < len(_alpha_order):
-            if not game.combat.is_active:
-                cid_atual = _alpha_order[_alpha_index]
-                dono_id = _alpha_map.get(cid_atual)
-                if dono_id:
-                    cp = next(p for p in game.players if p.id == dono_id)
-                    game.current_player_index = game.players.index(cp)
-                else:
-                    cp = game.current_player
+            # Alpha phase: SEMPRE avanca para o proximo alpha da ordem,
+            # independente de combate estar ativo ou nao.
+            # Isto garante que ambos os jogadores tenham oportunidade
+            # de agir com seus alfas, mesmo se o primeiro ja iniciou combate.
+            cid_atual = _alpha_order[_alpha_index]
+            dono_id = _alpha_map.get(cid_atual)
+            if dono_id:
+                cp = next(p for p in game.players if p.id == dono_id)
+                game.current_player_index = game.players.index(cp)
             else:
                 cp = game.current_player
         else:

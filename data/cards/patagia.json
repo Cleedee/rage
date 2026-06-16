@@ -5,19 +5,20 @@
   "requires": "Black Spiral Dancer",
   "modos": [
     {
-      "descricao": "So pode ser atingido por Weapon Equipment neste round",
+      "descricao": "So pode ser atingido por Weapon Equipment neste round (Gn5)",
+      "condicao_uso": "nao_frenetico",
       "efeitos": [
         {
-          "tipo": "modificar_reducao_dano",
+          "tipo": "restringir",
           "condicao_alvo": "criatura_aliada",
-          "quantidade": 99,
           "params": {
-            "condicao": "so_weapon_equipment",
-            "duracao": "round_atual"
+            "restricao": "patagia_active",
+            "duracao": "end_of_combat",
+            "anexar_gift": true,
+            "descarte_gift": true
           }
         }
-      ],
-      "condicao_uso": "antes_das_acoes_combate"
+      ]
     }
   ],
   "_metadata": {
