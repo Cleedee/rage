@@ -920,6 +920,13 @@ class PriorityBot:
         if g.combat.is_active:
             return self._decide_combat()
 
+        # 🛑 Regra 6.3: apos o combate encerrar, o defensor pode
+        # selecionar um novo alpha e declarar ataque — nao o mesmo
+        # atacante. Se este bot ja atacou nesta fase, passa a vez.
+        if self._ataques_feitos:
+            self._pass_turn()
+            return 'pass_pos_combate'
+
         # Acoes de ataque/eliminar sempre sao permitidas (sem limite).
         # So jogar cartas da mao tem limite de 3 por turno.
 
@@ -997,17 +1004,10 @@ class PriorityBot:
 
     def _agir_combat_fallback(self) -> str:
         """Fallback quando alpha ja avancou — so ataca/passa."""
-        action = self._try_eliminate_threat()
-        if action:
-            return action
-        action = self._try_attack()
-        if action:
-            return action
-        self._pass_turn()
-        return 'pass_combat'
-
-    def _agir_combat_fallback(self) -> str:
-        """Fallback quando alpha ja avancou — so ataca/passa."""
+        # 🛑 Regra 6.3: nao atacar de novo apos combate encerrar
+        if self._ataques_feitos:
+            self._pass_turn()
+            return 'pass_pos_combate'
         action = self._try_eliminate_threat()
         if action:
             return action

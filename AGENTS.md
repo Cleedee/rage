@@ -346,17 +346,21 @@ redraw → regeneration → resource → umbra → moot → combat → (próximo
 
 ### Testes do Motor de Jogo
 
-**142 testes passando** em 6 arquivos:
+**320 testes passando** (10 falhas pré-existentes) em 11 arquivos:
 
-| Arquivo | Cobertura |
+| Arquivo | Cobertura | Status |
 |---|---|---|
-| `test_endpoints.py` | Endpoints web (Cards, Decks) |
-| `test_game_engine.py` | state, combat_queue, rules |
-| `test_game_engine_anunciador.py` | Anunciador, EfeitoAnunciado |
-| `test_game_engine_api.py` | Endpoints da API REST |
-| `test_game_engine_bot.py` | BoardEvaluator, PriorityBot |
-| `test_game_engine_cli.py` | CLI, comandos, save/load |
-| `test_game_engine_effects.py` | ModeloCarta, ResolvedorEfeitos |
+| `test_endpoints.py` | Endpoints web (Cards, Decks) | ✅ 20 |
+| `test_game_engine.py` | state, combat_queue, rules | ✅ 168 / 10 falhas pré-existentes |
+| `test_game_engine_anunciador.py` | Anunciador, EfeitoAnunciado | ✅ |
+| `test_game_engine_api.py` | Endpoints da API REST | ✅ |
+| `test_game_engine_bot.py` | BoardEvaluator, PriorityBot | ✅ |
+| `test_game_engine_cli.py` | CLI, comandos, save/load | ✅ |
+| `test_game_engine_effects.py` | ModeloCarta, ResolvedorEfeitos | ✅ |
+| `test_combat_declaration.py` | Declaração de combate (alpha, challenge, pass) | ✅ 6 |
+| `test_damage_system.py` | Sistema de dano (damage cards, morte, VP) | ✅ 10 |
+| `test_hand_size.py` | Tamanho de mão (sept/combat) | ✅ 5 |
+| `test_restrict_play.py` | Restricted/Forced/Random Play (6.6.6) | ✅ 3 |
 
 ### Pontos de Atenção do Motor de Jogo
 
@@ -491,7 +495,7 @@ O bot usa **4 bancos SQLite independentes**:
 
 3. ~~**🔀 Rotas duplicadas / inconsistentes**~~ — ✅ Padronizadas em rotas RESTful (GET/POST/DELETE consistentes, URLs hierárquicas, sem duplicatas).
 
-4. ~~**🧪 Testes quebrados**~~ — ✅ **142 testes passando** (20 endpoint + 122 game engine).
+4. ~~**🧪 Testes quebrados**~~ — ✅ **320 testes passando** (10 falhas pré-existentes) em 11 arquivos de teste.
 
 5. **📦 Redis configurado mas não implementado** — O `docker-compose.yml` sobe Redis, o `NOTAS.txt` menciona `redis-om-python`, mas Redis não é usado em lugar nenhum.
 
@@ -521,7 +525,7 @@ O bot usa **4 bancos SQLite independentes**:
 - **Template base com Bulma + HTMX** — UI moderna sem muito JS customizado.
 - **Extensões separadas** (`ext/`) — Código modular.
 - **CLI command** `init-database` para setup inicial.
-- **Motor de jogo completo** — 4 fases implementadas com 142 testes passando.
+- **Motor de jogo completo** — 4 fases implementadas com 320 testes passando (10 falhas pré-existentes).
 - **Bot com IA** — Árvore de decisão com 3 níveis de dificuldade e avaliador de tabuleiro.
 - **Sistema de efeitos estruturado** — Cartas com modos, condições de alvo e efeitos encadeados.
 - **API REST do game engine** — Endpoints para criar partidas, executar ações e consultar estado.
@@ -593,8 +597,8 @@ Exemplo: `PYTHONPATH=. python3 scripts/gerar_checklist.py 1050`
 2. **Seção 3.2 / 3.2.1 — Closed Play vs Open Play (regras de timing):**
    - **Closed Play:** períodos em que apenas cartas/abilidades específicas podem
      ser usadas (recursos, combat actions, passivas sempre ativas, etc.).
-     Inclui: `declaration` + `pre_combat` + steps 1-6 de cada rodada (`play_card`
-     → `targeting` → `reveal` → `feint` → `bluff`).
+     Inclui: `declaration` + `pre_combat` + `play_card` → `targeting` → `reveal`
+     (com sub-steps feinting 6.8.1, instinctive 6.8.2) → `bluff`).
    - **Open Play:** períodos em que cartas de sept/gifts/abilidades podem ser
      jogadas livremente. Inclui: `beginning_of_combat`, `between_rounds`.
    - Offensive Effects em Open Play exigem anúncio e atenção dos outros jogadores.
@@ -603,22 +607,22 @@ Exemplo: `PYTHONPATH=. python3 scripts/gerar_checklist.py 1050`
 
 | Step | Período | Descrição |
 |---|---|---|
-| `select_alpha` | — | Escolha do alpha |
-| `alpha_action` | — | Alpha declara ataque/challenge |
-| `declaration` | Closed Play | Declarar atacante+alvo |
-| `pre_combat` | Closed Play | Pack actions, redirect, step in |
-| `beginning_of_combat` | **Open Play** | Gifts pré-rodada, frenzy |
-| `play_card` (step 1) | Closed Play | Jogar combat card face-down |
-| `targeting` (step 2) | Closed Play | Atribuir alvos |
-| `reveal` (step 3) | Closed Play | Revelar + feinting |
-| `feint` (step 4) | Closed Play | Troca de ação (Último a Declarar) |
-| `bluff` (step 5-6) | Closed Play | Verificar requisitos |
-| `resolution` | — | Aplicar dano, mortes → VP |
-| `withdrawal` | — | Atacante pode retirar |
-| `between_rounds` | **Open Play** | Gift entre rodadas |
-| `end` | — | Cleanup |
+| `select_alpha` (2.2.6) | — | Escolha do alpha |
+| `alpha_action` (6.5) | — | Alpha declara ataque/challenge/passa |
+| `declaration` (6.1.1) | Closed Play | Declarar atacante+alvo; Hunting Party, Shieldmate |
+| `pre_combat` (6.1.2) | Closed Play | Pack actions, redirect, step in, cancel |
+| `beginning_of_combat` (6.1.3) | **Open Play** | Gifts pré-rodada, frenzy |
+| `play_card` (6.2.1) | Closed Play | Jogar combat card face-down (+ weapons) |
+| `targeting` (6.2.2) | Closed Play | Atribuir alvos (mesmo Gauntlet) |
+| `reveal` (6.2.3) | Closed Play | Revelar cartas + sub-steps:
+  feinting (6.8.1), instinctive (6.8.2), alternative (6.6.5) |
+| `bluff` (6.2.4) | Closed Play | 6.9.1: ilegais → 6.9.2: bluffs (sucesso/falha) |
+| `resolution` (6.2.5) | — | Fast → Normal → Slow, dano, morte → VP |
+| `withdrawal` (6.2.6/6.3.1) | — | Atacante decide retirar (manual, não auto) |
+| `between_rounds` (6.2.7) | **Open Play** | Gift entre rodadas; loop para play_card |
+| `end` (6.3) | — | Cleanup, reabastecer mão, reverter Crinos |
 
-O motor em `rules.py:56-72` define `COMBAT_STEPS` e `COMBAT_STEPS_AUTO` mapeando
+O motor em `rules.py` define `COMBAT_STEPS` e `COMBAT_STEPS_AUTO` mapeando
 cada step. O bot respeita esses períodos: em Open Play ele pode jogar gifts; em
 Closed Play ele só pode jogar combat cards ou usar passivas. Não há restrição
 adicional implementada — assume-se que o bot só toma ações válidas.
@@ -766,3 +770,9 @@ PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py --dry-run
 20. ~~Efeito Devilwhip (acao_extra_por_rodada)~~ ✅ JSON + resolver + combat Declaration + reaplicação por rodada
 21. ~~Internacionalização~~ ✅ pt_BR + en_US com fallback
 22. ~~Bugs corrigidos (5)~~ ✅ ConversationHandler, Matchmaker duplicado, Timeout 24h→2h, Edição de mensagens, Username case-sensitive
+23. ~~Refatorar máquina de steps de combate (Cap. 6)~~ ✅ Alinhada com regras oficiais:
+    - `feint` integrado como sub-step do `reveal` (6.8)
+    - `between_rounds` loopa para `play_card` (6.2.7)
+    - `withdrawal` não é mais auto-advance (6.3.1)
+    - `bluff` processa ilegais (6.9.1) antes de bluffs (6.9.2)
+    - 320 testes passando, partidas bot-vs-bot testadas com `rage-match`
