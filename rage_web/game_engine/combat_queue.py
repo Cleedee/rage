@@ -1315,13 +1315,15 @@ def start_combat(game: GameState, attackers: list[str],
                 return False
 
     # ── Sky River Caern: bloqueia ataque a nao-alfa ANTES do Frenar ──
+    # Regra: "Non-alpha members of your pack cannot be challenged or
+    # sneak attacked." So protege membros do pack, NAO Presa no HG.
     if game.has_modifier('sky_river_caern'):
         alphas_atuais = dict(game.combat.alphas) if game.combat else {}
         packs_caern = set()
         for mod in list(game.game_modifiers):
             if mod.modifier == 'sky_river_caern':
                 for p in game.players:
-                    for c in p.pack_home + p.hunting_grounds + p.umbra:
+                    for c in p.pack_home + p.umbra:
                         if id(c) == mod.card_uid:
                             packs_caern.add(p.id)
                             break
@@ -1330,6 +1332,10 @@ def start_combat(game: GameState, attackers: list[str],
                 continue
             dfd_card = _find_card(game, dfd)
             if not dfd_card:
+                continue
+            # Pula cartas no Hunting Grounds (Enemy/Victim nao sao
+            # membros do pack, regra 4.4.2)
+            if dfd_card.zone == Zone.HUNTING_GROUNDS:
                 continue
             if dfd_card.owner_id not in packs_caern:
                 continue
@@ -4077,6 +4083,9 @@ def _check_sky_river_caern(game: GameState):
     for dfd_id in list(game.combat.defenders):
         dfd = _find_card(game, dfd_id)
         if not dfd:
+            continue
+        # Pula Presa no Hunting Grounds (nao sao membros do pack, 4.4.2)
+        if dfd.zone == Zone.HUNTING_GROUNDS:
             continue
         if dfd.owner_id not in packs_protegidos:
             continue
