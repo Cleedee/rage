@@ -277,6 +277,29 @@ def print_validation(deck_id: int, auto_craft: bool = False) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Detecção de alinhamento do pack
+# ---------------------------------------------------------------------------
+
+def _compute_alignment(chars: list[dict[str, Any]]) -> str:
+    """Detecta se o pack é Gaia, Wyrm, Rogue ou misto a partir dos chars."""
+    gaia = any('gaia' in ch['keyword_raw'].lower() for ch in chars)
+    wyrm = any('wyrm' in ch['keyword_raw'].lower() for ch in chars)
+    rogue = any('rogue' in ch['keyword_raw'].lower() for ch in chars)
+    # Also check tipo field
+    gaia = gaia or any('gaia' in (ch.get('tipo', '') or '').lower() for ch in chars)
+    wyrm = wyrm or any('wyrm' in (ch.get('tipo', '') or '').lower() for ch in chars)
+
+    if gaia and not wyrm:
+        return 'gaia'
+    elif wyrm and not gaia:
+        return 'wyrm'
+    elif rogue and not gaia and not wyrm:
+        return 'rogue'
+    else:
+        return 'mixed'
+
+
+# ---------------------------------------------------------------------------
 # Anti-sinergias conhecidas
 # ---------------------------------------------------------------------------
 
@@ -327,6 +350,11 @@ def _verify_keyword_requirement(requires: str, chars: list[dict[str, Any]]) -> b
     """Verifica se algum personagem atende a um requisito de keyword simples.
 
     Suporta formato " - " (OR): qualquer uma das opções serve.
+    Também reconhece padrões comuns de requisito de forma:
+    - (Homid Form): personagem keyword 'homid'
+    - (Not Animal form): personagem keyword 'homid' (Homid não é animal)
+    - (Crinos form): personagem keyword 'crinos'
+    - (Full Moon): requisito lunar, ignorado aqui
     """
     if not requires:
         return True
@@ -336,6 +364,24 @@ def _verify_keyword_requirement(requires: str, chars: list[dict[str, Any]]) -> b
             opcao_lower = opcao.lower()
             # Casos especiais
             if opcao_lower == 'any':
+                return True
+            # Requisito de forma: (Homid Form) → 'homid' na keyword
+            if opcao_lower in ('(homid form)', '(not animal form)'):
+                if 'homid' in ch['keywords']:
+                    return True
+                continue
+            # (Crinos form) → 'crinos' na keyword
+            if opcao_lower == '(crinos form)':
+                if 'crinos' in ch['keywords']:
+                    return True
+                continue
+            # (Lupus form) → 'lupus' na keyword
+            if opcao_lower == '(lupus form)':
+                if 'lupus' in ch['keywords']:
+                    return True
+                continue
+            # (Full Moon), (Crescent Moon), etc — ignorar (validações lunares)
+            if opcao_lower.startswith('(') and 'moon' in opcao_lower:
                 return True
             # Verificação de keyword padrão
             kw = _parse_keywords(opcao)
@@ -606,6 +652,9 @@ def _check_viability(result: ValidationResult,
         result.warn("VIAB_CHARS", "Deck não tem personagens — nada a verificar")
         return
 
+    # Detectar alinhamento do pack para verificação de equipamentos
+    pack_alignment = _compute_alignment(chars)
+
     unplayable: list[tuple[Card, int, str]] = []
 
     # ── Passo 1: Verificar combat actions por requisito de Rage ──
@@ -625,28 +674,66 @@ def _check_viability(result: ValidationResult,
                  f"Requer Rage {rage_req}, mas maior Rage do pack é {max_char_rage}"
                  f" — personagens: {', '.join(c['name'] for c in chars)}"))
 
-    # ── Passo 2: Verificar equipamentos por requisito de Gnosis ──
+    # ── Passo 2: Verificar equipamentos ──
     # Equipamentos (especialmente fetishes) têm custo de Gnosis para equipar.
     # O campo `gnosis` da carta indica a Gnosis mínima necessária.
     # Se o Requires field também tiver keywords, verifique ambos.
+    #
+    # Além disso, verificamos:
+    # - Alinhamento: Gaia Fetish → só Gaia; Bane Fetish → só Wyrm
+    # - Eater-of-Souls: ALL fetishes precisam do modificador can_equip_fetish
+    #   (gerado por Eater-of-Souls ou similar)
     max_char_gnosis = max(c["gnosis"] for c in chars) if chars else 0
+    pack_alignment = _compute_alignment(chars)
+    has_eater_of_souls = any(c.id == 840 for c, _ in cards_data)
+
     for card, qty in cards_data:
         tipo = (card.tipo or "").lower()
         if "equipment" not in tipo:
             continue
 
+        keyword_raw = (card.keyword or "").lower()
+        is_non_fetish = 'non-fetish' in keyword_raw
+        is_gaia_fetish = not is_non_fetish and ('gaia fetish' in keyword_raw)
+        is_bane_fetish = not is_non_fetish and ('bane fetish' in keyword_raw
+                                                 and 'gaia fetish' not in keyword_raw)
+        is_both_fetish = not is_non_fetish and ('gaia fetish' in keyword_raw
+                                                 and 'bane fetish' in keyword_raw)
+        is_fetish = is_gaia_fetish or is_bane_fetish or is_both_fetish
+
         gnosis_req = card.gnosis
         requires_raw = card.requires or ""
         requires = requires_raw.strip()
 
-        # Verificar requisito de Gnosis
+        # ── Verificação A: Eater-of-Souls (todo fetish precisa) ──
+        if is_fetish and not has_eater_of_souls:
+            unplayable.append(
+                (card, qty,
+                 f"Fetish ({keyword_raw}) precisa de Eater-of-Souls ou similar "
+                 f"para ser equipado — nenhuma carta no deck fornece can_equip_fetish"))
+            continue
+
+        # ── Verificação B: Alinhamento — Gaia vs Wyrm ──
+        if is_gaia_fetish and not is_both_fetish and pack_alignment != 'gaia':
+            unplayable.append(
+                (card, qty,
+                 f"Gaia Fetish — pack é {pack_alignment.upper()}, precisa ser Gaia"))
+            continue
+
+        if is_bane_fetish and not is_both_fetish and pack_alignment != 'wyrm':
+            unplayable.append(
+                (card, qty,
+                 f"Bane Fetish — pack é {pack_alignment.upper()}, precisa ser Wyrm"))
+            continue
+
+        # ── Verificação C: Gnosis ──
         if gnosis_req > max_char_gnosis:
             unplayable.append(
                 (card, qty,
                  f"Requer Gnosis {gnosis_req}, mas maior Gnosis do pack é {max_char_gnosis}"))
             continue
 
-        # Verificar requisito de keyword (quando houver)
+        # ── Verificação D: keyword requirement ──
         if requires and not _verify_keyword_requirement(requires, chars):
             unplayable.append(
                 (card, qty,
