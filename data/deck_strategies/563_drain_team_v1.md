@@ -95,8 +95,8 @@ Maioria de baixo custo — este deck **não** vence no combate, ele **sobrevive*
 | **Reckless Swing** | 2× | Dano + impede ações |
 | **Head Butt** | 2× | Dano |
 | **Dry Gulch** | 2× | Dano |
-| **Vital Blow** | 1× | Dano + R=1 no inimigo |
-| **Maim** | 1× | Dano + prende (não pode withdraw) |
+| **Fancy Footwork** | 1× | Esquiva versátil (1 ataque ou 2 ataques) |
+| **Kneecapper** 💀 | 1× | Dano 2 + oponente age a -1 Rage no próximo round |
 
 ### Ações de Fuga
 
@@ -122,7 +122,7 @@ Maioria de baixo custo — este deck **não** vence no combate, ele **sobrevive*
 | Carta | Motivo |
 |---|---|
 | ❌ Juicy Johnes | Só é útil quando morre — jogue depois que o oponente tiver board |
-| ❌ Dry Gulch / Maim | Combat actions de alto custo — seguram para combate |
+| ❌ Dry Gulch | Combat action de alto custo — seguram para combate |
 | ❌ World of Human | G6, caro — situacional |
 
 ### Exemplo de mão ideal
@@ -159,7 +159,7 @@ Este deck **não** usa Umbra ativamente. Nenhum personagem tem Step Sideways ou 
 **Este deck NÃO busca combate.** A estratégia é:
 1. **Evitar dano** → Dodge, Evasion, Run Like Hell
 2. **Fugir** → Friends in High Places (3×)
-3. **Só atacar quando necessário** → Vital Blow, Maim, Surprise Attack
+3. **Só atacar quando necessário** → Surprise Attack, Kneecapper, Fancy Footwork
 
 #### Escolha de Alpha
 
@@ -177,8 +177,8 @@ Este deck **não** usa Umbra ativamente. Nenhum personagem tem Step Sideways ou 
 |---|---|---|
 | Quer fugir | **Dodge** / **Evasion** / **Run Like Hell** | Não quer ser ferido |
 | Quer dano leve | **Stinging Wound** | Dano + -Rage no inimigo |
-| Quer debuff | **Vital Blow** | Inimigo R=1 no próximo round |
-| Precisa prender | **Maim** | Prende atacante |
+| Quer debuff | **Kneecapper** | Dano 2 + oponente age a -1 Rage no próximo round |
+| Quer esquivar | **Fancy Footwork** | Esquiva 1 ataque (mesmo os inevitáveis) ou 2 ataques |
 
 **VLADIMIR (R5):**
 
@@ -243,7 +243,7 @@ Executive em jogo:
 **Tática:** 
 - Dodge/Evasion/Run Like Hell para sobreviver
 - Friends in High Places para encerrar combates
-- Use Vital Blow para reduzir Rage do atacante
+- Use Kneecapper para reduzir Rage do atacante
 - Deixe Juicy Johnes ser morto para drenar o matador
 
 ### vs. Decks de Umbra
@@ -332,3 +332,50 @@ Após análise, as seguintes correções foram aplicadas no motor:
 ### 5. Eater-of-Souls — JSON atualizado
 
 O JSON mantém o efeito `comprar` (draw do sept deck) como utilitário. O efeito principal (permitir fetish) é gerenciado pelo modificador no motor.
+
+---
+
+## 🔍 Análise: Feedback do Jogador Experiente
+
+Um jogador experiente apontou 3 problemas no deck original:
+
+> *"Clan of Hyenas and Gunboat Pirates can't be recruited by anyone in the pack. Desert Klaive will be taken out by your own Spirit Backlash. Most of the high rage cards in the deck can't be played by any character in the deck and also can't be bluffed."*
+
+### Problema 1: Aliados não recrutáveis
+
+**Observação:** Clan of Hyenas (Requer: Ajaba) e Gunboat Pirates (Requer: Homid) não podem ser recrutados pelos personagens do pack.
+
+| Carta | Requer | Personagens no Pack | Recrutável? |
+|---|---|---|---|
+| **Clan of Hyenas** (96) | Ajaba | Allonzo (Abom/Garou/Vamp), Vladimir (Vamp), Juicy (Fomori) — nenhum com Ajaba | ❌ Não |
+| **Gunboat Pirates** (1570) | Homid | Allonzo tem Homid ✅ | ✅ Sim (Allonzo) |
+
+**Conclusão:** Clan of Hyenas realmente não é recrutável. Gunboat Pirates até é (via Allonzo), mas nenhum dos dois está no deck. É uma limitação natural do arquétipo Wyrm/Vampiro — esses aliados simplesmente não encaixam.
+
+### Problema 2: Anti-sinergia Desert Klaive + Spirit Backlash
+
+**Observação:** Desert Klaive (G5, Gaia Fetish - Weapon - Klaive) seria destruído por Spirit Backlash, que descarta todo Fetish Equipment de G5+.
+
+**Conclusão:** Estas cartas não estão no deck. É um alerta válido para quem considerar adicionar ambas — Spirit Backlash é um evento anti-fetish que não combina com klaives caros.
+
+### Problema 3: Combat Actions de Rage alta (CORRIGIDO ✅)
+
+**Observação:** Maim (Rg:7) e Vital Blow (Rg:6) não podem ser jogados por nenhum personagem (max Rg:5). Também não podem ser blefados (6.9.1 — cartas ilegais).
+
+**Correção aplicada em 17/06/2026:**
+
+| Card Antigo | Problema | Card Novo | Benefício |
+|---|---|---|---|
+| **Maim** (Rg:7, Dmg:4) | Nenhum personagem tem Rg≥7 | **Fancy Footwork** (Rg:2) | Esquiva versátil (1-2 ataques) — reforça a estratégia de sobrevivência |
+| **Vital Blow** (Rg:6, Dmg:4) | Nenhum personagem tem Rg≥6 | **Kneecapper** (Rg:3, Dmg:2) | Dano + -1 Rage no oponente — reforça o tema de debuff/controle |
+
+**Resultado:** 20 combat actions, todas com Rg ≤ 5, jogáveis por Allonzo e Vladimir (Rg:5). Juicy (Rg:1) ainda pode usar Dodge, Run Like Hell e Stinging Wound.
+
+### Checklist pós-correção
+
+- [x] Nenhuma combat action com Rg > 5 no deck
+- [x] Todas as cartas de combate são jogáveis por Allonzo ou Vladimir
+- [x] Nenhum aliado não-recrutável incluso
+- [x] Nenhuma anti-sinergia de equipamentos
+- [x] JSON do Kneecapper criado em `data/cards/kneecapper.json` (efeito `dano` + `modificar_rage`)
+- [x] JSON do Fancy Footwork já existia em `data/cards/fancy-footwork.json`

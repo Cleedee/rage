@@ -746,6 +746,136 @@ PYTHONPATH=. venv/bin/python3 scripts/apply_tags.py --dry-run
 
 ---
 
+## 🛡️ Validação Automática de Decks
+
+Para evitar erros de pré-requisito (combat actions com Rage maior que o
+personagem, equipamentos com Gnosis maior que o pack, aliados não
+recrutáveis, etc.), use o **validador de decks**:
+
+### Validação de deck existente (pelo ID)
+
+```python
+from rage_web.helpers.deck_validator import validate_deck
+result = validate_deck(deck_id)
+print(result.report())
+```
+
+### Validação durante a construção (sem salvar no banco)
+
+```python
+from rage_web.helpers.deck_validator import validate_card_list
+
+cards = [
+    (29, 1),    # character Allonzo Montoya
+    (18, 1),    # character Vladimir
+    (161, 1),   # character Juicy Johnes
+    (885, 3),   # Mass Pollution
+    ...
+]
+result = validate_card_list(cards, deck_name="Meu Deck", renown_cap=20)
+print(result.report())
+
+if result.is_legal and result.warnings == 0:
+    print("✅ Deck válido!")
+else:
+    print("❌ Deck tem problemas — corrija antes de salvar")
+```
+
+### Validação via CLI
+
+```bash
+cd /workspace && .venv/bin/python3 -c "
+from rage_web import create_app
+from rage_web.helpers.deck_validator import validate_deck
+app = create_app()
+with app.app_context():
+    print(validate_deck(563).report())
+"
+```
+
+### O que o validador checa (v1.1)
+
+| Check | Descrição |
+|---|---|
+| `LEGAL_*` | Regras de construção: tamanho dos decks (20+ combat, 30+ sept), limites de cópias (2x combat, 3x sept), cap de Renome, alinhamento (Gaia/Wyrm/Rogue) |
+| `VIAB_UNPLAYABLE` | **Pré-requisitos de cartas:** verifica se cada combat action, equipment, ally, gift, e outras cartas podem ser usadas por pelo menos um personagem do pack |
+| `VIAB_ANTISYNERGY` | Anti-sinergias conhecidas: Spirit Backlash + fetish G≥5, combat cards com requisito de forma não atendido |
+| `JSON_COVERAGE` | Cobertura de JSONs de efeitos estruturados para o motor de jogo |
+
+### Regras de Pré-requisito por Tipo de Carta
+
+| Tipo de Carta | Campo de Requisito | Verificação |
+|---|---|---|
+| **Combat Action** | `rage` | Rage do personagem ≥ rage da carta. Ex: Maim (Rg:7) precisa de personagem com Rg≥7 |
+| **Equipment** | `gnosis` (+ `requires`) | Gnosis do personagem ≥ gnosis da carta. Se houver `requires`, personagem precisa da keyword |
+| **Ally** | `requires` | Personagem deve atender ao requisito (keyword ou "(Gnosis: N) + Keyword"). Formato " - " = OR |
+| **Gift** | `gnosis` + `requires` | Personagem com Gnosis ≥ gnosis da carta + keyword correspondente |
+| **Event (Pack Totem)** | `requires` | Personagem com keyword correspondente |
+| **Caern** | `requires` | Personagem com keyword correspondente |
+
+### Consultas para IA Durante a Construção
+
+Para evitar erros de pré-requisito ANTES de finalizar o deck, use as
+funções em `rage_web/helpers/deck_queries.py`:
+
+```python
+from rage_web.helpers.deck_queries import (
+    combat_cards_para_rage,       # Combat actions até certo Rage
+    aliados_recrutaveis,          # Aliados recrutáveis pelas keywords
+    equipamentos_equipaveis,      # Equipment com Gnosis ≤ limite
+    gifts_para_personagens,       # Gifts usáveis pelos personagens
+    resumo_pack,                  # Summary do pack
+)
+
+# Exemplo: descobrir que combat actions usar
+compativel = combat_cards_para_rage(rage_max=5)
+for c in compativel:
+    print(f'{c["name"]} (Rg:{c["rage_requerido"]}, Dmg:{c["dano"]})')
+
+# Exemplo: ver aliens recrutáveis
+pack_kw = {'garou', 'homid', 'ahroun', 'silver-fang'}
+aliados = aliados_recrutaveis(pack_kw)
+for a in aliados:
+    if a['recrutavel']:
+        print(f'✅ {a["name"]} — {a["motivo"]}')
+    else:
+        print(f'❌ {a["name"]} — {a["motivo"]}')
+```
+
+### Observações sobre campos do banco
+
+**IMPORTANTE:** O campo `rage` tem significados DIFERENTES dependendo do tipo de carta:
+
+| Tipo de Carta | Campo `rage` significa |
+|---|---|
+| Character | Atributo Rage do personagem (quanto mais alto, melhores combat cards pode jogar) |
+| Combat Action | **Rage mínima** que o personagem precisa ter para jogar a carta (regra 6.4) |
+| Ally | Atributo Rage do ally (não é requisito) |
+| Equipment | Geralmente 0 (não é requisito de Rage) |
+
+O campo `gnosis` também varia:
+
+| Tipo de Carta | Campo `gnosis` significa |
+|---|---|
+| Character | Atributo Gnosis do personagem |
+| Gift | **Gnosis mínima** que o personagem precisa ter para usar o Gift |
+| Equipment | **Gnosis mínima** que o personagem precisa ter para equipar |
+| Ally | Atributo Gnosis do ally |
+
+### Anti-sinergias Conhecidas
+
+O validador detecta automaticamente:
+
+| Cartas | Problema |
+|---|---|
+| Spirit Backlash (907) + fetish Equipment com Gnosis ≥ 5 | Spirit Backlash descarta TODO fetish Equipment com G≥5 |
+| Combat cards que exigem "not in Homid form" + pack 100% Homid | Carta não pode ser jogada por ninguém |
+
+Para adicionar novas anti-sinergias, edite `_check_known_antisynergies()`
+em `rage_web/helpers/deck_validator.py`.
+
+---
+
 ## 🔮 Sugestões de Melhorias (Pendentes)
 
 1. ~~Remover `database.db` do versionamento~~ ✅ (`.gitignore`)

@@ -1,0 +1,35 @@
+{
+  "id": "kneecapper",
+  "nome": "Kneecapper",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano e reduzir Rage em 1",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        },
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -1
+        }
+      ],
+      "condicao_uso": ""
+    }
+  ],
+  "_metadata": {
+    "fonte": "analise_v2+revisado",
+    "card_id": 1276,
+    "texto_original": "Your opponent acts at -1 Rage for the next round of combat.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": false,
+    "slug": "kneecapper"
+  }
+}
