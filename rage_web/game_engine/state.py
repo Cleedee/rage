@@ -351,6 +351,27 @@ def descartar_anexos(card: CardInstance, dono: PlayerState,
             dono.discard_sept.append(eq)
     card.attached_equipment.clear()
 
+    # Descarta Personal Totem anexado a esta criatura (4.5.2B)
+    # Procura no dicionario personal_totems do dono
+    if dono and hasattr(dono, 'personal_totems'):
+        totems_a_remover = []
+        for totem_uid, character in list(dono.personal_totems.items()):
+            if character is card:
+                totems_a_remover.append(totem_uid)
+                # Move o totem para o descarte
+                for c in list(dono.pack_home):
+                    if id(c) == totem_uid:
+                        dono.pack_home.remove(c)
+                        c.zone = Zone.DISCARD_SEPT
+                        dono.discard_sept.append(c)
+                        c.attached_to = None
+                        if game:
+                            game.add_log(
+                                f'{c.name} descartado (criatura morreu)')
+                        break
+        for uid in totems_a_remover:
+            del dono.personal_totems[uid]
+
 
 @dataclass
 class PlayerState:
@@ -394,6 +415,9 @@ class PlayerState:
 
     # Recrutamento: tipos de ally que este jogador pode recrutar
     can_recruit: list[str] = field(default_factory=list)
+
+    # Personal Totems ativos: mapeia uid do totem -> Character
+    personal_totems: dict[int, CardInstance] = field(default_factory=dict)
 
     # Gerador aleatorio (para reembaralhar decks)
     rng: random.Random = field(default_factory=random.Random)
@@ -1073,6 +1097,62 @@ class LunarPhaseState:
         return f'{self.nome}'
 
 
+def _anexar_personal_totem(totem_card: CardInstance, owner: PlayerState, game: 'GameState'):
+    """Anexa um Personal Totem a um Character valido no pack.
+
+    Regra (4.5.2B):
+    - Personal Totem e jogado em um unico Character e so beneficia
+      aquele Character.
+    - O Character deve atender o requisito do Totem.
+    - Um Character pode ter no maximo 1 Personal Totem.
+    - Character com Personal Totem nao pode se beneficiar de Pack Totem.
+
+    Args:
+        totem_card: A carta do Personal Totem.
+        owner: Jogador dono.
+        game: Estado do jogo (para log).
+    """
+    requires = (totem_card.requires or '').strip()
+    opcoes = [p.strip() for p in requires.split(' - ')] if requires else []
+
+    # Busca Character viavel: atende requisito e nao tem totem pessoal
+    from rage_web.game_engine.rules import _char_atende_requisitos, _info_char
+    candidato = None
+    for c in owner.pack_home:
+        if 'Character' not in (c.card_type or ''):
+            continue
+        # Ja tem Personal Totem?
+        if any(pt is c for pt in owner.personal_totems.values()):
+            continue
+        # Atende requisito?
+        if opcoes:
+            if _char_atende_requisitos(
+                _info_char(c), c.gnosis or 0, opcoes, owner, c
+            ):
+                candidato = c
+                break
+        else:
+            candidato = c
+            break
+
+    if candidato:
+        # Anexa o totem ao Character
+        totem_card.attached_to = candidato
+        totem_card.zone = Zone.PACK_HOME
+        if totem_card not in owner.pack_home:
+            owner.pack_home.append(totem_card)
+        owner.personal_totems[id(totem_card)] = candidato
+        if game:
+            game.add_log(
+                f'{totem_card.name} anexado a {candidato.name} '
+                f'(Personal Totem)')
+    else:
+        if game:
+            game.add_log(
+                f'{totem_card.name} nao pode ser anexado: '
+                f'nenhum Character viavel no pack')
+
+
 @dataclass
 class GameState:
     """Estado completo de uma partida."""
@@ -1695,7 +1775,6 @@ class GameState:
                             f'{c.name}: Rage = 6 (Full Moon)'
                         )
 
-
     def register_card_passives(self, card: CardInstance, owner: PlayerState):
         """Registra efeitos passivos especiais de cartas sem efeitos
         estruturados.
@@ -2121,8 +2200,17 @@ class GameState:
                 modifier='challenges_cannot_be_refused'
             )
             self.game_modifiers.append(modifier)
+            # Anexa Kirijama a um Character que atenda 'Eater-of-Souls'
+            _anexar_personal_totem(card, owner, self)
             self.add_log(
                 f'{card.name}: desafios nao podem ser recusados')
+
+        elif card.card_id == 1348:  # Tzinzie (Personal Totem)
+            card.restricoes.append('personal_totem')
+            # Anexa Tzinzi a um Character Ajaba/Bastet
+            _anexar_personal_totem(card, owner, self)
+            self.add_log(
+                f'{card.name}: Personal Totem anexado')
 
         elif card.card_id == 29:  # Allonzo Montoya
             card.restricoes.append('regenerates')

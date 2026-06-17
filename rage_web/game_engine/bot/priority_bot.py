@@ -2446,10 +2446,25 @@ class PriorityBot:
         logs = aplicar_carta(self.game, modelo, self.player_id,
                               modo_idx=modo_idx, card_origem=card_real)
 
+        # ── Personal Totems: ficam em jogo anexados a um Character ──
+        # Regra (4.5.2B): Personal Totem e jogado em um unico Character
+        # e permanece em jogo. O efeito ja foi resolvido, agora precisa
+        # registrar as passivas e anexar ao Character.
+        ct = (card_real.card_type or '').lower()
+        if 'event' in ct and 'personal totem' in (card_real.text or '').lower():
+            self.game.register_card_passives(card_real, self.player)
+            if card_real.attached_to:
+                # Ja foi anexado pelo register_card_passives
+                pass
+            elif card_real.zone in (Zone.OUT_OF_PLAY, Zone.HAND):
+                card_real.zone = Zone.PACK_HOME
+                if card_real not in self.player.pack_home:
+                    self.player.pack_home.append(card_real)
+                self.game.add_log(
+                    f'{card_real.name} (Personal Totem) permanece em jogo')
         # Descarta a carta apos o uso, a menos que tenha sido anexada
         # a uma criatura (gift/equipamento persistente)
-        ct = (card_real.card_type or '').lower()
-        if 'gift' not in ct and getattr(card_real, 'attached_to', None) is None:
+        elif 'gift' not in ct and getattr(card_real, 'attached_to', None) is None:
             # So descarta se a carta nao estiver em nenhuma zona ativa
             # (ja pode ter sido movida pelo efeito)
             if card_real.zone in (Zone.OUT_OF_PLAY, Zone.HAND):

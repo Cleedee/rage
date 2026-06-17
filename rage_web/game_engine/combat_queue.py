@@ -1868,27 +1868,38 @@ def reveal_all(game: GameState) -> bool:
             game.add_log(f'  {cid}: {action}')
 
     # Tzinzie (1348): se oponente revelou a acao nomeada, descarta
+    # Regra (4.5.2B): so funciona se o Character com Tzinzie ainda
+    # estiver em combate
     if 1348 in game.combat_triggers:
         tz = game.combat_triggers[1348]
         named_action = tz.get('named_action', '')
         owner_id = tz.get('owner_id', '')
-        for cid, action in game.combat.declarations.items():
-            # Verifica se e um oponente que revelou a acao
-            card = _find_card(game, cid)
-            if card and action == named_action:
-                dono = _find_owner(game, card)
-                if dono and dono.id != owner_id:
-                    # Descarta uma carta aleatoria da mao
-                    if dono.hand:
-                        idx = game.rng.randint(0, len(dono.hand) - 1)
-                        descartada = dono.hand.pop(idx)
-                        descartada.zone = Zone.DISCARD_COMBAT
-                        dono.discard_combat.append(descartada)
-                        game.add_log(
-                            f'Tzinzie: {dono.name} descartou '
-                            f'{descartada.name} da mao (revelou {action})'
-                        )
-                    break
+        char_id = tz.get('character_id', '')
+        # Verifica se o Character com Tzinzie ainda esta em combate
+        char_em_combate = char_id in (
+            game.combat.attackers + game.combat.defenders
+        ) if game.combat else False
+        if not char_em_combate:
+            game.add_log(
+                'Tzinzie: Character fora do combate, efeito cancelado')
+        else:
+            for cid, action in game.combat.declarations.items():
+                # Verifica se e um oponente que revelou a acao
+                card = _find_card(game, cid)
+                if card and action == named_action:
+                    dono = _find_owner(game, card)
+                    if dono and dono.id != owner_id:
+                        # Descarta uma carta aleatoria da mao
+                        if dono.hand:
+                            idx = game.rng.randint(0, len(dono.hand) - 1)
+                            descartada = dono.hand.pop(idx)
+                            descartada.zone = Zone.DISCARD_COMBAT
+                            dono.discard_combat.append(descartada)
+                            game.add_log(
+                                f'Tzinzie: {dono.name} descartou '
+                                f'{descartada.name} da mao (revelou {action})'
+                            )
+                        break
 
     # ── Pack Combat (6.5.8): processa efeitos de pack attack/defense ──
     # NOTA: nao chamamos aqui porque cartas ilegais ainda nao foram
@@ -3907,19 +3918,37 @@ def _check_tzinzie_trigger(game: GameState):
     Tzinzie: Personal Totem. No inicio do combate, o dono pode nomear
     uma Combat Action. Quando oponente revela essa acao, descarta
     uma carta aleatoria da mao de combate.
+
+    Regra (4.5.2B): Personal Totem so beneficia o Character ao qual
+    esta anexado. So ativa se o Character com Tzinzie estiver em combate.
     """
     for p in game.players:
-        for c in p.pack_home + p.hunting_grounds:
-            if c.card_id == 1348:  # Tzinzie
-                # Nomeia a acao mais comum: strike
-                game.combat_triggers[1348] = {
-                    'named_action': 'strike',
-                    'owner_id': p.id,
-                    'card_uid': id(c),
-                }
-                game.add_log(
-                    f'{p.name} nomeou strike (Tzinzie)')
-                return
+        # Procura Tzinzie anexado a um Character em combate
+        for totem_uid, character in list(p.personal_totems.items()):
+            totem_card = None
+            # Encontra a carta Tzinzie (pelo uid guardado)
+            for c in p.pack_home + p.hunting_grounds:
+                if id(c) == totem_uid:
+                    totem_card = c
+                    break
+            if totem_card and totem_card.card_id == 1348:
+                # Verifica se o Character esta em combate
+                combatentes = set()
+                if game.combat:
+                    combatentes = set(
+                        game.combat.attackers + game.combat.defenders
+                    )
+                char_id = str(id(character))
+                if char_id in combatentes:
+                    game.combat_triggers[1348] = {
+                        'named_action': 'strike',
+                        'owner_id': p.id,
+                        'card_uid': totem_uid,
+                        'character_id': char_id,
+                    }
+                    game.add_log(
+                        f'{character.name} nomeou strike (Tzinzie)')
+                    return
 
 
 def _check_hyenas_escape(game: GameState):

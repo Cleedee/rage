@@ -472,6 +472,9 @@ class RageCLI(cmd.Cmd):
         cp.pack_home.append(card)
         g.add_log(f'{cp.name} jogou {card.name}')
 
+        # Registra passivas (Personal Totems, etc.)
+        g.register_card_passives(card, cp)
+
         print(f'  Jogou: {card.name} ({card.card_type}) no Pack Home')
 
     def do_RECRUIT_STATUS(self, arg):

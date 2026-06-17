@@ -885,9 +885,9 @@ def impedir_descarte_voluntario(cards: list['CardInstance']) -> list['CardInstan
 
 
 # IDs de cartas Totem conhecidas
-TOTEM_IDS = {214, 215, 817, 818, 821, 824, 826, 830, 836, 838,
+TOTEM_IDS = {214, 215, 220, 817, 818, 821, 824, 826, 830, 836, 838,
              850, 852, 855, 867, 868, 872, 877, 880, 892, 895,
-             897, 900, 909, 912, 914, 918, 920, 1633}
+             897, 900, 909, 912, 914, 918, 920, 1348, 1633}
 
 
 def validar_totem_evento(player: 'PlayerState',
@@ -934,7 +934,8 @@ def validar_totem_evento(player: 'PlayerState',
 
     # 2. Verifica limite de 1 Pack Totem por pack
     # Personal Totems nao contam para o limite
-    if 'personal totem' not in text:
+    eh_personal = 'personal totem' in text
+    if not eh_personal:
         # Conta Totems ativos no pack
         totens_ativos = 0
         for c in player.pack_home + player.hunting_grounds:
@@ -945,6 +946,32 @@ def validar_totem_evento(player: 'PlayerState',
                     totens_ativos += 1
         if totens_ativos >= 1:
             return False  # So 1 Pack Totem por pack
+
+    # 3. Para Personal Totems: verifica se ha Character disponivel
+    #    que nao tenha ja um Personal Totem (max 1 por Character)
+    if eh_personal:
+        from rage_web.game_engine.state import Zone
+        # Verifica se algum Character ja tem este Personal Totem
+        opcoes = [p.strip() for p in requires.split(' - ')] if requires else []
+        char_disponivel = None
+        for c in characters:
+            # Character ja tem personal totem?
+            if player.personal_totems and any(
+                pt is c for pt in player.personal_totems.values()
+            ):
+                continue
+            # Atende requisito?
+            if opcoes:
+                if _char_atende_requisitos(
+                    _info_char(c), c.gnosis or 0, opcoes, player, c
+                ):
+                    char_disponivel = c
+                    break
+            else:
+                char_disponivel = c
+                break
+        if not char_disponivel:
+            return False
 
     return True
 
