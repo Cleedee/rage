@@ -50,22 +50,34 @@ class Snapshot:
         self.phase = phase
         self.players = []
         for p in game.players:
+            # Constroi Personal Totems primeiro para cruzar com Characters
+            pts_list = [
+                _card_info(c) for c in p.pack_home
+                if (c.card_type or '') == 'Event'
+                and 'personal totem' in (c.text or '').lower()
+            ]
+
             self.players.append({
                 'id': p.id,
                 'name': p.name,
                 'victory_points': p.victory_points,
                 'hand': [_card_info(c) for c in p.hand],
-                # Separa Events e Gifts como efeitos ativos
+                # Personal Totems
+                'personal_totems': pts_list,
+                # Demais Events (Totems nao-pessoais, Lunar Phases, etc.)
                 'active_effects': [
                     _card_info(c) for c in p.pack_home
                     if (c.card_type or '') == 'Event'
+                    and 'personal totem' not in (c.text or '').lower()
                 ],
                 'active_gifts': [
                     _card_info(c) for c in p.pack_home
                     if (c.card_type or '') == 'Gift'
                 ],
                 'pack_home': [
-                    _card_info(c) for c in p.pack_home
+                    _card_info(c, player_snapshot={
+                        'personal_totems_list': pts_list,
+                    }) for c in p.pack_home
                     if (c.card_type or '') not in ('Event', 'Gift')
                 ],
                 'umbra': [_card_info(c) for c in p.umbra],
@@ -103,8 +115,32 @@ class Snapshot:
         self.log = log_full[log_offset:]
 
 
-def _card_info(c) -> dict:
-    """Serializa uma CardInstance para o template."""
+def _card_info(c, player_snapshot: Optional[dict] = None) -> dict:
+    """Serializa uma CardInstance para o template.
+
+    Args:
+        c: A CardInstance a ser serializada.
+        player_snapshot: Dados parciais do jogador (para cruzar
+                         Personal Totems com Characters).
+
+    Returns:
+        Dict com dados serializados.
+    """
+    # Resolve attached_to: se for Personal Totem, mostra o nome do Character
+    attached_to_card = getattr(c, 'attached_to', None)
+    attached_to_name = attached_to_card.name if attached_to_card else None
+    attached_to_id = str(id(attached_to_card)) if attached_to_card else None
+
+    # Verifica se este Character tem um Personal Totem anexado
+    has_personal_totem = False
+    personal_totem_name = None
+    if player_snapshot and 'Character' in (getattr(c, 'card_type', '') or ''):
+        for pt in player_snapshot.get('personal_totems_list', []):
+            if pt.get('attached_to_id') == str(id(c)):
+                has_personal_totem = True
+                personal_totem_name = pt.get('name')
+                break
+
     info = {
         'card_id': getattr(c, 'card_id', 0),
         'name': getattr(c, 'name', '?'),
@@ -120,6 +156,12 @@ def _card_info(c) -> dict:
         'requires': getattr(c, 'requires', ''),
         'keywords': getattr(c, 'keywords', []),
         'text': getattr(c, 'text', ''),
+        # Personal Totem: mostra a qual Character esta anexado
+        'attached_to_name': attached_to_name,
+        'attached_to_id': attached_to_id,
+        # Se este card e um Character com Personal Totem
+        'has_personal_totem': has_personal_totem,
+        'personal_totem_name': personal_totem_name,
         # Estatísticas efetivas (com buffs)
         'rage_efetivo': getattr(c, 'rage_efetivo', getattr(c, 'rage', 0)),
         'gnosis_efetivo': getattr(c, 'gnosis_efetivo', getattr(c, 'gnosis', 0)),
