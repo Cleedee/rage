@@ -7,14 +7,15 @@
       "descricao": "Usar Gift (Gn5)",
       "efeitos": [
         {
-          "tipo": "modificar_atributo",
-          "condicao_alvo": "criatura_aliada",
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
           "params": {
-            "atributos": [
-              "rage"
-            ],
-            "valor": 1,
-            "duracao": "ate_fim_combate"
+            "duracao": "um_turno",
+            "descarte_apos_uso": true,
+            "restricao_extra": "Homid",
+            "tipos_permitidos": ["Ally", "Prey", "Victim"],
+            "gnosis_max_para_descarte": 3
           }
         }
       ]

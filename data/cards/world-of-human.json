@@ -10,11 +10,11 @@
           "tipo": "modificar_atributo",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "rage"
-            ],
+            "atributos": ["gauntlet"],
             "valor": 1,
-            "duracao": "ate_fim_combate"
+            "duracao": "permanente",
+            "alvo": "caern",
+            "maximo": 4
           }
         }
       ]

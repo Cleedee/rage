@@ -419,6 +419,20 @@ def _card_stats_short(card) -> str:
     return ''
 
 
+def _sanitize_filename(name: str) -> str:
+    """Remove ou substitui caracteres nao-ASCII para filename seguro."""
+    import unicodedata
+    # Normaliza: e com acento → e + combinante; em-dash → hifen, etc.
+    normalized = unicodedata.normalize('NFKD', name)
+    # Substitui tracos especiais por hifen
+    normalized = normalized.replace('\u2014', '-').replace('\u2013', '-')
+    # Remove caracteres de controle e nao-ASCII
+    safe = normalized.encode('ascii', 'ignore').decode('ascii')
+    # Remove espacos extras, troca espacos por underscore
+    safe = '_'.join(safe.split())
+    return safe
+
+
 def _export_text(deck, cards, grupos_por_tipo):
     """Exporta deck no formato TXT legivel e reimportavel."""
     ORDEM_TIPOS = [
@@ -464,7 +478,7 @@ def _export_text(deck, cards, grupos_por_tipo):
     lines.append(f'# Total: {sum(e["quantity"] for e in cards)} cartas')
 
     text = '\n'.join(lines)
-    nome_arquivo = f'{deck.name or "deck"}.txt'
+    nome_arquivo = f'{_sanitize_filename(deck.name) or "deck"}.txt'
     return current_app.response_class(
         text,
         mimetype='text/plain',
@@ -570,7 +584,7 @@ def _export_discord(deck, cards, grupos_por_tipo):
     lines.append(f'*Exportado do Rage CCG Web*')
 
     text = '\n'.join(lines)
-    nome_arquivo = f'{deck.name or "deck"}_discord.md'
+    nome_arquivo = f'{_sanitize_filename(deck.name) or "deck"}_discord.md'
     return current_app.response_class(
         text,
         mimetype='text/markdown',
@@ -601,7 +615,7 @@ def _export_xml(deck, grupos_por_tipo):
                     ET.SubElement(ce, 'set').text = card.expansion
 
     xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent='  ')
-    nome_arquivo = f'{deck.name or "deck"}.dek'
+    nome_arquivo = f'{_sanitize_filename(deck.name) or "deck"}.dek'
     return current_app.response_class(
         xml_str,
         mimetype='application/xml',

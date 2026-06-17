@@ -850,6 +850,26 @@ class ResolvedorEfeitos:
         also_self = params.get('also_remove_self')
         restricao = params.get('restricao_extra', '')
 
+        # ── Gnosis threshold: se Gnosis ≤ gnosis_max_para_descarte, descarta ──
+        gnosis_max_descarte = params.get('gnosis_max_para_descarte', None)
+        if gnosis_max_descarte is not None and isinstance(alvo, CardInstance):
+            gnosis_alvo = alvo.effective_gnosis if hasattr(alvo, 'effective_gnosis') else alvo.gnosis
+            if gnosis_alvo <= int(gnosis_max_descarte):
+                for p in self.game.players:
+                    for lista in (p.pack_home, p.hunting_grounds,
+                                  p.umbra, p.hand):
+                        if alvo in lista:
+                            lista.remove(alvo)
+                            break
+                alvo.zone = Zone.DISCARD_COMBAT
+                dono = self._find_player(alvo.owner_id) or jogador
+                dono.discard_combat.append(alvo)
+                self.game.add_log(
+                    f'{alvo.name} foi descartado por Disquiet'
+                    f' (Gnosis {gnosis_alvo} ≤ {gnosis_max_descarte})'
+                )
+                return True
+
         if descarte:
             for p in self.game.players:
                 for lista in (p.pack_home, p.hunting_grounds,
@@ -1748,16 +1768,26 @@ class ResolvedorEfeitos:
         alvo_name = (alvo.name or '').lower()
         alvo_text = f'{alvo_name} {alvo_ct} {alvo_kw}'
 
-        # ── 1. Fetish / Bane Fetish alignment restriction ──
-        # Fetish: apenas Gaia podem equipar
-        # Bane Fetish: apenas Wyrm podem equipar
-        # (alguns cards sao ambos - 'Fetish - Bane Fetish' - podem ambos)
-        # Nota: 'Non-Fetish' contem 'Fetish' mas NAO e Fetish
+        # ── 1. Eater-of-Souls check: fetish equipment precisa de enabler ──
         eh_non_fetish = 'non-fetish' in kw
         eh_fetish = not eh_non_fetish and ('gaia fetish' in kw
                     or ('fetish' in kw and 'bane fetish' not in kw))
         eh_bane_fetish = not eh_non_fetish and 'bane fetish' in kw
         eh_ambos = not eh_non_fetish and 'gaia fetish' in kw and 'bane fetish' in kw
+
+        if (eh_fetish or eh_bane_fetish) and not eh_non_fetish:
+            if not self.game.has_modifier('can_equip_fetish'):
+                self.game.add_log(
+                    f'Precisa de Eater-of-Souls ou similar para equipar '
+                    f'{equipamento.name} (Fetish)'
+                )
+                return False
+
+        # ── 2. Fetish / Bane Fetish alignment restriction ──
+        # Fetish: apenas Gaia podem equipar
+        # Bane Fetish: apenas Wyrm podem equipar
+        # (alguns cards sao ambos - 'Fetish - Bane Fetish' - podem ambos)
+        # Nota: 'Non-Fetish' contem 'Fetish' mas NAO e Fetish
 
         if not eh_ambos and not eh_non_fetish:
             # Gaia Fetish: alvo deve ser Gaia
@@ -1969,6 +1999,28 @@ class ResolvedorEfeitos:
                     delta = novo - c.health
                     c.health = novo
                     c.health_current = max(1, c.health_current + delta)
+                elif attr == 'gauntlet':
+                    # Gauntlet = Gnosis do Caern. Max +4 por Caern.
+                    if c.card_type != 'Caern':
+                        self.game.add_log(
+                            f'{c.name} nao e um Caern, ignorando gauntlet'
+                        )
+                        continue
+                    # Tracking de aumentos de gauntlet
+                    if not hasattr(self.game, '_gauntlet_increases'):
+                        self.game._gauntlet_increases = {}
+                    inc_atual = self.game._gauntlet_increases.get(id(c), 0)
+                    max_total = int(efeito.params.get('maximo', 4))
+                    if inc_atual >= max_total:
+                        self.game.add_log(
+                            f'{c.name}: Gauntlet ja aumentado em {max_total} (maximo)'
+                        )
+                        continue
+                    # Aplica o aumento
+                    novo = max(minimo, c.gnosis + quantidade)
+                    delta = novo - c.gnosis
+                    c.gnosis = novo
+                    self.game._gauntlet_increases[id(c)] = inc_atual + 1
                 elif attr in ('dano_proximo_ataque', 'dano_agravado'):
                     c.aplicar_attr_buff(attr, quantidade)
                     delta = quantidade

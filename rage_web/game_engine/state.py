@@ -2224,6 +2224,29 @@ class GameState:
                 f'{card.name}: regenera, nao pode alpha 2x consecutivo,'
                 f' pode usar gifts Shadow Lords, Metis e BSD')
 
+        elif card.card_id == 161:  # Juicy Johnes
+            # Quando morto, quem o matou perde 2 Gnosis permanente
+            trigger = DeathTrigger(
+                trigger_card_uid=id(card),
+                condition='juicy_johnes',
+                action='reduce_gnosis:2',
+                originador_id=owner.id
+            )
+            self.death_triggers.append(trigger)
+            self.add_log(
+                f'{card.name}: trigger de morte registrado'
+                f' (killer perde 2 Gnosis)')
+
+        elif card.card_id == 840:  # Eater-of-Souls
+            # Permite equipar Fetish Equipment
+            modifier = GameModifier(
+                card_uid=id(card),
+                modifier='can_equip_fetish'
+            )
+            self.game_modifiers.append(modifier)
+            self.add_log(
+                f'{card.name}: pack pode equipar Fetish Equipment agora')
+
         # ── Umbral Wardens ──
 
         elif card.card_id == 247:  # Sees-through-Stars
@@ -2375,6 +2398,10 @@ class GameState:
             # Verifica condicao
             if t.condition == 'any':
                 pass  # Qualquer morte dispara
+            elif t.condition == 'juicy_johnes':
+                # Dispara quando a carta com o trigger MORRE
+                if killed_card.card_id != trigger_card.card_id:
+                    continue
             elif t.condition.startswith('killed_by_type:'):
                 tipo_necessario = t.condition.split(':', 1)[1].strip().lower()
                 if killer_card is None:
@@ -2424,6 +2451,15 @@ class GameState:
                     beneficiario.victory_points += 1
                     self.add_log(
                         f'{beneficiario.name} ganhou 1 VP (trigger: {trigger_card.name})'
+                    )
+            elif t.action.startswith('reduce_gnosis:'):
+                # Reduz Gnosis do killer (ex: Juicy Johnes)
+                quantidade = int(t.action.split(':', 1)[1].strip())
+                if killer_player and killer_card:
+                    killer_card.buff_gnosis -= quantidade
+                    self.add_log(
+                        f'{killer_card.name} perdeu {quantidade} Gnosis'
+                        f' (trigger: {trigger_card.name})'
                     )
             else:
                 self.add_log(f'Trigger action nao implementada: {t.action}')
