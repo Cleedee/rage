@@ -467,35 +467,6 @@
       </div>
       {% endif %}
 
-      <!-- Personal Totems (4.5.2B) -->
-      {% if p.personal_totems %}
-      <div class="zone-box" style="background:#f3e5f5;border-color:#ce93d8">
-        <h3>🪬 Personal Totems <span class="count">({{ p.personal_totems|length }})</span></h3>
-        <div class="hg-grid">
-          {% for card in p.personal_totems %}
-          <div class="card-img-cell"
-               data-card-name="{{ card.name }}"
-               data-card-text="{{ card.text|e }}"
-               data-card-type="{{ card.card_type }}"
-               data-card-img="{{ get_card_image_url(card.card_id) or '' }}">
-            <div class="card-img-wrap">
-              <img src="{{ get_card_image_url(card.card_id) or 'https://via.placeholder.com/120x167?text=?' }}"
-                   alt="{{ card.name }}" loading="lazy"
-                   onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
-            </div>
-            <span class="card-name">{{ card.name }}</span>
-            <span class="card-stats" style="font-size:0.65rem;color:#7b1fa2">
-              🪬 Anexado a: <strong>{{ card.attached_to_name or '?' }}</strong>
-            </span>
-            {% if card.requires %}
-            <span class="card-stats" style="font-size:0.6rem;color:#888">Requer: {{ card.requires }}</span>
-            {% endif %}
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-
       <!-- Gifts Ativos -->
       {% if p.active_gifts %}
       <div class="zone-box" style="background:#e8f4f8;border-color:#87ceeb">
@@ -570,10 +541,6 @@
               {% endif %}
               {% if card.renown %} ⭐{{ card.renown }}{% endif %}
             </span>
-            {# Mostra se o Character tem um Personal Totem anexado #}
-            {% if card.has_personal_totem %}
-            <span style="font-size:0.6rem;color:#7b1fa2;display:block">🪬 Totem: {{ card.personal_totem_name }}</span>
-            {% endif %}
             {% if card.health > 0 and card.health_current is defined and card.health_max_efetivo > 0 %}
             <div class="health-bar" style="margin-top:6px">
               <div class="health-bar-fill {% if card.health_current / card.health_max_efetivo < 0.3 %}low{% elif card.health_current / card.health_max_efetivo < 0.6 %}mid{% endif %}"
@@ -600,6 +567,24 @@
                 {%- endfor -%}
               ){% endif -%}
             </span>
+            {% endif %}
+            {% if card.has_personal_totem and card.personal_totem_info %}
+            <div style="margin-top:4px;border-top:1px solid #ce93d8;padding-top:3px">
+              <div class="card-img-cell" style="width:100%;margin:0;padding:1px 0;cursor:pointer"
+                   data-card-name="{{ card.personal_totem_info.name }}"
+                   data-card-text="{{ card.personal_totem_info.text|e }}"
+                   data-card-type="Personal Totem"
+                   data-card-img="{{ get_card_image_url(card.personal_totem_info.card_id) or '' }}">
+                <span style="font-size:0.6rem;color:#7b1fa2;display:flex;align-items:center;gap:3px">
+                  <span style="background:#f3e5f5;border-radius:3px;padding:0 4px;font-weight:600">🪬</span>
+                  <span style="font-weight:600">{{ card.personal_totem_info.name }}</span>
+                  <span style="color:#7b1fa2">Personal Totem</span>
+                  {% if card.personal_totem_info.requires %}
+                  <span style="color:#888;font-size:0.6rem">— {{ card.personal_totem_info.requires }}</span>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
             {% endif %}
             {% if card.attached_equipment %}
             <div style="margin-top:4px;border-top:1px solid #ddd;padding-top:3px">

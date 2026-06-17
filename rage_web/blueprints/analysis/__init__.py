@@ -134,11 +134,13 @@ def _card_info(c, player_snapshot: Optional[dict] = None) -> dict:
     # Verifica se este Character tem um Personal Totem anexado
     has_personal_totem = False
     personal_totem_name = None
+    personal_totem_info = None  # dict completo do totem (para tooltip)
     if player_snapshot and 'Character' in (getattr(c, 'card_type', '') or ''):
         for pt in player_snapshot.get('personal_totems_list', []):
             if pt.get('attached_to_id') == str(id(c)):
                 has_personal_totem = True
                 personal_totem_name = pt.get('name')
+                personal_totem_info = pt
                 break
 
     info = {
@@ -162,6 +164,7 @@ def _card_info(c, player_snapshot: Optional[dict] = None) -> dict:
         # Se este card e um Character com Personal Totem
         'has_personal_totem': has_personal_totem,
         'personal_totem_name': personal_totem_name,
+        'personal_totem_info': personal_totem_info,
         # Estatísticas efetivas (com buffs)
         'rage_efetivo': getattr(c, 'rage_efetivo', getattr(c, 'rage', 0)),
         'gnosis_efetivo': getattr(c, 'gnosis_efetivo', getattr(c, 'gnosis', 0)),
