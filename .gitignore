@@ -15,3 +15,6 @@ database.db
 database.db-shm
 database.db-wal
 instance/
+
+# Database copies
+data/rage_web.db
