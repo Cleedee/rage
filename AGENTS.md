@@ -683,6 +683,7 @@ que já têm resolvedor.
 | 465 | Apocalypse: First Team 28 | Wyrm squad, ataque HG em massa |
 | 484 | Ajaba Aggression | **Control** — disrupção (Laughter/Dust Storm), bloqueio (Blur of Milky Eye), VP via Scavenger's Quest + Enemies, Clan of Hyenas Rg6 como atacante principal |
 | 524 | Classic: Wailer special | Aliados + pack attack |
+| **1045** | **Kitsune — Raposas da Fortuna** | **Hengeyokai Kitsune + Gnosis combo + moot politics** |
 | **1050** | **Assombração dos Passos da Morte** | **Pack Ragabash Silent Striders — Stalks Death + truques** |
 
 ---
