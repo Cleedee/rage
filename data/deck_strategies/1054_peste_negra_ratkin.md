@@ -136,6 +136,17 @@ Deadly Welcome equipado com Chainsaw:
 - **Lost Map** — defending alpha para qualquer BF
 - **Chainsaw** — permite CAs até Rg:10 (Deadly vai a Rg:7 em Crinos)
 
+### Presas Urbanas
+
+**A Bus Full of People x2** (Human) — presa genérica, humanos no bus.
+**Street Bum** (Human) — presa urbana, countera 1 Mass Pollution. Temático:
+ratos de cidade vivendo no esgoto e nas ruas.
+
+> Anteriormente tinha "Angus, the White Howler" — um Garou branco que
+> vira ally após 3 turnos. Removido por falta de conexão temática com
+> Ratkin. No lugar, Street Bum: presa urbana que combina com o tema
+> de praga urbana e ainda remove poluição.
+
 ### Sinergia Lord Ebola + Poison Tumors
 
 Lord Ebola reduz -1 Rage do oponente por cada damage card. Poison
