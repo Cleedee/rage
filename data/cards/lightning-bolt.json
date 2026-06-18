@@ -4,12 +4,16 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 6 de dano",
+      "descricao": "Causar 6 de dano (Instinctive, Unblockable)",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
-          "quantidade": 6
+          "quantidade": 6,
+          "params": {
+            "instinctive": true,
+            "nao_bloqueavel": true
+          }
         }
       ]
     }

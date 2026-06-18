@@ -4,12 +4,15 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Causar 7 de dano",
+      "descricao": "Causar 7 de dano agravado (Bonus Kitsune/Kuei Jin)",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
-          "quantidade": 7
+          "quantidade": 7,
+          "params": {
+            "agravado": true
+          }
         }
       ]
     }

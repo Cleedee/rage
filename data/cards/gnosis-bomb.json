@@ -4,14 +4,16 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Gnosis Bomb",
+      "descricao": "Dano X igual ao Gnosis do usuario (Slow Striking)",
       "efeitos": [
         {
           "tipo": "dano",
           "condicao_alvo": "criatura_inimiga",
           "quantidade": 0,
           "params": {
-            "texto_original": "Slow Striking. This cannot be played the first round of combat or while frenzied"
+            "dano_igual_gnosis": true,
+            "slow_striking": true,
+            "nao_primeiro_round": true
           }
         }
       ]

@@ -4,14 +4,14 @@
   "tipo": "Combat Action",
   "modos": [
     {
-      "descricao": "Flow Like Water",
+      "descricao": "Esquivar de 1 ataque (Bonus Hengeyokai: esquiva todos + ataca)",
       "efeitos": [
         {
-          "tipo": "dano",
-          "condicao_alvo": "criatura_inimiga",
-          "quantidade": 0,
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
           "params": {
-            "texto_original": "Dodge one attack. Bonus - Kuei-Jin, Vampire or Hengeyokai: Dodge all attacks and"
+            "bonus_hengeyokai": true
           }
         }
       ]
