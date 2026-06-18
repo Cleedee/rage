@@ -1,0 +1,32 @@
+{
+  "id": "corporate-take-over",
+  "nome": "Corporate Take-over",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Corporate Take-over (REVISAO MANUAL)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Each Pentex character in play must discard 1 piece of Equipment."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 833,
+    "texto_original": "Each Pentex character in play must discard 1 piece of Equipment.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "corporate-take-over"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "bane-sword",
+  "nome": "Bane Sword",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Bane Weapon: +3 dano",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "dano_arma"
+            ],
+            "valor": 3,
+            "duracao": "permanente",
+            "bane_fetish": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 620,
+    "texto_original": "If the equipped character's Gnosis exceeds her opponent's, all damage done by the Bane Sword is aggravated.",
+    "keywords": "Bane Fetish - Weapon",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "bane-sword"
+  }
+}

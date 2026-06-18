@@ -1,0 +1,32 @@
+{
+  "id": "pegasus",
+  "nome": "Pegasus",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Pegasus (REVISAO MANUAL)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Each pack member gains 1 Gnosis. A pack may not have more than 1 Pack Totem at any time."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 895,
+    "texto_original": "Each pack member gains 1 Gnosis. A pack may not have more than 1 Pack Totem at any time.",
+    "keywords": "Pack Totem",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "pegasus"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "boar",
+  "nome": "Boar",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Boar (REVISAO MANUAL)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Your pack members are +2 health in Homid and Animal form. Metis packmembers are +1 health."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 819,
+    "texto_original": "Your pack members are +2 health in Homid and Animal form. Metis packmembers are +1 health.",
+    "keywords": "Pack Totem",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "boar"
+  }
+}

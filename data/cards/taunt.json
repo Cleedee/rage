@@ -1,0 +1,32 @@
+{
+  "id": "taunt",
+  "nome": "Taunt",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Taunt (REVISAO MANUAL)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "A Ragabash can play this card on any Garou who has just refused a challenge.  That Garou immediately accepts the challen"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 811,
+    "texto_original": "A Ragabash can play this card on any Garou who has just refused a challenge.  That Garou immediately accepts the challenge and enters frenzy.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "taunt"
+  }
+}

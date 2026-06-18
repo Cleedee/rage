@@ -1,0 +1,31 @@
+{
+  "id": "lend-a-hand",
+  "nome": "Lend a Hand",
+  "tipo": "Action",
+  "modos": [
+    {
+      "descricao": "Junta combate no lado do defensor",
+      "efeitos": [
+        {
+          "tipo": "combar_acao",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "junta_combate_defensor": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 793,
+    "texto_original": "Play this card during any combat that doesn't involve any of your characters. The character playing Lend A Hand joins the combat on the defender's side for one round. If the attacker frenzies, however, your character must remain in the fight until the fre",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lend-a-hand"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "klaive",
+  "nome": "Klaive",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Weapon: +3 dano",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "dano_arma"
+            ],
+            "valor": 3,
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 657,
+    "texto_original": "Weapon. A character equipped with a Klaive loses 1 point of Gnosis for as long as she is so equipped.  All damaged done by the character who owns the Klaive is aggravated.",
+    "keywords": "Gaia Fetish - Weapon - Klaive",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "klaive"
+  }
+}

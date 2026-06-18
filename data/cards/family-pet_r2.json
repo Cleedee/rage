@@ -1,0 +1,32 @@
+{
+  "id": "family-pet_r2",
+  "nome": "Family Pet",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Family Pet (Victim - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Family Pet will automatically pack defend with the Family of Five or the Playground Full of Kids, if either of them "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 481,
+    "texto_original": "The Family Pet will automatically pack defend with the Family of Five or the Playground Full of Kids, if either of them are attacked.",
+    "keywords": "Animal",
+    "gnosis": 1,
+    "rage": 2,
+    "health": 2,
+    "precisa_revisao": true,
+    "slug": "family-pet_r2"
+  }
+}

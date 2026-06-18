@@ -1,0 +1,32 @@
+{
+  "id": "voracious-spectre_r3",
+  "nome": "Voracious Spectre",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Voracious Spectre (Enemy - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Spectre is a spirit that exists only in the Umbra. If there are any Silent Striders in the Umbra during the Combat P"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 566,
+    "texto_original": "The Spectre is a spirit that exists only in the Umbra. If there are any Silent Striders in the Umbra during the Combat Phase, the Spectre will attack the 1 with the highest Gnosis at the end of the Combat Phase.",
+    "keywords": "Spirit",
+    "gnosis": 3,
+    "rage": 4,
+    "health": 2,
+    "precisa_revisao": true,
+    "slug": "voracious-spectre_r3"
+  }
+}

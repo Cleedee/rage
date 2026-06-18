@@ -1,0 +1,32 @@
+{
+  "id": "defiler",
+  "nome": "Defiler",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Toma qualquer Caern (ignora requisitos)",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "toma_caern": true,
+            "ignora_requisitos": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 836,
+    "texto_original": "You may discard the Defiler to take any 1 caern in play and make it your own. Ignore the target Caern's requirements (it has been defiled). A pack may not have more than 1 Pack Totem at any time.",
+    "keywords": "Pack Totem",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "defiler"
+  }
+}

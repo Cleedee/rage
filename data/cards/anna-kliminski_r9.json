@@ -1,0 +1,32 @@
+{
+  "id": "anna-kliminski_r9",
+  "nome": "Anna Kliminski",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Anna Kliminski (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Anna may begin the game armed with a Klaive Equipment card."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 34,
+    "texto_original": "Anna may begin the game armed with a Klaive Equipment card.",
+    "keywords": "Garou - Shadow Lords - Ahroun - Homid - Gaia - Female",
+    "gnosis": 8,
+    "rage": 3,
+    "health": 4,
+    "precisa_revisao": true,
+    "slug": "anna-kliminski_r9"
+  }
+}

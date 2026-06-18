@@ -1,0 +1,32 @@
+{
+  "id": "nocturna_r6",
+  "nome": "Nocturna",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Nocturna (Enemy - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "This Bane spirit attacks humans as they sleep, corrupting their dreams. At the end of each Combat Phase, the Nocturna wi"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 513,
+    "texto_original": "This Bane spirit attacks humans as they sleep, corrupting their dreams. At the end of each Combat Phase, the Nocturna will corrupt one Kinfolk ally in play (decide randomly if there is more than one Kinfolk ally). The Kinfolk is then moved to the Hunting",
+    "keywords": "Spirit - Bane",
+    "gnosis": 5,
+    "rage": 3,
+    "health": 6,
+    "precisa_revisao": true,
+    "slug": "nocturna_r6"
+  }
+}

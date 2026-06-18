@@ -1,0 +1,32 @@
+{
+  "id": "anaconda-gafflings_r3",
+  "nome": "Anaconda Gafflings",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Anaconda Gafflings (Enemy - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Anaconda Gafflings can use Defiler and Bane Gifts."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 450,
+    "texto_original": "The Anaconda Gafflings can use Defiler and Bane Gifts.",
+    "keywords": "Spirit",
+    "gnosis": 4,
+    "rage": 3,
+    "health": 2,
+    "precisa_revisao": true,
+    "slug": "anaconda-gafflings_r3"
+  }
+}

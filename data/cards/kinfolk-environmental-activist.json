@@ -1,0 +1,32 @@
+{
+  "id": "kinfolk-environmental-activist",
+  "nome": "Kinfolk Environmental Activist",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Kinfolk Environmental Activist (Ally - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Environmental Activist can remove 1 member of your pack from the Hunting Grounds per turn."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 414,
+    "texto_original": "The Environmental Activist can remove 1 member of your pack from the Hunting Grounds per turn.",
+    "keywords": "Human - Kinfolk",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 1,
+    "precisa_revisao": true,
+    "slug": "kinfolk-environmental-activist"
+  }
+}

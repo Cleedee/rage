@@ -1,0 +1,32 @@
+{
+  "id": "weasel",
+  "nome": "Weasel",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Descarta 1 combat card p/ nao jogar CA este round",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "restricao": "descarta_por_combat_action",
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 214,
+    "texto_original": "Weasel is a cunning totem of war, granting his children agility in battle. At the beginning of the Combat Phase, a character with Weasel may discard 1 of her combat cards and search through her combat deck for a Dodge. This must be done before alphas are",
+    "keywords": "Personal Totem",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "weasel"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "war-council_r7",
+  "nome": "War Council",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "War Council (Moot)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Select 1 Gaia Garou. This character is nominated for a prestigious position on the Amazon War Council. This character ga"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1246,
+    "texto_original": "Select 1 Gaia Garou. This character is nominated for a prestigious position on the Amazon War Council. This character gains 1 Renown.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "war-council_r7"
+  }
+}

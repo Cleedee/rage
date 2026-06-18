@@ -1,0 +1,32 @@
+{
+  "id": "chuki_r3",
+  "nome": "Chuki",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Chuki (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Chuki is dedicated to defending its clan.  Chuki may automatically join any Ajaba packmate in pack defense.  Chuki is a "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 364,
+    "texto_original": "Chuki is dedicated to defending its clan.  Chuki may automatically join any Ajaba packmate in pack defense.  Chuki is a hermaphrodite, so is both male and female.",
+    "keywords": "Ajaba - Galliard - Metis - Gaia - Male/Female",
+    "gnosis": 2,
+    "rage": 3,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "chuki_r3"
+  }
+}

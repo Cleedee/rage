@@ -1,0 +1,32 @@
+{
+  "id": "mtupeni_r1",
+  "nome": "Mtupeni",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Mtupeni (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Mtupeni is a terrible bully and acts at +2 Rage if she is facing a creature in combat with Renown 1 or less."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 371,
+    "texto_original": "Mtupeni is a terrible bully and acts at +2 Rage if she is facing a creature in combat with Renown 1 or less.",
+    "keywords": "Ajaba - Ahroun - Hyaena - Gaia - Female",
+    "gnosis": 2,
+    "rage": 1,
+    "health": 1,
+    "precisa_revisao": true,
+    "slug": "mtupeni_r1"
+  }
+}

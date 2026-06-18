@@ -1,0 +1,32 @@
+{
+  "id": "corinna_r4",
+  "nome": "Corinna",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "Corinna (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "A member of Pentex First Team #21, Corinna can pack attack or defend with any other members of this team in her pack."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 17,
+    "texto_original": "A member of Pentex First Team #21, Corinna can pack attack or defend with any other members of this team in her pack.",
+    "keywords": "Garou - Black Spiral Dancer - Galliard - Pentex - Homid - Beast-of-War - Wyrm - Team #21 - Female",
+    "gnosis": 3,
+    "rage": 1,
+    "health": 2,
+    "precisa_revisao": true,
+    "slug": "corinna_r4"
+  }
+}

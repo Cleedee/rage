@@ -1,0 +1,32 @@
+{
+  "id": "freide-counts-the-scalps_r3",
+  "nome": "Freide Counts-the-Scalps",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Freide Counts-the-Scalps (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Freide has inherited the madness of Gaia's sister Luna. Once per game, she may double any 1 of her statistics (Rage, Gno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 70,
+    "texto_original": "Freide has inherited the madness of Gaia's sister Luna. Once per game, she may double any 1 of her statistics (Rage, Gnosis, or Health) for 1 full turn as she looks to the moon for insight.",
+    "keywords": "Garou - Get of Fenris - Galliard - Metis - Gaia - Female",
+    "gnosis": 3,
+    "rage": 3,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "freide-counts-the-scalps_r3"
+  }
+}

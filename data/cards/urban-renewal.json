@@ -1,0 +1,32 @@
+{
+  "id": "urban-renewal",
+  "nome": "Urban Renewal",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Alphas nao atacam Hunting Grounds este turno",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "atacar_hg",
+            "duracao": "este_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 212,
+    "texto_original": "Alphas cannot attack the Hunting Grounds this turn. Urban Renewal cannot be played to prevent an attack which has already been declared.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "urban-renewal"
+  }
+}

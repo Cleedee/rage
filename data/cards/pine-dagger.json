@@ -1,0 +1,35 @@
+{
+  "id": "pine-dagger",
+  "nome": "Pine Dagger",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Weapon: +1 dano",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "dano_arma"
+            ],
+            "valor": 1,
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 687,
+    "texto_original": "Weapon. Pine Daggers are imbued with power to disrupt Bane spirits. When a character with a Pine Dagger hits a Bane or Bane character, the dagger explodes within the Bane's being, doing 3 points of Damage. When the Pine Dagger is used, transfer it to the",
+    "keywords": "Gaia Fetish - Weapon",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "pine-dagger"
+  }
+}

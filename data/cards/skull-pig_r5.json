@@ -1,0 +1,32 @@
+{
+  "id": "skull-pig_r5",
+  "nome": "Skull Pig",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Skull Pig (Enemy - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Skull Pigs wander through graveyards and eat the corpses of Wyrm-tainted humans to replenish their ghastly might. They w"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 544,
+    "texto_original": "Skull Pigs wander through graveyards and eat the corpses of Wyrm-tainted humans to replenish their ghastly might. They will automatically pack defend with all other Skull Pigs in the Hunting Grounds.",
+    "keywords": "Monster - Unbound",
+    "gnosis": 0,
+    "rage": 5,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "skull-pig_r5"
+  }
+}

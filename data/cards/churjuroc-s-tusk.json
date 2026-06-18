@@ -1,0 +1,32 @@
+{
+  "id": "churjuroc-s-tusk",
+  "nome": "Churjuroc's Tusk",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Churjuroc's Tusk (REVISAO MANUAL)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Armor. When a Full Moon is in play the character can activate this fetish during the equip/Ally Phase, allowing you to s"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 631,
+    "texto_original": "Armor. When a Full Moon is in play the character can activate this fetish during the equip/Ally Phase, allowing you to search through your deck and bring a Nexus Crawler directly into play as an ally. The Nexus Crawler will remain in play for the duration",
+    "keywords": "Bane Fetish - Armor",
+    "gnosis": 8,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "churjuroc-s-tusk"
+  }
+}

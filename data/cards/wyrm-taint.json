@@ -1,0 +1,32 @@
+{
+  "id": "wyrm-taint",
+  "nome": "Wyrm Taint",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Wyrm Taint (REVISAO MANUAL)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Evidence surfaces implicating the Glass Walkers tribe in dealings with the Wyrm. All Glass Walkers act at -1 Renown duri"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 219,
+    "texto_original": "Evidence surfaces implicating the Glass Walkers tribe in dealings with the Wyrm. All Glass Walkers act at -1 Renown during moots.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "wyrm-taint"
+  }
+}

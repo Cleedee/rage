@@ -1,0 +1,32 @@
+{
+  "id": "gunboat-pirates_r8",
+  "nome": "Gunboat Pirates",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Gunboat Pirates (Ally - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "If Gunboat Pirates is disarmed, its Rage becomes 3. Once per game the Pirates can play a combat action of up to Rage 12."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1570,
+    "texto_original": "If Gunboat Pirates is disarmed, its Rage becomes 3. Once per game the Pirates can play a combat action of up to Rage 12. If they do, discard them after combat ends.",
+    "keywords": "Ship - Human - Firearm",
+    "gnosis": 0,
+    "rage": 7,
+    "health": 5,
+    "precisa_revisao": true,
+    "slug": "gunboat-pirates_r8"
+  }
+}

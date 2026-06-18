@@ -1,0 +1,32 @@
+{
+  "id": "corrupt-kinfolk_r3",
+  "nome": "Corrupt Kinfolk",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Corrupt Kinfolk (Enemy - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Driven mad by jealousy, this Kinfolk has succumbed to the influence of the Wyrm. At the end of the Combat Phase the Corr"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 463,
+    "texto_original": "Driven mad by jealousy, this Kinfolk has succumbed to the influence of the Wyrm. At the end of the Combat Phase the Corrupt Kinfolk will attack the Gaia Garou with the highest Renown.",
+    "keywords": "Human - Kinfolk",
+    "gnosis": 0,
+    "rage": 3,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "corrupt-kinfolk_r3"
+  }
+}

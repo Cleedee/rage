@@ -1,0 +1,32 @@
+{
+  "id": "calling-a-champion_r3",
+  "nome": "Calling a Champion",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Calling a Champion (Moot)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Select any character. This character must act as alpha for his pack if this vote succeeds. Only Ahroun may vote during t"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1199,
+    "texto_original": "Select any character. This character must act as alpha for his pack if this vote succeeds. Only Ahroun may vote during this moot.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "calling-a-champion_r3"
+  }
+}

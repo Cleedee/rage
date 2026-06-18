@@ -1,0 +1,32 @@
+{
+  "id": "beat-cop_r3",
+  "nome": "Beat Cop",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Beat Cop (Victim - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Police. The Beat Cop is armed with a .38 Pistol. If disarmed, his Rage becomes 1."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 456,
+    "texto_original": "Police. The Beat Cop is armed with a .38 Pistol. If disarmed, his Rage becomes 1.",
+    "keywords": "Human - Firearm - Police",
+    "gnosis": 0,
+    "rage": 3,
+    "health": 2,
+    "precisa_revisao": true,
+    "slug": "beat-cop_r3"
+  }
+}

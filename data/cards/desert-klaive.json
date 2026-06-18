@@ -1,0 +1,35 @@
+{
+  "id": "desert-klaive",
+  "nome": "Desert Klaive",
+  "tipo": "Equipment",
+  "modos": [
+    {
+      "descricao": "Weapon: +3 dano",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "dano_arma"
+            ],
+            "valor": 3,
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1441,
+    "texto_original": "Weapon. Klaive. This weapon does aggravated damage, but causes the bearer to act at -1 Gnosis. It's bearer draws an extra combat card whenever it enters combat.",
+    "keywords": "Gaia Fetish - Weapon - Klaive",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "desert-klaive"
+  }
+}

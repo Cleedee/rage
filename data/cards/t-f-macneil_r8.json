@@ -1,0 +1,32 @@
+{
+  "id": "t-f-macneil_r8",
+  "nome": "T. F. MacNeil",
+  "tipo": "Character - Wyrm",
+  "modos": [
+    {
+      "descricao": "T. F. MacNeil (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Leader of First Team #21. He can pack attack or defend with any and all other Team #21 members in his pack. You may "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 329,
+    "texto_original": "The Leader of First Team #21. He can pack attack or defend with any and all other Team #21 members in his pack. You may draw 2 additional combat cards per additional Team #21 member in combat. T.F. can equip with any fetish or Bane fetish Equipment regard",
+    "keywords": "Human - Pentex - Executive - Homid - Beast-of-War - Wyrm - Team #21 - Male",
+    "gnosis": 2,
+    "rage": 3,
+    "health": 5,
+    "precisa_revisao": true,
+    "slug": "t-f-macneil_r8"
+  }
+}

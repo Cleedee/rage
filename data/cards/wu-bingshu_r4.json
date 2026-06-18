@@ -1,0 +1,32 @@
+{
+  "id": "wu-bingshu_r4",
+  "nome": "Wu Bingshu",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Wu Bingshu (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Wu Bingshu has 1 extra vote for each packmate loyal to him."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1685,
+    "texto_original": "Wu Bingshu has 1 extra vote for each packmate loyal to him.",
+    "keywords": "Kitsune - Theurge - Homid - Male - Hengeyokai - Gaia",
+    "gnosis": 6,
+    "rage": 2,
+    "health": 2,
+    "precisa_revisao": true,
+    "slug": "wu-bingshu_r4"
+  }
+}

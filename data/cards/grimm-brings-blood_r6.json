@@ -1,0 +1,32 @@
+{
+  "id": "grimm-brings-blood_r6",
+  "nome": "Grimm Brings-Blood",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Grimm Brings-Blood (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Overcome with bitterness, Grimm has succumbed to Harano. He automatically frenzies against any Silver Fangs opponents. R"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 135,
+    "texto_original": "Overcome with bitterness, Grimm has succumbed to Harano. He automatically frenzies against any Silver Fangs opponents. Rivalry: Silver Fangs.",
+    "keywords": "Garou - Glass Walkers - Ahroun - Metis - Gaia - Male",
+    "gnosis": 4,
+    "rage": 7,
+    "health": 6,
+    "precisa_revisao": true,
+    "slug": "grimm-brings-blood_r6"
+  }
+}

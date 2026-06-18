@@ -1,0 +1,32 @@
+{
+  "id": "orville_r5",
+  "nome": "Orville",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Orville (Ally - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "A defector Fomori, Orville knows things about things. When he is engaging a Battlefield the engaging Renown of the oppos"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 429,
+    "texto_original": "A defector Fomori, Orville knows things about things. When he is engaging a Battlefield the engaging Renown of the opposing side is reduced by 3. Orville can only reduce the opposing side of a Battlefield if it is of the Wyrm. Packs with Orville as an all",
+    "keywords": "Fomori - Unique",
+    "gnosis": 6,
+    "rage": 7,
+    "health": 8,
+    "precisa_revisao": true,
+    "slug": "orville_r5"
+  }
+}

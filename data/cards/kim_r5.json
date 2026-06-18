@@ -1,0 +1,32 @@
+{
+  "id": "kim_r5",
+  "nome": "Kim",
+  "tipo": "Character-Gaia",
+  "modos": [
+    {
+      "descricao": "Kim (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Kim has formed unusual Sentai. You can start with a Wyrm Character of Renown 5 or less in your pack, treating them as a "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1716,
+    "texto_original": "Kim has formed unusual Sentai. You can start with a Wyrm Character of Renown 5 or less in your pack, treating them as a Rogue for this game.",
+    "keywords": "Kitsune - Homid - Male - Hengeyokai - Gaia",
+    "gnosis": 4,
+    "rage": 2,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "kim_r5"
+  }
+}

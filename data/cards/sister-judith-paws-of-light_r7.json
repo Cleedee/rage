@@ -1,0 +1,32 @@
+{
+  "id": "sister-judith-paws-of-light_r7",
+  "nome": "Sister Judith Paws-of-Light",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Sister Judith Paws-of-Light (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "While Sister Judith is part of your pack, you may choose one member of your pack to regenerate his highest damage card i"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 254,
+    "texto_original": "While Sister Judith is part of your pack, you may choose one member of your pack to regenerate his highest damage card injury (instead of his lowest) during the Regeneration Phase.",
+    "keywords": "Garou - Black Fury - Theurge - Metis - Gaia - Female",
+    "gnosis": 8,
+    "rage": 3,
+    "health": 6,
+    "precisa_revisao": true,
+    "slug": "sister-judith-paws-of-light_r7"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "wyrm-slayer-ronin-garou_r4",
+  "nome": "\"'Wyrm Slayer', Ronin Garou",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "\"'Wyrm Slayer', Ronin Garou (Ally - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Ronin Wyrm Slayer may not vote in moots. Only 1 Wyrm Slayer may be played per game. Wyrm Slayer may not refuse a cha"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 377,
+    "texto_original": "The Ronin Wyrm Slayer may not vote in moots. Only 1 Wyrm Slayer may be played per game. Wyrm Slayer may not refuse a challenge. This ally is considered to be in Crinos form.",
+    "keywords": "Garou - Ronin",
+    "gnosis": 2,
+    "rage": 5,
+    "health": 4,
+    "precisa_revisao": true,
+    "slug": "wyrm-slayer-ronin-garou_r4"
+  }
+}

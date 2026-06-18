@@ -1,0 +1,32 @@
+{
+  "id": "drunken-vandals_r4",
+  "nome": "Drunken Vandals",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Drunken Vandals (Enemy - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Vandals roar through the area, breaking and burning things. At the end of every Combat Phase that they are in play, they"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 469,
+    "texto_original": "Vandals roar through the area, breaking and burning things. At the end of every Combat Phase that they are in play, they will destroy 1 randomly determined Territory.",
+    "keywords": "Human",
+    "gnosis": 0,
+    "rage": 3,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "drunken-vandals_r4"
+  }
+}

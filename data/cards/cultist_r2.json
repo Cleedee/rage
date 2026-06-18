@@ -1,0 +1,32 @@
+{
+  "id": "cultist_r2",
+  "nome": "Cultist",
+  "tipo": "Victim",
+  "modos": [
+    {
+      "descricao": "Cultist (Victim - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Cultists can use Theurge Gifts."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 465,
+    "texto_original": "Cultists can use Theurge Gifts.",
+    "keywords": "Human - Cults",
+    "gnosis": 5,
+    "rage": 1,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "cultist_r2"
+  }
+}

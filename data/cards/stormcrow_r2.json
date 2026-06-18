@@ -1,0 +1,32 @@
+{
+  "id": "stormcrow_r2",
+  "nome": "Stormcrow",
+  "tipo": "Ally",
+  "modos": [
+    {
+      "descricao": "Stormcrow (Ally - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Stormcrows are spirits that can automatically combine for pack attack or defense. Draw one additional combat card for ev"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 445,
+    "texto_original": "Stormcrows are spirits that can automatically combine for pack attack or defense. Draw one additional combat card for every Stormcrow after the first that is drawn into combat. Stormcrows will not pack combine when fighting a Shadow Lords.",
+    "keywords": "Spirit",
+    "gnosis": 2,
+    "rage": 2,
+    "health": 1,
+    "precisa_revisao": true,
+    "slug": "stormcrow_r2"
+  }
+}

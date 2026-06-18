@@ -1,0 +1,32 @@
+{
+  "id": "katsuko-moon-saint_r6",
+  "nome": "Katsuko Moon-Saint",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Katsuko Moon-Saint (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Hengeyokai. Katsuko can use Philodox and Children of Gaia cards while Matsuko Sun-Devil is in her pack. Loyalty: Matsuko"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1687,
+    "texto_original": "Hengeyokai. Katsuko can use Philodox and Children of Gaia cards while Matsuko Sun-Devil is in her pack. Loyalty: Matsuko Sun-Devil",
+    "keywords": "Kitsune - Female - gaia - Homid - Hengeyokai",
+    "gnosis": 8,
+    "rage": 2,
+    "health": 3,
+    "precisa_revisao": true,
+    "slug": "katsuko-moon-saint_r6"
+  }
+}

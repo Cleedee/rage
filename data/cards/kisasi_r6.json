@@ -1,0 +1,32 @@
+{
+  "id": "kisasi_r6",
+  "nome": "Kisasi",
+  "tipo": "Character - Gaia",
+  "modos": [
+    {
+      "descricao": "Kisasi (Character - stats no banco)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "If you start with Kisasi in play, Kisasi and non-Ajaba Characters in her pack gain Loyalty to each other for the rest of"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_deck_cards_jsons",
+    "card_id": 1443,
+    "texto_original": "If you start with Kisasi in play, Kisasi and non-Ajaba Characters in her pack gain Loyalty to each other for the rest of the game.",
+    "keywords": "Ajaba - Galliard - Homid - Gaia - Female",
+    "gnosis": 6,
+    "rage": 2,
+    "health": 4,
+    "precisa_revisao": true,
+    "slug": "kisasi_r6"
+  }
+}
