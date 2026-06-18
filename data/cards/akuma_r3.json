@@ -1,0 +1,43 @@
+{
+  "id": "akuma_r3",
+  "nome": "Akuma",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Ganha Cult.Infernalist, cura dano agravado",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "keyword"
+            ],
+            "valor": 0,
+            "novas_keywords": "Cult.Infernalist"
+          }
+        },
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "cura_dano_agravado": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1780,
+    "texto_original": "The Kuei-jin has been chosen to serve one of the Yama Kings. He gains \"Cult. Infernalist.\" and heals all aggravated damage at the end of each round of combat. You lose all Loyalty.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "akuma_r3"
+  }
+}

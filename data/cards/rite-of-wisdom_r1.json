@@ -1,0 +1,35 @@
+{
+  "id": "rite-of-wisdom_r1",
+  "nome": "Rite of Wisdom",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "+3 Renown para votacao de Moot",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "renown_moot"
+            ],
+            "valor": 3,
+            "duracao": "este_moot"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1166,
+    "texto_original": "Play this card on any 1 of your characters at the beginning of the current Moot Phase, before characters vote on any moots. At least 1 issue must be voted on. This character must always vote first. If the character is on the winning side of all votes, she",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-wisdom_r1"
+  }
+}

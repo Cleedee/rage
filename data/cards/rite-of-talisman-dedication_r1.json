@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-talisman-dedication_r1",
+  "nome": "Rite of Talisman Dedication",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Rite of Talisman Dedication (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The character invoking this Rite binds his possessions to him spiritually. None of this character's Equipment may be sto"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1163,
+    "texto_original": "The character invoking this Rite binds his possessions to him spiritually. None of this character's Equipment may be stolen from him, nor may he trade it to another character. The Equipment may still be destroyed by effects which will do so.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-talisman-dedication_r1"
+  }
+}

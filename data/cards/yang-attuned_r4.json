@@ -1,0 +1,44 @@
+{
+  "id": "yang-attuned_r4",
+  "nome": "Yang-attuned",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Recruta Human Ally, +1 combat hand",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "combat_hand_size"
+            ],
+            "valor": 1,
+            "duracao": "permanente"
+          }
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "restricao": "recruta_human_ally",
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1782,
+    "texto_original": "Attach to the user if it doesn't have Yin-attuned attached. You may recruit any Human Ally. Your combat hand is increased by 1 and the user gains +1 Rage. Discard two random combat cards whenever you are damaged by a Klaive.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "yang-attuned_r4"
+  }
+}

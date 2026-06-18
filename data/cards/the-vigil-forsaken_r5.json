@@ -1,0 +1,32 @@
+{
+  "id": "the-vigil-forsaken_r5",
+  "nome": "The Vigil Forsaken",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Cancela qualquer Rite em jogo",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0,
+          "params": {
+            "tipo_alvo": "rite",
+            "remove_do_jogo": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1171,
+    "texto_original": "The character who enacts the Vigil breaks the rituals of another. The Vigil Forsaken cancels any single Rite in play. A pack may only play 1 Vigil Forsaken per game. Discard this Rite after its effects take place.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "the-vigil-forsaken_r5"
+  }
+}

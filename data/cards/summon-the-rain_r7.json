@@ -1,0 +1,32 @@
+{
+  "id": "summon-the-rain_r7",
+  "nome": "Summon the Rain",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Outros packs nao usam pack actions",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "pack_actions",
+            "duracao": "ate_fim_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1789,
+    "texto_original": "Other packs cannot use pack actions. Discard at the end of turn.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "summon-the-rain_r7"
+  }
+}

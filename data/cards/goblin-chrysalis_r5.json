@@ -1,0 +1,32 @@
+{
+  "id": "goblin-chrysalis_r5",
+  "nome": "Goblin Chrysalis",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Transforma criatura do VP em Fomori Ally",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "tipo": "fomori_ally",
+            "origem": "victory_pile"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1785,
+    "texto_original": "Attach to a creature that was put into your Victory Pile this turn. The creature becomes a Bakemono, a Fomori Ally (pick a side), losing all other keywords. While in play, members of the pack the creature started in act at -1 Rage.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "goblin-chrysalis_r5"
+  }
+}

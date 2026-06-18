@@ -1,0 +1,32 @@
+{
+  "id": "allies-gateway_r4",
+  "nome": "Allies' Gateway",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Usar beneficios de outro Caern (com consentimento)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "restricao": "usa_outro_caern",
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1150,
+    "texto_original": "Select any caern in play. If the owner of the caern consents, your pack and his pack can benefit from both Caerns' advantages until the next Redraw Phase.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "allies-gateway_r4"
+  }
+}

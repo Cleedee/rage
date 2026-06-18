@@ -1,0 +1,50 @@
+{
+  "id": "eternal-dragon-form_r5",
+  "nome": "Eternal Dragon Form",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Rage=6, Gnosis=9, Health=6 (Crinos)",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 6,
+          "params": {
+            "duracao": "permanente",
+            "rage_fixo": true
+          }
+        },
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 9,
+          "params": {
+            "duracao": "permanente",
+            "gnosis_fixo": true
+          }
+        },
+        {
+          "tipo": "modificar_vida",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 6,
+          "params": {
+            "duracao": "permanente",
+            "health_fixo": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1784,
+    "texto_original": "The Mokole becomes Rage 6, Gnosis 9, Health 6 (before bonuses). He is considered to be in Crinos form and returns to breed form when the Rite ends unless doing so would kill him. The user can play any Gift and can play up to one Gift from your sept discards this turn. Discard at the end of turn.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "eternal-dragon-form_r5"
+  }
+}

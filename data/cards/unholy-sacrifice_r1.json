@@ -1,0 +1,31 @@
+{
+  "id": "unholy-sacrifice_r1",
+  "nome": "Unholy Sacrifice",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Remove character do pack (inicio do jogo) do jogo",
+      "efeitos": [
+        {
+          "tipo": "remover_do_jogo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "remove_criatura_do_pack": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1605,
+    "texto_original": "Kill a character in your pack that started the game in your pack. It is removed from play and the death cannot be prevented. Search your sept deck for any three cards. Put one in your hand, one on top of your deck and one in your discard pile.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "unholy-sacrifice_r1"
+  }
+}

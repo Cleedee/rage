@@ -1,0 +1,32 @@
+{
+  "id": "shattering-the-binding-fetters_r7",
+  "nome": "Shattering the Binding Fetters",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Shattering the Binding Fetters (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "By enacting this Rite the Uktena severs the ties that bind a spirit into servitude. Any single spirit Ally may be target"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1169,
+    "texto_original": "By enacting this Rite the Uktena severs the ties that bind a spirit into servitude. Any single spirit Ally may be targeted by this Rite and is immediately sent into the Hunting Grounds. If the Ally was part of a Gaia pack, it becomes an Enemy; if the Ally",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shattering-the-binding-fetters_r7"
+  }
+}

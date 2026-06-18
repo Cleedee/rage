@@ -1,0 +1,32 @@
+{
+  "id": "baptism-of-fire_r4",
+  "nome": "Baptism of Fire",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Buscar Garou Character do deck/mao",
+      "efeitos": [
+        {
+          "tipo": "comprar_ate",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "busca_no_deck": true,
+            "tipo_busca": "garou_character"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1178,
+    "texto_original": "Restricted. Helpful guardian spirits guide you to a shapeshifter cub. When played, search your hand or deck for a Garou or Fera that is of Renown 6 or less. It joins your pack and is now a Character.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "baptism-of-fire_r4"
+  }
+}

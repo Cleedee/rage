@@ -1,0 +1,31 @@
+{
+  "id": "rite-of-summoning_r5",
+  "nome": "Rite of Summoning",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Forca alpha a declarar ataque contra usuario",
+      "efeitos": [
+        {
+          "tipo": "cancelar_acao",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "forca_alpha_atacar_usuario": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1162,
+    "texto_original": "You may force 1 alpha to declare his attack against the character invoking this Rite.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-summoning_r5"
+  }
+}

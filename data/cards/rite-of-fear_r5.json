@@ -1,0 +1,40 @@
+{
+  "id": "rite-of-fear_r5",
+  "nome": "Rite of Fear",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "-2 Rage inimigos, sem Firearms",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -2,
+          "params": {
+            "duracao": "ate_fim_turno"
+          }
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "restricao": "sem_firearms",
+            "duracao": "ate_fim_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1434,
+    "texto_original": "Until the end of turn, creatures act at -2 Rage and may not use Firearms while attacking your pack. This Rite may not reduce an attacker�s Rage below one.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-fear_r5"
+  }
+}

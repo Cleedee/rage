@@ -1,0 +1,28 @@
+{
+  "id": "the-black-shark_r6",
+  "nome": "The Black Shark",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Curar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1556,
+    "texto_original": "Restricted. Remove one of your Rokea of 5 Renown or less from the game, then attach this Rite to the user. While attached, add the removed creature's Renown, Crinos Rage and Crinos Health to the Rite user's.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "the-black-shark_r6"
+  }
+}

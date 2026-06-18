@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-wounding_r6",
+  "nome": "Rite of Wounding",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Alvo nao regenera ate entrar em combate",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "nao_pode_regenerar": true,
+            "duracao": "ate_entrar_em_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1167,
+    "texto_original": "Play this card after a character declines a challenge. That character cannot regenerate until she engages in battle.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-wounding_r6"
+  }
+}

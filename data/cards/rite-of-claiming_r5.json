@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-claiming_r5",
+  "nome": "Rite of Claiming",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Rite of Claiming (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "When a character enacts this Rite you may choose any caern in play and claim it as your own. The owner of that caern sel"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1155,
+    "texto_original": "When a character enacts this Rite you may choose any caern in play and claim it as your own. The owner of that caern selects one of his Garou to defend his claim. The characters immediately fight for ownership of the caern. If your character can kill the",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-claiming_r5"
+  }
+}

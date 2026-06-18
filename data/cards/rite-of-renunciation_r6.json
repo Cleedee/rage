@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-renunciation_r6",
+  "nome": "Rite of Renunciation",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Rite of Renunciation (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "This Rite is performed when a Gaia character wishes to change her auspice. The Rite user selects a new auspice for herse"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1159,
+    "texto_original": "This Rite is performed when a Gaia character wishes to change her auspice. The Rite user selects a new auspice for herself. After changing her auspice, the user of this Rite may ONLY use Gifts of that auspice, and may not use Gifts based on any other requ",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-renunciation_r6"
+  }
+}

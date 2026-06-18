@@ -1,0 +1,41 @@
+{
+  "id": "lone-wolf_r4",
+  "nome": "Lone Wolf",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Usuario nao faz pack actions; oponentes tambem nao",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "restricao": "sem_acoes_pack",
+            "duracao": "permanente"
+          }
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "restricao": "sem_acoes_pack",
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1618,
+    "texto_original": "Attach to user. The character performing this Rite cannot take part in pack actions. Opponents cannot use pack actions when facing him in combat. The Rite user cannot step in or replace others in combat.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lone-wolf_r4"
+  }
+}

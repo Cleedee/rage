@@ -1,0 +1,32 @@
+{
+  "id": "fire-mind_r7",
+  "nome": "Fire Mind",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Fire Mind (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. While in Crinos form, she can see her opponents' combat actions before choosing her own. The user re"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1788,
+    "texto_original": "Attach to the user. While in Crinos form, she can see her opponents' combat actions before choosing her own. The user returns to breed form at the end of each combat, unless it would kill her.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "fire-mind_r7"
+  }
+}

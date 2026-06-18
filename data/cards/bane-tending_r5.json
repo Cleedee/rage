@@ -1,0 +1,28 @@
+{
+  "id": "bane-tending_r5",
+  "nome": "Bane Tending",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descartar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1649,
+    "texto_original": "Attach to target Enemy if you have another Uktena in your pack. While attached, the Enemy loses its special abilities, and can only be targeted or attacked by your pack. Discard this card at the end of next turn.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "bane-tending_r5"
+  }
+}

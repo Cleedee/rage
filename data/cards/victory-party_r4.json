@@ -1,0 +1,32 @@
+{
+  "id": "victory-party_r4",
+  "nome": "Victory Party",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Victory Party (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play this Rite immediately after a pack defeats an enemy in the Hunting Grounds of Renown 8 or more. This card is worth "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1172,
+    "texto_original": "Play this Rite immediately after a pack defeats an enemy in the Hunting Grounds of Renown 8 or more. This card is worth +2 victory points.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "victory-party_r4"
+  }
+}

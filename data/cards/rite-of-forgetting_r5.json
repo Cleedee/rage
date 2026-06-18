@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-forgetting_r5",
+  "nome": "Rite of Forgetting",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Cancela Rite ou Gift anexado ao usuario",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0,
+          "params": {
+            "tipo_alvo": "rite/gift_anexado",
+            "remove_do_jogo": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1786,
+    "texto_original": "Cancel target Rite or Gift attached to its user.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-forgetting_r5"
+  }
+}

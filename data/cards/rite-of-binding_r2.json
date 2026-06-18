@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-binding_r2",
+  "nome": "Rite of Binding",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Bind spirit ally recem-derrotado",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "tipo": "spirit_ally",
+            "apos_derrotar": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1153,
+    "texto_original": "Play this Rite on any spirit ally your character has just defeated. The spirit ally is not dead, but instead has been bound and is now an ally of your pack. This spirit ally is worth half of its Renown in victory points.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-binding_r2"
+  }
+}

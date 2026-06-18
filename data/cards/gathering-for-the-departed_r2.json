@@ -1,0 +1,32 @@
+{
+  "id": "gathering-for-the-departed_r2",
+  "nome": "Gathering for the Departed",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Gathering for the Departed (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "This Rite is enacted to honor the recently deceased. It must be called immediately after the death of any character from"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1151,
+    "texto_original": "This Rite is enacted to honor the recently deceased. It must be called immediately after the death of any character from your pack. The departed character's heroics are sung as her packmates howl her praise. Your pack gains 1 victory point.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "gathering-for-the-departed_r2"
+  }
+}

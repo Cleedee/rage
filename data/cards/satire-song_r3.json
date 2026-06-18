@@ -1,0 +1,36 @@
+{
+  "id": "satire-song_r3",
+  "nome": "Satire Song",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Vitima perde todo Renown (se Galliard tem mais)",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "renown"
+            ],
+            "valor": -99,
+            "duracao": "permanente",
+            "condicao": "renome_maior"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1168,
+    "texto_original": "The Galliard invoking this Rite must have a higher Renown than his chosen victim. The Galliard performs a song of shame, reducing the target's Renown by 1. Only 1 Satire Song can be placed on a character.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "satire-song_r3"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "rite-of-the-stone_r4",
+  "nome": "Rite of the Stone",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "+1 Rage, +1 Gnosis (permanente)",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "duracao": "permanente"
+          }
+        },
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1181,
+    "texto_original": "This ritual binds the power of the Sun into a mystical stone which is then swallowed.  The user gains +1 Rage and +1 Gnosis.  Permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-the-stone_r4"
+  }
+}

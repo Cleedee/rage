@@ -1,0 +1,28 @@
+{
+  "id": "rite-of-the-black-spiral_r7",
+  "nome": "Rite of the Black Spiral",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descartar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1164,
+    "texto_original": "Play on any Gaia pack Garou this character has just killed. The target does not die, but instead descends into the maddening Black Spiral. The killing damage card is discarded, and the defeated character becomes an ally of the Rite user's pack. The charac",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-the-black-spiral_r7"
+  }
+}

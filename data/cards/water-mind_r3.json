@@ -1,0 +1,32 @@
+{
+  "id": "water-mind_r3",
+  "nome": "Water Mind",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Water Mind (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. Whenever your alpha takes an alpha action other than attacking or challenging, put the top card of c"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1781,
+    "texto_original": "Attach to the user. Whenever your alpha takes an alpha action other than attacking or challenging, put the top card of combat deck into your victory pile face down where it is worth 1 VP. Any of your pack can step in at any time to defend Victims.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "water-mind_r3"
+  }
+}

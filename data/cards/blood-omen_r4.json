@@ -1,0 +1,32 @@
+{
+  "id": "blood-omen_r4",
+  "nome": "Blood Omen",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Olhar top 7 do sept deck e pegar 1 (apos matar Victim)",
+      "efeitos": [
+        {
+          "tipo": "comprar_ate",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "busca_no_sept_deck": true,
+            "look_top_7": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1173,
+    "texto_original": "Play after this character killed a Victim. You may look at the top seven cards of target player's sept deck and choose two to discard. Put the remaining cards back on top of the deck in any order. Only one Blood Omen may be played for each Victim killed.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "blood-omen_r4"
+  }
+}

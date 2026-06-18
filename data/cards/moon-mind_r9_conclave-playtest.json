@@ -1,0 +1,28 @@
+{
+  "id": "moon-mind_r9_conclave-playtest",
+  "nome": "Moon Mind",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descartar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1640,
+    "texto_original": "Attach to the user. Once per turn, as your alpha action, you can cut (discard from play) any non-Character card in play. If you do, discard Moon Mind unless you  have a Klaive.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "moon-mind_r9_conclave-playtest"
+  }
+}

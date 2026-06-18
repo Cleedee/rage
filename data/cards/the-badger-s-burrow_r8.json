@@ -1,0 +1,32 @@
+{
+  "id": "the-badger-s-burrow_r8",
+  "nome": "The Badger's Burrow",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "The Badger's Burrow (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. You became aware of everything that happens on the Bawn. So long as you control a Caern, attackers o"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1790,
+    "texto_original": "Attach to the user. You became aware of everything that happens on the Bawn. So long as you control a Caern, attackers of lower Gnosis than the user are slow-striking.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "the-badger-s-burrow_r8"
+  }
+}

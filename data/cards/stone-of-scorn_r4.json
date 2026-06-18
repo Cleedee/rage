@@ -1,0 +1,32 @@
+{
+  "id": "stone-of-scorn_r4",
+  "nome": "Stone of Scorn",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Alvo perde direito a voto ate aceitar desafio",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "votar",
+            "duracao": "ate_desafio_aceito"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1170,
+    "texto_original": "Play this card immediately on any character who declines a challenge. That character loses all voting rights until she engages in battle.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "stone-of-scorn_r4"
+  }
+}

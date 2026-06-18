@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-glory_r1",
+  "nome": "Rite of Glory",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Entra no Hunting Grounds antes de alphas",
+      "efeitos": [
+        {
+          "tipo": "mover_para",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "zona": "hunting_grounds",
+            "antes_alpha": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1156,
+    "texto_original": "Play this card on 1 of your characters before alphas are chosen. This character immediately enters the Hunting Grounds. If the character survives the current Combat Phase without leaving the Hunting Grounds, she returns and gains 1 Rage and 1 Renown.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-glory_r1"
+  }
+}

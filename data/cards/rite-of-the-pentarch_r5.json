@@ -1,0 +1,28 @@
+{
+  "id": "rite-of-the-pentarch_r5",
+  "nome": "Rite of the Pentarch",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descartar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1165,
+    "texto_original": "Play when you kill a victim in the Hunting Grounds. Instead of gaining victory points, you can add that victim's Renown to any pack member's Gnosis. The Gnosis increase will last for 1 turn only, then the victim is discarded.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-the-pentarch_r5"
+  }
+}

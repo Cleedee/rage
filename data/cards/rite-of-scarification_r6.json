@@ -1,0 +1,28 @@
+{
+  "id": "rite-of-scarification_r6",
+  "nome": "Rite of Scarification",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Curar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1161,
+    "texto_original": "When using this Rite the character ritually scars himself with spiritual glyphs and brands. The user's skin actually becomes a Fetish in and of itself, giving the character +2 Health. A character may only benefit from 1 Rite of Scarification at any time.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-scarification_r6"
+  }
+}

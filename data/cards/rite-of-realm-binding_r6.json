@@ -1,0 +1,32 @@
+{
+  "id": "rite-of-realm-binding_r6",
+  "nome": "Rite of Realm Binding",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Rite of Realm Binding (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "This Rite binds its chosen target in the world in which she happens to be. The victim is trapped either in the physical "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1158,
+    "texto_original": "This Rite binds its chosen target in the world in which she happens to be. The victim is trapped either in the physical world or in the Umbra and cannot breach the Gauntlet without the assistance of a Rite or action card.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rite-of-realm-binding_r6"
+  }
+}

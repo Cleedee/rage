@@ -1,0 +1,28 @@
+{
+  "id": "moon-mind_r9_hengeyokai-test",
+  "nome": "Moon Mind",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descartar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1791,
+    "texto_original": "Attach to the user. She can take an alpha action to cut (discard from play) any non-Character card in play. You can only do this if she discards Moon Mind or has a Klaive.",
+    "keywords": "Garou - Stargazer - Ahroun - Homid - Gaia - Male - Hengeyokai",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "moon-mind_r9_hengeyokai-test"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "burn-the-library_r5",
+  "nome": "Burn the Library",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descarta top 3 cartas do sept deck alvo",
+      "efeitos": [
+        {
+          "tipo": "descartar_metade_mao",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 0,
+          "params": {
+            "descarta_do_topo_sept": 3
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1180,
+    "texto_original": "Target a pack's sept deck.  Discard the top 3 cards.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "burn-the-library_r5"
+  }
+}

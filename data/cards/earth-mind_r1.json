@@ -1,0 +1,28 @@
+{
+  "id": "earth-mind_r1",
+  "nome": "Earth Mind",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Descartar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "descarte",
+          "condicao_alvo": "jogador_inimigo",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1648,
+    "texto_original": "Attach to the user. She can meditate as her alpha action. If she does, you may put a Moot from your discard pile in your hand and she gains 10 extra votes whenever she votes next turn.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "earth-mind_r1"
+  }
+}

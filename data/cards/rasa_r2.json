@@ -1,0 +1,31 @@
+{
+  "id": "rasa_r2",
+  "nome": "Rasa",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Busca (inferido)",
+      "efeitos": [
+        {
+          "tipo": "comprar_ate",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "busca_no_deck": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1779,
+    "texto_original": "Attach to the user. Once per turn, look at the top card of each sept deck. Put any Signs of the Apocalypse shown into play.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rasa_r2"
+  }
+}

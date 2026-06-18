@@ -1,0 +1,32 @@
+{
+  "id": "devour-the-dead_r4",
+  "nome": "Devour the Dead",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Cura todo dano de um packmate (se Fomori matou)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "cura_todo_dano": true,
+            "condicao": "packmate_morto"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1356,
+    "texto_original": "Fomori may use this Rite as if they were Cultists. In a turn in which an opponent killed one of your pack members, you may target them with this Rite. Place this Rite in the target's Victory Pile where it is worth -3 VP.",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "devour-the-dead_r4"
+  }
+}

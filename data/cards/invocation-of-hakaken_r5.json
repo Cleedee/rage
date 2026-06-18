@@ -1,0 +1,32 @@
+{
+  "id": "invocation-of-hakaken_r5",
+  "nome": "Invocation of Hakaken",
+  "tipo": "Rite",
+  "modos": [
+    {
+      "descricao": "Invocation of Hakaken (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Once a mighty Shadow Lords, Hakaken was seduced by his own pride into serving the Wyrm. Play this Rite on any character "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_rite_jsons",
+    "card_id": 1152,
+    "texto_original": "Once a mighty Shadow Lords, Hakaken was seduced by his own pride into serving the Wyrm. Play this Rite on any character using a Shadow Lords Gift. That character must be selected as alpha until the game is over or the character is killed. A pack may only",
+    "keywords": "",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "invocation-of-hakaken_r5"
+  }
+}
