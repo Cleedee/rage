@@ -3,7 +3,7 @@
 **Pack:** Bastet werecats — Simba (leão) + Balam (jaguar)  
 **Renome:** 20/20  
 **Lealdade:** Gaia  
-**Cartas:** 76 (29 combate / 44 sept)  
+**Cartas:** 61 (25 combate / 30 sept) — **formato enxuto**
 
 ---
 
@@ -171,8 +171,8 @@ Leadership) busca Ally/Equipment/Territory após vencer moot.
 | Métrica | Valor |
 |---|---|
 | Renome total | 20 / 20 |
-| Total cartas | 76 |
-| Combate / Sept | 29 / 44 |
+| Total cartas | 61 |
+| Combate / Sept | 25 / 30 |
 | Personagens | 3 (2 Simba, 1 Balam) |
 | Rage base máxima | 3 (Hakimu, Markhat) |
 | Rage Crinos máxima | 8 (Hakimu, Markhat) |

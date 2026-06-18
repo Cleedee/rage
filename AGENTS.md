@@ -843,6 +843,56 @@ for a in aliados:
         print(f'❌ {a["name"]} — {a["motivo"]}')
 ```
 
+### 📐 Guia de Deckbuilding Enxuto (Lean Deck)
+
+A partir de agora, decks novos devem seguir o formato **enxuto**:
+
+| Componente | Tamanho Ideal | Justificativa Estatística |
+|---|---|---|
+| **Deck de Septo** | **30-35 cartas** | ≥80% de ver personagem até T3; ≥45% de ver gift-chave até T3 |
+| **Deck de Combate** | **22-25 cartas** | Suficiente para 2-3 fases de combate (~3 CAs/fase) |
+| **Total** | **52-60 cartas** | Balance entre consistência e profundidade estratégica |
+
+#### Por que 30-35 sept?
+
+No RAGE CCG, a Redraw Phase permite descartar qualquer sept card e comprar até 5 **todo turno**. Com 30-35 sept:
+
+| Métrica | Sept=30 | Sept=33 | Sept=35 | Sept=40 |
+|---|---|---|---|---|
+| Personagem T1 | 43,3% | 40,3% | 38,0% | 33,8% |
+| Personagem T3 | **88,8%** | **85,0%** | **82,6%** | 76,7% |
+| Gift-chave T3 | **50,0%** | 45,5% | 42,9% | 37,5% |
+
+Sept > 35 começa a perder significativamente consistência (<80% personagem T3).
+Sept > 40 é considerado **pesado** — só justificável se a estratégia exigir muitas cartas diferentes.
+
+#### Critério de corte para cada carta do sept
+
+Para cada carta, perguntar: *"Essa carta é essencial para a estratégia ou posso viver sem ela?"*
+
+| Categoria | Máximo | O que cortar |
+|---|---|---|
+| Territories | **2** | So o(s) melhor(es) para a estratégia |
+| Events | **5-6** | So respostas diretas ao meta/local |
+| Equipment | **4-5** | So os essenciais (Bivouac, Phone, Mapa, Assegai) |
+| Enemies/Victims | **2-4** | Foco no tema do deck |
+| Gifts | **6-9** | Core engine, sem filler |
+| Step Sideways / Friends | **1-2 cada** | Utility mínimo |
+
+#### Deck de Combate (22-25)
+
+O combat deck é comprado até 5 toda vez que entra na Combat Phase.
+Com 22-25 cartas e 3 personagens, cada combat phase consome ~3 CAs.
+Em 3 fases de combate (jogo típico), ~9 CAs são usadas — o deck tem 2-3x isso.
+
+#### Exceções à regra
+
+- **Decks de torneio (Ren≥30):** podem precisar de mais cartas para suportar personagens adicionais
+- **Decks com muito draw/search:** gifts como Mindlink, Sense Wyrm, etc. permitem sept maior sem perder consistência
+- **Decks temáticos:** se a estratégia exige muitas peças diferentes, o sept pode chegar a 38-40 com justificativa
+
+---
+
 ### Observações sobre campos do banco
 
 **IMPORTANTE:** O campo `rage` tem significados DIFERENTES dependendo do tipo de carta:
