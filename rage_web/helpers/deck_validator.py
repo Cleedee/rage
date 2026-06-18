@@ -432,10 +432,16 @@ def _verify_ally_requires(requires: str, chars: list[dict[str, Any]]) -> bool:
 
 
 def _parse_keywords(raw: str) -> set[str]:
-    """Separa uma string de keywords (hifenizada) num conjunto limpo."""
+    """Separa uma string de keywords (hifenizada + espacos) num conjunto limpo."""
     if not raw:
         return set()
-    return {k.strip().lower() for k in raw.replace('|', '-').split('-') if k.strip()}
+    result = set()
+    for part in raw.replace('|', '-').split('-'):
+        for sub in part.split():
+            sub = sub.strip().lower()
+            if sub:
+                result.add(sub)
+    return result
 
 
 # ---------------------------------------------------------------------------
