@@ -1,0 +1,32 @@
+{
+  "id": "lotus-cloud",
+  "nome": "Lotus Cloud",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Lotus Cloud (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. Once per turn, target a creature. That creature cannot vote or be chosen as alpha this turn. This ef"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1764,
+    "texto_original": "Attach to the user. Once per turn, target a creature. That creature cannot vote or be chosen as alpha this turn. This effect cannot be used if it was used last turn.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lotus-cloud"
+  }
+}

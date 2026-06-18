@@ -1,0 +1,31 @@
+{
+  "id": "forgetfulness",
+  "nome": "Forgetfulness",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1497,
+    "texto_original": "Whenever you enter combat against a creature from another pack, you may discard the top three cards from that player's sept deck. Permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "forgetfulness"
+  }
+}

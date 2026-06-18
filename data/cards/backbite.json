@@ -1,0 +1,33 @@
+{
+  "id": "backbite",
+  "nome": "Backbite",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Causar 1 dano + esquiva todos ataques no prox round",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        },
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 99
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1452,
+    "texto_original": "Play this Gift at the end of the Reveal step of combat.  This Gift becomes an additional 0 Rage, 1 Damage Combat Action:  use this card to mark the damage. The Gift user dodges all attacks in the next round of combat. You may play Backbite even if you pre",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "backbite"
+  }
+}

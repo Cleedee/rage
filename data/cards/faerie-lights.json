@@ -1,0 +1,28 @@
+{
+  "id": "faerie-lights",
+  "nome": "Faerie Lights",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1431,
+    "texto_original": "Play on the user at the beginning of combat. Once per combat, after bluffs are determined, you may cancel a combat action of damage 2 or less. Discard this Gift at the end of combat.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "faerie-lights"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "rallying-challenge",
+  "nome": "Rallying Challenge",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1424,
+    "texto_original": "Play at the start of combat.  All members of your pack without armor block 1 damage from all attacks against them each combat round. Discard this Gift at the end of combat.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rallying-challenge"
+  }
+}

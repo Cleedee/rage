@@ -1,0 +1,28 @@
+{
+  "id": "phantasm",
+  "nome": "Phantasm",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Curar 3 (inferido)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1018,
+    "texto_original": "Play when this character is attacked. The attacker cannot withdraw. The Gift user heals all damage at the end of each combat round. If the Gift user kills the attacker, instead remove the killing blow and end the combat. The attacker can take no actions e",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "phantasm"
+  }
+}

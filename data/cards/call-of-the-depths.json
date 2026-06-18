@@ -1,0 +1,28 @@
+{
+  "id": "call-of-the-depths",
+  "nome": "Call of the Depths",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Comprar 1 combat card",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1489,
+    "texto_original": "Combat restricted. Draw 1 combat card for each Chulorviah you control in combat. Discard after use.",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "call-of-the-depths"
+  }
+}

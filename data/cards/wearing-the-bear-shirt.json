@@ -1,0 +1,28 @@
+{
+  "id": "wearing-the-bear-shirt",
+  "nome": "Wearing the Bear Shirt",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1084,
+    "texto_original": "A character affected by this Gift becomes bellicose and warlike. His frenzies may never be canceled. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "wearing-the-bear-shirt"
+  }
+}

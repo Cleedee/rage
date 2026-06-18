@@ -1,0 +1,32 @@
+{
+  "id": "tar-baby",
+  "nome": "Tar Baby",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Tar Baby (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play at the start of combat or between rounds. Opponents that are frenzied or enter frenzy while in combat with the user"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1068,
+    "texto_original": "Play at the start of combat or between rounds. Opponents that are frenzied or enter frenzy while in combat with the user of Tar Baby lose one Rage until end of combat. Each time an opponent plays an attack, they lose one Rage until the end of the combat.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "tar-baby"
+  }
+}

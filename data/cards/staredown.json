@@ -1,0 +1,31 @@
+{
+  "id": "staredown",
+  "nome": "Staredown",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Termina combate (intimidacao)",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 99,
+          "params": {
+            "termina_combate": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1059,
+    "texto_original": "The character using this Gift intimidates any opponent he is facing, immediately ending combat. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "staredown"
+  }
+}

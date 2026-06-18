@@ -1,0 +1,35 @@
+{
+  "id": "kiss-of-helios",
+  "nome": "Kiss of Helios",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Proximo ataque +2 dano OU ignora Flamethrower",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "dano_proximo_ataque"
+            ],
+            "valor": 2,
+            "duracao": "proximo_ataque"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 991,
+    "texto_original": "The Gift user immolates herself with magical fire. The Gift user may do +2 damage to the next opponent that hits him (transfer this card as a Damage card) OR he may ignore 1 single Combat Action delivered by a Flamethrower. Discard this Gift after its eff",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "kiss-of-helios"
+  }
+}

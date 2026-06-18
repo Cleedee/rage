@@ -1,0 +1,32 @@
+{
+  "id": "obedience",
+  "nome": "Obedience",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Obedience (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play at the start of combat on target creature. Before each round of combat, name a Combat Action. The target must play "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1423,
+    "texto_original": "Play at the start of combat on target creature. Before each round of combat, name a Combat Action. The target must play that card if possible this round.  If nobody can play a card of that name for the target then it may  play Combat Actions as normal. Di",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "obedience"
+  }
+}

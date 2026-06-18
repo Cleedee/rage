@@ -1,0 +1,32 @@
+{
+  "id": "blissful-ignorance",
+  "nome": "Blissful Ignorance",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Blissful Ignorance (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The user can make herself invisible as long as she takes no actions. The character cannot be attacked, participate in Ju"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 936,
+    "texto_original": "The user can make herself invisible as long as she takes no actions. The character cannot be attacked, participate in Juntas or have Gifts used upon her. The character still regenerates as normal. Blissful Ignorance will not remove a character from a comb",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "blissful-ignorance"
+  }
+}

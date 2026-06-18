@@ -1,0 +1,31 @@
+{
+  "id": "shagreen-shield",
+  "nome": "Shagreen Shield",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1550,
+    "texto_original": "The user's scales become extra strong and sharp so foes can barely even scratch him in combat. The user blocks 1 damage from all attacks against him. Permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shagreen-shield"
+  }
+}

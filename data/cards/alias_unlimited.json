@@ -1,0 +1,32 @@
+{
+  "id": "alias_unlimited",
+  "nome": "Alias",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Alias (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The character creates an exact duplicate of himself, including both Crinos and Breed form. The duplicate has the same pr"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 923,
+    "texto_original": "The character creates an exact duplicate of himself, including both Crinos and Breed form. The duplicate has the same printed stats and special abilities as the Gift user. It may vote only in Juntas that the Alias user can not vote in. The Alias will last",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "alias_unlimited"
+  }
+}

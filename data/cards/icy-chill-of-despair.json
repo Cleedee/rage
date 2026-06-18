@@ -1,0 +1,31 @@
+{
+  "id": "icy-chill-of-despair",
+  "nome": "Icy Chill of Despair",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 985,
+    "texto_original": "The user appears to become larger, looming, shadowy and terrible. No creature of lower Renown than the user may initiate an attack against the user. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "icy-chill-of-despair"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "lord-of-the-jungle",
+  "nome": "Lord of the Jungle",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Lord of the Jungle (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Gift user can attack any character or ally in play immediately but will not interrupt a combat that has already take"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 998,
+    "texto_original": "The Gift user can attack any character or ally in play immediately but will not interrupt a combat that has already taken place (like a Sneak Attack). This does not count as an alpha action. Discard this Gift upon use.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lord-of-the-jungle"
+  }
+}

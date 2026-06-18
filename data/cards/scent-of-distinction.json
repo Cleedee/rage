@@ -1,0 +1,32 @@
+{
+  "id": "scent-of-distinction",
+  "nome": "Scent of Distinction",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Scent of Distinction (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Galliard can check any one character in play's Crinos statistics. This can be done to another player's werewolf befo"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1041,
+    "texto_original": "The Galliard can check any one character in play's Crinos statistics. This can be done to another player's werewolf before they have transformed. This Gift is discarded after its effect takes place.",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "scent-of-distinction"
+  }
+}

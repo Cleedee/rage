@@ -1,0 +1,32 @@
+{
+  "id": "born-to-nature",
+  "nome": "Born to Nature",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Born to Nature (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Use this Gift to make any spirit miss its next round of combat. This Gift is discarded after its effect takes place."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 939,
+    "texto_original": "Use this Gift to make any spirit miss its next round of combat. This Gift is discarded after its effect takes place.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "born-to-nature"
+  }
+}

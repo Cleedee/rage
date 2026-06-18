@@ -1,0 +1,31 @@
+{
+  "id": "ojas-surge",
+  "nome": "Ojas Surge",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1427,
+    "texto_original": "The user can channel his energies. When he calls a Junta or is declared Alpha, he has +2 Rage and +2 Renown until the end of phase. This Gift is permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "ojas-surge"
+  }
+}

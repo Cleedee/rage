@@ -1,0 +1,32 @@
+{
+  "id": "gateway-of-the-hyena",
+  "nome": "Gateway of the Hyena",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Gateway of the Hyena (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Garou can use this Gift to make any one Moon Bridge automatically close. This Gift is discarded after its effect tak"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 965,
+    "texto_original": "The Garou can use this Gift to make any one Moon Bridge automatically close. This Gift is discarded after its effect takes place.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "gateway-of-the-hyena"
+  }
+}

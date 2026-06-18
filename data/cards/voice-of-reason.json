@@ -1,0 +1,31 @@
+{
+  "id": "voice-of-reason",
+  "nome": "Voice of Reason",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1081,
+    "texto_original": "The Gift user gains 2 additional votes in all board meetings. This Gift is permanent until canceled. A character can not be affected by more than one Voice of Reason at a time.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "voice-of-reason"
+  }
+}

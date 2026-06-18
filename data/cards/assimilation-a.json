@@ -1,0 +1,31 @@
+{
+  "id": "assimilation-a",
+  "nome": "Assimilation A",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1651,
+    "texto_original": "You may discard cards from your combat hand in the Moot phase to do (for each discarded) one of the following: # Gain 4 votes in any one Junta this turn. # Call a Junta from your hand, regardless of affiliation and even if you normally wouldn't be able to. # Vote on a Junta, regardless of affiliation or restriction. Permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 8,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "assimilation-a"
+  }
+}

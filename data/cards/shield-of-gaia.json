@@ -1,0 +1,31 @@
+{
+  "id": "shield-of-gaia",
+  "nome": "Shield of Gaia",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1048,
+    "texto_original": "The user of this Gift gains a vast attunement to Gaia's rhythms; the Weaver's laws have no effect on her. The user is not affected by any Combat Actions dealt by non-Fetish weapons. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shield-of-gaia"
+  }
+}

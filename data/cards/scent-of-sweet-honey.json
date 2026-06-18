@@ -1,0 +1,32 @@
+{
+  "id": "scent-of-sweet-honey",
+  "nome": "Scent of Sweet Honey",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Scent of Sweet Honey (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play this Gift at the beginning of the Equip/Ally Phase. The user plagues the target of this Gift with swarms of bees, c"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1042,
+    "texto_original": "Play this Gift at the beginning of the Equip/Ally Phase. The user plagues the target of this Gift with swarms of bees, clouds of flies and countless other vermin. The target of this Gift may not equip or recruit Allies this Equip/Ally Phase. Discard this",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "scent-of-sweet-honey"
+  }
+}

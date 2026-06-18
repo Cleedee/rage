@@ -1,0 +1,31 @@
+{
+  "id": "take-the-true-form",
+  "nome": "Take the True Form",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1067,
+    "texto_original": "The user forces any shapechanger to revert to his breed form. If this kills the character in combat, the victim's opponent gains victory points for the kill. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "take-the-true-form"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "burrow",
+  "nome": "Burrow",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Burrow (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The user burrows into the ground to escape combat. The Metis may not be attacked or called out until she comes out, and "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 941,
+    "texto_original": "The user burrows into the ground to escape combat. The Metis may not be attacked or called out until she comes out, and may not take any actions during this time. The Metis comes out at the beginning of the next Regeneration Phase. Discard this Gift after",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "burrow"
+  }
+}

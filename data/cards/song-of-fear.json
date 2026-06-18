@@ -1,0 +1,32 @@
+{
+  "id": "song-of-fear",
+  "nome": "Song of Fear",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Song of Fear (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. Opponents cannot frenzy. The user cannot be forced to play randomly."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1767,
+    "texto_original": "Attach to the user. Opponents cannot frenzy. The user cannot be forced to play randomly.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "song-of-fear"
+  }
+}

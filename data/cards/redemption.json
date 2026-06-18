@@ -1,0 +1,32 @@
+{
+  "id": "redemption",
+  "nome": "Redemption",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Redemption (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Gift user exorcises an evil spirit from a Bane Fetish. Select one Bane Fetish; if it has less Gnosis than the Gift u"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1026,
+    "texto_original": "The Gift user exorcises an evil spirit from a Bane Fetish. Select one Bane Fetish; if it has less Gnosis than the Gift user it is immediately discarded. Discard this Gift after its effects take place.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "redemption"
+  }
+}

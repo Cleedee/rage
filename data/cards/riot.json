@@ -1,0 +1,32 @@
+{
+  "id": "riot",
+  "nome": "Riot",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Riot (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Gift user incites people to destroy anything they can get their hands on. Target pack must do two of the following i"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1461,
+    "texto_original": "The Gift user incites people to destroy anything they can get their hands on. Target pack must do two of the following if possible: # discard a Territory she controls; # discard a piece of Equipment she controls; # discard the top three cards of her sept",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "riot"
+  }
+}

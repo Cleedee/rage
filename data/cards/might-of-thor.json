@@ -1,0 +1,31 @@
+{
+  "id": "might-of-thor",
+  "nome": "Might of Thor",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1004,
+    "texto_original": "The user of this Gift gains 2 Rage in Crinos form. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "might-of-thor"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "trackless-waste",
+  "nome": "Trackless Waste",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cancela ataque declarado",
+      "efeitos": [
+        {
+          "tipo": "cancelar_acao",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "cancela_ataque": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1075,
+    "texto_original": "The Garou can interrupt any declared attack to cause the target of this Gift to become helplessly lost. Combat is aborted and attacker(s) cannot declare any other attacks for the rest of the turn. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "trackless-waste"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "wound-undersea",
+  "nome": "Wound Undersea",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Esquivar (inferido)",
+      "efeitos": [
+        {
+          "tipo": "fugir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1559,
+    "texto_original": "Play as an alternative Combat Action. Wound Undersea counts as two undodgeable Damage 2 attacks. If you have more than one opponent, it counts as three Damage 2 attacks instead. You may target more than one creature with these attacks. This damage cannot",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "wound-undersea"
+  }
+}

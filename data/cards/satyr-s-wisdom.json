@@ -1,0 +1,32 @@
+{
+  "id": "satyr-s-wisdom",
+  "nome": "Satyr's Wisdom",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Satyr's Wisdom (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Gift user plays a tune that drives others MAD! Target a character. It may not vote in Juntas this turn.�"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1034,
+    "texto_original": "The Gift user plays a tune that drives others MAD! Target a character. It may not vote in Juntas this turn.�",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "satyr-s-wisdom"
+  }
+}

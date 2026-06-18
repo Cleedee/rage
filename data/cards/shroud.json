@@ -1,0 +1,31 @@
+{
+  "id": "shroud",
+  "nome": "Shroud",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1050,
+    "texto_original": "The character summons an all-encompassing cloud of darkness which enshrouds any 1 target. This immediately ends any combat involving the target. No other attacks may be initiated against the target. The Shroud dissipates during the next Regeneration Phase",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shroud"
+  }
+}

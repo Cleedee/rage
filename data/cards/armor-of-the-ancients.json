@@ -1,0 +1,31 @@
+{
+  "id": "armor-of-the-ancients",
+  "nome": "Armor of the Ancients",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1091,
+    "texto_original": "The Gift user develops huge chitinous plates all over its body.  It gains +3 Health.  However it moves slowly.  Any dodge it plays is considered a bluff.  This Gift is considered permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "armor-of-the-ancients"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "phone-travel",
+  "nome": "Phone Travel",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Phone Travel (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The user's pack cannot lose their Alpha action. Creatures with non-Fetish equipment cannot refuse challenges from the us"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1639,
+    "texto_original": "The user's pack cannot lose their Alpha action. Creatures with non-Fetish equipment cannot refuse challenges from the user. The user's Combat Actions get Fast Striking in the first round of any combat initiated by a challenge. When you play Phone Travel, you may search your deck for a Cellular Phone:  shuffle your sept deck and put the Cellular Phone on top.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "phone-travel"
+  }
+}

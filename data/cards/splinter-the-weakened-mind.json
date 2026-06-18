@@ -1,0 +1,32 @@
+{
+  "id": "splinter-the-weakened-mind",
+  "nome": "Splinter the Weakened Mind",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Splinter the Weakened Mind (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play on a character who has just declared an attack. That character is now attacking an eligible target of your choice. "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1058,
+    "texto_original": "Play on a character who has just declared an attack. That character is now attacking an eligible target of your choice. The Gift user's Gnosis must exceed his target's. A character cannot be made to attack an opponent he could not legitimately attack. Dis",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "splinter-the-weakened-mind"
+  }
+}

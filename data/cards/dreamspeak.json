@@ -1,0 +1,28 @@
+{
+  "id": "dreamspeak",
+  "nome": "Dreamspeak",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 949,
+    "texto_original": "The user's Gifts may cross the Gauntlet. This Gift is permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "dreamspeak"
+  }
+}

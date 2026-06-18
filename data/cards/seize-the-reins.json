@@ -1,0 +1,32 @@
+{
+  "id": "seize-the-reins",
+  "nome": "Seize the Reins",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Seize the Reins (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play between combat rounds. Target an opponent. Combat ends and the target attacks a valid target of your choice that is"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1511,
+    "texto_original": "Play between combat rounds. Target an opponent. Combat ends and the target attacks a valid target of your choice that is not part of your pack. You decide when it may withdraw from combat. Place any creatures the target of Seize the Reins kills in your Vi",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "seize-the-reins"
+  }
+}

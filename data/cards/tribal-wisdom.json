@@ -1,0 +1,32 @@
+{
+  "id": "tribal-wisdom",
+  "nome": "Tribal Wisdom",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Buscar Battlefield do sept deck",
+      "efeitos": [
+        {
+          "tipo": "comprar_ate",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "busca_no_sept_deck": true,
+            "tipo_busca": "battlefield"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1076,
+    "texto_original": "The Gift user may search through her sept deck and bring any 1 Battlefield into play immediately. Discard this Gift after its effects take place. Reshuffle the sept deck when used.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "tribal-wisdom"
+  }
+}

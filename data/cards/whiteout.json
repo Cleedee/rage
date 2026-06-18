@@ -1,0 +1,32 @@
+{
+  "id": "whiteout",
+  "nome": "Whiteout",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Whiteout (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play between rounds of combat."
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1626,
+    "texto_original": "Play between rounds of combat.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "whiteout"
+  }
+}

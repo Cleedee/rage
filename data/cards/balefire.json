@@ -1,0 +1,32 @@
+{
+  "id": "balefire",
+  "nome": "Balefire",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Balefire (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "When in the Umbra, Combat Actions played by the Gift user are aggravated. Discard this Gift after the end of the current"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 928,
+    "texto_original": "When in the Umbra, Combat Actions played by the Gift user are aggravated. Discard this Gift after the end of the current Combat Phase.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "balefire"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "scale-of-ma-at",
+  "nome": "Scale of Ma'at",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Scale of Ma'at (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user.�"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1037,
+    "texto_original": "Attach to the user.�",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "scale-of-ma-at"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "crawling-poison",
+  "nome": "Crawling Poison",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Proximo ataque +1 dano, vitima nao regenera",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "bonus_proximo_ataque": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 104,
+    "texto_original": "Attach this Gift to the user. Her next successful attack does +1 damage. Attach this Gift to the damage card to mark this. While attached, the victim cannot regenerate. If it is a creature of a type that does not regenerate, it acts at -3 Rage.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "crawling-poison"
+  }
+}

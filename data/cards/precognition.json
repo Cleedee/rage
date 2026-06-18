@@ -1,0 +1,28 @@
+{
+  "id": "precognition",
+  "nome": "Precognition",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1507,
+    "texto_original": "Once per turn you may look at target player's combat hand. Permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "precognition"
+  }
+}

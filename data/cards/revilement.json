@@ -1,0 +1,32 @@
+{
+  "id": "revilement",
+  "nome": "Revilement",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Revilement (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The patron totem of a pack turns his back on the pack, believing them to have strayed from his path. Select a Pack Totem"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1030,
+    "texto_original": "The patron totem of a pack turns his back on the pack, believing them to have strayed from his path. Select a Pack Totem in play; that Pack Totem is discarded immediately. Discard this Gift after its effects take place.",
+    "keywords": "",
+    "gnosis": 8,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "revilement"
+  }
+}

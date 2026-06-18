@@ -1,0 +1,32 @@
+{
+  "id": "touch-of-the-eel",
+  "nome": "Touch of the Eel",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Touch of the Eel (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The user of this Gift becomes a conduit of electricity. The next opponent to successfully wound him in combat will take "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1073,
+    "texto_original": "The user of this Gift becomes a conduit of electricity. The next opponent to successfully wound him in combat will take 1 damage. A character can only use 1 Touch of the Eel at a time. When hit, transfer this card as a damage card. Touch of the Eel will n",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "touch-of-the-eel"
+  }
+}

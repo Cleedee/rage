@@ -1,0 +1,28 @@
+{
+  "id": "venom-bite",
+  "nome": "Venom Bite",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano (inferido)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1770,
+    "texto_original": "When you damage a frenzied opponent, you may attach Venom Bite to the damage card; it does +2 damage. Cancel the opponent's frenzy. She may not frenzy while Venom Bite is in play.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "venom-bite"
+  }
+}

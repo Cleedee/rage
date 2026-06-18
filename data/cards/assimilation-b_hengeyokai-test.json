@@ -1,0 +1,28 @@
+{
+  "id": "assimilation-b_hengeyokai-test",
+  "nome": "Assimilation B",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1758,
+    "texto_original": "The user may vote in ANY Junta of any type, and cannot be prevented from voting. If the user is a Character, she can call any Junta (of any affiliation) even if he would not normally be able to do so. Permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "assimilation-b_hengeyokai-test"
+  }
+}

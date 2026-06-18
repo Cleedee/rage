@@ -1,0 +1,32 @@
+{
+  "id": "tech-speak",
+  "nome": "Tech Speak",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Tech Speak (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Glass Walkers convinces the spirits in her opponent's weapons that she is not the true target. The Glass Walkers may"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1070,
+    "texto_original": "The Glass Walkers convinces the spirits in her opponent's weapons that she is not the true target. The Glass Walkers may play this Gift on any opponent using non-Fetish weapons. For 1 round, after Combat Actions are exchanged, the opponent is damaged by h",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "tech-speak"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "guidance-from-below",
+  "nome": "Guidance From Below",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 980,
+    "texto_original": "The Gift user may supersede any alpha action and take her own alpha action to immediately attack a Battlefield. This Gift is permanent until canceled.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "guidance-from-below"
+  }
+}

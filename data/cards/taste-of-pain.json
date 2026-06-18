@@ -1,0 +1,32 @@
+{
+  "id": "taste-of-pain",
+  "nome": "Taste of Pain",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Taste of Pain (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Select 1 damage card that another character has received. That damage card now becomes aggravated and cannot be regenera"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1069,
+    "texto_original": "Select 1 damage card that another character has received. That damage card now becomes aggravated and cannot be regenerated. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "taste-of-pain"
+  }
+}

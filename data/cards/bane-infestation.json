@@ -1,0 +1,32 @@
+{
+  "id": "bane-infestation",
+  "nome": "Bane Infestation",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Rouba 1 Fetish Equipment (deve atender Gnosis)",
+      "efeitos": [
+        {
+          "tipo": "equipar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "rouba_equipamento": true,
+            "filtro": "fetish"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 930,
+    "texto_original": "The character can corrupt and take any 1 piece of fetish Equipment from any target in the game. The Bane must still meet the Gnosis requirements of the targeted Equipment otherwise this Gift will have no effect.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "bane-infestation"
+  }
+}

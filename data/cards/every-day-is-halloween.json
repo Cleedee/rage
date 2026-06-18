@@ -1,0 +1,31 @@
+{
+  "id": "every-day-is-halloween",
+  "nome": "Every Day is Halloween",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 951,
+    "texto_original": "The Gift user can force any 1 victim in the Hunting Grounds to attack a character or ally of his choice. Combat proceeds at the Gift user's discretion. The Gift user gains no Renown for any kills made by the victim. Discard this Gift after its effect take",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "every-day-is-halloween"
+  }
+}

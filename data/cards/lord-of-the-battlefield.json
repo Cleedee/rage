@@ -1,0 +1,28 @@
+{
+  "id": "lord-of-the-battlefield",
+  "nome": "Lord of the Battlefield",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Comprar 1 combat card(s)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 997,
+    "texto_original": "The Gift user can reduce the number of combat cards drawn by an opposing player in a Battlefield by 1. This Gift is permanent until canceled.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lord-of-the-battlefield"
+  }
+}

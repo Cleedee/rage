@@ -1,0 +1,28 @@
+{
+  "id": "gaia-s-will-corrupted_leastwanted",
+  "nome": "Gaia's Will Corrupted",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Causar 5 de dano (Withdrawal step)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 5
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1369,
+    "texto_original": "Combat Restricted. Play Gaia's Will Corrupted during the Withdrawal step of combat. Gaia's Will Corrupted does 5 damage to a Victim that the Gift user is facing in combat. Use this Gift to mark the damage.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "gaia-s-will-corrupted_leastwanted"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "heart-of-fury",
+  "nome": "Heart of Fury",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Alvo nao pode frenesi (cancela se frenetico)",
+      "efeitos": [
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "nao_pode_frenesi": true,
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 981,
+    "texto_original": "The target of this Gift may not frenzy. If this Gift is used on a character in frenzy, that frenzy will be canceled and the target will remain unable to frenzy. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "heart-of-fury"
+  }
+}

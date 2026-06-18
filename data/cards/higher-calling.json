@@ -1,0 +1,32 @@
+{
+  "id": "higher-calling",
+  "nome": "Higher Calling",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Higher Calling (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "For 1 full turn, no Gaia pack characters may attack other Gaia pack characters. Discard this Gift after its effects take"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 983,
+    "texto_original": "For 1 full turn, no Gaia pack characters may attack other Gaia pack characters. Discard this Gift after its effects take place.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "higher-calling"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "strange-rain",
+  "nome": "Strange Rain",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Strange Rain (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Uktena causes a rain of frogs, roaches, slugs, small squid, etc. Only characters with more Gnosis than the Gift user"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1062,
+    "texto_original": "The Uktena causes a rain of frogs, roaches, slugs, small squid, etc. Only characters with more Gnosis than the Gift user may be declared alpha for the next Combat Phase. Discard this Gift after its effects take place.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "strange-rain"
+  }
+}

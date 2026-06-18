@@ -1,0 +1,32 @@
+{
+  "id": "armor-of-kings",
+  "nome": "Armor of Kings",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Armor of Kings (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play at the start of combat if the user is not equipped with armor. The Gift user shrugs off all but the mightest blows "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1425,
+    "texto_original": "Play at the start of combat if the user is not equipped with armor. The Gift user shrugs off all but the mightest blows as if they were bites by flies. For the duration of this combat, the user blocks 2 damage from all attacks targeting him. Discard this",
+    "keywords": "",
+    "gnosis": 8,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "armor-of-kings"
+  }
+}

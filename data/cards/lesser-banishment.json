@@ -1,0 +1,33 @@
+{
+  "id": "lesser-banishment",
+  "nome": "Lesser Banishment",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cancela Gift Gnosis <=5 (remove do jogo)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0,
+          "params": {
+            "tipo_alvo": "gift",
+            "gnosis_max": 5,
+            "remove_do_jogo": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 996,
+    "texto_original": "The user cancels any 1 Gift that requires Gnosis 5 or less. Remove the target Gift from play. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lesser-banishment"
+  }
+}

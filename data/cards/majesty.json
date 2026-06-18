@@ -1,0 +1,32 @@
+{
+  "id": "majesty",
+  "nome": "Majesty",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Majesty (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play during combat. The user cows his opponents. Target character flips from breed form to Crinos form, or vice versa, u"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1455,
+    "texto_original": "Play during combat. The user cows his opponents. Target character flips from breed form to Crinos form, or vice versa, unless doing so would kill her. Any time the target's pack can withdraw this combat, you decide if they do or not. If played by prey, th",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "majesty"
+  }
+}

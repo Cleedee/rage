@@ -1,0 +1,32 @@
+{
+  "id": "ultimate-argument-of-logic",
+  "nome": "Ultimate Argument of Logic",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Ultimate Argument of Logic (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play this Gift at the beginning of any Moot Phase. The Gift user is able to convince her target of even the most ridicul"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1080,
+    "texto_original": "Play this Gift at the beginning of any Moot Phase. The Gift user is able to convince her target of even the most ridiculous concept. The target of this Gift must vote the same way as the Gift user does for the current Moot Phase. Discard this Gift after i",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "ultimate-argument-of-logic"
+  }
+}

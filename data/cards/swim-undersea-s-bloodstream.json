@@ -1,0 +1,32 @@
+{
+  "id": "swim-undersea-s-bloodstream",
+  "nome": "Swim Undersea's Bloodstream",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Swim Undersea's Bloodstream (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "All water flows to the sea eventually. Wise Rokea can see the connection between all the world's waters and use them to "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1555,
+    "texto_original": "All water flows to the sea eventually. Wise Rokea can see the connection between all the world's waters and use them to seek out their foes. Play outside combat. The user attacks any Ship or Aquatic creature in play. Discard after use.",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "swim-undersea-s-bloodstream"
+  }
+}

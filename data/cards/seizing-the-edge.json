@@ -1,0 +1,31 @@
+{
+  "id": "seizing-the-edge",
+  "nome": "Seizing the Edge",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1045,
+    "texto_original": "In order for a Moot this character calls to fail, a creature of equal or higher renown than the Gift-user must vote against it.  The total number of votes needed for it to fail is otherwise unchanged.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "seizing-the-edge"
+  }
+}

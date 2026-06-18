@@ -1,0 +1,32 @@
+{
+  "id": "geas",
+  "nome": "Geas",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Geas (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The user of this Gift makes any other character immediately enter combat with anything in the Hunting Grounds. The comba"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 966,
+    "texto_original": "The user of this Gift makes any other character immediately enter combat with anything in the Hunting Grounds. The combat must last at least 3 rounds before the Geas target may withdraw. Geas will end any combat in which the target is currently engaged an",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "geas"
+  }
+}

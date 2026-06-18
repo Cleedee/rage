@@ -1,0 +1,32 @@
+{
+  "id": "crushing-jaws",
+  "nome": "Crushing Jaws",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Crushing Jaws (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "As long as both are in this combat, the Gift user and target creature cannot step sideways, withdraw, escape or be remov"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1092,
+    "texto_original": "As long as both are in this combat, the Gift user and target creature cannot step sideways, withdraw, escape or be removed from combat.  Discard this Gift after combat.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "crushing-jaws"
+  }
+}

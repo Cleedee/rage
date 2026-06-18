@@ -1,0 +1,31 @@
+{
+  "id": "totem-form",
+  "nome": "Totem Form",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1072,
+    "texto_original": "The character assumes the form of a powerful Wyrm Totem, and gains 2 Rage, 2 Gnosis, and 2 Health. The character can use any Wyrm Gifts of any Gnosis. Discard this Gift during the next Redraw Phase.",
+    "keywords": "",
+    "gnosis": 8,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "totem-form"
+  }
+}

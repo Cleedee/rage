@@ -1,0 +1,33 @@
+{
+  "id": "remove-gaia-s-blessing",
+  "nome": "Remove Gaia's Blessing",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cancela Gift Gnosis <=7 (remove do jogo)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0,
+          "params": {
+            "tipo_alvo": "gift",
+            "gnosis_max": 7,
+            "remove_do_jogo": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1027,
+    "texto_original": "The user cancels any 1 Gift that requires Gnosis 7 or less. Remove the target Gift from play. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "remove-gaia-s-blessing"
+  }
+}

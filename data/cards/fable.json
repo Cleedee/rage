@@ -1,0 +1,32 @@
+{
+  "id": "fable",
+  "nome": "Fable",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Fable (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. Discard from play: a pack member has 5 extra votes this turn in all Junta (even those it can't norma"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1762,
+    "texto_original": "Attach to the user. Discard from play: a pack member has 5 extra votes this turn in all Junta (even those it can't normally vote in) and can call any Junta. These effects last for the rest of the turn.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "fable"
+  }
+}

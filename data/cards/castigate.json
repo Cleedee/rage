@@ -1,0 +1,32 @@
+{
+  "id": "castigate",
+  "nome": "Castigate",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Castigate (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Target a pack. The gift user tells to the spirits all the misdeeds of the pack.  Target pack may not play Totems or recr"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1457,
+    "texto_original": "Target a pack. The gift user tells to the spirits all the misdeeds of the pack.  Target pack may not play Totems or recruit Spirit Allies for one full turn and you may choose one of their Pack Totems or Personal Totems which they must discard.  Discard th",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "castigate"
+  }
+}

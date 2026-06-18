@@ -1,0 +1,31 @@
+{
+  "id": "serenity",
+  "nome": "Serenity",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cancela frenesi",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "cancela_frenesi": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1047,
+    "texto_original": "This Gift cancels a frenzy. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "serenity"
+  }
+}

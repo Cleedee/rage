@@ -1,0 +1,32 @@
+{
+  "id": "odin-s-blood",
+  "nome": "Odin's Blood",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Odin's Blood (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "At the end of any combat in which you killed a member of another pack, you can choose not to refill your combat hand. If"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1635,
+    "texto_original": "At the end of any combat in which you killed a member of another pack, you can choose not to refill your combat hand. If you do, you may attack another member of the same pack.",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "odin-s-blood"
+  }
+}

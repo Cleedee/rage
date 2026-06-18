@@ -1,0 +1,28 @@
+{
+  "id": "merciful-blow",
+  "nome": "Merciful Blow",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Remove alvo do combate (sem dano)",
+      "efeitos": [
+        {
+          "tipo": "remover_do_combate",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1002,
+    "texto_original": "The user cuffs any 1 opponent she is in combat with. This is played as an attack. It does no damage, but removes the victim from the current combat. This Gift will fail if the victim has a higher Rage than the user.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "merciful-blow"
+  }
+}

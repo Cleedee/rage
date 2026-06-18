@@ -1,0 +1,28 @@
+{
+  "id": "fenris-s-bite",
+  "nome": "Fenris's Bite",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Curar 3 (inferido)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 958,
+    "texto_original": "The character using this Gift may not be in Homid form. The user's next non-weapon attack is a powerful bite which maims her opponent. In addition to the normal damage, the victim acts at -5 Rage until damage from that attack is healed. A character's Rage",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "fenris-s-bite"
+  }
+}

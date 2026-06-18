@@ -1,0 +1,32 @@
+{
+  "id": "touch-of-death",
+  "nome": "Touch of Death",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Touch of Death (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Cannot be played during combat. Target another player's character and randomly reveal a card from that player's combat h"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1453,
+    "texto_original": "Cannot be played during combat. Target another player's character and randomly reveal a card from that player's combat hand. If the revealed card was a Combat Action, place it on the target. You score Renown if this kills the target. If the revealed card",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "touch-of-death"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "whelp-body",
+  "nome": "Whelp Body",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "-3 Rage (minimo 1)",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -3,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1086,
+    "texto_original": "The target of this Gift acts at -3 Rage. The target's Rage may never drop below 1 as a result of this Gift. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "whelp-body"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "coup-de-grace",
+  "nome": "Coup De Grace",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+4 dano a partir do R2",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4,
+          "params": {
+            "condicao": "nao_primeiro_round"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 103,
+    "texto_original": "During the first round of combat, the user of this Gift may not play damage cards. In any single round thereafter, Coup de Grace may add +4 damage to any 1 attack played by the user. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "coup-de-grace"
+  }
+}

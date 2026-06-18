@@ -1,0 +1,32 @@
+{
+  "id": "mother-s-touch",
+  "nome": "Mother's Touch",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Curar ate 4 de dano (cura agravado)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada_ferida",
+          "quantidade": 4,
+          "params": {
+            "max_dano_carta": 4,
+            "cura_agravado": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1009,
+    "texto_original": "This Gift heals the lowest damage card from the target, up to a damage 4 card. This Gift will heal aggravated damage. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "mother-s-touch"
+  }
+}

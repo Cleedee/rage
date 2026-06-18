@@ -1,0 +1,31 @@
+{
+  "id": "kiss-of-life",
+  "nome": "Kiss of Life",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Curar ate 6 de dano (1 carta)",
+      "efeitos": [
+        {
+          "tipo": "curar",
+          "condicao_alvo": "criatura_aliada_ferida",
+          "quantidade": 6,
+          "params": {
+            "max_dano_carta": 6
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 992,
+    "texto_original": "The Gift user can remove any 1 damage card from a target. Up to a damage 6 card can be healed. Discard this Gift once its effect takes place.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "kiss-of-life"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "shroud-of-the-jungle",
+  "nome": "Shroud of the Jungle",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Shroud of the Jungle (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Gift user can hide any 1 Battlefield for 1 full turn. The affected Battlefield cannot be engaged for any reason. Thi"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1051,
+    "texto_original": "The Gift user can hide any 1 Battlefield for 1 full turn. The affected Battlefield cannot be engaged for any reason. This Gift will not affect a Battlefield that a character has already engaged.",
+    "keywords": "",
+    "gnosis": 7,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shroud-of-the-jungle"
+  }
+}

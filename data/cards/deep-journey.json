@@ -1,0 +1,32 @@
+{
+  "id": "deep-journey",
+  "nome": "Deep Journey",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Buscar Caern/Totem/Spirit Ally/Fetish do sept deck",
+      "efeitos": [
+        {
+          "tipo": "comprar_ate",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "busca_no_sept_deck": true,
+            "tipo_busca": "caern/totem/spirit/fetish"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 107,
+    "texto_original": "When in the Umbra, a character can use this Gift which allows the player to search through her sept deck and bring any one caern, totem, spirit ally, or fetish directly into play. Reshuffle your sept deck after using this Gift. This Gift is discarded afte",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "deep-journey"
+  }
+}

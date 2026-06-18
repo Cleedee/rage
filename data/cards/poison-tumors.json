@@ -1,0 +1,32 @@
+{
+  "id": "poison-tumors",
+  "nome": "Poison Tumors",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Poison Tumors (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Gift user develops pus-filled tumors all over its body. The next opponent to damage the user takes two damage as the"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1019,
+    "texto_original": "The Gift user develops pus-filled tumors all over its body. The next opponent to damage the user takes two damage as they burst. Transfer this Gift to mark the damage. Cards which redirect damage to the Gift user will not trigger Poison Tumors.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "poison-tumors"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "tongue-of-the-serpent",
+  "nome": "Tongue of the Serpent",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Causar 2 dano agravado (Fast Striking)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2,
+          "params": {
+            "agravado": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1456,
+    "texto_original": "Play as an alternative Combat Action with Fast Striking that deals 2 aggravated damage. Use this card to mark the damage.  The user may heal her lowest damage card of damage 4 or less during the Withdraw step.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "tongue-of-the-serpent"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "rising-fury",
+  "nome": "Rising Fury",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Comprar 1 combat card(s)",
+      "efeitos": [
+        {
+          "tipo": "comprar",
+          "condicao_alvo": "jogador",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1636,
+    "texto_original": "When you play Rising Fury, look at the top card of your sept deck. You may discard it. Whenever another another player plays a Gift or Action outside the combat phase, draw two combat cards and your combat hand size is increased by two until the end of turn.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rising-fury"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "teanoi-s-rage",
+  "nome": "Teanoi's Rage",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1768,
+    "texto_original": "The gift user enters full frenzy that cannot be prevented nor cancelled. Discard all non damage combat cards in your hand.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "teanoi-s-rage"
+  }
+}

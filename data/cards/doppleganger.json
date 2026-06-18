@@ -1,0 +1,31 @@
+{
+  "id": "doppleganger",
+  "nome": "Doppleganger",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 947,
+    "texto_original": "Target a Garou or human in play. Until the end of the current phase, the Gift user gains any special abilities of the target. The target may still use its own abilities as normal. Discard this Gift at the end of the phase.",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "doppleganger"
+  }
+}

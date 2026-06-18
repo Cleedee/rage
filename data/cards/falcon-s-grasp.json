@@ -1,0 +1,32 @@
+{
+  "id": "falcon-s-grasp",
+  "nome": "Falcon's Grasp",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Falcon's Grasp (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "This Gift grants the user a bone- crushing grip. The Gift user's Equipment may not be destroyed or stolen, but he may st"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 955,
+    "texto_original": "This Gift grants the user a bone- crushing grip. The Gift user's Equipment may not be destroyed or stolen, but he may still voluntarily trade or discard it. Equipment can still be discarded by its own ability.",
+    "keywords": "",
+    "gnosis": 1,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "falcon-s-grasp"
+  }
+}

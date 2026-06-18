@@ -1,0 +1,35 @@
+{
+  "id": "aura-of-confidence",
+  "nome": "Aura of Confidence",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+1 Renown",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "atributos": [
+              "renown"
+            ],
+            "valor": 1,
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 926,
+    "texto_original": "The Shadow Lords gives himself a spiritual aura of prestige, increasing his Renown by 1. This Renown increase does not affect the character's victory point worth. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 1,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "aura-of-confidence"
+  }
+}

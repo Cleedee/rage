@@ -1,0 +1,32 @@
+{
+  "id": "feline-grace",
+  "nome": "Feline Grace",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Esquiva CA com mesmo Rage",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "restricao": "esquiva_rage_igual",
+            "duracao": "este_combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 957,
+    "texto_original": "For the duration of the current combat, the Gift user dodges any of her opponent's Combat Actions whose Rage equals her Combat Action's Rage.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "feline-grace"
+  }
+}

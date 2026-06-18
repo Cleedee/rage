@@ -1,0 +1,31 @@
+{
+  "id": "curse-of-hatred",
+  "nome": "Curse of Hatred",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "-2 Rage para oponentes (R1)",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": -2,
+          "params": {
+            "duracao": "primeiro_round"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 106,
+    "texto_original": "The character looks into his opponent's eyes and focuses his hatred, disheartening his foe. The target plays her next Combat Action at -2 Rage. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "curse-of-hatred"
+  }
+}

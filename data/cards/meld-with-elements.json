@@ -1,0 +1,32 @@
+{
+  "id": "meld-with-elements",
+  "nome": "Meld with Elements",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Meld with Elements (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Attach to the user. Whenever you attack a creature in another pack, look at its combat hand. Discard Meld with Elements "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1765,
+    "texto_original": "Attach to the user. Whenever you attack a creature in another pack, look at its combat hand. Discard Meld with Elements from play to escape any combat.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "meld-with-elements"
+  }
+}

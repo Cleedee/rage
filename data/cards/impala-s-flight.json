@@ -1,0 +1,28 @@
+{
+  "id": "impala-s-flight",
+  "nome": "Impala's Flight",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1429,
+    "texto_original": "All Combat Actions played by opponents lose the Fast Striking keyword.  The Gift user may dodge undodgeable combat actions. Draw a Sept card if you play this on a Swara. This Gift is permanent until cancelled.",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "impala-s-flight"
+  }
+}

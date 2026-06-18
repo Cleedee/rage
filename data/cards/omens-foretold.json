@@ -1,0 +1,32 @@
+{
+  "id": "omens-foretold",
+  "nome": "Omens Foretold",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Omens Foretold (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play Omens Foretold immediately after alphas are chosen. The target player must state whom, if anyone, he will attack du"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1012,
+    "texto_original": "Play Omens Foretold immediately after alphas are chosen. The target player must state whom, if anyone, he will attack during that Combat Phase as his alpha action. The player must attack their stated opponent. If their declared opponent dies, the alpha pa",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "omens-foretold"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "gaia-s-grace",
+  "nome": "Gaia's Grace",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Gnosis",
+      "efeitos": [
+        {
+          "tipo": "modificar_gnosis",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 962,
+    "texto_original": "The Gift user communes with Gaia, swearing fealty to Her cause. Until this Gift is canceled, the user is considered +2 Gnosis for the purposes of equipping fetishes.",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "gaia-s-grace"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "ghouling-2",
+  "nome": "Ghouling (2)",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "+2 Rage",
+      "efeitos": [
+        {
+          "tipo": "modificar_rage",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 969,
+    "texto_original": "In order to play this Gift there must be a vampire in the Hunting Grounds or in the Gift user's pack. The user gains +1 Rage,  +1 Health, Loyalty: Vampires and the ability to regenerate. The Gift user must step in to defend vampire Enemies if it is alpha.",
+    "keywords": "",
+    "gnosis": 2,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "ghouling-2"
+  }
+}

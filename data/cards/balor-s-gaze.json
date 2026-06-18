@@ -1,0 +1,32 @@
+{
+  "id": "balor-s-gaze",
+  "nome": "Balor's Gaze",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Balor's Gaze (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The eyes of the user glow a horrifyingly baleful red. For the current combat, any opponents with less Rage than the user"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 929,
+    "texto_original": "The eyes of the user glow a horrifyingly baleful red. For the current combat, any opponents with less Rage than the user are crippled with wracking pains and may take no actions. Discard this Gift after its effect takes place.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "balor-s-gaze"
+  }
+}

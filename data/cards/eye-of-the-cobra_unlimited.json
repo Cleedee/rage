@@ -1,0 +1,32 @@
+{
+  "id": "eye-of-the-cobra_unlimited",
+  "nome": "Eye of the Cobra",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Eye of the Cobra (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "May not be used during combat. This character makes any one character a part of his pack, even if she could not normally"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 953,
+    "texto_original": "May not be used during combat. This character makes any one character a part of his pack, even if she could not normally join a pack of that allegiance. Remove the target from her original pack. The target has Loyalty to all creatures in the original pack",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "eye-of-the-cobra_unlimited"
+  }
+}

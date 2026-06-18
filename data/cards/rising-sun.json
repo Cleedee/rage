@@ -1,0 +1,28 @@
+{
+  "id": "rising-sun",
+  "nome": "Rising Sun",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1430,
+    "texto_original": "Play at the start of any combat.  The Gift user surrounds himself with a blazing aura of light.  Once this combat you may cancel a Wyrm Gift.  Wyrm creatures must play their lowest Rage, lowest damage combat card each round. Discard this Gift at the end o",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rising-sun"
+  }
+}

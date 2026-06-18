@@ -1,0 +1,28 @@
+{
+  "id": "attunement",
+  "nome": "Attunement",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Anular (inferido)",
+      "efeitos": [
+        {
+          "tipo": "anular",
+          "condicao_alvo": "carta_em_jogo",
+          "quantidade": 0
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 925,
+    "texto_original": "The Bone Gnawer 'sniffs out' the area. Until this Gift is cancelled, Attunement duplicates any single Territory in play (treat the Gift as a Territory), even if the Territory is unique. Declare which Territory the Bone Gnawer duplicates when this Gift is",
+    "keywords": "",
+    "gnosis": 4,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "attunement"
+  }
+}

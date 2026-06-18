@@ -1,0 +1,32 @@
+{
+  "id": "rilkean-heart",
+  "nome": "Rilkean Heart",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Rilkean Heart (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Fianna steels herself for the upcoming battle. For the duration of the combat, the character may not be forced to lo"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1031,
+    "texto_original": "The Fianna steels herself for the upcoming battle. For the duration of the combat, the character may not be forced to lose the ability to play Combat Actions. Rilkean Heart may not be used during a combat in which the user frenzies. Discard this Gift afte",
+    "keywords": "",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rilkean-heart"
+  }
+}

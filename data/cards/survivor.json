@@ -1,0 +1,32 @@
+{
+  "id": "survivor",
+  "nome": "Survivor",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Survivor (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "The Bone Gnawer using this Gift receives the aid of the Bear Totem to withstand the call of death. The character must su"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1065,
+    "texto_original": "The Bone Gnawer using this Gift receives the aid of the Bear Totem to withstand the call of death. The character must suffer one additional damage card beyond those normally required to kill her before she will actually die. This Gift is permanent until c",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "survivor"
+  }
+}

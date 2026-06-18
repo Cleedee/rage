@@ -1,0 +1,32 @@
+{
+  "id": "cooking",
+  "nome": "Cooking",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Cooking (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Target a combat discard pile and remove one Combat Action from the game. The creature using this Gift takes 2 damage (us"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 101,
+    "texto_original": "Target a combat discard pile and remove one Combat Action from the game. The creature using this Gift takes 2 damage (use this card to mark damage).",
+    "keywords": "",
+    "gnosis": 3,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "cooking"
+  }
+}

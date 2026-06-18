@@ -1,0 +1,32 @@
+{
+  "id": "insightful-eyes",
+  "nome": "Insightful Eyes",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Combat Actions do usuario nao podem ser esquivadas",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "restricao": "nao_pode_esquivar",
+            "duracao": "permanente"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 987,
+    "texto_original": "Combat Actions played by the user of this Gift may not be dodged. This Gift lasts until canceled.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "insightful-eyes"
+  }
+}

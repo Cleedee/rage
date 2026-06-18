@@ -1,0 +1,32 @@
+{
+  "id": "blood-lash",
+  "nome": "Blood Lash",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Causar 4 dano agravado (nao bloqueavel)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4,
+          "params": {
+            "agravado": true,
+            "nao_bloqueavel": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1761,
+    "texto_original": "The Kuei Jin slits herself, creating a whip of blood. Weapon. Attach this Gift to the user. Your attacks cannot be blocked. Discard from play as an unblockable alternative Combat Action, dealing 4 aggravated damage.",
+    "keywords": "",
+    "gnosis": 5,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "blood-lash"
+  }
+}

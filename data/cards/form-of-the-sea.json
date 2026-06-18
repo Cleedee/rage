@@ -1,0 +1,32 @@
+{
+  "id": "form-of-the-sea",
+  "nome": "Form of the Sea",
+  "tipo": "Gift",
+  "modos": [
+    {
+      "descricao": "Form of the Sea (REVISAO MANUAL NECESSARIA)",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "todas_criaturas",
+          "quantidade": 0,
+          "params": {
+            "efeito_pendente": true,
+            "texto_original": "Play during combat. Opponents cannot play attacks with an even Rage requirement. The user has Kailindo. Discard this Gif"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_gift_jsons",
+    "card_id": 1541,
+    "texto_original": "Play during combat. Opponents cannot play attacks with an even Rage requirement. The user has Kailindo. Discard this Gift when the user leaves combat.",
+    "keywords": "Kailindo",
+    "gnosis": 6,
+    "rage": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "form-of-the-sea"
+  }
+}
