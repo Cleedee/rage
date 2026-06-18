@@ -1,0 +1,32 @@
+{
+  "id": "allamande_r6",
+  "nome": "Allamande",
+  "tipo": "Character - Gaia",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 6,
+    "rage_morph": 6,
+    "gnosis": 5,
+    "health": 5,
+    "renown": 6,
+    "palavras_chave": [
+      "Ratkin",
+      "Metis",
+      "Gaia",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "When Allamande is alpha, his challenges cannot be refused.",
+      "efeitos": []
+    }
+  ],
+  "habilidades_passivas": [],
+  "_metadata": {
+    "card_id": 27,
+    "precisa_revisao": false
+  }
+}

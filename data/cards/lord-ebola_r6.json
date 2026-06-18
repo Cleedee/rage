@@ -1,0 +1,44 @@
+{
+  "id": "lord-ebola_r6",
+  "nome": "Lord Ebola",
+  "tipo": "Character - Rogue",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 5,
+    "rage_morph": 5,
+    "gnosis": 6,
+    "health": 5,
+    "renown": 6,
+    "palavras_chave": [
+      "Ratkin",
+      "Metis",
+      "Plague Lord",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "His opponents in combat act at -1 Rage for each damage card on them.",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "oponente_combate",
+          "params": {
+            "atributo": "rage",
+            "valor": -1,
+            "por_dano": true
+          }
+        }
+      ]
+    }
+  ],
+  "habilidades_passivas": [
+    "rage_debuff_per_damage"
+  ],
+  "_metadata": {
+    "card_id": 1358,
+    "precisa_revisao": false
+  }
+}

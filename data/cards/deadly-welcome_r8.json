@@ -1,0 +1,42 @@
+{
+  "id": "deadly-welcome_r8",
+  "nome": "Deadly Welcome",
+  "tipo": "Character - Gaia",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 2,
+    "rage_morph": 7,
+    "gnosis": 7,
+    "health": 3,
+    "renown": 8,
+    "palavras_chave": [
+      "Ratkin",
+      "Rodens",
+      "Gaia",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "Once per turn he may destroy any one card that is not a character.",
+      "efeitos": [
+        {
+          "tipo": "destruir",
+          "condicao_alvo": "carta_nao_personagem",
+          "params": {
+            "uma_por_turno": true
+          }
+        }
+      ]
+    }
+  ],
+  "habilidades_passivas": [
+    "destroy_non_character"
+  ],
+  "_metadata": {
+    "card_id": 1484,
+    "precisa_revisao": false
+  }
+}
