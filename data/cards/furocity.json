@@ -1,0 +1,32 @@
+{
+  "id": "furocity",
+  "nome": "Furocity",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Furocity",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "This creature enters a limited frenzy. Draw combat cards equal to half its Rage "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1615,
+    "texto_original": "This creature enters a limited frenzy. Draw combat cards equal to half its Rage (round down). If any of your opponents has a Quest attached or has called a Junta this turn, you may use this effect instead: Cancel a card effect that ends a combat or remove",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "furocity"
+  }
+}

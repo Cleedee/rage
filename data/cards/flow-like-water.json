@@ -1,0 +1,32 @@
+{
+  "id": "flow-like-water",
+  "nome": "Flow Like Water",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Flow Like Water",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Dodge one attack. Bonus - Kuei-Jin, Vampire or Hengeyokai: Dodge all attacks and"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1724,
+    "texto_original": "Dodge one attack. Bonus - Kuei-Jin, Vampire or Hengeyokai: Dodge all attacks and you can simultaneously play an attack.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 4,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "flow-like-water"
+  }
+}

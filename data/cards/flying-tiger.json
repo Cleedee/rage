@@ -1,0 +1,29 @@
+{
+  "id": "flying-tiger",
+  "nome": "Flying Tiger",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Kailindo: Causar 5 de dano (sem defesa no mesmo round)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 5
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 325,
+    "texto_original": "Kailindo. Flying Tiger may never be used during the same round in which the character plays a defensive card or a Feint, nor may it be bluffed.",
+    "keywords": "",
+    "damage": "5",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "flying-tiger"
+  }
+}

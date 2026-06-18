@@ -1,0 +1,32 @@
+{
+  "id": "activate-torpedoes",
+  "nome": "Activate Torpedoes!",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Activate Torpedoes!",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Place a combat action from your combat discards face down under Activate Torpedo"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1515,
+    "texto_original": "Place a combat action from your combat discards face down under Activate Torpedos. In any reveal step this combat you may replace one of your combat actions with, or play as an Instinctive combat action, the card beneath Activate Torpedos. Discard the rep",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "activate-torpedoes"
+  }
+}

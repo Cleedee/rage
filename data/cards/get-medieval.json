@@ -1,0 +1,32 @@
+{
+  "id": "get-medieval",
+  "nome": "Get Medieval",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Get Medieval",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Play this card when you kill an opponent who has slain a member of your pack. Th"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 115,
+    "texto_original": "Play this card when you kill an opponent who has slain a member of your pack. The opponent lingers on as you go to work with a pair of pliers and a blowtorch. The victim is removed from play at the end of the combat. This card is worth 2 Victory points.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "get-medieval"
+  }
+}

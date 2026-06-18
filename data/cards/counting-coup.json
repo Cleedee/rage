@@ -1,0 +1,29 @@
+{
+  "id": "counting-coup",
+  "nome": "Counting Coup",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 1 de dano (+1 Rage se Wendigo, Fast Striking)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1629,
+    "texto_original": "If played by a Wendigo, Counting Coup has Fast Striking. The creature playing this card gains 1 Rage for the rest of combat. Unless they are Wendigo, they cannot frenzy this combat.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "counting-coup"
+  }
+}

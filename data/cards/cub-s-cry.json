@@ -1,0 +1,32 @@
+{
+  "id": "cub-s-cry",
+  "nome": "Cub's Cry",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Cub's Cry",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Play between rounds of combat. Each pack member loyal to this creature joins the"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1416,
+    "texto_original": "Play between rounds of combat. Each pack member loyal to this creature joins the combat.  If any do, this creates a pack action.  Draw 2 combat cards for each creature that joined combat in this way.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "cub-s-cry"
+  }
+}

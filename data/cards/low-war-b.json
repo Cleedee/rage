@@ -1,0 +1,32 @@
+{
+  "id": "low-war-b",
+  "nome": "Low War B",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Low War B",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Choose one: Draw a combat card; play a Combat Event from your combat discards; o"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1744,
+    "texto_original": "Choose one: Draw a combat card; play a Combat Event from your combat discards; or another target player draws 2 cards (this effect is playable even if you are not in combat).",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "low-war-b"
+  }
+}

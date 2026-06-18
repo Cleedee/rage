@@ -1,0 +1,38 @@
+{
+  "id": "sacrifice",
+  "nome": "Sacrifice",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano, sem acao no prox round",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        },
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "combat_action",
+            "duracao": "proximo_round"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1304,
+    "texto_original": "The creature playing Sacrifice may not play Combat Actions next round.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "sacrifice"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "lightning-bolt",
+  "nome": "Lightning Bolt",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 6 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 6
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1730,
+    "texto_original": "Instinctive. Unblockable.",
+    "keywords": "Instinctive -  Unblockable.",
+    "damage": "6",
+    "rage": 0,
+    "gnosis": 8,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "lightning-bolt"
+  }
+}

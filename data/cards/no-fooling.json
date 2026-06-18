@@ -1,0 +1,32 @@
+{
+  "id": "no-fooling",
+  "nome": "No Fooling",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "No Fooling",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Play to cancel an Action card played this combat (this will not cancel Combat Ac"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1412,
+    "texto_original": "Play to cancel an Action card played this combat (this will not cancel Combat Actions) OR Play between rounds of combat to draw 2 combat cards.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "no-fooling"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "organ-puncture",
+  "nome": "Organ Puncture",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano e alvo nao inicia combate",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        },
+        {
+          "tipo": "impedir_acoes",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "tipo_acao": "iniciar_combate",
+            "duracao": "ate_curar"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1287,
+    "texto_original": "A character damaged by the Organ Puncture cannot initiate combat until this wound is healed. He can, however, defend if attacked.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "organ-puncture"
+  }
+}

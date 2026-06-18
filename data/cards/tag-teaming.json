@@ -1,0 +1,32 @@
+{
+  "id": "tag-teaming",
+  "nome": "Tag Teaming",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano (+2 se outro Tag Teaming no combate)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2,
+          "params": {
+            "bonus_por_copia": 2
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1321,
+    "texto_original": "Tag Teaming deals +2 damage if another Tag Teaming has been played by any of your pack members in this combat. If two Tag Teamings are played by two of your pack members simultaneously, both receive the bonus.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "tag-teaming"
+  }
+}

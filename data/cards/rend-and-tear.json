@@ -1,0 +1,29 @@
+{
+  "id": "rend-and-tear",
+  "nome": "Rend and Tear",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1299,
+    "texto_original": "Your character gives his victim a heapin' helpin' of visceral agony.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "rend-and-tear"
+  }
+}

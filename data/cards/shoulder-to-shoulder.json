@@ -1,0 +1,29 @@
+{
+  "id": "shoulder-to-shoulder",
+  "nome": "Shoulder to Shoulder",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano (face up, nao bluffavel)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1734,
+    "texto_original": "Shoulder to Shoulder cannot be bluffed and is played face up. Bonus - Loyalty: Reveal the top card of your combat deck. A creature you have Loyalty to can play that card as an additional combat card this round.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shoulder-to-shoulder"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "sentai-action",
+  "nome": "Sentai action",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Sentai action",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Choose 4 creatures loyal to this character, from your pack or from another one. "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1745,
+    "texto_original": "Choose 4 creatures loyal to this character, from your pack or from another one. If their original pack agrees to it, these 5 creatures form a pack action. Draw 3 cards. The original owner of the characters may choose to play cards for his creatures and earn the victory points from the kills they make.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "sentai-action"
+  }
+}

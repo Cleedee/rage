@@ -1,0 +1,29 @@
+{
+  "id": "bitter-blow",
+  "nome": "Bitter Blow",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1409,
+    "texto_original": "If the target of this attack is a rival, this attack cannot be dodged.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "bitter-blow"
+  }
+}

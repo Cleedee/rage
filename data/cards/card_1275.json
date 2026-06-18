@@ -1,0 +1,32 @@
+{
+  "id": "if-played-by-7th-generation-the-target-may-not-recruit-allies-until-this-wound-is-healed",
+  "nome": "Generational Jaw",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Generational Jaw",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": ""
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1275,
+    "texto_original": "",
+    "keywords": "7th Generation",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "card_1275"
+  }
+}

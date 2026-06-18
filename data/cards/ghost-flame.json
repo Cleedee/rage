@@ -1,0 +1,29 @@
+{
+  "id": "ghost-flame",
+  "nome": "Ghost Flame",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 7 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 7
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1725,
+    "texto_original": "Aggravated. Bonus - Kitsune, Kuei Jin: A creature damaged by Goblin Lantern discards two random combat cards.",
+    "keywords": "",
+    "damage": "7",
+    "rage": 0,
+    "gnosis": 10,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "ghost-flame"
+  }
+}

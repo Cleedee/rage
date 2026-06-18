@@ -1,0 +1,32 @@
+{
+  "id": "spite",
+  "nome": "Spite",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Copia dano de Combat Action de Rival",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "especial": "copia_dano_de_rival"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1408,
+    "texto_original": "When Spite is revealed, its damage becomes that of a Combat Action played by a Rival this round if possible. If Spite's target is a Rival and it is dodged, block or cancelled, you may return this card to your combat hand during the Withdrawal step.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "spite"
+  }
+}

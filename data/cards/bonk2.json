@@ -1,0 +1,29 @@
+{
+  "id": "bonk2",
+  "nome": "Bonk2",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 1 de dano; se 0 dano, remove topo do combat deck",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1642,
+    "texto_original": "If Bonk2 does no damage, your opponent must remove from the game the top card from his combat deck. (If your opponent is in the Hunting Grounds, it affects whoever played for it this turn.)",
+    "keywords": "",
+    "damage": "1",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "bonk2"
+  }
+}

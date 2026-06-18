@@ -1,0 +1,32 @@
+{
+  "id": "low-war-a",
+  "nome": "Low War A",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Low War A",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "You may play this card even if you are not participating in the current combat. "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1743,
+    "texto_original": "You may play this card even if you are not participating in the current combat. All players draw 1 combat card. You MAY add a Ratkin, Illiad Fomori, or a creature of Renown 3 or less to a combat on either attacker or defender's side, even if you are not involved in the combat. Its attacks gain Slow Striking. It will escape after one round and your pack can score no VP this combat.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "low-war-a"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "shut-up-and-die",
+  "nome": "SHUT UP AND DIE!",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 1 de dano (pode remover do jogo)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1644,
+    "texto_original": "Instead of playing Shut Up and Die as a Combat Action, you may instead remove it from the game. If you remove Shut Up and Die from the game, discard all the cards in your combat hand that do no damage. This will stop a combat from being cancelled. You may remove Shut Up and die from the game even if you are NOT involved in the combat.",
+    "keywords": "",
+    "damage": "1",
+    "rage": 1,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "shut-up-and-die"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "eyes-gouged",
+  "nome": "Eyes Gouged",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 318,
+    "texto_original": "A victim damaged by this attack is temporarily blinded. The victim must attack with a random draw from his combat hand during the next combat round.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "eyes-gouged"
+  }
+}

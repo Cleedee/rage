@@ -1,0 +1,29 @@
+{
+  "id": "painful-slash",
+  "nome": "Painful Slash",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1291,
+    "texto_original": "You slash open your opponent's throat, causing massive blood loss. �A creature damaged by this card may not play more than one combat action per round until this wound is healed.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "painful-slash"
+  }
+}

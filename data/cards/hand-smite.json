@@ -1,0 +1,32 @@
+{
+  "id": "hand-smite",
+  "nome": "Hand Smite",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Hand Smite",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Draw a combat card. Block all damage from weapons. Bonus - Iksakku: Opponents ca"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1728,
+    "texto_original": "Draw a combat card. Block all damage from weapons. Bonus - Iksakku: Opponents cannot use weapons for the rest of this combat.",
+    "keywords": "",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "hand-smite"
+  }
+}

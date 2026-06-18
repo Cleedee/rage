@@ -1,0 +1,29 @@
+{
+  "id": "addannu-luku-daku",
+  "nome": "Addannu Luku Daku",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 4 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1718,
+    "texto_original": "Block 1 damage. Bonus - Iksakku: If Addannu Luku Daku damages a creature, you can remove the creature from combat.",
+    "keywords": "",
+    "damage": "4",
+    "rage": 7,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "addannu-luku-daku"
+  }
+}

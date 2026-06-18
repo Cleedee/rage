@@ -1,0 +1,29 @@
+{
+  "id": "harry",
+  "nome": "Harry",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 2 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1410,
+    "texto_original": "You may have any number of this card in your combat deck.  If this Combat Action is dodged, blocked or cancelled and it was played in Animal form, you may return this card to your combat hand during the Withdrawal step.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "harry"
+  }
+}

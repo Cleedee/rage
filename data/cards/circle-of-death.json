@@ -1,0 +1,38 @@
+{
+  "id": "circle-of-death",
+  "nome": "Circle of Death",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 0 de dano + oponentes perdem Fast Striking",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0
+        },
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "restricao": "sem_fast_striking",
+            "duracao": "este_round"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1519,
+    "texto_original": "Play at the beginning of combat or between rounds to add up to two Rokea OR two Ajaba to this combat. This creates a pack action. If you added any creatures to the combat, draw two combat cards. Draw a combat card during the withdrawal step for each comba",
+    "keywords": "Pack action",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "circle-of-death"
+  }
+}

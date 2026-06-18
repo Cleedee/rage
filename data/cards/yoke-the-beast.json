@@ -1,0 +1,32 @@
+{
+  "id": "yoke-the-beast",
+  "nome": "Yoke the Beast",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Yoke the Beast",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "The user enters full frenzy. Draw one fewer cards than normal. Bonus - Kuei Jin,"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1746,
+    "texto_original": "The user enters full frenzy. Draw one fewer cards than normal. Bonus - Kuei Jin, Vampire: The frenzy cannot be prevented.",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "yoke-the-beast"
+  }
+}

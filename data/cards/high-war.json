@@ -1,0 +1,29 @@
+{
+  "id": "high-war",
+  "nome": "High War",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Guerra alta",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1742,
+    "texto_original": "For the duration of the combat, you and your opponent remove all frenzied creatures from the combat at the end of each combat round. If your combat hand is empty between rounds, you may permanently remove High War from the game to end the combat.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "high-war"
+  }
+}

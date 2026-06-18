@@ -1,0 +1,32 @@
+{
+  "id": "back-to-back",
+  "nome": "Back to Back",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Back to Back",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Instinctive. Block up to 5 damage between any number of attacks. A creature who "
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1719,
+    "texto_original": "Instinctive. Block up to 5 damage between any number of attacks. A creature who has mutual Loyalty to you blocks up to 5 damage between any number of attacks.",
+    "keywords": "",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "back-to-back"
+  }
+}

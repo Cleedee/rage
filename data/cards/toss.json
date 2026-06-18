@@ -1,0 +1,29 @@
+{
+  "id": "toss",
+  "nome": "Toss",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano (+dano se descartar Ally/Equipment Fianna)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1628,
+    "texto_original": "Bonus - Fianna: If the user discards an Ally or an attached Equipment card as Toss resolves, it deals 6 damage.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "toss"
+  }
+}

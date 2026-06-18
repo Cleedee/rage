@@ -1,0 +1,29 @@
+{
+  "id": "mantis-form",
+  "nome": "Mantis Form",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Kailindo: Causar 2 de dano (entra Crinos se nao estiver)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1282,
+    "texto_original": "Kailindo. If the character using Mantis Form is not in Crinos form when this Combat Action is played, he enters Crinos form this combat round. Use the character's Crinos form Rage to determine whether or not Mantis Form is a bluff.",
+    "keywords": "",
+    "damage": "2",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "mantis-form"
+  }
+}

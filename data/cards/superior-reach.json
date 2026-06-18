@@ -1,0 +1,29 @@
+{
+  "id": "superior-reach",
+  "nome": "Superior Reach",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano (inequivavel com Firearm/Iksakku)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1528,
+    "texto_original": "If played by a creature with a Firearm or Iksakku, this attack cannot be dodged. If played by Prey that is the attacker in combat, Superior Reach does +2 damage.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "superior-reach"
+  }
+}

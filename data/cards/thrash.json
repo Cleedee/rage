@@ -1,0 +1,29 @@
+{
+  "id": "thrash",
+  "nome": "Thrash",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 1 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1529,
+    "texto_original": "Instinctive (If a creature is prevented from playing a combat action and an opponent plays an attack, she may play Thrashing Limbs in the Reveal Step. Treat it as if it were played normally.)  If played by a Fomori in battle form or any Chulorviah, it blo",
+    "keywords": "(Block) - Instinctive",
+    "damage": "1",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "thrash"
+  }
+}

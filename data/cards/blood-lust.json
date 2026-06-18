@@ -1,0 +1,29 @@
+{
+  "id": "blood-lust",
+  "nome": "Blood Lust",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 4 de dano",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 4
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1517,
+    "texto_original": "Instinctive (If a creature is prevented from playing a combat action and an opponent plays an attack, she may Bloodlust in the Reveal Step. Treat it as if it were played normally.)",
+    "keywords": "Instinctive",
+    "damage": "4",
+    "rage": 5,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "blood-lust"
+  }
+}

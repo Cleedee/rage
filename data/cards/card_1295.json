@@ -1,0 +1,32 @@
+{
+  "id": "combat-restricted-you-take-a-moment-to-load-in-another-clip-draw-3-combat-cards",
+  "nome": "Combat Reload",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Combat Reload",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": ""
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1295,
+    "texto_original": "",
+    "keywords": "Restricted",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "card_1295"
+  }
+}

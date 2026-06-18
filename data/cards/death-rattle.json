@@ -1,0 +1,32 @@
+{
+  "id": "death-rattle",
+  "nome": "Death Rattle",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Mata oponente frenetico ja ferido",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "condicao": "frenetico_e_ja_ferido_mortal"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1271,
+    "texto_original": "Play Death Rattle when a frenzied opponent has sustained damage that would kill her. If that opponent suffers 1 more wound, she collapses in a heap, as her body no longer holds itself together. This will end the frenzy.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "death-rattle"
+  }
+}

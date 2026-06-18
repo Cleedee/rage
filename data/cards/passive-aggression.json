@@ -1,0 +1,33 @@
+{
+  "id": "passive-aggression",
+  "nome": "Passive Aggression",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Kailindo: Se oponente Rg<=5, afetado",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "restricao": "passive_aggression",
+            "duracao": "este_round"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1292,
+    "texto_original": "Kailindo. If your opponent's Combat Action is Rage 5 or lower during the round you play Passive Aggression, he is affected by his own Combat Action.",
+    "keywords": "Redirect",
+    "damage": "",
+    "rage": 6,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "passive-aggression"
+  }
+}

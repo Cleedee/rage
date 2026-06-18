@@ -1,0 +1,29 @@
+{
+  "id": "face-pounding",
+  "nome": "Face Pounding",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano (pode cancelar remocao de jogo como Combat Event)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1643,
+    "texto_original": "You may play Face Pounding as a Combat Event to cancel any card effect that would remove you from the game or from this combat; or would end combat. You can only use this ability if an opponent in this combat called a Junta or played a Quest earlier this turn.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 3,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "face-pounding"
+  }
+}

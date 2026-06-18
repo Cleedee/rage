@@ -1,0 +1,29 @@
+{
+  "id": "trust-me",
+  "nome": "Trust Me!",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano (so se mutual loyalty)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1740,
+    "texto_original": "If the user is in combat with a creature with whom it has mutual loyalty and that creature didn't play a combat card this round, Trust me! has Fast Striking.  If any damage from this card is blocked, this card becomes a damage card on the creature that played it.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 2,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "trust-me"
+  }
+}

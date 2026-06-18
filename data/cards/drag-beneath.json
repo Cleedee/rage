@@ -1,0 +1,32 @@
+{
+  "id": "drag-beneath",
+  "nome": "Drag Beneath",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Drag Beneath",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Play between combat rounds. Your Aquatic creature joins the combat to form a pac"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1521,
+    "texto_original": "Play between combat rounds. Your Aquatic creature joins the combat to form a pack action. Draw a combat card and target an opponent. During the next withdraw step, if both are still in combat, it and the target escape the combat.",
+    "keywords": "",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "drag-beneath"
+  }
+}

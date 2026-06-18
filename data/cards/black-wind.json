@@ -1,0 +1,32 @@
+{
+  "id": "black-wind",
+  "nome": "Black Wind",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Black Wind",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": "Enter full frenzy, but the user draws two extra combat cards. For the duration o"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1741,
+    "texto_original": "Enter full frenzy, but the user draws two extra combat cards. For the duration of the frenzy, the user plays combat actions at random.",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "black-wind"
+  }
+}

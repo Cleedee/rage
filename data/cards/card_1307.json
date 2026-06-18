@@ -1,0 +1,32 @@
+{
+  "id": "if-played-by-a-frenzied-creature-discard-a-random-combat-card-from-your-hand-at-the-end-of-the-bluff-step",
+  "nome": "Frenzy Beatdown",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Frenzy Beatdown",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": ""
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1307,
+    "texto_original": "",
+    "keywords": "Frenzy",
+    "damage": "",
+    "rage": 0,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "card_1307"
+  }
+}

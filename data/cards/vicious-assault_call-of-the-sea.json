@@ -1,0 +1,29 @@
+{
+  "id": "vicious-assault_call-of-the-sea",
+  "nome": "Vicious Assault",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Causar 3 de dano (+3 se Rg>=8)",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1530,
+    "texto_original": "If none of the damage from Vicious Assault blocked and it is played by a creature with 8 or more Rage, Vicious Assault does +3 damage.",
+    "keywords": "",
+    "damage": "3",
+    "rage": 4,
+    "gnosis": 0,
+    "health": 0,
+    "precisa_revisao": true,
+    "slug": "vicious-assault_call-of-the-sea"
+  }
+}

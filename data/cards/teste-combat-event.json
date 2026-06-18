@@ -1,0 +1,32 @@
+{
+  "id": "teste-combat-event",
+  "nome": "Teste Combat Event",
+  "tipo": "Combat Action",
+  "modos": [
+    {
+      "descricao": "Teste Combat Event",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 0,
+          "params": {
+            "texto_original": ""
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "gerador_combat_actions",
+    "card_id": 1822,
+    "texto_original": "",
+    "keywords": "",
+    "damage": "",
+    "rage": 3,
+    "gnosis": 4,
+    "health": 5,
+    "precisa_revisao": true,
+    "slug": "teste-combat-event"
+  }
+}
