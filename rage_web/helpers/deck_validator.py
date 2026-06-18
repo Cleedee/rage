@@ -636,17 +636,20 @@ def _check_viability(result: ValidationResult,
     for card, qty in cards_data:
         tipo = (card.tipo or "").lower()
         if "character" in tipo:
-            for _ in range(qty):
-                chars.append({
-                    "id": card.id,
-                    "name": card.name,
-                    "tipo": card.tipo,
-                    "keywords": _parse_keywords(card.keyword),
-                    "keyword_raw": card.keyword or "",
-                    "rage": card.rage,
-                    "gnosis": card.gnosis,
-                    "health": card.health,
-                })
+            # Parse tags for gift-access patterns (ex: philodox-gift-access)
+            # Tags use comma as separator, NOT hyphens (hyphens are part of tag names)
+            tags_set = {t.strip().lower() for t in (card.tags or "").split(",") if t.strip()}
+            chars.append({
+                "id": card.id,
+                "name": card.name,
+                "tipo": card.tipo,
+                "keywords": _parse_keywords(card.keyword),
+                "keyword_raw": card.keyword or "",
+                "tags": tags_set,
+                "rage": card.rage,
+                "gnosis": card.gnosis,
+                "health": card.health,
+            })
 
     if not chars:
         result.warn("VIAB_CHARS", "Deck não tem personagens — nada a verificar")
@@ -781,6 +784,16 @@ def _check_viability(result: ValidationResult,
             for ch in chars:
                 req_keywords = _parse_keywords(requires)
                 matched = req_keywords & ch["keywords"]
+                # Check tags for gift-access patterns (ex: philodox-gift-access
+                # means character can use Philodox gifts)
+                if not matched:
+                    for req_kw in req_keywords:
+                        access_tag = f"{req_kw}-gift-access"
+                        # Normalize: replace spaces with hyphens for tag matching
+                        access_tag_norm = access_tag.replace(" ", "-")
+                        if access_tag_norm in ch["tags"]:
+                            matched = {req_kw}
+                            break
                 if not matched:
                     continue
                 if ch["gnosis"] < gnosis_req:
