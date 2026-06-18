@@ -4,12 +4,16 @@
   "tipo": "Rite",
   "modos": [
     {
-      "descricao": "Curar (inferido)",
+      "descricao": "+2 Health (pele vira Fetish)",
       "efeitos": [
         {
-          "tipo": "curar",
+          "tipo": "modificar_vida",
           "condicao_alvo": "criatura_aliada",
-          "quantidade": 3
+          "quantidade": 2,
+          "params": {
+            "duracao": "permanente",
+            "max_1_copia": true
+          }
         }
       ]
     }
@@ -22,7 +26,7 @@
     "gnosis": 0,
     "rage": 0,
     "health": 0,
-    "precisa_revisao": true,
+    "precisa_revisao": false,
     "slug": "rite-of-scarification_r6"
   }
 }
