@@ -215,6 +215,22 @@ Para administrar o bot quando houver múltiplos usuários.
 - Lista de admins (configurável via .env)
 - Log de ações de moderação
 
+### 13. Expansão fan-made: Lobisomem: O Apocalipse 5ª Edição
+**Arquivos:** `data/cards/`, `scripts/`, `rage_web/game_engine/effects.py`
+**Esforço:** 10h+
+
+Criar uma expansão feita por fã baseada na **quinta edição do RPG Werewolf: The Apocalypse**.
+
+**O que isso envolve:**
+- [ ] Definir novas cartas inspiradas nos clãs/auspícios/tribos da 5ª edição (Wolf-Blooded, novos dotes, etc.)
+- [ ] Adaptar o sistema de mecânicas da 5ª edição (Rage/Willpower simplificados, Harano, Hauglosk)
+- [ ] Criar JSONs de efeitos estruturados para as novas cartas
+- [ ] Importar as cartas para o banco SQLite
+- [ ] Adicionar suporte no motor de jogo para novas mecânicas (se necessário)
+- [ ] Documentar a temática e regras da expansão
+
+**Referência:** Werewolf: The Apocalypse 5th Edition (Paradox Interactive / Renegade Game Studios, 2023+)
+
 ---
 
 ## 🐛 Bugs Corrigidos
