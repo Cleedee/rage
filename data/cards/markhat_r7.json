@@ -1,0 +1,33 @@
+{
+  "id": "markhat_r7",
+  "nome": "Markhat",
+  "tipo": "Character - Gaia",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 3,
+    "rage_morph": 8,
+    "gnosis": 5,
+    "health": 3,
+    "renown": 7,
+    "palavras_chave": [
+      "Bastet",
+      "Balam",
+      "Feline",
+      "Gaia",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "Markat will not under any circumstances join a pack with Get of Fenris, Shadow Lords, or Silver Fangs.",
+      "efeitos": []
+    }
+  ],
+  "habilidades_passivas": [],
+  "_metadata": {
+    "card_id": 183,
+    "precisa_revisao": false
+  }
+}

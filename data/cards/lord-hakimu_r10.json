@@ -1,0 +1,46 @@
+{
+  "id": "lord-hakimu_r10",
+  "nome": "Lord Hakimu",
+  "tipo": "Character - Gaia",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 3,
+    "rage_morph": 8,
+    "gnosis": 8,
+    "health": 4,
+    "renown": 10,
+    "palavras_chave": [
+      "Bastet",
+      "Simba",
+      "Homid",
+      "Gaia",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "Once per turn, Hakimu can grant any creature the ability to play Umbra only combat actions.",
+      "efeitos": [
+        {
+          "tipo": "restringir",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 0,
+          "params": {
+            "restricao": "pode_jogar_umbra_actions",
+            "descricao": "Pode jogar combat actions da Umbra",
+            "duracao": "um_turno"
+          }
+        }
+      ]
+    }
+  ],
+  "habilidades_passivas": [
+    "grant_umbra_actions"
+  ],
+  "_metadata": {
+    "card_id": 1385,
+    "precisa_revisao": false
+  }
+}
