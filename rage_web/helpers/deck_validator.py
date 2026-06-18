@@ -29,9 +29,13 @@ def _check_json_coverage(result: ValidationResult,
 
     missing: list[tuple[Card, int]] = []
     for card, qty in cards_data:
+        # Tenta multiplas chaves: slug original, card_{id}, slug curto (nome do JSON)
         modelo_key = card.slug or f'card_{card.id}'
         if modelo_key not in CARTAS_EXEMPLO:
-            missing.append((card, qty))
+            # Fallback: tenta card_{id} para slugs longos (>40 chars)
+            card_key = f'card_{card.id}'
+            if card_key not in CARTAS_EXEMPLO:
+                missing.append((card, qty))
 
     if not missing:
         result.ok("JSON_COVERAGE",
@@ -98,9 +102,12 @@ def auto_craft_deck(deck_id: int, dry_run: bool = False) -> list[dict]:
         if not card or card.id in seen:
             continue
         seen.add(card.id)
+        # Tenta multiplas chaves: slug original, card_{id}
         modelo_key = card.slug or f'card_{card.id}'
         if modelo_key not in CARTAS_EXEMPLO:
-            missing.append(card)
+            card_key = f'card_{card.id}'
+            if card_key not in CARTAS_EXEMPLO:
+                missing.append(card)
 
     if not missing:
         return []

@@ -1,0 +1,35 @@
+{
+  "id": "card_1316",
+  "nome": "Cheap Shot",
+  "tipo": "Combat Action",
+  "slug_original": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+  "acoes": [
+    "combat_action"
+  ],
+  "atributos": {
+    "rage": 0,
+    "dano": "3",
+    "palavras_chave": [
+      "Surprise"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "Ataque surpresa de custo 0. Se acertar no primeiro round, causa 3 de dano e o oponente não pode revidar.",
+      "efeitos": [
+        {
+          "tipo": "dano",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 3,
+          "params": {
+            "surprise": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 1316,
+    "precisa_revisao": true
+  }
+}

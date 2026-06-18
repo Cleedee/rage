@@ -1,0 +1,35 @@
+{
+  "id": "machete",
+  "nome": "Machete",
+  "tipo": "Equipment - Non-Fetish - Weapon",
+  "acoes": [
+    "equipar"
+  ],
+  "atributos": {
+    "gnosis": 0,
+    "palavras_chave": [
+      "Non-Fetish",
+      "Weapon"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "Arma corpo a corpo. +1 de dano em combate.",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo",
+          "condicao_alvo": "dono",
+          "quantidade": 1,
+          "params": {
+            "atributo": "dano_combate",
+            "descricao": "+1 de dano em combate"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "card_id": 662,
+    "precisa_revisao": true
+  }
+}
