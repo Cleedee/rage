@@ -2,35 +2,33 @@
   "id": "lone-wolf-circles_r4",
   "nome": "Lone Wolf Circles",
   "tipo": "Character - Gaia",
-  "modos": [
-    {
-      "descricao": "Cancelar acao de combate e esquivar (1o round apos revelar)",
-      "condicao_uso": "primeiro_round_combate_apos_revelar",
-      "efeitos": [
-        {
-          "tipo": "anular",
-          "condicao_alvo": "qualquer_alvo",
-          "alvo": "propria_acao_combate"
-        }
-      ]
-    }
+  "acoes": [
+    "jogar"
   ],
-  "_metadata": {
-    "fonte": "deck160_analysis+revisado",
-    "card_id": 174,
-    "texto_original": "After cards are revealed in the first round of combat, Lone may choose to cancel his combat action and dodge any one combat action played against him. He may not participate in Pack Actions.",
-    "keywords": "Garou - Red Talons - Philodox - Metis - Gaia - Male",
-    "damage": "",
+  "atributos": {
     "rage": 3,
+    "rage_morph": 3,
     "gnosis": 5,
     "health": 5,
-    "precisa_revisao": false,
-    "notas": [
-      "Cancelar propria acao + esquivar implementado via lone_wolf_circles_dodge()",
-      "Chamado apos reveal_all() no primeiro round de combate",
-      "Nao pode participar de Pack Actions: flag 'sem_pack_actions'",
-      "Integracao com CLI/API: chamar funcao apos REVEAL"
-    ],
-    "slug": "lone-wolf-circles_r4"
+    "renown": 4,
+    "palavras_chave": [
+      "Garou",
+      "Red Talons",
+      "Philodox",
+      "Metis",
+      "Gaia",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "After cards are revealed in the first round of combat, Lone may choose to cancel his combat action and dodge any one combat action played against him.",
+      "efeitos": []
+    }
+  ],
+  "habilidades_passivas": [],
+  "_metadata": {
+    "card_id": 174,
+    "precisa_revisao": false
   }
 }

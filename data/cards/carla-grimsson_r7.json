@@ -1,0 +1,36 @@
+{
+  "id": "carla-grimsson_r7",
+  "nome": "Carla Grimsson",
+  "tipo": "Character - Gaia",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 3,
+    "rage_morph": 6,
+    "gnosis": 8,
+    "health": 3,
+    "renown": 7,
+    "palavras_chave": [
+      "Garou",
+      "Get of Fenris",
+      "Philodox",
+      "Homid",
+      "Gaia",
+      "Female"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "If a moot called by Carla's pack does not pass, she shifts to Crinos and must be alpha for that turn's Combat Phase.",
+      "efeitos": []
+    }
+  ],
+  "habilidades_passivas": [
+    "moot_crinos_alpha"
+  ],
+  "_metadata": {
+    "card_id": 3,
+    "precisa_revisao": false
+  }
+}

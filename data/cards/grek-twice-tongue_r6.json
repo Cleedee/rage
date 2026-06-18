@@ -1,19 +1,19 @@
 {
-  "id": "morgan-the-unworthy_r3",
-  "nome": "Morgan the Unworthy",
+  "id": "grek-twice-tongue_r6",
+  "nome": "Grek Twice-Tongue",
   "tipo": "Character - Gaia",
   "acoes": [
     "jogar"
   ],
   "atributos": {
-    "rage": 4,
-    "rage_morph": 4,
+    "rage": 3,
+    "rage_morph": 3,
     "gnosis": 6,
-    "health": 3,
-    "renown": 3,
+    "health": 7,
+    "renown": 6,
     "palavras_chave": [
       "Garou",
-      "Fianna",
+      "Silent Striders",
       "Philodox",
       "Metis",
       "Gaia",
@@ -22,15 +22,15 @@
   },
   "modos": [
     {
-      "descricao": "Every time Morgan uses a Gift or Rite decide randomly whether it works or fails.",
+      "descricao": "Despite his Metis breed, Grek is considered +1 Renown for moot voting.",
       "efeitos": []
     }
   ],
   "habilidades_passivas": [
-    "random_gift_failure"
+    "moot_renown_bonus"
   ],
   "_metadata": {
-    "card_id": 193,
+    "card_id": 132,
     "precisa_revisao": false
   }
 }
