@@ -647,8 +647,10 @@ def _check_viability(result: ValidationResult,
                 "keyword_raw": card.keyword or "",
                 "tags": tags_set,
                 "rage": card.rage,
+                "rage_morph": card.rage_morph or card.rage,
                 "gnosis": card.gnosis,
                 "health": card.health,
+                "health_morph": card.health_morph or card.health,
             })
 
     if not chars:
@@ -676,6 +678,36 @@ def _check_viability(result: ValidationResult,
                 (card, qty,
                  f"Requer Rage {rage_req}, mas maior Rage do pack é {max_char_rage}"
                  f" — personagens: {', '.join(c['name'] for c in chars)}"))
+
+    # ── Passo 1b: Diagnóstico de CAs viaveis apenas em Frenesi+Crinos ──
+    # CAs que exigem Rage acima da base do pack podem ser jogadas se um
+    # personagem entrar em Frenesi (que automaticamente flipa para Crinos,
+    # regra 6.11.3), usando rage_morph em vez de rage.
+    ca_crinos: list[tuple[Card, int, str]] = []
+    for card, qty in cards_data:
+        tipo = (card.tipo or "").lower()
+        if "combat" not in tipo:
+            continue
+        rage_req = card.rage
+        if rage_req <= 0 or rage_req <= max_char_rage:
+            continue  # Ja e jogavel sem Crinos
+        # Verifica se algum personagem tem rage_morph suficiente
+        candidatos = []
+        for ch in chars:
+            if ch["rage_morph"] >= rage_req:
+                diff = ch["rage_morph"] - ch["rage"]
+                candidatos.append(
+                    f"{ch['name']} (Rg base {ch['rage']} → morph {ch['rage_morph']}, "
+                    f"+{diff} em Crinos)")
+        if candidatos:
+            ca_crinos.append((card, qty, candidatos))
+
+    if ca_crinos:
+        for card, qty, candidatos in ca_crinos:
+            nomes_ch = "; ".join(candidatos)
+            result.warn("VIAB_CA_CRINOS",
+                        f"'{card.name}' x{qty} (Rg:{card.rage}) — jogavel "
+                        f"apenas com Frenesi+Crinos. Personagens candidatos: {nomes_ch}")
 
     # ── Passo 2: Verificar equipamentos ──
     # Equipamentos (especialmente fetishes) têm custo de Gnosis para equipar.
