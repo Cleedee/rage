@@ -847,24 +847,39 @@ for a in aliados:
 
 A partir de agora, decks novos devem seguir o formato **enxuto**:
 
-| Componente | Tamanho Ideal | Justificativa Estatística |
-|---|---|---|
-| **Deck de Septo** | **30-35 cartas** | ≥80% de ver personagem até T3; ≥45% de ver gift-chave até T3 |
-| **Deck de Combate** | **22-25 cartas** | Suficiente para 2-3 fases de combate (~3 CAs/fase) |
-| **Total** | **52-60 cartas** | Balance entre consistência e profundidade estratégica |
+#### Por cap de Renome
 
-#### Por que 30-35 sept?
+O tamanho do deck **escala com o número de personagens**. Mais personagens = mais gifts,
+equipment, events e CAs para equipá-los.
 
-No RAGE CCG, a Redraw Phase permite descartar qualquer sept card e comprar até 5 **todo turno**. Com 30-35 sept:
+| Cap | Personagens | Sept | Combat | Total | Personagem T3 | Gift T3 |
+|---|---|---|---|---|---|---|
+| **Ren20** | 3-4 | **30-35** | **22-25** | **52-60** | ≥80% | ≥40% |
+| **Ren30** | 5-6 | **35-42** | **25-28** | **60-70** | ≥85% | ≥35% |
 
-| Métrica | Sept=30 | Sept=33 | Sept=35 | Sept=40 |
-|---|---|---|---|---|
-| Personagem T1 | 43,3% | 40,3% | 38,0% | 33,8% |
-| Personagem T3 | **88,8%** | **85,0%** | **82,6%** | 76,7% |
-| Gift-chave T3 | **50,0%** | 45,5% | 42,9% | 37,5% |
+#### Por que esses números?
 
-Sept > 35 começa a perder significativamente consistência (<80% personagem T3).
-Sept > 40 é considerado **pesado** — só justificável se a estratégia exigir muitas cartas diferentes.
+No RAGE CCG, a Redraw Phase permite descartar qualquer sept card e comprar até 5 **todo turno**.
+Isso significa que em 3 turnos você vê ~15 cartas únicas de sept.
+
+**Ren20 (3-4 chars, sept=33):**
+
+| Métrica | Valor |
+|---|---|
+| Personagem T1 | 40,0% |
+| Personagem T3 | **85,0%** |
+| Gift-chave T3 | 45,5% |
+
+**Ren30 (5-6 chars, sept=38):**
+
+| Métrica | Valor |
+|---|---|
+| Personagem T1 | 52,7% |
+| Personagem T3 | **93,3%** |
+| Gift-chave T3 | 39,5% |
+
+> Sept > 42 começa a perder significativamente consistência mesmo para Ren30.
+> Sept > 45 é considerado **pesado** para qualquer cap — só justificável com muito draw/search.
 
 #### Critério de corte para cada carta do sept
 
@@ -887,9 +902,9 @@ Em 3 fases de combate (jogo típico), ~9 CAs são usadas — o deck tem 2-3x iss
 
 #### Exceções à regra
 
-- **Decks de torneio (Ren≥30):** podem precisar de mais cartas para suportar personagens adicionais
 - **Decks com muito draw/search:** gifts como Mindlink, Sense Wyrm, etc. permitem sept maior sem perder consistência
-- **Decks temáticos:** se a estratégia exige muitas peças diferentes, o sept pode chegar a 38-40 com justificativa
+- **Decks temáticos:** se a estratégia exige muitas peças diferentes, o sept pode chegar 3-5 acima do limite com justificativa
+- **Decks de Ren30 com 7+ personagens:** considerar sept até 45, combat até 30
 
 ---
 
