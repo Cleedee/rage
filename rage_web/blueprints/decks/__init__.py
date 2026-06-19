@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for, current_app
 
@@ -8,6 +10,8 @@ from rage_web.models.card import Card
 import rage_web.ext.repository as rep
 
 logger = logging.getLogger(__name__)
+
+STRATEGY_DIR = os.path.join('data', 'deck_strategies')
 
 # Tipos que vao para sept deck vs combat deck
 _DECK_SEPT_TYPES = {
@@ -71,6 +75,19 @@ def search():
                            deck_validade=deck_validade, form=form)
 
 
+def _carregar_estrategia(deck_id: int) -> dict | None:
+    """Carrega config de estrategia de data/deck_strategies/deck<id>_config.json."""
+    path = os.path.join(STRATEGY_DIR, f'deck{deck_id}_config.json')
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning(f'Erro ao carregar estrategia do deck {deck_id}: {e}')
+        return None
+
+
 @bp.get('/<id>')
 def read_deck(id):
     deck = rep.find_deck_by_id(id)
@@ -96,13 +113,21 @@ def read_deck(id):
     tipos = rep.get_tipos()
     expansoes = rep.get_expansions()
 
+    # Carrega config de estrategia
+    estrategia = _carregar_estrategia(deck.id)
+    if estrategia:
+        # Ordena gift_priorities por prioridade decrescente
+        if 'gift_priorities' in estrategia:
+            estrategia['gift_priorities'].sort(key=lambda g: -g.get('priority', 0))
+
     return render_template('decks/deck.html', form=form, deck=deck,
                            cards=cards, grupos=grupos,
                            total_combat=total_combat,
                            total_sept=total_sept,
                            total_chars=total_chars,
                            total_renown=total_renown,
-                           tipos=tipos, expansoes=expansoes)
+                           tipos=tipos, expansoes=expansoes,
+                           estrategia=estrategia)
 
 
 @bp.get('/new')
@@ -154,7 +179,8 @@ def save():
                                    total_chars=total_chars,
                                    total_renown=total_renown,
                                    tipos=rep.get_tipos(),
-                                   expansoes=rep.get_expansions())
+                                   expansoes=rep.get_expansions(),
+                                   estrategia=None)
 
         flash('Deck salvo.')
         return redirect(url_for('decks.read_deck', id=deck.id))

@@ -1,0 +1,189 @@
+<div class="box" style="margin-top: 1.5rem;">
+  <h3 class="subtitle is-5">
+    <i class="bi bi-diagram-3"></i> Estratégia do Deck
+  </h3>
+
+  {% set style = estrategia.get('style', '') %}
+  {% if style %}
+  <div class="tags" style="margin-bottom: 1rem;">
+    <span class="tag is-info is-light">{{ style }}</span>
+    <span class="tag is-light">{{ estrategia.get('notes', {}).get('combo_principal', '')[:80] }}</span>
+  </div>
+  {% endif %}
+
+  <!-- Prioridades de Gifts -->
+  {% if estrategia.get('gift_priorities') %}
+  <h4 class="subtitle is-6">🎯 Prioridade de Gifts</h4>
+  <table class="table is-fullwidth is-narrow is-hoverable" style="font-size:0.85rem;">
+    <thead>
+      <tr>
+        <th style="width:60px;">Prior.</th>
+        <th>Gift</th>
+        <th>Condição</th>
+        <th>Descrição</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for g in estrategia.gift_priorities[:15] %}
+      <tr>
+        <td><span class="tag {% if g.priority >= 90 %}is-danger{% elif g.priority >= 70 %}is-warning{% else %}is-light{% endif %}">{{ g.priority }}</span></td>
+        <td><code>{{ g.slug }}</code></td>
+        <td><span class="tag is-light is-small">{{ g.condition }}</span></td>
+        <td class="has-text-grey">{{ g.desc[:100] }}</td>
+      </tr>
+      {% endfor %}
+      {% if estrategia.gift_priorities|length > 15 %}
+      <tr><td colspan="4" class="has-text-grey has-text-centered">+ {{ estrategia.gift_priorities|length - 15 }} gifts de prioridade menor</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <!-- Preferências de Combate por Personagem -->
+  {% if estrategia.get('combat_action_preferences') %}
+  <details style="margin-top: 1rem;">
+    <summary class="subtitle is-6" style="cursor:pointer;">
+      ⚔️ Preferências de Combate
+    </summary>
+    <div class="content" style="font-size:0.85rem;">
+      {% for personagem, acoes in estrategia.combat_action_preferences.items() %}
+      <div style="margin-bottom:0.5rem;">
+        <strong>{{ personagem }}</strong>:
+        {% for a in acoes %}
+        <code>{{ a }}</code>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </details>
+  {% endif %}
+
+  <!-- Equipamentos -->
+  {% if estrategia.get('equipment_assignments') %}
+  <details style="margin-top: 0.75rem;">
+    <summary class="subtitle is-6" style="cursor:pointer;">
+      🎒 Atribuição de Equipamentos
+    </summary>
+    <table class="table is-fullwidth is-narrow" style="font-size:0.85rem;">
+      <thead>
+        <tr>
+          <th>Prior.</th>
+          <th>Equipamento</th>
+          <th>Personagem</th>
+          <th>Motivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for eq in estrategia.equipment_assignments %}
+        <tr>
+          <td><span class="tag is-light">{{ eq.priority }}</span></td>
+          <td>{{ eq.card_name }}</td>
+          <td>{{ eq.target }}</td>
+          <td class="has-text-grey">{{ eq.desc[:80] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  {% endif %}
+
+  <!-- Estratégia Umbra -->
+  {% if estrategia.get('umbra_strategy') %}
+  <details style="margin-top: 0.75rem;">
+    <summary class="subtitle is-6" style="cursor:pointer;">
+      🌌 Estratégia Umbra
+    </summary>
+    <div class="content" style="font-size:0.85rem;">
+      <p><strong>Entram na Umbra:</strong>
+        {% for c in estrategia.umbra_strategy.get('enter_characters', []) %}
+        <span class="tag is-light">{{ c }}</span>
+        {% endfor %}
+      </p>
+      {% if estrategia.umbra_strategy.get('save_for_combat') %}
+      <p><strong>Voltam para combate:</strong>
+        {% for c in estrategia.umbra_strategy.save_for_combat %}
+        <span class="tag is-warning is-light">{{ c }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+      {% if estrategia.umbra_strategy.get('enter_with_high_gnosis') %}
+      <p><span class="tag is-info is-light">Prioriza Gnosis alta para entrar</span></p>
+      {% endif %}
+      {% if estrategia.umbra_strategy.get('always_enter_if_opponent_cannot') %}
+      <p><span class="tag is-success is-light">Sempre entra se oponente não puder seguir</span></p>
+      {% endif %}
+    </div>
+  </details>
+  {% endif %}
+
+  <!-- Regras de Redraw -->
+  {% if estrategia.get('redraw_rules') %}
+  <details style="margin-top: 0.75rem;">
+    <summary class="subtitle is-6" style="cursor:pointer;">
+      🔄 Regras de Redraw
+    </summary>
+    <div class="content" style="font-size:0.85rem;">
+      {% if estrategia.redraw_rules.get('never_discard') %}
+      <p><strong>Nunca descartar:</strong>
+        {% for c in estrategia.redraw_rules.never_discard %}
+        <span class="tag is-danger is-light">{{ c }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+      {% if estrategia.redraw_rules.get('prefer_discard_types') %}
+      <p><strong>Preferir descartar:</strong>
+        {% for t in estrategia.redraw_rules.prefer_discard_types %}
+        <span class="tag is-light">{{ t }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+    </div>
+  </details>
+  {% endif %}
+
+  <!-- Estratégia Moot -->
+  {% if estrategia.get('moot_strategy') %}
+  <details style="margin-top: 0.75rem;">
+    <summary class="subtitle is-6" style="cursor:pointer;">
+      🗳️ Estratégia Moot
+    </summary>
+    <div class="content" style="font-size:0.85rem;">
+      {% if estrategia.moot_strategy.get('call_if_available') %}
+      <p><strong>Convocar se disponível:</strong>
+        {% for t in estrategia.moot_strategy.call_if_available %}
+        <span class="tag is-light">{{ t }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+      {% if estrategia.moot_strategy.get('always_vote_yes') %}
+      <p><strong>Votar sim sempre:</strong>
+        {% for t in estrategia.moot_strategy.always_vote_yes %}
+        <span class="tag is-success is-light">{{ t }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+      {% if estrategia.moot_strategy.get('vote_no_against') %}
+      <p><strong>Votar não contra:</strong>
+        {% for t in estrategia.moot_strategy.vote_no_against %}
+        <span class="tag is-danger is-light">{{ t }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+    </div>
+  </details>
+  {% endif %}
+
+  <!-- Notas / Combos -->
+  {% if estrategia.get('notes') %}
+  <details style="margin-top: 0.75rem;">
+    <summary class="subtitle is-6" style="cursor:pointer;">
+      📝 Notas da Estratégia
+    </summary>
+    <div class="content" style="font-size:0.85rem;">
+      {% for key, value in estrategia.notes.items() %}
+      <p><strong>{{ key | replace('_', ' ') | title }}:</strong> {{ value }}</p>
+      {% endfor %}
+    </div>
+  </details>
+  {% endif %}
+</div>
