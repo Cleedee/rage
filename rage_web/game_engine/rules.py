@@ -669,13 +669,18 @@ def gift_eh_permanente(gift_card: 'CardInstance') -> bool:
                     params = getattr(efeito, 'params', {}) or {}
                     if isinstance(params, dict):
                         duracao = params.get('duracao', '')
-                        if duracao in DURACOES_PERMANENTES:
+                        # duracao pode ser string (nome) ou int (numero de turnos)
+                        if isinstance(duracao, str) and duracao in DURACOES_PERMANENTES:
                             return True
-                    # Efeitos do tipo 'anular' tambem sao permanentes
-                    # (ex: Resist Pain anula efeitos de Rage)
-                    tipo = getattr(efeito, 'tipo', '')
-                    if tipo == 'anular' and not params.get('quantidade', 0):
-                        return True
+                        if isinstance(duracao, (int, float)) and duracao > 0:
+                            return True
+                        # Efeito pendente (nao implementado) com texto que
+                        # indica duracao: verifica o texto_original
+                        if params.get('efeito_pendente'):
+                            texto_orig = params.get('texto_original', '').lower()
+                            if any(p in texto_orig for p in ['until', 'while', 'permanent',
+                                                               'for ', 'during', 'as long as']):
+                                return True
 
     # Fallback: texto original
     text = (gift_card.text or '').lower()
@@ -683,11 +688,20 @@ def gift_eh_permanente(gift_card: 'CardInstance') -> bool:
         return True
     if 'attach this gift' in text:
         return True
-    if 'discard this gift when' in text:
-        # Gift que dura ate condicao — permanece em jogo
+    # ''For 1 full turn'' ou ''for the duration'' → duracao
+    if 'for ' in text and ('full turn' in text or 'duration' in text or 'battle' in text):
         return True
+    # ''lasts until'' → duracao permanente (ex: Wearing the Bear Shirt)
+    if 'lasts until' in text:
+        return True
+    # Gifts com duracao: "until X, then discard this gift"
+    # vs gifts instantaneos: "Discard this Gift after its effect"
     if 'until' in text and 'discard' in text:
-        return True
+        # "Discard this Gift after" + "until" = duracao ate condicao
+        # Ex: Burrow: "...until she comes out... Discard this Gift after"
+        if 'after its effect' in text:
+            return False  # Instantaneo: "Discard after its effect"
+        return True  # Tem duracao: "until X, discard"
     if 'place the' in text and 'card with' in text:
         return True
 
