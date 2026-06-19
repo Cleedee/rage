@@ -473,6 +473,7 @@
         <h3>🎁 Gifts Ativos <span class="count">({{ p.active_gifts|length }})</span></h3>
         <div class="hg-grid">
           {% for card in p.active_gifts %}
+          {% set duracao = gift_duracao_info(card.modelo_id) %}
           <div class="card-img-cell"
                data-card-name="{{ card.name }}"
                data-card-text="{{ card.text|e }}"
@@ -484,9 +485,16 @@
                    onerror="this.src='https://via.placeholder.com/120x167?text='+encodeURIComponent('{{ card.name[:2] }}')">
             </div>
             <span class="card-name">{{ card.name }}</span>
-            <span class="card-stats" style="font-size:0.65rem;color:#2980b9">
-              🎁 {{ card.card_type }}
-              {% if card.requires %} — {{ card.requires }}{% endif %}
+            <span class="card-stats" style="font-size:0.65rem;color:#2980b9;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span>🎁 {{ card.card_type }}</span>
+              {% if duracao %}
+              <span style="color:{{ duracao.cor }};font-size:0.6rem;font-weight:600;background:#e3f2fd;border-radius:3px;padding:0 4px;display:inline-block">
+                {{ duracao.icone }} {{ duracao.label }}
+              </span>
+              {% endif %}
+              {% if card.requires %}
+              <span style="color:#888;font-size:0.55rem">{{ card.requires }}</span>
+              {% endif %}
             </span>
           </div>
           {% endfor %}
@@ -604,17 +612,29 @@
             </div>
             {% endif %}
             {% if card.attached_gifts %}
-            <div style="margin-top:4px;border-top:1px solid #b8d4fe;padding-top:3px">
+            <div class="gifts-attached-section" style="margin-top:4px;border-top:2px solid #90caf9;padding-top:3px;background:#e3f2fd;border-radius:4px;padding:4px">
+              <div style="font-size:0.55rem;color:#1565c0;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:3px">
+                <span>🎁 Gifts Anexados</span>
+              </div>
               {% for g in card.attached_gifts %}
-              <div class="card-img-cell" style="width:100%;margin:0;padding:1px 0;cursor:pointer"
+              {% set duracao = gift_duracao_info(g.modelo_id) %}
+              <div class="card-img-cell" style="width:100%;margin:0;padding:2px 3px;cursor:pointer;background:#f5faff;border-radius:3px;margin-bottom:2px"
                    data-card-name="{{ g.name }}"
                    data-card-text=""
                    data-card-type="{{ g.card_type }}"
                    data-card-img="{{ get_card_image_url(g.card_id) or '' }}">
-                <span style="font-size:0.6rem;color:#2980b9;display:flex;align-items:center;gap:3px">
-                  <span style="background:#dbeafe;border-radius:3px;padding:0 4px;font-weight:600">🎁</span>
-                  <span style="font-weight:600">{{ g.name }}</span>
-                  <span style="color:#2980b9">{{ g.card_type }}</span>
+                <span style="font-size:0.65rem;display:flex;align-items:center;gap:3px;flex-wrap:wrap">
+                  <span style="background:#1565c0;color:white;border-radius:3px;padding:0 5px;font-weight:700;font-size:0.6rem">🎁</span>
+                  <span style="font-weight:600;color:#0d47a1">{{ g.name }}</span>
+                  {% if duracao %}
+                  <span style="background:{{ duracao.cor }};color:white;border-radius:3px;padding:0 6px;font-size:0.55rem;font-weight:600">
+                    {{ duracao.icone }} {{ duracao.label }}
+                  </span>
+                  {% else %}
+                  <span style="background:#78909c;color:white;border-radius:3px;padding:0 6px;font-size:0.55rem;font-weight:600">
+                    ⚡ Instantâneo
+                  </span>
+                  {% endif %}
                 </span>
               </div>
               {% endfor %}

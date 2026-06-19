@@ -22,6 +22,13 @@ from rage_web.game_engine.state import GameState, Zone
 bp = Blueprint('game', __name__, template_folder='templates',
                url_prefix='/game')
 
+
+@bp.app_context_processor
+def inject_gift_helpers():
+    """Disponibiliza gift_duracao_info para os templates."""
+    from rage_web.helpers.gift_ui import gift_duracao_info
+    return dict(gift_duracao_info=gift_duracao_info)
+
 # Partidas ativas em memoria
 # Tanto partidas criadas pelo web quanto pelo bot
 _games: dict[str, GameState] = {}

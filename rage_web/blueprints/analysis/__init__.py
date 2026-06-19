@@ -34,6 +34,13 @@ from sqlalchemy import text
 bp = Blueprint('analysis', __name__, template_folder='templates',
                url_prefix='/analysis')
 
+
+@bp.app_context_processor
+def inject_gift_helpers():
+    """Disponibiliza gift_duracao_info para os templates."""
+    from rage_web.helpers.gift_ui import gift_duracao_info
+    return dict(gift_duracao_info=gift_duracao_info)
+
 # ── Estados de partida armazenados ──
 # game_id -> { 'states': [...], 'meta': {...} }
 
