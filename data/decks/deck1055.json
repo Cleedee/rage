@@ -6,13 +6,43 @@
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,
-  "total_cards": 20,
-  "total_renown": 23,
+  "total_cards": 63,
+  "total_renown": 52,
   "cards": [
     {
       "card_id": 3,
       "slug": "carla-grimsson",
       "name": "Carla Grimsson",
+      "quantity": 1
+    },
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 1
+    },
+    {
+      "card_id": 118,
+      "slug": "hamstringed",
+      "name": "Hamstringed",
+      "quantity": 1
+    },
+    {
+      "card_id": 119,
+      "slug": "head-or-gut",
+      "name": "Head or Gut?",
+      "quantity": 1
+    },
+    {
+      "card_id": 132,
+      "slug": "grek-twice-tongue",
+      "name": "Grek Twice-Tongue",
+      "quantity": 1
+    },
+    {
+      "card_id": 174,
+      "slug": "lone-wolf-circles",
+      "name": "Lone Wolf Circles",
       "quantity": 1
     },
     {
@@ -22,40 +52,196 @@
       "quantity": 1
     },
     {
-      "card_id": 286,
-      "slug": "bite",
-      "name": "Bite",
+      "card_id": 212,
+      "slug": "urban-renewal",
+      "name": "Urban Renewal",
+      "quantity": 1
+    },
+    {
+      "card_id": 221,
+      "slug": "rewards-of-leadership",
+      "name": "Rewards of Leadership",
       "quantity": 2
     },
     {
-      "card_id": 293,
-      "slug": "brutal-kick",
-      "name": "Brutal Kick",
+      "card_id": 272,
+      "slug": "flak-jacket",
+      "name": "Flak Jacket",
       "quantity": 2
+    },
+    {
+      "card_id": 287,
+      "slug": "block",
+      "name": "Block",
+      "quantity": 2
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 295,
+      "slug": "careful-strike",
+      "name": "Careful Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 320,
+      "slug": "fast-strike",
+      "name": "Fast Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 448,
+      "slug": "a-bus-full-of-people",
+      "name": "A Bus Full of People",
+      "quantity": 2
+    },
+    {
+      "card_id": 463,
+      "slug": "corrupt-kinfolk",
+      "name": "Corrupt Kinfolk",
+      "quantity": 2
+    },
+    {
+      "card_id": 469,
+      "slug": "drunken-vandals",
+      "name": "Drunken Vandals",
+      "quantity": 2
+    },
+    {
+      "card_id": 558,
+      "slug": "unlucky-lune",
+      "name": "Unlucky Lune",
+      "quantity": 1
+    },
+    {
+      "card_id": 597,
+      "slug": "sky-river-caern",
+      "name": "Sky River Caern",
+      "quantity": 1
     },
     {
       "card_id": 621,
       "slug": "bivouac",
       "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 627,
+      "slug": "cellular-phone",
+      "name": "Cellular Phone",
+      "quantity": 1
+    },
+    {
+      "card_id": 660,
+      "slug": "lost-map",
+      "name": "Lost Map",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
       "quantity": 2
     },
     {
-      "card_id": 790,
-      "slug": "friends-in-high-places",
-      "name": "Friends in High Places",
+      "card_id": 748,
+      "slug": "dead-zone",
+      "name": "Dead Zone",
+      "quantity": 1
+    },
+    {
+      "card_id": 752,
+      "slug": "hidden-lair",
+      "name": "Hidden Lair",
+      "quantity": 1
+    },
+    {
+      "card_id": 823,
+      "slug": "checking-the-classifieds",
+      "name": "Checking the Classifieds",
+      "quantity": 1
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 1
+    },
+    {
+      "card_id": 908,
+      "slug": "spiritual-revelation",
+      "name": "Spiritual Revelation",
+      "quantity": 1
+    },
+    {
+      "card_id": 966,
+      "slug": "geas",
+      "name": "Geas",
+      "quantity": 1
+    },
+    {
+      "card_id": 983,
+      "slug": "higher-calling",
+      "name": "Higher Calling",
+      "quantity": 1
+    },
+    {
+      "card_id": 1021,
+      "slug": "power-of-the-ways",
+      "name": "Power of the Ways",
+      "quantity": 4
+    },
+    {
+      "card_id": 1029,
+      "slug": "resist-pain",
+      "name": "Resist Pain",
       "quantity": 2
     },
     {
-      "card_id": 807,
-      "slug": "sneak-attack",
-      "name": "Sneak Attack",
-      "quantity": 2
+      "card_id": 1047,
+      "slug": "serenity",
+      "name": "Serenity",
+      "quantity": 1
     },
     {
-      "card_id": 1009,
-      "slug": "mother-s-touch",
-      "name": "Mother's Touch",
-      "quantity": 2
+      "card_id": 1084,
+      "slug": "wearing-the-bear-shirt",
+      "name": "Wearing the Bear Shirt",
+      "quantity": 1
+    },
+    {
+      "card_id": 1089,
+      "slug": "world-of-human",
+      "name": "World of Human",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 1
     },
     {
       "card_id": 1290,
@@ -64,21 +250,45 @@
       "quantity": 2
     },
     {
-      "card_id": 1612,
-      "slug": "death-express",
-      "name": "Death Express",
-      "quantity": 2
-    },
-    {
-      "card_id": 1616,
-      "slug": "laora-d-avennes",
-      "name": "Laora d'Avennes",
+      "card_id": 1293,
+      "slug": "planned-strike",
+      "name": "Planned Strike",
       "quantity": 1
     },
     {
-      "card_id": 1618,
-      "slug": "lone-wolf",
-      "name": "Lone Wolf",
+      "card_id": 1298,
+      "slug": "reinforcements",
+      "name": "Reinforcements",
+      "quantity": 2
+    },
+    {
+      "card_id": 1302,
+      "slug": "riposte",
+      "name": "Riposte",
+      "quantity": 1
+    },
+    {
+      "card_id": 1313,
+      "slug": "stunning-strike",
+      "name": "Stunning Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 1
+    },
+    {
+      "card_id": 1416,
+      "slug": "cub-s-cry",
+      "name": "Cub's Cry",
+      "quantity": 2
+    },
+    {
+      "card_id": 1635,
+      "slug": "odin-s-blood",
+      "name": "Odin's Blood",
       "quantity": 1
     }
   ]

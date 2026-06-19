@@ -2,7 +2,7 @@
   "id": 2001,
   "name": "morgans_bully_quest",
   "description": "morgans_bully_quest (20 Renown). Importado de rageccg.weebly.com",
-  "renown_cap": 20,
+  "renown_cap": 30,
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,
