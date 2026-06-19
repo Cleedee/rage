@@ -558,7 +558,8 @@ def pode_usar_gift_para_presa(prey_card: 'CardInstance',
                for o in opcoes)
 
 
-def validar_timing_gift(gift_card: 'CardInstance', game_phase: str) -> bool:
+def validar_timing_gift(gift_card: 'CardInstance', game_phase: str,
+                         combat_step: str = '') -> bool:
     """Valida se o Gift pode ser usado na fase atual do jogo.
 
     Regra: Gifts podem ser jogados a qualquer momento, a menos que
@@ -567,6 +568,7 @@ def validar_timing_gift(gift_card: 'CardInstance', game_phase: str) -> bool:
     Args:
         gift_card: A carta Gift.
         game_phase: Fase atual do jogo.
+        combat_step: Step atual do combate (ex: 'reveal', 'play_card').
 
     Returns:
         True se pode ser usado na fase atual.
@@ -589,6 +591,22 @@ def validar_timing_gift(gift_card: 'CardInstance', game_phase: str) -> bool:
 
     # 'Play during the Withdrawal step' -> so durante combate
     if 'play during the withdrawal' in text:
+        return em_combate
+
+    # 'Play this Gift at the end of the Reveal step of combat' -> revelacao
+    if 'play this gift at the end of the reveal step' in text:
+        if not em_combate:
+            return False
+        if combat_step and combat_step != 'reveal':
+            return False
+        return True
+
+    # 'Play during combat' -> so durante combate
+    if 'play during combat' in text:
+        return em_combate
+
+    # 'Play at the start of any combat' -> so durante combate
+    if 'play at the start of any combat' in text or 'play at the start of combat' in text:
         return em_combate
 
     # Sem restricao explicita: pode em qualquer fase

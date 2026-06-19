@@ -305,7 +305,7 @@ def api_use_card(game_id: str):
                                                   validar_timing_gift,
                                                   validar_opponent_gift)
         # Valida timing
-        if not validar_timing_gift(card, game.phase):
+        if not validar_timing_gift(card, game.phase, game.combat.step):
             return jsonify({
                 'error': f'{card.name}: nao pode ser usado na fase '
                          f'"{game.phase}" (restricao de timing)'

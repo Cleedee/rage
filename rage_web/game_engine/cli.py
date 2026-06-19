@@ -610,7 +610,7 @@ class RageCLI(cmd.Cmd):
                                                       validar_timing_gift,
                                                       validar_opponent_gift)
             # Valida timing
-            if not validar_timing_gift(card, g.phase):
+            if not validar_timing_gift(card, g.phase, g.combat.step):
                 print(f'  {card.name}: nao pode ser usado na fase "{g.phase}" '
                       f'(restricao de timing)')
                 return

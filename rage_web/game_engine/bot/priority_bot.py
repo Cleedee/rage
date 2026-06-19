@@ -1980,7 +1980,7 @@ class PriorityBot:
                 if c.is_frenzied:
                     return False
             # Valida timing
-            if not validar_timing_gift(card, self.game.phase):
+            if not validar_timing_gift(card, self.game.phase, self.game.combat.step):
                 return False
             # Valida 'opponent' = combat only
             if not validar_opponent_gift(card, self.game.phase):
