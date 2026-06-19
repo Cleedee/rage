@@ -1,0 +1,159 @@
+{
+  "deck_id": 1045,
+  "name": "Kitsune — Raposas da Fortuna",
+  "style": "control",
+
+  "gift_priorities": [
+    {"slug": "seal-of-inari", "priority": 100, "condition": "has_character_named:katsuko-moon-saint", "desc": "Seal of Inari x2 — criar Loyalty entre Kitsune e alvo, alimenta Wu + Rewards"},
+    {"slug": "seal-of-inari", "priority": 95, "condition": "has_character_named:wu-bingshu", "desc": "Seal of Inari — Wu ganha votos extras por packmate leal"},
+
+    {"slug": "phantasm", "priority": 95, "condition": "has_character_named:katsuko-moon-saint", "desc": "Phantasm (Gn:7) — Katsuko cura todo dano por round, aniquila atacante"},
+
+    {"slug": "song-of-fear", "priority": 90, "condition": "has_character_named:morgan-the-unworthy", "desc": "Song of Fear (Gn:6) — Morgan trava frenesi inimigo e jogo aleatorio"},
+
+    {"slug": "fable", "priority": 85, "condition": "always", "desc": "Fable (Gn:4) — +5 votos em moot — vitoria politica dominante"},
+
+    {"slug": "exorcism", "priority": 80, "condition": "has_character_named:wu-bingshu", "desc": "Exorcism (Gn:3) — Wu remove espirito com Gn < sua Gn"},
+
+    {"slug": "parting-the-velvet-curtain", "priority": 75, "condition": "has_character_named:wu-bingshu", "desc": "Parting the Velvet Curtain (Gn:4) — Wu leva nao-Garou a Umbra"},
+
+    {"slug": "power-of-the-ways", "priority": 75, "condition": "character_in_umbra", "desc": "Power of the Ways (Gn:4) — Morgan buff +1 tudo na Umbra"},
+
+    {"slug": "mindspeak", "priority": 70, "condition": "has_character_named:freide-counts-the-scalps", "desc": "Mindspeak (Gn:3) — Freide compra cartas + comunicacao"},
+
+    {"slug": "rising-fury", "priority": 65, "condition": "has_character_named:freide-counts-the-scalps", "desc": "Rising Fury (Gn:3) — Freide filtra deck, olha topo + descarta"},
+
+    {"slug": "rilkean-heart", "priority": 60, "condition": "combat_likely", "desc": "Rilkean Heart (Gn:6) — Morgan nao perde CA planejada em combate"},
+
+    {"slug": "curse-of-hatred", "priority": 55, "condition": "has_character_named:freide-counts-the-scalps", "desc": "Curse of Hatred (Gn:3) — Freide/Morgan debuff Rage/inimigo"},
+
+    {"slug": "burrow", "priority": 50, "condition": "has_character_named:freide-counts-the-scalps", "desc": "Burrow (Gn:4) — Freide foge de combate"},
+
+    {"slug": "world-of-human", "priority": 45, "condition": "has_characters", "desc": "World of Human (Gn:6) — +1 Gauntlet em caern (qualquer Homid)"},
+
+    {"slug": "close-gauntlet", "priority": 70, "condition": "character_in_umbra", "desc": "Close Gauntlet — trava stepping sideways, prende espiritos"},
+
+    {"slug": "spiritual-revelation", "priority": 60, "condition": "always", "desc": "Spiritual Revelation x2 — move Banimentos para Umbra, compra = Gnosis"},
+
+    {"slug": "distracting-spirits", "priority": 55, "condition": "always", "desc": "Distracting Spirits — -2 Renome em Battlefields"},
+
+    {"slug": "iron-will", "priority": 50, "condition": "combat_likely", "desc": "Iron Will — imune a perder proxima CA"}
+  ],
+
+  "resource_play_order": [
+    "character",
+    "gift",
+    "equipment",
+    "event",
+    "action",
+    "victim",
+    "enemy"
+  ],
+
+  "combat_action_preferences": {
+    "Katsuko Moon-Saint": [
+      "gnosis_bomb",
+      "ghost_flame",
+      "lightning_bolt",
+      "flow_like_water",
+      "redirected_attack",
+      "cheap_shot",
+      "dodge",
+      "fetal_position"
+    ],
+    "Wu Bingshu": [
+      "gnosis_bomb",
+      "ghost_flame",
+      "flow_like_water",
+      "redirected_attack",
+      "cheap_shot",
+      "dodge",
+      "fetal_position"
+    ],
+    "Freide Counts-the-Scalps": [
+      "careful_strike",
+      "evade_and_strike",
+      "spirited_strike",
+      "ghost_flame",
+      "cheap_shot",
+      "dodge",
+      "block"
+    ],
+    "Morgan the Unworthy": [
+      "ghost_flame",
+      "lightning_bolt",
+      "block_and_strike",
+      "forceful_wind",
+      "planned_strike",
+      "fur_gnarl",
+      "dodge",
+      "block"
+    ],
+    "Mei-Fei Quan": [
+      "dodge",
+      "cheap_shot"
+    ]
+  },
+
+  "equipment_assignments": [
+    {"card_name": "Cellular Phone", "target": "Katsuko Moon-Saint", "priority": 80, "desc": "Pack attack/defend com qualquer um — essencial na estrategista"},
+    {"card_name": "Cellular Phone", "target": "Wu Bingshu", "priority": 60, "desc": "Segundo Phone no politico"},
+    {"card_name": "Lost Map", "target": "Katsuko Moon-Saint", "priority": 70, "desc": "Atuar como alpha defensora em qualquer Battlefield"},
+    {"card_name": "Corporate Credit Card", "target": "Katsuko Moon-Saint", "priority": 50, "desc": "Equipar no inicio do combate — Katsuko prioridade"},
+    {"card_name": "Corporate Credit Card", "target": "Wu Bingshu", "priority": 40, "desc": "Segundo Credit Card para draw"}
+  ],
+
+  "caern_preferences": [],
+
+  "umbra_strategy": {
+    "enter_characters": ["Katsuko Moon-Saint", "Wu Bingshu", "Morgan the Unworthy"],
+    "save_for_combat": ["Katsuko Moon-Saint"],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "ffa_diplomacy": "weaken_largest",
+    "avoid_overextend": true,
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": ["Victim", "Enemy"]
+    }
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Mei-Fei Quan",
+      "Katsuko Moon-Saint",
+      "Seal of Inari",
+      "Fable",
+      "Song of Fear",
+      "Phantasm",
+      "Ghost Flame",
+      "Gnosis Bomb",
+      "Lightning Bolt"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": ["Moot", "Equipment", "Ally"]
+  },
+
+  "moot_strategy": {
+    "call_if_available": ["moot"],
+    "always_vote_yes": ["Own", "Ally"],
+    "vote_no_against": ["Leader"],
+    "strategic_vote": true
+  },
+
+  "notes": {
+    "combo_principal": "Mei-Fei Quan viva → +1 Gnosis para todos Hengeyokai → Seal of Inari cria Loyalty → Wu vota mais + Fable amplifica → Rewards of Leadership busca Ally/Equipment/Territory",
+    "combo_combate": "Katsuko/Wu com Gnosis alta → Gnosis Bomb (dano = Gnosis) ou Ghost Flame (dano 7 agg + descarta 2 CAs) → Flow Like Water (esquiva total Hengeyokai) → Lightning Bolt (6 instinctive unblockable)",
+    "combo_umbra": "Parting the Velvet Curtain (Wu) → leva inimigo a Umbra → Power of the Ways (Morgan, +1 tudo) → Distracting Spirits (-2 Renome) → Spiritual Revelation (move Banimentos)",
+    "combo_moot": "Seal of Inari x2 cria loyalties → Wu +1 voto por leal → Fable +5 votos → Rewards of Leadership busca carta",
+    "fraqueza_sem_mei-fei": "Mei-Fei e o coracao do deck. Sem ela, Gnosis cai 1 ponto: Phantasm (Gn:7) e Song of Fear (Gn:6) ficam inacessiveis para Katsuko/Morgan. Prioridade absoluta mante-la viva.",
+    "fraqueza_rage_baixa": "Kitsune tem Rg 1-2. CAs caras (Rg>=4) so Morgan usa. Deck depende de CAs Rg:0 com efeitos especiais (Ghost Flame, Gnosis Bomb, Lightning Bolt, Flow Like Water, Redirected Attack).",
+    "freide_ability": "Once per game: Freide pode dobrar 1 estatistica (Rage, Gnosis ou Health) por 1 turno. Usar em momento critico para Rg:6 (mais CAs) ou Hl:6 (sobrevivencia).",
+    "morgan_ability": "Random: toda vez que Morgan usa Gift/Rite, 50% de chance de funcionar ou ser descartado. Nao contar com ele para jogadas precisas. Usar gifts de alto impacto (Song of Fear, Power of the Ways) com cautela."
+  }
+}
