@@ -468,6 +468,19 @@ class PriorityBot:
             ct = card.card_type or ''
             if ct == 'Event' and card.modelo_id:
                 if self._pode_pagar_custos(card):
+                    # Verifica condicao_uso do Event (ex: Rewards of Leadership)
+                    from rage_web.game_engine.effects import (
+                        CARTAS_EXEMPLO, _validar_condicao_uso)
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        cond_ok = all(
+                            not m.condicao_uso
+                            or _validar_condicao_uso(
+                                self.game, self.player, m.condicao_uso)
+                            for m in modelo.modos
+                        )
+                        if not cond_ok:
+                            continue  # Condicao nao atendida, pula
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
@@ -492,6 +505,12 @@ class PriorityBot:
                             tem_stub = any(
                                 e.tipo in TIPOS_STUB for e in modo.efeitos)
                             if not tem_stub:
+                                # Verifica condicao_uso
+                                if modo.condicao_uso:
+                                    from rage_web.game_engine.effects import _validar_condicao_uso
+                                    if not _validar_condicao_uso(
+                                            self.game, self.player, modo.condicao_uso):
+                                        continue
                                 modo_idx = self._escolher_melhor_modo(card.modelo_id)
                                 self._cards_played_this_turn += 1
                                 return self._usar_carta_efeito(i, modo_idx, card)
