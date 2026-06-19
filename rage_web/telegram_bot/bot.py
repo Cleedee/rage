@@ -153,7 +153,8 @@ COMMANDS = [
     ('pass', '⏭️ Passar a vez'),
     ('next', '⏩ Avançar fase'),
     ('concede', '🏳️ Desistir'),
-    ('duel_bot', '🤖 Desafiar bot: /duel-bot <deck_id> [bot_deck_id]'),
+    ('duel_bot', '🤖 Desafiar bot: /duel_bot <deck_id> [bot_deck_id]'),
+    ('duelbot', '🤖 Desafiar bot (alias)'),
 ]
 
 
@@ -256,6 +257,7 @@ def build_application(token: str) -> Application:
 
     # ── Bot Duel ──
     app.add_handler(CommandHandler('duel_bot', duel_bot))
+    app.add_handler(CommandHandler('duelbot', duel_bot))
 
     # ── Callback handler (inline keyboards) ──
     app.add_handler(CallbackQueryHandler(handle_callback))
