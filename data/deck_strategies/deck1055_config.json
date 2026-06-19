@@ -1,0 +1,114 @@
+{
+  "deck_id": 1055,
+  "name": "O Julgamento (Philodox)",
+  "style": "control",
+
+  "gift_priorities": [
+    {"card_id": 1021, "priority": 100, "condition": "umbra_available", "desc": "Power of the Ways — cura na Umbra"},
+    {"card_id": 1029, "priority": 90, "condition": "combat_likely", "desc": "Resist Pain — reducao de dano"},
+    {"card_id": 1021, "priority": 80, "condition": "has_injured_character", "desc": "Power of the Ways — curar ferido"},
+    {"card_id": 1084, "priority": 70, "condition": "has_character_named:carla-grimsson", "desc": "Wearing the Bear Shirt — +Rage para Carla"},
+    {"card_id": 966, "priority": 60, "condition": "has_strong_target", "desc": "Geas — forcar combate 3 rounds"},
+    {"card_id": 1635, "priority": 50, "condition": "has_injured_character", "desc": "Odin's Blood — cura Get"},
+    {"card_id": 983, "priority": 40, "condition": "has_characters", "desc": "Higher Calling — controle CoG-Philodox"},
+    {"card_id": 1047, "priority": 30, "condition": "combat_active", "desc": "Serenity — acalmar durante combate"},
+    {"card_id": 1089, "priority": 20, "condition": "always", "desc": "World of Human — utilidade Homid"},
+    {"card_id": 1029, "priority": 85, "condition": "ffa_mode", "desc": "Resist Pain — ainda mais importante em FFA"}
+  ],
+
+  "resource_play_order": [
+    "character",
+    "caern",
+    "equipment",
+    "territory",
+    "gift",
+    "ally",
+    "event",
+    "rite"
+  ],
+
+  "combat_action_preferences": {
+    "Carla Grimsson": [
+      "disembowelment",
+      "stunning_strike",
+      "head_or_gut",
+      "fast_strike",
+      "head_butt",
+      "block_and_strike",
+      "block",
+      "dodge"
+    ],
+    "Grek Twice-Tongue": [
+      "block",
+      "careful_strike",
+      "lucky_blow",
+      "head_butt",
+      "block_and_strike",
+      "dodge"
+    ],
+    "Lone Wolf Circles": [
+      "block",
+      "dodge",
+      "lucky_blow",
+      "careful_strike",
+      "fancy_footwork",
+      "hamstringed",
+      "riposte"
+    ],
+    "Morgan the Unworthy": [
+      "planned_strike",
+      "fast_strike",
+      "disembowelment",
+      "stunning_strike",
+      "head_or_gut",
+      "head_butt",
+      "block",
+      "dodge"
+    ]
+  },
+
+  "equipment_assignments": [
+    {"card_name": "Assegai", "target": "Carla Grimsson", "priority": 80},
+    {"card_name": "Flak Jacket", "target": "Carla Grimsson", "priority": 60},
+    {"card_name": "Bivouac", "target": "Grek Twice-Tongue", "priority": 70},
+    {"card_name": "Lost Map", "target": "Lone Wolf Circles", "priority": 50},
+    {"card_name": "Cellular Phone", "target": "Morgan the Unworthy", "priority": 50}
+  ],
+
+  "caern_preferences": [
+    {"card_name": "Sky River Caern", "priority": 100}
+  ],
+
+  "umbra_strategy": {
+    "enter_characters": ["Morgan the Unworthy"],
+    "keep_in_umbra": [],
+    "save_for_combat": ["Grek Twice-Tongue", "Lone Wolf Circles"],
+    "always_enter_if_opponent_cannot": true,
+    "approach": "defensive"
+  },
+
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "ffa_diplomacy": "weaken_largest",
+    "avoid_overextend": true
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Power of the Ways",
+      "Resist Pain",
+      "Sky River Caern",
+      "Geas"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": ["Combat Event", "Event", "Moot", "Board Meeting"]
+  },
+
+  "moot_strategy": {
+    "call_if_available": ["Moot", "Board Meeting"],
+    "always_vote_yes": ["Own"],
+    "vote_no_against": ["Leader"],
+    "strategic_vote": true
+  }
+}

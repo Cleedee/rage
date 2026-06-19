@@ -1215,6 +1215,7 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                     p.renown_level = d.renown_cap
                 if d.strategy:
                     p.deck_strategy = d.strategy
+                p.deck_id = did
         players.append(p)
 
     for idx, did in enumerate(deck_ids):

@@ -13,6 +13,7 @@ import logging
 from typing import Optional
 
 from rage_web.game_engine.bot.evaluator import BoardEvaluator, TargetPrioritizer
+from rage_web.game_engine.bot.strategy_engine import StrategyEngine
 from rage_web.game_engine.cli import create_sample_game
 from rage_web.game_engine.combat_queue import (
     COMBAT_ACTIONS, can_feint, declare_action, end_combat,
@@ -40,6 +41,13 @@ class PriorityBot:
         self.difficulty = difficulty
         self.evaluator = BoardEvaluator(game, player_id)
         self.prioritizer = TargetPrioritizer(game, player_id)
+        # Motor de estrategia (carrega config do deck se disponivel)
+        deck_id = getattr(self.player, 'deck_id', 0)
+        self.strategy = StrategyEngine(deck_id=deck_id)
+        self._has_strategy = self.strategy.is_loaded()
+        if self._has_strategy:
+            logger.info(f'[Bot] Estrategia carregada para {self.player.name}')
+
         # Heuristicas do bot
         self._cards_played_this_turn = 0
         self._umbra_agiu = False  # So uma acao de Umbra por fase
@@ -318,6 +326,15 @@ class PriorityBot:
                 else:
                     score -= 10
 
+            # ── Strategy Engine: gift_priorities sobrescreve pontuacao ──
+            if ct == 'Gift' and self._has_strategy:
+                gifted = self.strategy.sorted_gifts(
+                    me.hand, self.game, me, self)
+                for prio, gc in gifted:
+                    if gc.card_id == card.card_id:
+                        score = max(score, prio)
+                        break
+
             # 10. Gift / Event: util se tem personagens
             elif ct == 'Gift':
                 if tem_character:
@@ -334,8 +351,22 @@ class PriorityBot:
 
             scored.append((i, score, card))
 
-        # Ordena por pontuacao (melhores primeiro)
-        scored.sort(key=lambda x: x[1], reverse=True)
+        # ── Strategy Engine: resource_play_order ajusta ordem ──
+        if self._has_strategy and self.strategy.resource_play_order():
+            ordem = self.strategy.resource_play_order()
+            def _ordem_key(item):
+                _, s, card = item
+                ct = (card.card_type or '').lower()
+                # Encontra a posicao na ordem configurada
+                for pos, tipo in enumerate(ordem):
+                    if tipo.lower() in ct:
+                        # Prioridade: posicao na ordem (menor = melhor)
+                        return (0, pos, -s)
+                return (1, 0, -s)  # Nao configurado: depois dos configurados
+            scored.sort(key=_ordem_key)
+        else:
+            # Ordena por pontuacao (melhores primeiro)
+            scored.sort(key=lambda x: x[1], reverse=True)
 
         for i, score, card in scored:
             if score <= 0:
@@ -592,6 +623,14 @@ class PriorityBot:
                     if not tem_pagador:
                         score -= 15
 
+            # ── Strategy Engine: redraw_rules sobrescreve score ──
+            if self._has_strategy:
+                keep = self.strategy.should_keep_in_redraw(c)
+                if keep is True:
+                    score += 200  # Nunca descarta
+                elif keep is False:
+                    score -= 200  # Sempre descarta se possivel
+
             scored_cards.append((i, score, c))
 
         # Ordena por pontuacao (piores primeiro)
@@ -777,6 +816,33 @@ class PriorityBot:
                 possivel_alpha = max(candidatos_alpha,
                                      key=lambda c: c.effective_rage * c.effective_health)
                 possivel_alpha_id = str(possivel_alpha.card_id)
+
+            # ── Strategy Engine: personagens preferidos para Umbra ──
+            if self._has_strategy:
+                umbra_cfg = self.strategy.get('umbra_strategy', {})
+                enter_chars = umbra_cfg.get('enter_characters', [])
+                save_chars = umbra_cfg.get('save_for_combat', [])
+
+                # Se ha personagens especificos para entrar, prioriza
+                for entry in enter_chars:
+                    for c in podem_ir:
+                        if entry.lower() in (c.name or '').lower():
+                            self.player.step_sideways(c)
+                            self.game.add_log(
+                                f'[BOT] {self.player.name}: {c.name} '
+                                f'entrou na Umbra (estratégia)')
+                            return f'umbra_step_{c.card_id}'
+
+                # Se ha personagens para preservar para combate, exclui
+                if save_chars:
+                    podem_ir = [
+                        c for c in podem_ir
+                        if not any(s.lower() in (c.name or '').lower()
+                                  for s in save_chars)
+                    ]
+                    if not podem_ir:
+                        self._pass_turn()
+                        return 'pass_umbra'
 
             # Filtra quem enviar: prioriza Gnosis alta, evita alpha
             if possivel_alpha_id:
@@ -2220,6 +2286,12 @@ class PriorityBot:
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
 
+        # ── Strategy Engine: FFA diplomacy redireciona alvo ──
+        if self._has_strategy and len(opponents) >= 2:
+            target_id = self.strategy.get_ffa_target(self.game, me)
+            if target_id:
+                opponents.sort(key=lambda p: p.id != target_id)
+
         if not me.pack_home:
             return None
 
@@ -2537,6 +2609,13 @@ class PriorityBot:
         lento = self._is_slow_deck()
         strategy = self._deck_strategy
 
+        # ── Strategy Engine: FFA diplomacy redireciona alvo ──
+        if self._has_strategy and len(opponents) >= 2:
+            target_id = self.strategy.get_ffa_target(self.game, me)
+            if target_id:
+                # Reordena opponents para priorizar o alvo da estrategia
+                opponents.sort(key=lambda p: p.id != target_id)
+
         # Swarm: ataca mesmo sem chance de matar (desgaste)
         if strategy == 'swarm':
             all_attackers = [c for c in me.pack_home
@@ -2732,6 +2811,20 @@ class PriorityBot:
         melhor_carta = None
         melhor_dano = -1
 
+        # ── Strategy Engine: actions preferidas por personagem ──
+        preferred_actions = []
+        if self._has_strategy:
+            char_name = card.name or ''
+            preferred_actions = self.strategy.preferred_actions(char_name)
+            if preferred_actions:
+                self.game.add_log(
+                    f'[BOT] Preferencias de acao para {char_name}: '
+                    f'{preferred_actions}')
+
+        # Converte preferencias para slug
+        preferred_slugs = [a.lower().replace(' ', '_').replace('-', '_')
+                          for a in preferred_actions]
+
         for carta_combate in self.player.combat_hand:
             # Converte nome da carta para slug
             nome_slug = (carta_combate.name or '').lower().replace(' ', '_').replace('-', '_')
@@ -2780,10 +2873,14 @@ class PriorityBot:
 
                 # No Rage CCG toda acao requer uma carta real.
                 # Usa qualquer carta com dano > 0.
-                if acao_dano > 0 and acao_dano > melhor_dano:
+                # ── Strategy Engine: bônus de prioridade ──
+                dano_ajustado = acao_dano
+                if preferred_slugs and nome_slug in preferred_slugs:
+                    dano_ajustado += 20  # Bonus grande para ação preferida
+                if dano_ajustado > 0 and dano_ajustado > melhor_dano:
                     melhor_acao = nome_slug
                     melhor_carta = carta_combate
-                    melhor_dano = acao_dano
+                    melhor_dano = acao_dano  # Armazena dano real (sem bônus)
 
         # ── P8: Se P4 nao achou nada, busca cartas com efeito 'dano' ──
         # (ex: Telling Blow, Reckless Swing, Lucky Blow)
@@ -3241,6 +3338,25 @@ class PriorityBot:
         eh_weapon = 'weapon' in kw
         eh_armor = 'armor' in kw
         eh_fetish = 'fetish' in kw and 'non-fetish' not in kw
+
+        # ── Strategy Engine: equipment_assignments tem prioridade ──
+        if self._has_strategy:
+            nome_alvo = self.strategy.equipment_assignment(
+                card.name or '', self.game, self.player)
+            if nome_alvo:
+                for alvo in candidates:
+                    if nome_alvo.lower() in (alvo.name or '').lower():
+                        if resolvedor._validar_restricoes_equipamento(card, alvo):
+                            if card in self.player.pack_home:
+                                self.player.pack_home.remove(card)
+                            card.zone = Zone.OUT_OF_PLAY
+                            alvo.attached_equipment.append(card)
+                            self.game.add_log(
+                                f'[BOT] {self.player.name} equipou '
+                                f'{card.name} em {alvo.name} '
+                                f'(estratégia)')
+                            return
+                        break
 
         # Pontua cada candidato
         def score(c):

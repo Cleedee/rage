@@ -397,6 +397,7 @@ class PlayerState:
     victory_points: int = 0
     renown_level: int = 20
     deck_strategy: str = 'midrange'
+    deck_id: int = 0
     has_passed: bool = False
     hand_size_sept: int = 5
     hand_size_combat: int = 5
