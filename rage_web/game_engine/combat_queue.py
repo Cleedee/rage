@@ -3082,6 +3082,17 @@ def resolve_combat(game: GameState) -> bool:
             # Trata como se nao tivesse bloqueado - o dano sera aplicado
             # Continua para a aplicacao de dano abaixo
 
+        # Dodge universal: criatura com modifier 'dodge_all_next_round'
+        # (ex: Backbite: 'The Gift user dodges all attacks in the next round')
+        if _tem_modifier(game, id(alvo_card), 'dodge_all_next_round'):
+            if is_unblockable:
+                game.add_log(f'  {alvo_card.name} tentou esquivar de '
+                             f'{origem_card.name}, mas o ataque e unblockable!')
+            else:
+                game.add_log(f'  {alvo_card.name} esquivou de todos ataques '
+                             f'(dodge_all_next_round)')
+                return  # Dodge universal: sem dano
+
         # Alvo pode bloquear/esquivar (a menos que seja unblockable)
         bloqueou_ou_esquivou = False
         reducao_block = 0
@@ -3942,6 +3953,12 @@ def end_combat(game: GameState) -> bool:
         for c in devolvidas:
             if c in p.pack_home:
                 p.pack_home.remove(c)
+
+    # Limpa modificadores de dodge universal (Backbite: 'dodges all attacks')
+    game.game_modifiers = [
+        m for m in game.game_modifiers
+        if m.modifier != 'dodge_all_next_round'
+    ]
 
     game.combat = CombatState()
     # Reset has_passed para todos (jogadores podem ter passado

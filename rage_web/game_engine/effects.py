@@ -61,6 +61,7 @@ class EfeitoTipo(str, Enum):
     REDIRECIONAR = 'redirecionar'     # Redirecionar ataque
     ANULAR = 'anular'                 # Anular acao/ataque
     FUGIR = 'fugir'
+    ESQUIVAR_TUDO = 'esquivar_tudo'  # Criatura esquiva todos ataques no proximo round de combate (Backbite)
     INICIAR_COMBATE = 'iniciar_combate'
     RESTRICAO = 'restringir'  # Adicionar restricao temporaria a criatura
     COMPRAR_ATE = 'comprar_ate'  # Comprar ate ter N cartas na mao
@@ -267,6 +268,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.RESTRICAO: self._resolver_restringir,
             EfeitoTipo.COMPRAR_ATE: self._resolver_comprar_ate,
             EfeitoTipo.FUGIR: self._resolver_fugir,
+            EfeitoTipo.ESQUIVAR_TUDO: self._resolver_esquivar_tudo,
             EfeitoTipo.ROUBAR_EQUIPAMENTO: self._resolver_roubar_equipamento,
     EfeitoTipo.MODIFICAR_ATRIBUTO: self._resolver_modificar_atributo,
     EfeitoTipo.USAR_GIFT: self._resolver_usar_gift,
@@ -1683,6 +1685,31 @@ class ResolvedorEfeitos:
                 # Fallback: descarte do jogador atual
                 jogador.discard_combat.append(alvo)
             self.game.add_log(f'{alvo.name} foi forcado a fugir do combate')
+            return True
+        return False
+
+    def _resolver_esquivar_tudo(self, efeito: Efeito,
+                                 origem: CardInstance,
+                                 jogador: PlayerState, alvo) -> bool:
+        """Faz a criatura alvo esquivar todos ataques no proximo round.
+
+        Adiciona modifier 'dodge_all_next_round' na criatura.
+        O modifier e removido ao final do round de combate (entre_rounds).
+
+        Usado por Backbite: 'The Gift user dodges all attacks in the next
+        round of combat.'
+        """
+        if isinstance(alvo, CardInstance):
+            modifier = GameModifier(
+                card_uid=id(alvo),
+                modifier='dodge_all_next_round',
+                duration='until_end_of_next_round',
+            )
+            self.game.game_modifiers.append(modifier)
+            self.game.add_log(
+                f'{alvo.name}: esquivara de todos ataques '
+                f'no proximo round de combate'
+            )
             return True
         return False
 

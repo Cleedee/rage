@@ -12,9 +12,9 @@
           "quantidade": 1
         },
         {
-          "tipo": "fugir",
+          "tipo": "esquivar_tudo",
           "condicao_alvo": "criatura_aliada",
-          "quantidade": 99
+          "quantidade": 0
         }
       ]
     }
