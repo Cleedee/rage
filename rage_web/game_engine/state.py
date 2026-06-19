@@ -1626,6 +1626,17 @@ class GameState:
                     candidates.sort(key=lambda x: x[0].effective_rage, reverse=True)
                     alvo, dono_alvo = candidates[0]
 
+            # --- 463 - Corrupt Kinfolk: ataca Gaia Garou com maior Renome ---
+            elif vitima.card_id == 463:
+                candidates = [
+                    (c, p) for c, p in todos_personagens
+                    if ('Garou' in (c.keywords or '')
+                        and 'Gaia' in (c.keywords or ''))
+                ]
+                if candidates:
+                    candidates.sort(key=lambda x: x[0].renown, reverse=True)
+                    alvo, dono_alvo = candidates[0]
+
             # --- 503 - Mage of the Celestial Chorus: remove no fim do turno ---
             elif vitima.card_id == 503:
                 continue
@@ -2342,6 +2353,12 @@ class GameState:
             # (processado em _check_victim_attacks)
             self.add_log(
                 f'{card.name}: atacara maior Rage Wyrm no fim do combate')
+
+        elif card.card_id == 463:  # Corrupt Kinfolk
+            # Ataca Gaia Garou com maior Renome no fim de cada Combat Phase
+            # (processado em _check_victim_attacks)
+            self.add_log(
+                f'{card.name}: atacara Gaia Garou com maior Renome no fim do combate')
 
         elif card.card_id == 565:  # Vigilante
             # Ataca quem matou a vitima de menor Renome

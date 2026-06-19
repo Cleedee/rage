@@ -4,7 +4,7 @@
   "tipo": "Enemy",
   "modos": [
     {
-      "descricao": "Corrupt Kinfolk (Enemy - stats no banco)",
+      "descricao": "Corrupt Kinfolk — ataca Gaia Garou com maior Renome no fim de cada Combat Phase",
       "efeitos": [
         {
           "tipo": "restringir",
@@ -12,7 +12,11 @@
           "quantidade": 0,
           "params": {
             "efeito_pendente": true,
-            "texto_original": "Driven mad by jealousy, this Kinfolk has succumbed to the influence of the Wyrm. At the end of the Combat Phase the Corr"
+            "auto_ataque": true,
+            "gatilho": "fim_combate_fase",
+            "alvo": "gaia_garou_maior_renome",
+            "tipo_ataque": "ataque_passivo",
+            "texto_original": "At the end of the Combat Phase the Corrupt Kinfolk will attack the Gaia Garou with the highest Renown."
           }
         }
       ]
@@ -26,7 +30,8 @@
     "gnosis": 0,
     "rage": 3,
     "health": 3,
-    "precisa_revisao": true,
-    "slug": "corrupt-kinfolk_r3"
+    "slug": "corrupt-kinfolk_r3",
+    "implementado_em": "state.py:_check_victim_attacks()",
+    "data_implementacao": "2026-06-19"
   }
 }
