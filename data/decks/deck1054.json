@@ -1,0 +1,313 @@
+{
+  "id": 1054,
+  "name": "A Peste Negra — Ratkin (praga, contagio, enxame)",
+  "description": "",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 59,
+  "total_renown": 61,
+  "cards": [
+    {
+      "card_id": 27,
+      "slug": "allamande",
+      "name": "Allamande",
+      "quantity": 1
+    },
+    {
+      "card_id": 101,
+      "slug": "cooking",
+      "name": "Cooking",
+      "quantity": 1
+    },
+    {
+      "card_id": 104,
+      "slug": "crawling-poison",
+      "name": "Crawling Poison",
+      "quantity": 1
+    },
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 1
+    },
+    {
+      "card_id": 118,
+      "slug": "hamstringed",
+      "name": "Hamstringed",
+      "quantity": 1
+    },
+    {
+      "card_id": 212,
+      "slug": "urban-renewal",
+      "name": "Urban Renewal",
+      "quantity": 1
+    },
+    {
+      "card_id": 221,
+      "slug": "rewards-of-leadership",
+      "name": "Rewards of Leadership",
+      "quantity": 1
+    },
+    {
+      "card_id": 286,
+      "slug": "bite",
+      "name": "Bite",
+      "quantity": 1
+    },
+    {
+      "card_id": 287,
+      "slug": "block",
+      "name": "Block",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 293,
+      "slug": "brutal-kick",
+      "name": "Brutal Kick",
+      "quantity": 1
+    },
+    {
+      "card_id": 295,
+      "slug": "careful-strike",
+      "name": "Careful Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 1
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 322,
+      "slug": "fetal-position",
+      "name": "Fetal Position",
+      "quantity": 1
+    },
+    {
+      "card_id": 448,
+      "slug": "a-bus-full-of-people",
+      "name": "A Bus Full of People",
+      "quantity": 3
+    },
+    {
+      "card_id": 462,
+      "slug": "cityboy-kinfolk",
+      "name": "Cityboy Kinfolk",
+      "quantity": 1
+    },
+    {
+      "card_id": 469,
+      "slug": "drunken-vandals",
+      "name": "Drunken Vandals",
+      "quantity": 1
+    },
+    {
+      "card_id": 524,
+      "slug": "plague-vermin",
+      "name": "Plague Vermin",
+      "quantity": 2
+    },
+    {
+      "card_id": 544,
+      "slug": "skull-pig",
+      "name": "Skull Pig",
+      "quantity": 1
+    },
+    {
+      "card_id": 546,
+      "slug": "street-bum",
+      "name": "Street Bum",
+      "quantity": 2
+    },
+    {
+      "card_id": 547,
+      "slug": "suburban-high-school-kid",
+      "name": "Suburban High School Kid",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 627,
+      "slug": "cellular-phone",
+      "name": "Cellular Phone",
+      "quantity": 1
+    },
+    {
+      "card_id": 628,
+      "slug": "chainsaw",
+      "name": "Chainsaw",
+      "quantity": 1
+    },
+    {
+      "card_id": 660,
+      "slug": "lost-map",
+      "name": "Lost Map",
+      "quantity": 1
+    },
+    {
+      "card_id": 748,
+      "slug": "dead-zone",
+      "name": "Dead Zone",
+      "quantity": 1
+    },
+    {
+      "card_id": 884,
+      "slug": "lunar-eclipse",
+      "name": "Lunar Eclipse",
+      "quantity": 1
+    },
+    {
+      "card_id": 890,
+      "slug": "new-moon",
+      "name": "New Moon",
+      "quantity": 2
+    },
+    {
+      "card_id": 900,
+      "slug": "rat",
+      "name": "Rat",
+      "quantity": 1
+    },
+    {
+      "card_id": 978,
+      "slug": "gnaw",
+      "name": "Gnaw",
+      "quantity": 1
+    },
+    {
+      "card_id": 1019,
+      "slug": "poison-tumors",
+      "name": "Poison Tumors",
+      "quantity": 1
+    },
+    {
+      "card_id": 1272,
+      "slug": "disarm",
+      "name": "Disarm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 1
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 2
+    },
+    {
+      "card_id": 1293,
+      "slug": "planned-strike",
+      "name": "Planned Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 1296,
+      "slug": "reckless-swing",
+      "name": "Reckless Swing",
+      "quantity": 1
+    },
+    {
+      "card_id": 1298,
+      "slug": "reinforcements",
+      "name": "Reinforcements",
+      "quantity": 1
+    },
+    {
+      "card_id": 1302,
+      "slug": "riposte",
+      "name": "Riposte",
+      "quantity": 1
+    },
+    {
+      "card_id": 1316,
+      "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "name": "Cheap Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 1
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1354,
+      "slug": "deny-the-hungry",
+      "name": "Deny the Hungry",
+      "quantity": 1
+    },
+    {
+      "card_id": 1358,
+      "slug": "lord-ebola",
+      "name": "Lord Ebola",
+      "quantity": 1
+    },
+    {
+      "card_id": 1414,
+      "slug": "cornered-rat",
+      "name": "Cornered Rat",
+      "quantity": 1
+    },
+    {
+      "card_id": 1452,
+      "slug": "backbite",
+      "name": "Backbite",
+      "quantity": 2
+    },
+    {
+      "card_id": 1461,
+      "slug": "riot",
+      "name": "Riot",
+      "quantity": 1
+    },
+    {
+      "card_id": 1484,
+      "slug": "deadly-welcome",
+      "name": "Deadly Welcome",
+      "quantity": 1
+    },
+    {
+      "card_id": 1737,
+      "slug": "spirited-strike",
+      "name": "Spirited Strike",
+      "quantity": 1
+    }
+  ]
+}
