@@ -33,6 +33,32 @@ def _get_active_equipment(card) -> list:
     return [eq for eq in card.attached_equipment if id(eq) not in disabled]
 
 
+# ── Limites de Rage por equipamento ──
+# Chainsaw (slug: chainsaw): permite CAs ate Rage 10, descartada apos Rg>=6
+# Shotgun (slug: shotgun): permite CAs ate Rage 7
+# Rocket Launcher (slug: rocket-launcher): permite 1 CA ate Rage 12, descartado apos uso
+EQUIPMENT_RAGE_LIMITS: dict[str, int] = {
+    'chainsaw': 10,
+    'shotgun': 7,
+    'rocket-launcher': 12,
+}
+
+
+def _equipamento_melhor_limite(card) -> int:
+    """Retorna o maior limite de Rage que os equipamentos ativos do card permitem.
+
+    Considera Chainsaw (10), Shotgun (7), Rocket Launcher (12).
+    Retorna 0 se nenhum equipamento relevante estiver ativo.
+    """
+    max_limit = 0
+    for eq in _get_active_equipment(card):
+        slug = getattr(eq, 'modelo_id', '') or ''
+        limit = EQUIPMENT_RAGE_LIMITS.get(slug, 0)
+        if limit > max_limit:
+            max_limit = limit
+    return max_limit
+
+
 # ── Listas de "acoes" vs "nao-acoes" (Sidebar: Actions and actions) ──
 # Acoes: sao bloqueadas por efeitos de 'impedir_acoes'
 ACOES_QUE_SAO_ACAO: set[str] = {
@@ -2810,12 +2836,11 @@ def _processar_bluff(game: GameState) -> bool:
         # 6.6.6a: Restricted Play — se a carta nao atende a
         # restricao, e considerada ilegal.
         nivel_restrito = game.combat.get_restricted_level(cid)
-        # ── Chainsaw: permite Combat Actions ate Rage 10 ──
-        tem_chainsaw = any(
-            getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in _get_active_equipment(card))
-        if tem_chainsaw:
-            nivel_restrito = 10  # Chainsaw eleva o limite para 10
+        # ── Equipamentos que elevam limite de Rage ──
+        # Chainsaw (10), Shotgun (7), Rocket Launcher (12)
+        eq_rage_limit = _equipamento_melhor_limite(card)
+        if eq_rage_limit > 0:
+            nivel_restrito = eq_rage_limit  # Equipamento define o limite
         if nivel_restrito is not None:
             if rage_req > nivel_restrito:
                 game.combat.illegal_cards.add(cid)
@@ -3289,10 +3314,11 @@ def resolve_combat(game: GameState) -> bool:
                 f'sem dano a {alvo_card.name}')
             return  # Nao aplica dano
 
-        # ── Chainsaw (slug: chainsaw): descarta apos Combat Action Rg>=6 ──
+        # ── Equipamentos descartados apos uso: Chainsaw (Rg>=6), Rocket Launcher (1 uso) ──
         if dano > 0:
             for eq in _get_active_equipment(origem_card):
-                if getattr(eq, 'modelo_id', '') == 'chainsaw':
+                eq_slug = getattr(eq, 'modelo_id', '') or ''
+                if eq_slug == 'chainsaw':
                     # Descobre o Rage requirement da Combat Action usada
                     rage_req = 0
                     if acao_origem.startswith('dano_'):
@@ -3312,6 +3338,15 @@ def resolve_combat(game: GameState) -> bool:
                             f'  Chainsaw descartada! {origem_card.name} '
                             f'usou Combat Action de Rage {rage_req} '
                             f'(>=6)')
+                elif eq_slug == 'rocket-launcher':
+                    # Rocket Launcher: descarta apos 1 uso
+                    if eq in origem_card.attached_equipment:
+                        origem_card.attached_equipment.remove(eq)
+                    eq.zone = Zone.DISCARD_SEPT
+                    dono_origem.discard_sept.append(eq)
+                    game.add_log(
+                        f'  Rocket Launcher descartada! '
+                        f'{origem_card.name} usou em combate')
 
         # Flip para Crinos: verifica threshold a cada dano aplicado
         # (regra: dano acumulado >= min(rage, health) da forma breed)

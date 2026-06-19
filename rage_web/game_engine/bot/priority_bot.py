@@ -2756,21 +2756,17 @@ class PriorityBot:
 
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
-        # ── Chainsaw: eleva limite de Rage para 10 ──
+        # ── Equipamentos que elevam limite de Rage ──
+        # Chainsaw (10), Shotgun (7), Rocket Launcher (12)
         # Regra 4.3.2: considera apenas equipamentos ATIVOS
-        equipamentos_ativos = [
-            eq for eq in getattr(card, 'attached_equipment', [])
-            if id(eq) not in getattr(card, 'equipment_disabled', set())
-        ]
-        tem_chainsaw = any(
-            getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in equipamentos_ativos)
-        if tem_chainsaw:
-            nivel_restrito = max(nivel_restrito or 0, 10)
+        from rage_web.game_engine.combat_queue import _equipamento_melhor_limite
+        eq_rage_limit = _equipamento_melhor_limite(card)
+        if eq_rage_limit > 0:
+            nivel_restrito = max(nivel_restrito or 0, eq_rage_limit)
 
         # ── Regra 4.3.2: Bot decide se desativa equipamentos ──
-        # Se Chainsaw ativa e vamos jogar Rage >= 6 que a descartaria,
-        # desativa Chainsaw para preserva-la
+        from rage_web.game_engine.combat_queue import _get_active_equipment
+        equipamentos_ativos = _get_active_equipment(card)
         equip_to_disable_bot = []
         for eq in equipamentos_ativos:
             eq_slug = getattr(eq, 'modelo_id', '') or ''
@@ -2791,16 +2787,11 @@ class PriorityBot:
                 f'[BOT] {self.player.name} desativou '
                 f'{eq.name} em {card.name} (regra 4.3.2)')
 
-        # Recalcula Chainsaw apos possivel desativacao
-        equipamentos_ativos = [
-            eq for eq in getattr(card, 'attached_equipment', [])
-            if id(eq) not in getattr(card, 'equipment_disabled', set())
-        ]
-        tem_chainsaw = any(
-            getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in equipamentos_ativos)
-        if tem_chainsaw:
-            nivel_restrito = max(nivel_restrito or 0, 10)
+        # Recalcula limite apos possivel desativacao
+        from rage_web.game_engine.combat_queue import _equipamento_melhor_limite
+        eq_rage_limit = _equipamento_melhor_limite(card)
+        if eq_rage_limit > 0:
+            nivel_restrito = max(nivel_restrito or 0, eq_rage_limit)
 
         # No Rage CCG nao existem acoes basicas intrinsecas
         # (strike, block, dodge, etc). Toda acao de combate
@@ -2977,19 +2968,17 @@ class PriorityBot:
         # 6.6.6a: Restricted Play — filtra por nivel maximo de Rage
         nivel_restrito = self.game.combat.get_restricted_level(
             str(card.card_id))
-        # ── Chainsaw: eleva limite de Rage para 10 ──
+        # ── Equipamentos que elevam limite de Rage ──
+        # Chainsaw (10), Shotgun (7), Rocket Launcher (12)
         # Regra 4.3.2: considera apenas equipamentos ATIVOS
-        equipamentos_ativos = [
-            eq for eq in getattr(card, 'attached_equipment', [])
-            if id(eq) not in getattr(card, 'equipment_disabled', set())
-        ]
-        tem_chainsaw = any(
-            getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in equipamentos_ativos)
-        if tem_chainsaw:
-            nivel_restrito = max(nivel_restrito or 0, 10)
+        from rage_web.game_engine.combat_queue import _equipamento_melhor_limite
+        eq_rage_limit = _equipamento_melhor_limite(card)
+        if eq_rage_limit > 0:
+            nivel_restrito = max(nivel_restrito or 0, eq_rage_limit)
 
         # ── Regra 4.3.2: Bot decide se desativa equipamentos ──
+        from rage_web.game_engine.combat_queue import _get_active_equipment
+        equipamentos_ativos = _get_active_equipment(card)
         equip_to_disable_bot = []
         for eq in equipamentos_ativos:
             eq_slug = getattr(eq, 'modelo_id', '') or ''
@@ -3010,16 +2999,11 @@ class PriorityBot:
                 f'[BOT] {self.player.name} desativou '
                 f'{eq.name} em {card.name} (regra 4.3.2)')
 
-        # Recalcula Chainsaw apos possivel desativacao
-        equipamentos_ativos = [
-            eq for eq in getattr(card, 'attached_equipment', [])
-            if id(eq) not in getattr(card, 'equipment_disabled', set())
-        ]
-        tem_chainsaw = any(
-            getattr(eq, 'modelo_id', '') == 'chainsaw'
-            for eq in equipamentos_ativos)
-        if tem_chainsaw:
-            nivel_restrito = max(nivel_restrito or 0, 10)
+        # Recalcula limite apos possivel desativacao
+        from rage_web.game_engine.combat_queue import _equipamento_melhor_limite
+        eq_rage_limit = _equipamento_melhor_limite(card)
+        if eq_rage_limit > 0:
+            nivel_restrito = max(nivel_restrito or 0, eq_rage_limit)
 
         opp = self._get_opponent()
         melhor_acao = ''
