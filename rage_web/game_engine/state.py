@@ -1256,6 +1256,8 @@ class GameState:
 
             elif self.phase == 'moot':
                 # Transicao para Moot: sem acao automatica
+                # (moot_atual permanece para cartas como Rewards of Leadership
+                #  que sao jogadas 'after you win a Junta you called')
                 pass
 
             # Limpeza ao final do Combat phase (volta ao redraw)
@@ -1264,6 +1266,11 @@ class GameState:
                 pass
 
             elif self.phase == 'combat':
+                # Moot phase terminou: limpa moot_atual
+                # (cartas como Rewards of Leadership sao jogadas DURANTE
+                #  a fase moot, apos vencer junta, nao no combat seguinte)
+                self.moot_atual = None
+
                 # Redraw de combate ao entrar no Combat phase
                 for p in self.players:
                     drawn = p.redraw_combat()
