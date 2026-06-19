@@ -609,6 +609,20 @@ def validar_timing_gift(gift_card: 'CardInstance', game_phase: str,
     if 'play at the start of any combat' in text or 'play at the start of combat' in text:
         return em_combate
 
+    # Contexto fortemente ligado a combate (efeito so faz sentido em combate)
+    # Ex: Burrow ('escape combat', 'may not be attacked'), Dragon's Breath ('in combat against'),
+    #     True Fear ('next round of combat'), Merciful Blow ('played as an attack')
+    if any(p in text for p in ['escape combat', 'may not be attacked', 'may not be called out',
+                                'next round of combat', 'opponent in combat',
+                                'in combat against',
+                                'played as an attack', 'cannot be used in combat',
+                                'ending combat', 'for the duration of the combat',
+                                'she is in combat with', 'he is in combat with',
+                                'opponent in combat with']):
+        if 'cannot be used in combat' in text:
+            return not em_combate
+        return em_combate
+
     # Sem restricao explicita: pode em qualquer fase
     return True
 
