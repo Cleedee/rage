@@ -2141,11 +2141,17 @@ def _remove_creature(game: GameState, card: CardInstance):
                           p.discard_combat, p.discard_sept, p.victory_pile):
             if card in zone_list:
                 zone_list.remove(card)
+                # Se era um Plague Vermin, atualiza stats dos restantes
+                if card.card_id == 524:
+                    game._atualizar_plague_vermin_stats()
                 return
     # Tenta remover do Hunting Grounds global
     if card in game.hunting_grounds_cards:
         game.hunting_grounds_cards.remove(card)
-        return
+        # Se era um Plague Vermin, atualiza stats dos restantes
+        if card.card_id == 524:
+            game._atualizar_plague_vermin_stats()
+    return
 
 
 def _limpar_buffs(game: GameState, card: CardInstance):

@@ -1209,6 +1209,10 @@ class GameState:
     mindspeak_links: list[dict] = field(default_factory=list)
     """Cada dict: {player_id, caster_uid, packmate_uid, caster_name, packmate_name}"""
 
+    # Plague Vermin: contagem em jogo (Rage = Health = count)
+    plague_vermin_count: int = 0
+    """Numero de Plague Vermin em jogo (Hunting Grounds)."""
+
     def __post_init__(self):
         """Propaga o RNG do jogo para todos os jogadores."""
         for p in self.players:
@@ -1860,6 +1864,57 @@ class GameState:
                             f'{c.name}: Rage = 6 (Full Moon)'
                         )
 
+    def _atualizar_plague_vermin_stats(self):
+        """Atualiza Rage e Health de todos os Plague Vermin em jogo.
+
+        Rage = Health = numero de Plague Vermin em jogo (self.plague_vermin_count).
+        """
+        count = 0
+        # Conta todos os Plague Vermin vivos em qualquer HG
+        for c, _ in self._coletar_todas_vitimas_hg():
+            if c.card_id == 524:
+                count += 1
+        self.plague_vermin_count = count
+
+        # Atualiza buff_rage e buff_health de cada copia
+        for c, _ in self._coletar_todas_vitimas_hg():
+            if c.card_id == 524:
+                # buff = count - base (base e 0, entao buff = count)
+                novo_buff = count - (c.rage if c.rage > 0 else 0)
+                if c.buff_rage != novo_buff:
+                    c.buff_rage = novo_buff
+                    c.buff_health = novo_buff
+                    if count > 1:
+                        self.add_log(
+                            f'  [🐀 Plague Vermin] {c.name} agora '
+                            f'Rg:{c.effective_rage} Hl:{c.effective_health} '
+                            f'(x{count} em jogo)'
+                        )
+
+    def _buscar_todas_copias_plague_vermin(self, jogador: PlayerState,
+                                            origem: CardInstance):
+        """Busca todas as copias de Plague Vermin no deck e joga no HG."""
+        encontradas = []
+        for c in list(jogador.deck_sept):
+            if c.card_id == 524:
+                encontradas.append(c)
+
+        if not encontradas:
+            self.add_log(f'{origem.name}: nenhuma copia extra de Plague Vermin no deck')
+            return
+
+        for c in encontradas:
+            if c in jogador.deck_sept:
+                jogador.deck_sept.remove(c)
+            c.zone = Zone.HUNTING_GROUNDS
+            c.health_current = 1  # Sera atualizado por _atualizar_plague_vermin_stats
+            c.owner_id = jogador.id
+            c.controller_id = jogador.id
+            jogador.hunting_grounds.append(c)
+            self.add_log(f'  [🐀 Plague Vermin] {c.name} juntou-se ao enxame!')
+
+        self._atualizar_plague_vermin_stats()
+
     def register_card_passives(self, card: CardInstance, owner: PlayerState):
         """Registra efeitos passivos especiais de cartas sem efeitos
         estruturados.
@@ -2463,6 +2518,14 @@ class GameState:
             self.add_log(
                 f'{card.name}: pode interromper alpha para agir '
                 f'primeiro vs Wyrm')
+
+        elif slug == 'plague-vermin':  # Plague Vermin (524)
+            # Plague Vermin comeca com health=0 no banco
+            # Health sera recalculado com base no count
+            if card.health_current <= 0:
+                card.health_current = 1
+            # Busca todas as copias do deck e joga no HG
+            self._buscar_todas_copias_plague_vermin(owner, card)
 
     def register_death_trigger(self, trigger: DeathTrigger):
         """Registra um death trigger."""

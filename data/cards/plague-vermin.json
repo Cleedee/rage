@@ -1,0 +1,34 @@
+{
+  "id": "plague-vermin",
+  "nome": "Plague Vermin",
+  "tipo": "Enemy",
+  "modos": [
+    {
+      "descricao": "Busca todas as copias do deck e joga; Rage/Health = numero em jogo",
+      "efeitos": [
+        {
+          "tipo": "buscar_todas_copias",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "nome_carta": "Plague Vermin",
+            "zona": "hunting_grounds",
+            "atualizar_stats": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "implementacao_manual",
+    "card_id": 524,
+    "texto_original": "When you play Plague Vermin, you may search your deck for all copies of Plague Vermin and play them. The Rage and Health of the Plague Vermin is equal to the number of Plague Vermin in play. Ratkin Characters may recruit Plague Vermin (from your hand) as",
+    "keywords": "Animal",
+    "gnosis": 0,
+    "rage": 0,
+    "health": 0,
+    "slug": "plague-vermin",
+    "implementado_em": "TBD — precisa de BUSCAR_TODAS_COPIAS + escala de stats",
+    "data_implementacao": "2026-06-19"
+  }
+}

@@ -100,6 +100,7 @@ class EfeitoTipo(str, Enum):
     ROUBAR_EQUIPAMENTO = 'roubar_equipamento'  # Roubar equipamento de criatura inimiga (Sticky Paws)
     ADICIONAR_MODIFIER = 'adicionar_modifier'  # Adicionar modifier string a uma criatura (Heightened Senses)
     VINCULAR_PACK = 'vincular_pack'  # Vincular duas criaturas para pack coordination (Mindspeak)
+    BUSCAR_TODAS_COPIAS = 'buscar_todas_copias'  # Buscar todas as copias do deck e jogar (Plague Vermin)
     MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
     DESCARTAR_EQUIPAMENTOS = 'descartar_equipamentos'  # Spirit Backlash: descarta fetishes com Gnosis 5+
     IGNORAR_DANO_AGRAVADO = 'ignorar_dano_agravado'  # Purity of Spirit: converter dano agravado em normal por um turno
@@ -306,6 +307,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
             EfeitoTipo.ADICIONAR_MODIFIER: self._resolver_adicionar_modifier,
             EfeitoTipo.VINCULAR_PACK: self._resolver_vincular_pack,
+            EfeitoTipo.BUSCAR_TODAS_COPIAS: self._resolver_buscar_todas_copias,
             EfeitoTipo.MATAR_VITIMA: self._resolver_matar_vitima,
             EfeitoTipo.DESCARTAR_EQUIPAMENTOS: self._resolver_descartar_equipamentos,
             EfeitoTipo.IGNORAR_DANO_AGRAVADO: self._resolver_ignorar_dano_agravado,
@@ -3015,6 +3017,50 @@ class ResolvedorEfeitos:
             f'{origem.name}: buscou "{", ".join(nomes)}" '
             f'do sept deck para a mao'
         )
+        return True
+
+    def _resolver_buscar_todas_copias(self, efeito: Efeito,
+                                      origem: CardInstance,
+                                      jogador: PlayerState, alvo) -> bool:
+        """Busca todas as copias da carta no deck e as joga.
+
+        Usado por Plague Vermin: ao jogar uma copia, busca todas
+        as outras no deck e as joga no mesmo local (Hunting Grounds).
+        Apos buscar, atualiza os stats (Rage = Health = count).
+
+        params:
+        - nome_carta: str — nome da carta para buscar (ex: 'Plague Vermin')
+        - zona: str — zona de destino ('hunting_grounds')
+        """
+        params = efeito.params or {}
+        nome_carta = params.get('nome_carta', origem.name)
+        zona_destino = params.get('zona', 'hunting_grounds')
+
+        # Busca no deck sept
+        encontradas = []
+        for c in list(jogador.deck_sept):
+            if c.name == nome_carta and id(c) != id(origem):
+                encontradas.append(c)
+
+        if not encontradas:
+            self.game.add_log(
+                f'{origem.name}: nenhuma copia extra de "{nome_carta}" no deck')
+            return True
+
+        for c in encontradas:
+            if c in jogador.deck_sept:
+                jogador.deck_sept.remove(c)
+            c.zone = Zone.HUNTING_GROUNDS
+            c.health_current = 1  # Valor temporario, sera recalculado
+            c.owner_id = jogador.id
+            c.controller_id = jogador.id
+            jogador.hunting_grounds.append(c)
+            self.game.add_log(
+                f'  [🐀 {nome_carta}] {c.name} juntou-se ao enxame!')
+
+        # Atualiza stats de todos os Plague Vermin em jogo
+        self.game._atualizar_plague_vermin_stats()
+
         return True
 
     def _resolver_auto_pack_attack(self, efeito: Efeito,
