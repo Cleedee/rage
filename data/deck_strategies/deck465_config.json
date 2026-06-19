@@ -1,0 +1,125 @@
+{
+  "deck_id": 465,
+  "name": "Apocalypse — Primeiro Esquadrão #21 (Pentex)",
+  "style": "combo",
+
+  "gift_priorities": [
+    {"card_id": 100,  "priority": 100, "condition": "always", "desc": "Consumption of Gaia x3 — UNICO GIFT JOGAVEL. Draw engine (Eater-of-Souls). Carlotta/Leergo/Melvin usam."},
+    {"card_id": 100,  "priority": 90,  "condition": "has_characters", "desc": "Consumption of Gaia — segunda copia, manter draw ativo"},
+    {"card_id": 100,  "priority": 80,  "condition": "always", "desc": "Consumption of Gaia — terceira copia, nunca parar de comprar"}
+  ],
+
+  "resource_play_order": [
+    "caern",
+    "equipment",
+    "character",
+    "event",
+    "action",
+    "gift",
+    "quest",
+    "ally"
+  ],
+
+  "combat_action_preferences": {
+    "Charlene Brell": [
+      "overextended_attack",
+      "rapid_reload",
+      "iron_skin",
+      "dismember",
+      "aggressive_bite",
+      "lobotomy",
+      "whirlwind_defense",
+      "eat_hot_lead_dog_breath",
+      "stunning_strike",
+      "dry_gulch",
+      "entrail_rend"
+    ],
+    "Elwood 'Slicer' Nedervitch (Crinos)": [
+      "overextended_attack",
+      "rapid_reload",
+      "iron_skin",
+      "dismember",
+      "aggressive_bite",
+      "lobotomy",
+      "whirlwind_defense",
+      "eat_hot_lead_dog_breath",
+      "stunning_strike",
+      "dry_gulch",
+      "entrail_rend"
+    ],
+    "Melvin Spivey": [
+      "overextended_attack",
+      "rapid_reload",
+      "iron_skin",
+      "whirlwind_defense"
+    ],
+    "Carlotta Stearns": [
+      "overextended_attack",
+      "iron_skin",
+      "rapid_reload"
+    ],
+    "Leergo Cat Swallower": [
+      "overextended_attack",
+      "rapid_reload",
+      "iron_skin",
+      "whirlwind_defense"
+    ]
+  },
+
+  "equipment_assignments": [
+    {"card_name": "Shotgun", "target": "Charlene Brell", "priority": 100, "desc": "Shotgun = CAs ate Rg:7. Charlene e a principal combatente (Rg:2→4 Crinos + Shotgun = Rg:7)."},
+    {"card_name": "Shotgun", "target": "Elwood 'Slicer' Nedervitch (Crinos)", "priority": 85, "desc": "Segundo Shotgun no segundo Iliad Fomori (Rg:1→4 Crinos + Shotgun = Rg:7)."},
+    {"card_name": "Shotgun", "target": "Melvin Spivey", "priority": 60, "desc": "Terceiro Shotgun no Pentex Executive (Rg:3 base + Shotgun = Rg:7)."},
+    {"card_name": "Rocket Launcher", "target": "Charlene Brell", "priority": 95, "desc": "Rocket Launcher = UMA CA ate Rg:12. Usar Entrail Rend (Rg:10, Dmg:8) para destruir qualquer coisa."},
+    {"card_name": "Rocket Launcher", "target": "Elwood 'Slicer' Nedervitch (Crinos)", "priority": 75, "desc": "Segundo Rocket Launcher no segundo Iliad."}
+  ],
+
+  "caern_preferences": [
+    {"card_name": "Caern of Rytthiku", "priority": 100, "desc": "Caern Wyrm — Eater-of-Souls. Carlotta/Leergo/Melvin tem EoS. Da acesso a Umbra e regeneracao extra."}
+  ],
+
+  "umbra_strategy": {
+    "enter_characters": ["Carlotta Stearns", "Leergo Cat Swallower"],
+    "save_for_combat": ["Charlene Brell", "Elwood 'Slicer' Nedervitch (Crinos)"],
+    "always_enter_if_opponent_cannot": true
+  },
+
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "ffa_diplomacy": "weaken_largest",
+    "hunting_grounds": {
+      "priority_types": []
+    }
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Consumption of Gaia",
+      "Rocket Launcher",
+      "Shotgun",
+      "Charlene Brell",
+      "Caern of Rytthiku",
+      "Friends in High Places",
+      "Sneak Attack",
+      "New Moon"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": ["Moot", "Board Meeting"]
+  },
+
+  "moot_strategy": {
+    "call_if_available": [],
+    "always_vote_yes": ["Own"],
+    "vote_no_against": ["Leader"],
+    "strategic_vote": true
+  },
+
+  "notes": {
+    "gift_situacao": "APENAS Consumption of Gaia (Eater-of-Souls) e jogavel. Psychotic Hallucinations (Odyssey Fomori-7thGen) NINGUEM usa. Webbing (Ananasi-Iliad) NINGUEM usa. Whispering Campaign (PentexExec-Government) NINGUEM usa. 9 das 12 copias de gifts sao DECORACAO.",
+    "combate_situacao": "Rage base maxima = 3 (Melvin). Charlene Crinos Rg:4, Elwood Crinos Rg:4. Sem Shotgun/Rocket Launcher, quase TODAS as CAs sao injogaveis. Equipamento e ESSENCIAL para qualquer acao ofensiva.",
+    "combo_principal": "Equipar Shotgun (CAs ate Rg:7) + Rocket Launcher (1 CA ate Rg:12). Entrail Rend (Rg:10, Dmg:8) e a carta mais forte do deck — usar com Rocket Launcher na Charlene.",
+    "vitoria_estrategia": "Wyrm ganha 0 VP de Enemies. Foco em matar Characters para VP. Sneak Attack para vantagem de combate. In the Public Eye x3 (Melvin = Pentex Executive) como VP alternativa.",
+    "acoes_chave": "Friends in High Places (Wyrm) busca cartas. Sneak Attack x3 inicia combate surpresa. New Moon x3 controla fase lunar. Stuck Sideways x3 prende personagens na Umbra."
+  }
+}
