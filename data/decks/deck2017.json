@@ -1,0 +1,199 @@
+{
+  "id": 2017,
+  "name": "Fúria e Sabedoria",
+  "description": "Big Fisher (Wendigo Ahroun, 2 ataques/round) + Margrave Konietzko (Shadow Lord Theurge, gifts). Combate + Gifts.",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 54,
+  "total_renown": 65,
+  "cards": [
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 2
+    },
+    {
+      "card_id": 180,
+      "slug": "margrave-konietzko",
+      "name": "Margrave Konietzko",
+      "quantity": 1
+    },
+    {
+      "card_id": 215,
+      "slug": "wendigo",
+      "name": "Wendigo",
+      "quantity": 1
+    },
+    {
+      "card_id": 272,
+      "slug": "flak-jacket",
+      "name": "Flak Jacket",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 1
+    },
+    {
+      "card_id": 479,
+      "slug": "excitable-good-ol-boy",
+      "name": "Excitable Good Ol' Boy",
+      "quantity": 3
+    },
+    {
+      "card_id": 485,
+      "slug": "fomori-cop",
+      "name": "Fomori Cop",
+      "quantity": 3
+    },
+    {
+      "card_id": 496,
+      "slug": "hogling",
+      "name": "Hogling",
+      "quantity": 3
+    },
+    {
+      "card_id": 695,
+      "slug": "shotgun",
+      "name": "Shotgun",
+      "quantity": 1
+    },
+    {
+      "card_id": 697,
+      "slug": "skin-of-the-hellbound",
+      "name": "Skin of the Hellbound",
+      "quantity": 2
+    },
+    {
+      "card_id": 700,
+      "slug": "spiral-boomerang",
+      "name": "Spiral Boomerang",
+      "quantity": 1
+    },
+    {
+      "card_id": 713,
+      "slug": "vampire-blood",
+      "name": "Vampire Blood",
+      "quantity": 2
+    },
+    {
+      "card_id": 716,
+      "slug": "war-knife-of-benning-simon",
+      "name": "War Knife of Benning Simon",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 2
+    },
+    {
+      "card_id": 885,
+      "slug": "mass-pollution",
+      "name": "Mass Pollution",
+      "quantity": 2
+    },
+    {
+      "card_id": 1000,
+      "slug": "luna-s-armor",
+      "name": "Luna's Armor",
+      "quantity": 1
+    },
+    {
+      "card_id": 1052,
+      "slug": "silver-claws",
+      "name": "Silver Claws",
+      "quantity": 2
+    },
+    {
+      "card_id": 1056,
+      "slug": "spirit-of-the-fray",
+      "name": "Spirit of the Fray",
+      "quantity": 2
+    },
+    {
+      "card_id": 1278,
+      "slug": "low-blow",
+      "name": "Low Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 2
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 1
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 2
+    },
+    {
+      "card_id": 1326,
+      "slug": "vital-blow",
+      "name": "Vital Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1671,
+      "slug": "big-fisher",
+      "name": "Big Fisher",
+      "quantity": 1
+    }
+  ]
+}

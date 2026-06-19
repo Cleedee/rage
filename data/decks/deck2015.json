@@ -1,0 +1,319 @@
+{
+  "id": 2015,
+  "name": "Trovão dos Metis v2 — Crinos Combat",
+  "description": "",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 59,
+  "total_renown": 92,
+  "cards": [
+    {
+      "card_id": 41,
+      "slug": "banana-split",
+      "name": "Banana Split",
+      "quantity": 1
+    },
+    {
+      "card_id": 43,
+      "slug": "bjorn-blood-from-stone",
+      "name": "Bjorn-Blood from Stone",
+      "quantity": 1
+    },
+    {
+      "card_id": 96,
+      "slug": "clan-of-hyenas",
+      "name": "Clan of Hyenas",
+      "quantity": 1
+    },
+    {
+      "card_id": 106,
+      "slug": "curse-of-hatred",
+      "name": "Curse of Hatred",
+      "quantity": 1
+    },
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 1
+    },
+    {
+      "card_id": 121,
+      "slug": "heart-breaker",
+      "name": "Heart Breaker",
+      "quantity": 1
+    },
+    {
+      "card_id": 135,
+      "slug": "grimm-brings-blood",
+      "name": "Grimm Brings-Blood",
+      "quantity": 1
+    },
+    {
+      "card_id": 140,
+      "slug": "harmon-truefriend",
+      "name": "Harmon Truefriend",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 292,
+      "slug": "broken-limb",
+      "name": "Broken Limb",
+      "quantity": 1
+    },
+    {
+      "card_id": 306,
+      "slug": "grand-klaive",
+      "name": "Grand Klaive",
+      "quantity": 1
+    },
+    {
+      "card_id": 315,
+      "slug": "entrail-rend",
+      "name": "Entrail Rend",
+      "quantity": 1
+    },
+    {
+      "card_id": 320,
+      "slug": "fast-strike",
+      "name": "Fast Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 321,
+      "slug": "feint",
+      "name": "Feint",
+      "quantity": 1
+    },
+    {
+      "card_id": 445,
+      "slug": "stormcrow",
+      "name": "Stormcrow",
+      "quantity": 2
+    },
+    {
+      "card_id": 479,
+      "slug": "excitable-good-ol-boy",
+      "name": "Excitable Good Ol' Boy",
+      "quantity": 2
+    },
+    {
+      "card_id": 485,
+      "slug": "fomori-cop",
+      "name": "Fomori Cop",
+      "quantity": 2
+    },
+    {
+      "card_id": 496,
+      "slug": "hogling",
+      "name": "Hogling",
+      "quantity": 2
+    },
+    {
+      "card_id": 597,
+      "slug": "sky-river-caern",
+      "name": "Sky River Caern",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 657,
+      "slug": "klaive",
+      "name": "Klaive",
+      "quantity": 1
+    },
+    {
+      "card_id": 687,
+      "slug": "pine-dagger",
+      "name": "Pine Dagger",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 1
+    },
+    {
+      "card_id": 788,
+      "slug": "fast-shift",
+      "name": "Fast Shift",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 1
+    },
+    {
+      "card_id": 809,
+      "slug": "step-sideways",
+      "name": "Step Sideways",
+      "quantity": 1
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 856,
+      "slug": "gaia-s-breath",
+      "name": "Gaia's Breath",
+      "quantity": 2
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 1
+    },
+    {
+      "card_id": 907,
+      "slug": "spirit-backlash",
+      "name": "Spirit Backlash",
+      "quantity": 1
+    },
+    {
+      "card_id": 939,
+      "slug": "born-to-nature",
+      "name": "Born to Nature",
+      "quantity": 1
+    },
+    {
+      "card_id": 941,
+      "slug": "burrow",
+      "name": "Burrow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1024,
+      "slug": "purity-of-spirit",
+      "name": "Purity of Spirit",
+      "quantity": 1
+    },
+    {
+      "card_id": 1188,
+      "slug": "beta-status",
+      "name": "Beta Status",
+      "quantity": 1
+    },
+    {
+      "card_id": 1199,
+      "slug": "calling-a-champion",
+      "name": "Calling a Champion",
+      "quantity": 1
+    },
+    {
+      "card_id": 1201,
+      "slug": "cooperation",
+      "name": "Cooperation",
+      "quantity": 1
+    },
+    {
+      "card_id": 1246,
+      "slug": "war-council",
+      "name": "War Council",
+      "quantity": 1
+    },
+    {
+      "card_id": 1277,
+      "slug": "leaping-rake",
+      "name": "Leaping Rake",
+      "quantity": 1
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 1
+    },
+    {
+      "card_id": 1281,
+      "slug": "mangle",
+      "name": "Mangle",
+      "quantity": 1
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1311,
+      "slug": "spine-crushed",
+      "name": "Spine Crushed",
+      "quantity": 1
+    },
+    {
+      "card_id": 1326,
+      "slug": "vital-blow",
+      "name": "Vital Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1383,
+      "slug": "sept-of-the-last-stone",
+      "name": "Sept of the Last Stone",
+      "quantity": 1
+    },
+    {
+      "card_id": 1441,
+      "slug": "desert-klaive",
+      "name": "Desert Klaive",
+      "quantity": 1
+    },
+    {
+      "card_id": 1450,
+      "slug": "lung-burst",
+      "name": "Lung Burst",
+      "quantity": 1
+    },
+    {
+      "card_id": 1516,
+      "slug": "sever",
+      "name": "Sever",
+      "quantity": 1
+    },
+    {
+      "card_id": 1570,
+      "slug": "gunboat-pirates",
+      "name": "Gunboat Pirates",
+      "quantity": 2
+    },
+    {
+      "card_id": 1612,
+      "slug": "death-express",
+      "name": "Death Express",
+      "quantity": 1
+    },
+    {
+      "card_id": 1722,
+      "slug": "combat-reflexes",
+      "name": "Combat Reflexes",
+      "quantity": 1
+    },
+    {
+      "card_id": 1735,
+      "slug": "shred",
+      "name": "Shred",
+      "quantity": 1
+    }
+  ]
+}

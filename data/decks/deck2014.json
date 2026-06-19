@@ -1,0 +1,175 @@
+{
+  "id": 2014,
+  "name": "Drain Team v1 (Ren20)",
+  "description": "Drain Team v1 — Controle de Gnosis. 3 personagens Wyrm (Allonzo, Vladimir, Juicy Johnes). Mass Pollution (x3) da -1 Gnosis em nao-Wyrm e +1 em Wyrm. Juicy Johnes explode em -2 Gnosis ao morrer. Beckons gera VP direto. Consumption of Gaia anula gifts G≤6. 20 combat actions de fuga/esquiva. Nao busca combate — drena e pontua. Win: Stack de -5 Gnosis no oponente + Beckons + Chronicle VP. Chave: Mass Pollution cedo, Juicy morrer no timing certo. Perigo: enfrentar outro Wyrm (Mass Pollution buffa ambos). Estrategia completa em data/deck_strategies/563_drain_team_v1.md",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 53,
+  "total_renown": 28,
+  "cards": [
+    {
+      "card_id": 18,
+      "slug": "count-vladimir-rustovitch",
+      "name": "Count Vladimir Rustovitch",
+      "quantity": 1
+    },
+    {
+      "card_id": 29,
+      "slug": "allonzo-montoya",
+      "name": "Allonzo Montoya",
+      "quantity": 1
+    },
+    {
+      "card_id": 100,
+      "slug": "consumption-of-gaia",
+      "name": "Consumption of Gaia",
+      "quantity": 2
+    },
+    {
+      "card_id": 109,
+      "slug": "disquiet",
+      "name": "Disquiet",
+      "quantity": 2
+    },
+    {
+      "card_id": 161,
+      "slug": "juicy-johnes",
+      "name": "Juicy Johnes",
+      "quantity": 1
+    },
+    {
+      "card_id": 305,
+      "slug": "gooshy-gooze",
+      "name": "Gooshy Gooze",
+      "quantity": 3
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 313,
+      "slug": "dry-gulch",
+      "name": "Dry Gulch",
+      "quantity": 2
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 430,
+      "slug": "pentex-executive-and-limousine",
+      "name": "Pentex Executive and Limousine",
+      "quantity": 1
+    },
+    {
+      "card_id": 630,
+      "slug": "chronicle-of-the-black-labyrinth",
+      "name": "Chronicle of the Black Labyrinth",
+      "quantity": 3
+    },
+    {
+      "card_id": 697,
+      "slug": "skin-of-the-hellbound",
+      "name": "Skin of the Hellbound",
+      "quantity": 3
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 3
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 3
+    },
+    {
+      "card_id": 840,
+      "slug": "eater-of-souls",
+      "name": "Eater-of-Souls",
+      "quantity": 2
+    },
+    {
+      "card_id": 885,
+      "slug": "mass-pollution",
+      "name": "Mass Pollution",
+      "quantity": 3
+    },
+    {
+      "card_id": 1089,
+      "slug": "world-of-human",
+      "name": "World of Human",
+      "quantity": 1
+    },
+    {
+      "card_id": 1276,
+      "slug": "kneecapper",
+      "name": "Kneecapper",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1296,
+      "slug": "reckless-swing",
+      "name": "Reckless Swing",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 2
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1319,
+      "slug": "surprise-attack",
+      "name": "Surprise Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1488,
+      "slug": "arms-of-the-abyss",
+      "name": "Arms of the Abyss",
+      "quantity": 2
+    },
+    {
+      "card_id": 1760,
+      "slug": "beckons",
+      "name": "Beckons",
+      "quantity": 2
+    }
+  ]
+}

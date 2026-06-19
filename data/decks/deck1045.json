@@ -6,14 +6,56 @@
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,
-  "total_cards": 31,
-  "total_renown": 19,
+  "total_cards": 72,
+  "total_renown": 49,
   "cards": [
     {
-      "card_id": 216,
-      "slug": "whippoorwill",
-      "name": "Whippoorwill",
-      "quantity": 2
+      "card_id": 70,
+      "slug": "freide-counts-the-scalps",
+      "name": "Freide Counts-the-Scalps",
+      "quantity": 1
+    },
+    {
+      "card_id": 106,
+      "slug": "curse-of-hatred",
+      "name": "Curse of Hatred",
+      "quantity": 1
+    },
+    {
+      "card_id": 111,
+      "slug": "fox-frenzy",
+      "name": "Fox Frenzy",
+      "quantity": 1
+    },
+    {
+      "card_id": 112,
+      "slug": "frenzy",
+      "name": "Frenzy",
+      "quantity": 1
+    },
+    {
+      "card_id": 113,
+      "slug": "fur-gnarl",
+      "name": "Fur Gnarl",
+      "quantity": 1
+    },
+    {
+      "card_id": 114,
+      "slug": "gang-beating",
+      "name": "Gang Beating",
+      "quantity": 1
+    },
+    {
+      "card_id": 193,
+      "slug": "morgan-the-unworthy",
+      "name": "Morgan the Unworthy",
+      "quantity": 1
+    },
+    {
+      "card_id": 212,
+      "slug": "urban-renewal",
+      "name": "Urban Renewal",
+      "quantity": 1
     },
     {
       "card_id": 221,
@@ -22,15 +64,75 @@
       "quantity": 2
     },
     {
+      "card_id": 287,
+      "slug": "block",
+      "name": "Block",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 295,
+      "slug": "careful-strike",
+      "name": "Careful Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 316,
+      "slug": "evade-and-strike",
+      "name": "Evade and Strike",
+      "quantity": 1
+    },
+    {
       "card_id": 322,
       "slug": "fetal-position",
       "name": "Fetal Position",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 326,
       "slug": "forceful-wind",
       "name": "Forceful Wind",
+      "quantity": 1
+    },
+    {
+      "card_id": 448,
+      "slug": "a-bus-full-of-people",
+      "name": "A Bus Full of People",
+      "quantity": 1
+    },
+    {
+      "card_id": 463,
+      "slug": "corrupt-kinfolk",
+      "name": "Corrupt Kinfolk",
+      "quantity": 2
+    },
+    {
+      "card_id": 469,
+      "slug": "drunken-vandals",
+      "name": "Drunken Vandals",
+      "quantity": 2
+    },
+    {
+      "card_id": 558,
+      "slug": "unlucky-lune",
+      "name": "Unlucky Lune",
+      "quantity": 1
+    },
+    {
+      "card_id": 566,
+      "slug": "voracious-spectre",
+      "name": "Voracious Spectre",
       "quantity": 2
     },
     {
@@ -52,28 +154,124 @@
       "quantity": 2
     },
     {
+      "card_id": 823,
+      "slug": "checking-the-classifieds",
+      "name": "Checking the Classifieds",
+      "quantity": 1
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 834,
+      "slug": "crescent-moon",
+      "name": "Crescent Moon",
+      "quantity": 1
+    },
+    {
+      "card_id": 837,
+      "slug": "distracting-spirits",
+      "name": "Distracting Spirits",
+      "quantity": 1
+    },
+    {
+      "card_id": 854,
+      "slug": "full-moon",
+      "name": "Full Moon",
+      "quantity": 1
+    },
+    {
+      "card_id": 865,
+      "slug": "gibbous-moon",
+      "name": "Gibbous Moon",
+      "quantity": 1
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 1
+    },
+    {
       "card_id": 908,
       "slug": "spiritual-revelation",
       "name": "Spiritual Revelation",
       "quantity": 2
     },
     {
-      "card_id": 982,
-      "slug": "heightened-senses",
-      "name": "Heightened Senses",
-      "quantity": 2
+      "card_id": 941,
+      "slug": "burrow",
+      "name": "Burrow",
+      "quantity": 1
     },
     {
-      "card_id": 995,
-      "slug": "leap-of-the-kangaroo",
-      "name": "Leap of the Kangaroo",
-      "quantity": 2
+      "card_id": 952,
+      "slug": "exorcism",
+      "name": "Exorcism",
+      "quantity": 1
     },
     {
-      "card_id": 1044,
-      "slug": "second-sight",
-      "name": "Second Sight",
-      "quantity": 2
+      "card_id": 977,
+      "slug": "glib-tongue",
+      "name": "Glib Tongue",
+      "quantity": 1
+    },
+    {
+      "card_id": 1005,
+      "slug": "mindspeak",
+      "name": "Mindspeak",
+      "quantity": 1
+    },
+    {
+      "card_id": 1015,
+      "slug": "parting-the-velvet-curtain",
+      "name": "Parting the Velvet Curtain",
+      "quantity": 1
+    },
+    {
+      "card_id": 1018,
+      "slug": "phantasm",
+      "name": "Phantasm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1021,
+      "slug": "power-of-the-ways",
+      "name": "Power of the Ways",
+      "quantity": 1
+    },
+    {
+      "card_id": 1031,
+      "slug": "rilkean-heart",
+      "name": "Rilkean Heart",
+      "quantity": 1
+    },
+    {
+      "card_id": 1041,
+      "slug": "scent-of-distinction",
+      "name": "Scent of Distinction",
+      "quantity": 1
+    },
+    {
+      "card_id": 1089,
+      "slug": "world-of-human",
+      "name": "World of Human",
+      "quantity": 1
+    },
+    {
+      "card_id": 1293,
+      "slug": "planned-strike",
+      "name": "Planned Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 1297,
+      "slug": "redirected-attack",
+      "name": "Redirected Attack",
+      "quantity": 1
     },
     {
       "card_id": 1298,
@@ -82,21 +280,27 @@
       "quantity": 2
     },
     {
+      "card_id": 1316,
+      "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "name": "Cheap Shot",
+      "quantity": 1
+    },
+    {
       "card_id": 1317,
       "slug": "superior-tactics",
       "name": "Superior Tactics",
       "quantity": 2
     },
     {
-      "card_id": 1676,
-      "slug": "mei-fei-quan",
-      "name": "Mei-Fei Quan",
+      "card_id": 1636,
+      "slug": "rising-fury",
+      "name": "Rising Fury",
       "quantity": 1
     },
     {
-      "card_id": 1679,
-      "slug": "ozatu-junichiro",
-      "name": "Ozatu Junichiro",
+      "card_id": 1676,
+      "slug": "mei-fei-quan",
+      "name": "Mei-Fei Quan",
       "quantity": 1
     },
     {
@@ -112,9 +316,51 @@
       "quantity": 1
     },
     {
-      "card_id": 1716,
-      "slug": "kim",
-      "name": "Kim",
+      "card_id": 1724,
+      "slug": "flow-like-water",
+      "name": "Flow Like Water",
+      "quantity": 1
+    },
+    {
+      "card_id": 1725,
+      "slug": "ghost-flame",
+      "name": "Ghost Flame",
+      "quantity": 2
+    },
+    {
+      "card_id": 1726,
+      "slug": "gnosis-bomb",
+      "name": "Gnosis Bomb",
+      "quantity": 1
+    },
+    {
+      "card_id": 1730,
+      "slug": "lightning-bolt",
+      "name": "Lightning Bolt",
+      "quantity": 1
+    },
+    {
+      "card_id": 1737,
+      "slug": "spirited-strike",
+      "name": "Spirited Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 1762,
+      "slug": "fable",
+      "name": "Fable",
+      "quantity": 1
+    },
+    {
+      "card_id": 1766,
+      "slug": "seal-of-inari",
+      "name": "Seal of Inari",
+      "quantity": 2
+    },
+    {
+      "card_id": 1767,
+      "slug": "song-of-fear",
+      "name": "Song of Fear",
       "quantity": 1
     }
   ]

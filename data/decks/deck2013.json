@@ -1,0 +1,199 @@
+{
+  "id": 2013,
+  "name": "Passos da Morte (Ren20)",
+  "description": "Versao Ren20 do pack Silent Striders Ahroun. Stalks Death (Ragabash, Gn8). Buries the Dead + Allya Sun-Follower = nucleo Ahroun. Combate agil (Rg<=3). Owl Pack Totem + Gifts Silent Striders. [REFINADO] Fast Strike e Head or Gut (Rg5) substituidos por Overextended Attack (Rg2 dmg4) e Head Butt (Rg3 dmg4).",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 54,
+  "total_renown": 32,
+  "cards": [
+    {
+      "card_id": 30,
+      "slug": "allya-sun-follower",
+      "name": "Allya Sun-Follower",
+      "quantity": 1
+    },
+    {
+      "card_id": 88,
+      "slug": "twice-born",
+      "name": "Twice-Born",
+      "quantity": 2
+    },
+    {
+      "card_id": 213,
+      "slug": "visit-from-white-father",
+      "name": "Visit from White Father",
+      "quantity": 2
+    },
+    {
+      "card_id": 264,
+      "slug": "stalks-death",
+      "name": "Stalks Death",
+      "quantity": 1
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 413,
+      "slug": "ka-spirit",
+      "name": "Ka Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 416,
+      "slug": "kinfolk-packleader",
+      "name": "Kinfolk Packleader",
+      "quantity": 1
+    },
+    {
+      "card_id": 417,
+      "slug": "kinfolk-shaman",
+      "name": "Kinfolk Shaman",
+      "quantity": 1
+    },
+    {
+      "card_id": 597,
+      "slug": "sky-river-caern",
+      "name": "Sky River Caern",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 1
+    },
+    {
+      "card_id": 748,
+      "slug": "dead-zone",
+      "name": "Dead Zone",
+      "quantity": 2
+    },
+    {
+      "card_id": 776,
+      "slug": "the-naysayer-s-hovel",
+      "name": "The Naysayer's Hovel",
+      "quantity": 2
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 823,
+      "slug": "checking-the-classifieds",
+      "name": "Checking the Classifieds",
+      "quantity": 2
+    },
+    {
+      "card_id": 892,
+      "slug": "owl",
+      "name": "Owl",
+      "quantity": 2
+    },
+    {
+      "card_id": 937,
+      "slug": "blur-of-the-milky-eye",
+      "name": "Blur of the Milky Eye",
+      "quantity": 2
+    },
+    {
+      "card_id": 944,
+      "slug": "catfeet",
+      "name": "Catfeet",
+      "quantity": 2
+    },
+    {
+      "card_id": 988,
+      "slug": "inspiration",
+      "name": "Inspiration",
+      "quantity": 2
+    },
+    {
+      "card_id": 1056,
+      "slug": "spirit-of-the-fray",
+      "name": "Spirit of the Fray",
+      "quantity": 2
+    },
+    {
+      "card_id": 1095,
+      "slug": "sense-of-the-prey",
+      "name": "Sense of the Prey",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1289,
+      "slug": "overextended-attack",
+      "name": "Overextended Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1296,
+      "slug": "reckless-swing",
+      "name": "Reckless Swing",
+      "quantity": 2
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1319,
+      "slug": "surprise-attack",
+      "name": "Surprise Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1323,
+      "slug": "telling-blow",
+      "name": "Telling Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1610,
+      "slug": "buries-the-dead",
+      "name": "Buries the Dead",
+      "quantity": 1
+    }
+  ]
+}

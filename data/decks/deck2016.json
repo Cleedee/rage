@@ -1,0 +1,229 @@
+{
+  "id": 2016,
+  "name": "Umbral Wardens",
+  "description": "Guardioes do Gauntlet. Usam Caerns e mobilidade Umbral para controlar o campo. Equipamentos corrigidos: Assegai, Grand Klaive, Bivouac, Concertina Wire.",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 53,
+  "total_renown": 50,
+  "cards": [
+    {
+      "card_id": 7,
+      "slug": "cernonous",
+      "name": "Cernonous",
+      "quantity": 1
+    },
+    {
+      "card_id": 62,
+      "slug": "fade-to-black",
+      "name": "Fade-To-Black",
+      "quantity": 1
+    },
+    {
+      "card_id": 99,
+      "slug": "command-spirit",
+      "name": "Command Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 2
+    },
+    {
+      "card_id": 191,
+      "slug": "modi-votishal",
+      "name": "Modi Votishal",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 306,
+      "slug": "grand-klaive",
+      "name": "Grand Klaive",
+      "quantity": 1
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 479,
+      "slug": "excitable-good-ol-boy",
+      "name": "Excitable Good Ol' Boy",
+      "quantity": 2
+    },
+    {
+      "card_id": 485,
+      "slug": "fomori-cop",
+      "name": "Fomori Cop",
+      "quantity": 2
+    },
+    {
+      "card_id": 496,
+      "slug": "hogling",
+      "name": "Hogling",
+      "quantity": 2
+    },
+    {
+      "card_id": 584,
+      "slug": "caern-of-the-snow-leopard",
+      "name": "Caern of the Snow Leopard",
+      "quantity": 1
+    },
+    {
+      "card_id": 597,
+      "slug": "sky-river-caern",
+      "name": "Sky River Caern",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 632,
+      "slug": "concertina-wire",
+      "name": "Concertina Wire",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 1
+    },
+    {
+      "card_id": 788,
+      "slug": "fast-shift",
+      "name": "Fast Shift",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 809,
+      "slug": "step-sideways",
+      "name": "Step Sideways",
+      "quantity": 2
+    },
+    {
+      "card_id": 824,
+      "slug": "chimera",
+      "name": "Chimera",
+      "quantity": 1
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 1
+    },
+    {
+      "card_id": 907,
+      "slug": "spirit-backlash",
+      "name": "Spirit Backlash",
+      "quantity": 1
+    },
+    {
+      "card_id": 908,
+      "slug": "spiritual-revelation",
+      "name": "Spiritual Revelation",
+      "quantity": 1
+    },
+    {
+      "card_id": 910,
+      "slug": "stuck-sideways",
+      "name": "Stuck Sideways",
+      "quantity": 1
+    },
+    {
+      "card_id": 919,
+      "slug": "umbral-wave",
+      "name": "Umbral Wave",
+      "quantity": 1
+    },
+    {
+      "card_id": 1015,
+      "slug": "parting-the-velvet-curtain",
+      "name": "Parting the Velvet Curtain",
+      "quantity": 1
+    },
+    {
+      "card_id": 1021,
+      "slug": "power-of-the-ways",
+      "name": "Power of the Ways",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 2
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1305,
+      "slug": "sap-spirit",
+      "name": "Sap Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 2
+    },
+    {
+      "card_id": 1325,
+      "slug": "umbral-flurry",
+      "name": "Umbral Flurry",
+      "quantity": 2
+    },
+    {
+      "card_id": 1326,
+      "slug": "vital-blow",
+      "name": "Vital Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1419,
+      "slug": "the-breaking-of-the-storm",
+      "name": "The Breaking of the Storm",
+      "quantity": 1
+    }
+  ]
+}

@@ -1,0 +1,361 @@
+{
+  "id": 2012,
+  "name": "Os Porteiros (The Gatekeepers)",
+  "description": "",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 76,
+  "total_renown": 110,
+  "cards": [
+    {
+      "card_id": 9,
+      "slug": "charging-bull",
+      "name": "Charging Bull",
+      "quantity": 1
+    },
+    {
+      "card_id": 34,
+      "slug": "anna-kliminski",
+      "name": "Anna Kliminski",
+      "quantity": 1
+    },
+    {
+      "card_id": 62,
+      "slug": "fade-to-black",
+      "name": "Fade-To-Black",
+      "quantity": 1
+    },
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 2
+    },
+    {
+      "card_id": 114,
+      "slug": "gang-beating",
+      "name": "Gang Beating",
+      "quantity": 1
+    },
+    {
+      "card_id": 191,
+      "slug": "modi-votishal",
+      "name": "Modi Votishal",
+      "quantity": 1
+    },
+    {
+      "card_id": 221,
+      "slug": "rewards-of-leadership",
+      "name": "Rewards of Leadership",
+      "quantity": 1
+    },
+    {
+      "card_id": 222,
+      "slug": "aegis",
+      "name": "Aegis",
+      "quantity": 1
+    },
+    {
+      "card_id": 272,
+      "slug": "flak-jacket",
+      "name": "Flak Jacket",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 295,
+      "slug": "careful-strike",
+      "name": "Careful Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 1
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 322,
+      "slug": "fetal-position",
+      "name": "Fetal Position",
+      "quantity": 1
+    },
+    {
+      "card_id": 451,
+      "slug": "angus-the-white-howler",
+      "name": "Angus, the White Howler",
+      "quantity": 1
+    },
+    {
+      "card_id": 488,
+      "slug": "glade-child",
+      "name": "Glade Child",
+      "quantity": 1
+    },
+    {
+      "card_id": 503,
+      "slug": "mage-of-the-celestial-chorus",
+      "name": "Mage of the Celestial Chorus",
+      "quantity": 2
+    },
+    {
+      "card_id": 517,
+      "slug": "pentex-first-team-43",
+      "name": "Pentex First Team 43",
+      "quantity": 1
+    },
+    {
+      "card_id": 520,
+      "slug": "pentex-refinery",
+      "name": "Pentex Refinery",
+      "quantity": 1
+    },
+    {
+      "card_id": 546,
+      "slug": "street-bum",
+      "name": "Street Bum",
+      "quantity": 1
+    },
+    {
+      "card_id": 573,
+      "slug": "dream-hunter",
+      "name": "Dream Hunter",
+      "quantity": 2
+    },
+    {
+      "card_id": 627,
+      "slug": "cellular-phone",
+      "name": "Cellular Phone",
+      "quantity": 1
+    },
+    {
+      "card_id": 628,
+      "slug": "chainsaw",
+      "name": "Chainsaw",
+      "quantity": 1
+    },
+    {
+      "card_id": 635,
+      "slug": "corporate-credit-card",
+      "name": "Corporate Credit Card",
+      "quantity": 1
+    },
+    {
+      "card_id": 660,
+      "slug": "lost-map",
+      "name": "Lost Map",
+      "quantity": 1
+    },
+    {
+      "card_id": 662,
+      "slug": "machete",
+      "name": "Machete",
+      "quantity": 1
+    },
+    {
+      "card_id": 695,
+      "slug": "shotgun",
+      "name": "Shotgun",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 823,
+      "slug": "checking-the-classifieds",
+      "name": "Checking the Classifieds",
+      "quantity": 1
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 856,
+      "slug": "gaia-s-breath",
+      "name": "Gaia's Breath",
+      "quantity": 1
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 2
+    },
+    {
+      "card_id": 885,
+      "slug": "mass-pollution",
+      "name": "Mass Pollution",
+      "quantity": 2
+    },
+    {
+      "card_id": 927,
+      "slug": "awe",
+      "name": "Awe",
+      "quantity": 1
+    },
+    {
+      "card_id": 941,
+      "slug": "burrow",
+      "name": "Burrow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1024,
+      "slug": "purity-of-spirit",
+      "name": "Purity of Spirit",
+      "quantity": 1
+    },
+    {
+      "card_id": 1052,
+      "slug": "silver-claws",
+      "name": "Silver Claws",
+      "quantity": 2
+    },
+    {
+      "card_id": 1056,
+      "slug": "spirit-of-the-fray",
+      "name": "Spirit of the Fray",
+      "quantity": 2
+    },
+    {
+      "card_id": 1061,
+      "slug": "sticky-paws",
+      "name": "Sticky Paws",
+      "quantity": 1
+    },
+    {
+      "card_id": 1079,
+      "slug": "true-fear",
+      "name": "True Fear",
+      "quantity": 1
+    },
+    {
+      "card_id": 1272,
+      "slug": "disarm",
+      "name": "Disarm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1278,
+      "slug": "low-blow",
+      "name": "Low Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 2
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1298,
+      "slug": "reinforcements",
+      "name": "Reinforcements",
+      "quantity": 1
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 1
+    },
+    {
+      "card_id": 1316,
+      "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "name": "Cheap Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": 1317,
+      "slug": "superior-tactics",
+      "name": "Superior Tactics",
+      "quantity": 1
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 2
+    },
+    {
+      "card_id": 1325,
+      "slug": "umbral-flurry",
+      "name": "Umbral Flurry",
+      "quantity": 1
+    },
+    {
+      "card_id": 1326,
+      "slug": "vital-blow",
+      "name": "Vital Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1337,
+      "slug": "ootani-oil-bane",
+      "name": "Ootani Oil Bane",
+      "quantity": 2
+    },
+    {
+      "card_id": 1737,
+      "slug": "spirited-strike",
+      "name": "Spirited Strike",
+      "quantity": 1
+    }
+  ]
+}
