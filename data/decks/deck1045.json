@@ -6,8 +6,8 @@
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,
-  "total_cards": 72,
-  "total_renown": 49,
+  "total_cards": 55,
+  "total_renown": 39,
   "cards": [
     {
       "card_id": 70,
@@ -28,18 +28,6 @@
       "quantity": 1
     },
     {
-      "card_id": 112,
-      "slug": "frenzy",
-      "name": "Frenzy",
-      "quantity": 1
-    },
-    {
-      "card_id": 113,
-      "slug": "fur-gnarl",
-      "name": "Fur Gnarl",
-      "quantity": 1
-    },
-    {
       "card_id": 114,
       "slug": "gang-beating",
       "name": "Gang Beating",
@@ -49,12 +37,6 @@
       "card_id": 193,
       "slug": "morgan-the-unworthy",
       "name": "Morgan the Unworthy",
-      "quantity": 1
-    },
-    {
-      "card_id": 212,
-      "slug": "urban-renewal",
-      "name": "Urban Renewal",
       "quantity": 1
     },
     {
@@ -88,12 +70,6 @@
       "quantity": 2
     },
     {
-      "card_id": 316,
-      "slug": "evade-and-strike",
-      "name": "Evade and Strike",
-      "quantity": 1
-    },
-    {
       "card_id": 322,
       "slug": "fetal-position",
       "name": "Fetal Position",
@@ -115,13 +91,13 @@
       "card_id": 463,
       "slug": "corrupt-kinfolk",
       "name": "Corrupt Kinfolk",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 469,
       "slug": "drunken-vandals",
       "name": "Drunken Vandals",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 558,
@@ -133,30 +109,24 @@
       "card_id": 566,
       "slug": "voracious-spectre",
       "name": "Voracious Spectre",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 627,
       "slug": "cellular-phone",
       "name": "Cellular Phone",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 635,
       "slug": "corporate-credit-card",
       "name": "Corporate Credit Card",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 660,
       "slug": "lost-map",
       "name": "Lost Map",
-      "quantity": 2
-    },
-    {
-      "card_id": 823,
-      "slug": "checking-the-classifieds",
-      "name": "Checking the Classifieds",
       "quantity": 1
     },
     {
@@ -199,7 +169,7 @@
       "card_id": 908,
       "slug": "spiritual-revelation",
       "name": "Spiritual Revelation",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 941,
@@ -211,12 +181,6 @@
       "card_id": 952,
       "slug": "exorcism",
       "name": "Exorcism",
-      "quantity": 1
-    },
-    {
-      "card_id": 977,
-      "slug": "glib-tongue",
-      "name": "Glib Tongue",
       "quantity": 1
     },
     {
@@ -250,18 +214,6 @@
       "quantity": 1
     },
     {
-      "card_id": 1041,
-      "slug": "scent-of-distinction",
-      "name": "Scent of Distinction",
-      "quantity": 1
-    },
-    {
-      "card_id": 1089,
-      "slug": "world-of-human",
-      "name": "World of Human",
-      "quantity": 1
-    },
-    {
       "card_id": 1293,
       "slug": "planned-strike",
       "name": "Planned Strike",
@@ -277,7 +229,7 @@
       "card_id": 1298,
       "slug": "reinforcements",
       "name": "Reinforcements",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 1316,
@@ -289,7 +241,7 @@
       "card_id": 1317,
       "slug": "superior-tactics",
       "name": "Superior Tactics",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 1636,
