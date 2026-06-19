@@ -135,6 +135,18 @@ def _eval_condition(cond: str, game: GameState,
         return any('Character' in (c.card_type or '')
                    for c in player.umbra)
 
+    if cond == 'after_winning_moot':
+        """Verifica se o jogador acabou de vencer uma junta que chamou."""
+        if not game.moot_atual:
+            return False
+        if not game.moot_atual.resolvido:
+            return False
+        if not game.moot_atual.aprovado:
+            return False
+        if game.moot_atual.dono_id != player.id:
+            return False
+        return True
+
     logger.warning(f"Condicao desconhecida: '{cond}'")
     return False
 
@@ -268,6 +280,41 @@ class StrategyEngine:
             Vazio se nao configurado.
         """
         return self.get('resource_play_order', [])
+
+    def sorted_events(self, hand_cards: list[CardInstance],
+                      game: GameState, player: PlayerState,
+                      bot) -> list[tuple[int, CardInstance]]:
+        """Ordena eventos na mao por prioridade definida na config.
+
+        Similar a sorted_gifts() mas para Event cards.
+        Retorna lista de (priority, CardInstance) ordenada decrescente.
+        Se nao ha config, retorna lista vazia.
+        """
+        priorities = self.get('event_priorities', [])
+        if not priorities:
+            return []
+
+        priority_map: dict[int, tuple[int, str]] = {}
+        for entry in priorities:
+            cid = self._resolve_card_ref(entry, game)
+            if cid:
+                condicao = entry.get('condition', 'always')
+                priority_map[cid] = (entry.get('priority', 50), condicao)
+
+        scored = []
+        for card in hand_cards:
+            if card.card_type != 'Event':
+                continue
+            entry = priority_map.get(card.card_id)
+            if entry is None:
+                continue
+            prio, cond = entry
+            if not _eval_condition(cond, game, player, bot):
+                continue
+            scored.append((prio, card))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return scored
 
     # ─── Combat Actions ──────────────────────────────────────────────
 

@@ -40,11 +40,15 @@
     {"slug": "iron-will", "priority": 50, "condition": "combat_likely", "desc": "Iron Will — imune a perder proxima CA"}
   ],
 
+  "event_priorities": [
+    {"slug": "rewards-of-leadership", "priority": 90, "condition": "after_winning_moot", "desc": "Rewards of Leadership — busca Ally/Equipment/Territory apos vencer junta; combo chave do moot"}
+  ],
+
   "resource_play_order": [
     "character",
     "gift",
-    "equipment",
     "event",
+    "equipment",
     "action",
     "victim",
     "enemy"
@@ -127,6 +131,7 @@
     "never_discard": [
       "Mei-Fei Quan",
       "Katsuko Moon-Saint",
+      "Rewards of Leadership",
       "Seal of Inari",
       "Fable",
       "Song of Fear",
@@ -147,13 +152,14 @@
   },
 
   "notes": {
-    "combo_principal": "Mei-Fei Quan viva → +1 Gnosis para todos Hengeyokai → Seal of Inari cria Loyalty → Wu vota mais + Fable amplifica → Rewards of Leadership busca Ally/Equipment/Territory",
-    "combo_combate": "Katsuko/Wu com Gnosis alta → Gnosis Bomb (dano = Gnosis) ou Ghost Flame (dano 7 agg + descarta 2 CAs) → Flow Like Water (esquiva total Hengeyokai) → Lightning Bolt (6 instinctive unblockable)",
-    "combo_umbra": "Parting the Velvet Curtain (Wu) → leva inimigo a Umbra → Power of the Ways (Morgan, +1 tudo) → Distracting Spirits (-2 Renome) → Spiritual Revelation (move Banimentos)",
-    "combo_moot": "Seal of Inari x2 cria loyalties → Wu +1 voto por leal → Fable +5 votos → Rewards of Leadership busca carta",
+    "combo_principal": "Mei-Fei Quan viva -> +1 Gnosis para todos Hengeyokai -> Seal of Inari cria Loyalty -> Wu vota mais + Fable amplifica -> Rewards of Leadership busca Ally/Equipment/Territory",
+    "combo_combate": "Katsuko/Wu com Gnosis alta -> Gnosis Bomb (dano = Gnosis) ou Ghost Flame (dano 7 agg + descarta 2 CAs) -> Flow Like Water (esquiva total Hengeyokai) -> Lightning Bolt (6 instinctive unblockable)",
+    "combo_umbra": "Parting the Velvet Curtain (Wu) -> leva inimigo a Umbra -> Power of the Ways (Morgan, +1 tudo) -> Distracting Spirits (-2 Renome) -> Spiritual Revelation (move Banimentos)",
+    "combo_moot": "Seal of Inari x2 cria loyalties -> Wu +1 voto por leal -> Fable +5 votos -> Rewards of Leadership busca carta -> Cellular Phone/Lost Map/Credit Card na mao para combat phase",
     "fraqueza_sem_mei-fei": "Mei-Fei e o coracao do deck. Sem ela, Gnosis cai 1 ponto: Phantasm (Gn:7) e Song of Fear (Gn:6) ficam inacessiveis para Katsuko/Morgan. Prioridade absoluta mante-la viva.",
     "fraqueza_rage_baixa": "Kitsune tem Rg 1-2. CAs caras (Rg>=4) so Morgan usa. Deck depende de CAs Rg:0 com efeitos especiais (Ghost Flame, Gnosis Bomb, Lightning Bolt, Flow Like Water, Redirected Attack).",
     "freide_ability": "Once per game: Freide pode dobrar 1 estatistica (Rage, Gnosis ou Health) por 1 turno. Usar em momento critico para Rg:6 (mais CAs) ou Hl:6 (sobrevivencia).",
-    "morgan_ability": "Random: toda vez que Morgan usa Gift/Rite, 50% de chance de funcionar ou ser descartado. Nao contar com ele para jogadas precisas. Usar gifts de alto impacto (Song of Fear, Power of the Ways) com cautela."
+    "morgan_ability": "Random: toda vez que Morgan usa Gift/Rite, 50% de chance de funcionar ou ser descartado. Nao contar com ele para jogadas precisas. Usar gifts de alto impacto (Song of Fear, Power of the Ways) com cautela.",
+    "rewards_leadership": "Chave do moot. Jogar IMEDIATAMENTE apos vencer junta. Buscar ALVO: (1) Cellular Phone se nao tem -> Katsuko coordena pack, (2) Lost Map se nao tem -> defesa em battlefield, (3) Corporate Credit Card -> draw. A janela pre-alpha no combat seguinte permite jogar essas cartas antes da selecao de alpha."
   }
 }

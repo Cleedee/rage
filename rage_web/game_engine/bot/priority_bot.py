@@ -335,6 +335,15 @@ class PriorityBot:
                         score = max(score, prio)
                         break
 
+            # ── Strategy Engine: event_priorities (ex: Rewards of Leadership) ──
+            if ct == 'Event' and self._has_strategy:
+                events = self.strategy.sorted_events(
+                    me.hand, self.game, me, self)
+                for prio, ec in events:
+                    if ec.card_id == card.card_id:
+                        score = max(score, prio)
+                        break
+
             # 10. Gift / Event: util se tem personagens
             elif ct == 'Gift':
                 if tem_character:
@@ -481,19 +490,6 @@ class PriorityBot:
             ct = card.card_type or ''
             if ct == 'Event' and card.modelo_id:
                 if self._pode_pagar_custos(card):
-                    # Verifica condicao_uso do Event (ex: Rewards of Leadership)
-                    from rage_web.game_engine.effects import (
-                        CARTAS_EXEMPLO, _validar_condicao_uso)
-                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
-                    if modelo and modelo.modos:
-                        cond_ok = all(
-                            not m.condicao_uso
-                            or _validar_condicao_uso(
-                                self.game, self.player, m.condicao_uso)
-                            for m in modelo.modos
-                        )
-                        if not cond_ok:
-                            continue  # Condicao nao atendida, pula
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
