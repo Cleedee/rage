@@ -6,20 +6,20 @@
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,
-  "total_cards": 28,
-  "total_renown": 20,
+  "total_cards": 60,
+  "total_renown": 26,
   "cards": [
     {
-      "card_id": 17,
-      "slug": "corinna",
-      "name": "Corinna",
+      "card_id": 89,
+      "slug": "unbound-bane",
+      "name": "Unbound Bane",
       "quantity": 1
     },
     {
-      "card_id": 108,
-      "slug": "devoted-servant",
-      "name": "Devoted Servant",
-      "quantity": 2
+      "card_id": 100,
+      "slug": "consumption-of-gaia",
+      "name": "Consumption of Gaia",
+      "quantity": 3
     },
     {
       "card_id": 219,
@@ -28,82 +28,214 @@
       "quantity": 2
     },
     {
-      "card_id": 229,
-      "slug": "ragnor-the-terror",
-      "name": "Ragnor the Terror",
-      "quantity": 1
-    },
-    {
-      "card_id": 270,
-      "slug": "sybil",
-      "name": "Sybil",
+      "card_id": 278,
+      "slug": "eat-hot-lead-dog-breath",
+      "name": "Eat Hot Lead, Dog Breath",
       "quantity": 1
     },
     {
       "card_id": 292,
       "slug": "broken-limb",
       "name": "Broken Limb",
-      "quantity": 2
+      "quantity": 1
     },
     {
-      "card_id": 296,
-      "slug": "cleft-in-twain",
-      "name": "Cleft in Twain",
-      "quantity": 2
+      "card_id": 313,
+      "slug": "dry-gulch",
+      "name": "Dry Gulch",
+      "quantity": 1
     },
     {
-      "card_id": 329,
-      "slug": "t-f-macneil",
-      "name": "T. F. MacNeil",
+      "card_id": 315,
+      "slug": "entrail-rend",
+      "name": "Entrail Rend",
+      "quantity": 1
+    },
+    {
+      "card_id": 579,
+      "slug": "caern-of-rytthiku",
+      "name": "Caern of Rytthiku",
       "quantity": 1
     },
     {
       "card_id": 626,
       "slug": "bureaucratic-blueprints",
       "name": "Bureaucratic Blueprints",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 644,
       "slug": "experimental-cybernetics",
       "name": "Experimental Cybernetics",
+      "quantity": 1
+    },
+    {
+      "card_id": 681,
+      "slug": "oil-of-corruption",
+      "name": "Oil of Corruption",
+      "quantity": 1
+    },
+    {
+      "card_id": 692,
+      "slug": "rocket-launcher",
+      "name": "Rocket Launcher",
       "quantity": 2
+    },
+    {
+      "card_id": 695,
+      "slug": "shotgun",
+      "name": "Shotgun",
+      "quantity": 3
+    },
+    {
+      "card_id": 724,
+      "slug": "wyrm-skin",
+      "name": "Wyrm Skin",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 1
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 3
     },
     {
       "card_id": 833,
       "slug": "corporate-take-over",
       "name": "Corporate Take-over",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 836,
       "slug": "defiler",
       "name": "Defiler",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": 838,
       "slug": "dragon",
       "name": "Dragon",
-      "quantity": 2
+      "quantity": 1
+    },
+    {
+      "card_id": 890,
+      "slug": "new-moon",
+      "name": "New Moon",
+      "quantity": 3
+    },
+    {
+      "card_id": 910,
+      "slug": "stuck-sideways",
+      "name": "Stuck Sideways",
+      "quantity": 3
     },
     {
       "card_id": 917,
       "slug": "town-meeting",
       "name": "Town Meeting",
-      "quantity": 2
+      "quantity": 1
     },
     {
-      "card_id": 942,
-      "slug": "call-of-the-wyrm",
-      "name": "Call of the Wyrm",
-      "quantity": 2
+      "card_id": 1123,
+      "slug": "in-the-public-eye",
+      "name": "In the Public Eye",
+      "quantity": 3
     },
     {
       "card_id": 1285,
       "slug": "no-escape",
       "name": "No Escape",
       "quantity": 2
+    },
+    {
+      "card_id": 1289,
+      "slug": "overextended-attack",
+      "name": "Overextended Attack",
+      "quantity": 3
+    },
+    {
+      "card_id": 1294,
+      "slug": "rapid-reload",
+      "name": "Rapid Reload",
+      "quantity": 2
+    },
+    {
+      "card_id": 1313,
+      "slug": "stunning-strike",
+      "name": "Stunning Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 1359,
+      "slug": "aggressive-bite",
+      "name": "Aggressive Bite",
+      "quantity": 1
+    },
+    {
+      "card_id": 1407,
+      "slug": "lobotomy",
+      "name": "Lobotomy",
+      "quantity": 1
+    },
+    {
+      "card_id": 1436,
+      "slug": "elwood-slicer-nedervitch-crinos",
+      "name": "Elwood Slicer Nedervitch Crinos",
+      "quantity": 1
+    },
+    {
+      "card_id": 1437,
+      "slug": "carlotta-stearns",
+      "name": "Carlotta Stearns",
+      "quantity": 1
+    },
+    {
+      "card_id": 1438,
+      "slug": "charlene-brell",
+      "name": "Charlene Brell",
+      "quantity": 1
+    },
+    {
+      "card_id": 1439,
+      "slug": "leergo-cat-swallower",
+      "name": "Leergo Cat Swallower",
+      "quantity": 1
+    },
+    {
+      "card_id": 1440,
+      "slug": "melvin-spivey",
+      "name": "Melvin Spivey",
+      "quantity": 1
+    },
+    {
+      "card_id": 1520,
+      "slug": "dismember",
+      "name": "Dismember",
+      "quantity": 1
+    },
+    {
+      "card_id": 1523,
+      "slug": "iron-skin",
+      "name": "Iron Skin",
+      "quantity": 4
+    },
+    {
+      "card_id": 1531,
+      "slug": "whirlwind-defense",
+      "name": "Whirlwind Defense",
+      "quantity": 1
+    },
+    {
+      "card_id": 1796,
+      "slug": "web-of-corruption",
+      "name": "Web of Corruption",
+      "quantity": 1
     }
   ]
 }
