@@ -89,6 +89,7 @@ class EfeitoTipo(str, Enum):
     COMPRAR_QUANDO_ATACADO = 'comprar_quando_atacado'  # Compra quando atacado (Mother Larissa)
     REMOVER_DO_DESCARTE = 'remover_do_descarte'  # Remove carta do descarte (Quari Filth)
     BUSCAR_COPIAS = 'buscar_copias'  # Busca copias do deck e joga (Mosquito Swarm)
+    BUSCAR_NO_DECK = 'buscar_no_deck'  # Busca carta por tipo no deck e poe na mao (Rewards of Leadership)
     AUTO_PACK_ATTACK = 'auto_pack_attack'  # Auto pack attack/defend (Mosquito Swarm)
     ACAO_EXTRA_POR_RODADA = 'acao_extra_por_rodada'  # Ação extra de combate por rodada (Devilwhip)
     IMUNE_COMBATE_RAGE = 'imune_combate_rage'  # Imune a combat actions de certo Rage (Dhul Fiqar)
@@ -295,6 +296,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.COMPRAR_QUANDO_ATACADO: self._resolver_comprar_quando_atacado,
             EfeitoTipo.REMOVER_DO_DESCARTE: self._resolver_remover_do_descarte,
             EfeitoTipo.BUSCAR_COPIAS: self._resolver_buscar_copias,
+            EfeitoTipo.BUSCAR_NO_DECK: self._resolver_buscar_no_deck,
             EfeitoTipo.AUTO_PACK_ATTACK: self._resolver_auto_pack_attack,
             EfeitoTipo.ACAO_EXTRA_POR_RODADA: self._resolver_acao_extra_por_rodada,
             EfeitoTipo.IMUNE_COMBATE_RAGE: self._resolver_imune_combate_rage,
@@ -2952,6 +2954,62 @@ class ResolvedorEfeitos:
         )
         return True
 
+    def _resolver_buscar_no_deck(self, efeito: Efeito,
+                                  origem: CardInstance,
+                                  jogador: PlayerState, alvo) -> bool:
+        """Busca cartas por tipo no sept deck e coloca na mao.
+
+        Usado por Rewards of Leadership:
+        'Search your deck for one Ally, Equipment or Territory card
+        and place it in your hand.'
+
+        params:
+        - filtro: str — tipo(s) separados por | (ex: 'Ally|Equipment|Territory')
+        - quantidade: int — maximo de cartas para buscar (padrao: 1)
+        """
+        params = efeito.params or {}
+        filtro = params.get('filtro', '')
+        quantidade = int(params.get('quantidade', 1) or 1)
+
+        if not filtro:
+            return False
+
+        # Parse tipos permitidos
+        tipos_permitidos = [t.strip().lower() for t in filtro.split('|')]
+
+        # Busca no sept deck
+        encontradas = []
+        restantes = []
+        for carta in jogador.deck_sept:
+            ct = (carta.card_type or '').lower()
+            if any(tp in ct for tp in tipos_permitidos):
+                encontradas.append(carta)
+            else:
+                restantes.append(carta)
+
+        if not encontradas:
+            self.game.add_log(
+                f'{origem.name}: nenhuma carta {filtro} encontrada '
+                f'no sept deck'
+            )
+            return False
+
+        # Atualiza o deck (remove as cartas encontradas)
+        jogador.deck_sept = restantes
+
+        # Poe na mao (max = quantidade)
+        colocadas = []
+        for carta in encontradas[:quantidade]:
+            carta.zone = Zone.HAND
+            jogador.hand.append(carta)
+            colocadas.append(carta.name)
+
+        self.game.add_log(
+            f'{origem.name}: buscou "{", ".join(colocadas)}" '
+            f'do sept deck para a mao'
+        )
+        return True
+
     def _resolver_auto_pack_attack(self, efeito: Efeito,
                                     origem: CardInstance,
                                     jogador: PlayerState, alvo) -> bool:
@@ -3607,6 +3665,8 @@ def _validar_condicao_uso(game: GameState, jogador: 'PlayerState',
             lambda: _condicao_fase_umbra_mokole(game, jogador),
         'alpha_attack_hg':
             lambda: _condicao_alpha_attack_hg(game, jogador),
+        'apos_vencer_junta':
+            lambda: _condicao_apos_vencer_junta(game, jogador),
     }
     validador = validadores.get(condicao)
     if validador:
@@ -3676,6 +3736,29 @@ def _condicao_alpha_attack_hg(game: GameState,
     if 'hg' in game.combat.defenders:
         return True
     return False
+
+
+def _condicao_apos_vencer_junta(game: GameState,
+                                jogador: 'PlayerState') -> bool:
+    """Verifica se o jogador acabou de vencer uma Junta que chamou.
+
+    Usado por Rewards of Leadership:
+    'Play after you win a Junta you called.'
+
+    A junta deve:
+    1. Ter sido resolvida (votacao encerrada)
+    2. Ter sido aprovada (sim > nao)
+    3. Ter sido chamada pelo proprio jogador (dono_id == jogador.id)
+    """
+    if not game.moot_atual:
+        return False
+    if not game.moot_atual.resolvido:
+        return False
+    if not game.moot_atual.aprovado:
+        return False
+    if game.moot_atual.dono_id != jogador.id:
+        return False
+    return True
 
 
 def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',

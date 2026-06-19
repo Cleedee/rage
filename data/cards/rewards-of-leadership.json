@@ -4,14 +4,14 @@
   "tipo": "Event",
   "modos": [
     {
-      "descricao": "Buscar Ally/Equipment no deck",
+      "descricao": "Buscar Ally/Equipment/Territory no deck",
       "efeitos": [
         {
-          "tipo": "buscar_copias",
+          "tipo": "buscar_no_deck",
           "condicao_alvo": "jogador_aliado",
           "quantidade": 1,
           "params": {
-            "filtro": "tipo=Ally|Equipment"
+            "filtro": "Ally|Equipment|Territory"
           }
         }
       ],
@@ -21,8 +21,7 @@
   "_metadata": {
     "fonte": "novo_deck_kitsune",
     "card_id": 221,
-    "texto_original": "Play after you win a Junta you called. You may search your deck for one Ally, Equipment or Fetish card.",
-    "precisa_revisao": true,
+    "texto_original": "Play after you win a Junta you called. You may search your deck for one Ally, Equipment or Territory card and place it in your hand. You may play Equipment, Allies and Territories in your hand at the start of the next Combat Phase before Alphas are chos",
     "slug": "rewards-of-leadership"
   }
 }
