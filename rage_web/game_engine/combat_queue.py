@@ -1495,6 +1495,60 @@ def start_combat(game: GameState, attackers: list[str],
                     f'  {bf_card.name} (Battlefield) em autodefesa '
                     f'(Rg/Gn/Hp={bf_renown})')
 
+    # ── Mindspeak: pack coordination entre personagens vinculados ──
+    for link in list(game.mindspeak_links):
+        caster_uid = link['caster_uid']
+        packmate_uid = link['packmate_uid']
+        player_id = link['player_id']
+
+        def _uid_to_card_str(uid: int) -> str | None:
+            for p in game.players:
+                for c in p.pack_home + p.hunting_grounds + p.umbra:
+                    if id(c) == uid and c.health_current > 0:
+                        return str(c.card_id)
+            return None
+
+        caster_cid = _uid_to_card_str(caster_uid)
+        packmate_cid = _uid_to_card_str(packmate_uid)
+        if not caster_cid or not packmate_cid:
+            continue  # Um dos dois morreu
+
+        # Se o caster esta atacando, packmate pode juntar-se
+        if caster_cid in game.combat.attackers:
+            if packmate_cid not in game.combat.attackers:
+                game.combat.attackers.append(packmate_cid)
+                game.combat.combatants.append(packmate_cid)
+                game.add_log(
+                    f'  [🧠 Mindspeak] {link["packmate_name"]} juntou-se '
+                    f'ao ataque de {link["caster_name"]}!')
+
+        # Se o caster esta defendendo, packmate pode juntar-se
+        if caster_cid in game.combat.defenders:
+            if packmate_cid not in game.combat.defenders:
+                game.combat.defenders.append(packmate_cid)
+                game.combat.combatants.append(packmate_cid)
+                game.add_log(
+                    f'  [🧠 Mindspeak] {link["packmate_name"]} juntou-se '
+                    f'a defesa de {link["caster_name"]}!')
+
+        # Se o packmate esta atacando, caster pode juntar-se
+        if packmate_cid in game.combat.attackers:
+            if caster_cid not in game.combat.attackers:
+                game.combat.attackers.append(caster_cid)
+                game.combat.combatants.append(caster_cid)
+                game.add_log(
+                    f'  [🧠 Mindspeak] {link["caster_name"]} juntou-se '
+                    f'ao ataque de {link["packmate_name"]}!')
+
+        # Se o packmate esta defendendo, caster pode juntar-se
+        if packmate_cid in game.combat.defenders:
+            if caster_cid not in game.combat.defenders:
+                game.combat.defenders.append(caster_cid)
+                game.combat.combatants.append(caster_cid)
+                game.add_log(
+                    f'  [🧠 Mindspeak] {link["caster_name"]} juntou-se '
+                    f'a defesa de {link["packmate_name"]}!')
+
     return True
 
 

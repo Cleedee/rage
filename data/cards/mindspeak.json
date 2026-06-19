@@ -4,25 +4,26 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Comprar 1 combat card",
+      "descricao": "Vincula caster + packmate para pack coordination pelo resto do turno",
       "efeitos": [
         {
-          "tipo": "comprar",
-          "condicao_alvo": "jogador",
+          "tipo": "vincular_pack",
+          "condicao_alvo": "criatura_aliada",
           "quantidade": 1
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "gerador_gift_jsons",
+    "fonte": "implementacao_manual",
     "card_id": 1005,
-    "texto_original": "The user communicates telepathically with 1 other member of her pack. The user and her packmate may join in pack attacks or defenses for the remainder of the turn. Draw 1 additional combat card if these characters enter combat. Discard this Gift after its",
+    "texto_original": "The user communicates telepathically with 1 other member of her pack. The user and her packmate may join in pack attacks or defenses for the remainder of the turn. Draw 1 additional combat card if these characters enter combat. Discard this Gift after its effect.",
     "keywords": "",
     "gnosis": 3,
     "rage": 0,
     "health": 0,
-    "precisa_revisao": true,
-    "slug": "mindspeak"
+    "slug": "mindspeak",
+    "implementado_em": "effects.py:_resolver_vincular_pack(), state.py:mindspeak_links, combat_queue.py:start_combat()",
+    "data_implementacao": "2026-06-19"
   }
 }

@@ -99,6 +99,7 @@ class EfeitoTipo(str, Enum):
     REMOVER_RENOME_BAIXO = 'remover_renome_baixo'  # Remove todos personagens com Renome <=2 (Breath of the Defiled)
     ROUBAR_EQUIPAMENTO = 'roubar_equipamento'  # Roubar equipamento de criatura inimiga (Sticky Paws)
     ADICIONAR_MODIFIER = 'adicionar_modifier'  # Adicionar modifier string a uma criatura (Heightened Senses)
+    VINCULAR_PACK = 'vincular_pack'  # Vincular duas criaturas para pack coordination (Mindspeak)
     MATAR_VITIMA = 'matar_vitima'  # Quest: matar vitima de Renome 3 ou menos sem ser ferido (Bully's Quest)
     DESCARTAR_EQUIPAMENTOS = 'descartar_equipamentos'  # Spirit Backlash: descarta fetishes com Gnosis 5+
     IGNORAR_DANO_AGRAVADO = 'ignorar_dano_agravado'  # Purity of Spirit: converter dano agravado em normal por um turno
@@ -304,6 +305,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MODIFICAR_GAUNTLET: self._resolver_modificar_gauntlet,
             EfeitoTipo.MODIFICAR_HAND_SIZE: self._resolver_modificar_hand_size,
             EfeitoTipo.ADICIONAR_MODIFIER: self._resolver_adicionar_modifier,
+            EfeitoTipo.VINCULAR_PACK: self._resolver_vincular_pack,
             EfeitoTipo.MATAR_VITIMA: self._resolver_matar_vitima,
             EfeitoTipo.DESCARTAR_EQUIPAMENTOS: self._resolver_descartar_equipamentos,
             EfeitoTipo.IGNORAR_DANO_AGRAVADO: self._resolver_ignorar_dano_agravado,
@@ -3265,9 +3267,60 @@ class ResolvedorEfeitos:
         )
         return True
 
+    def _resolver_vincular_pack(self, efeito: Efeito,
+                                origem: CardInstance,
+                                jogador: PlayerState, alvo) -> bool:
+        """Vincula o caster a um packmate para pack coordination.
+
+        Usado por Mindspeak: caster + packmate podem fazer pack attack/defense
+        pelo resto do turno. Se entrarem em combate, compram 1 combat card extra.
+
+        O packmate e determinado pelo alvo do efeito (condicao_alvo).
+        Se o alvo e uma criatura aliada, ela e o packmate.
+        """
+        # O packmate e o alvo resolvido (criatura_aliada)
+        if not isinstance(alvo, CardInstance):
+            self.game.add_log(
+                f'{origem.name}: Mindspeak falhou — alvo invalido')
+            return False
+
+        packmate = alvo
+        if packmate.health_current <= 0:
+            self.game.add_log(
+                f'{origem.name}: Mindspeak falhou — packmate {packmate.name} esta morto')
+            return False
+
+        # Nao pode vincular a si mesmo
+        if id(packmate) == id(origem):
+            self.game.add_log(
+                f'{origem.name}: Mindspeak falhou — nao pode vincular a si mesmo')
+            return False
+
+        # Verifica se o packmate e do mesmo jogador
+        if packmate.owner_id != jogador.id:
+            self.game.add_log(
+                f'{origem.name}: Mindspeak falhou — {packmate.name} nao e um packmate')
+            return False
+
+        # Registra o link no GameState
+        link = {
+            'player_id': jogador.id,
+            'caster_uid': id(origem),
+            'packmate_uid': id(packmate),
+            'caster_name': origem.name,
+            'packmate_name': packmate.name,
+        }
+        self.game.mindspeak_links.append(link)
+
+        self.game.add_log(
+            f'🧠 {origem.name}: Mindspeak vinculou {origem.name} e '
+            f'{packmate.name} para pack coordination!'
+        )
+        return True
+
     def _resolver_roubar_equipamento(self, efeito: Efeito,
-                                       origem: CardInstance,
-                                       jogador: PlayerState, alvo) -> bool:
+                                     origem: CardInstance,
+                                     jogador: PlayerState, alvo) -> bool:
         """Rouba um equipamento de uma criatura inimiga.
 
         Sticky Paws (card_id=1061): o usuario do Gift rouba

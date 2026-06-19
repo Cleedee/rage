@@ -1205,6 +1205,10 @@ class GameState:
     used_effects: list[int] = field(default_factory=list)
     """Lista de id(CardInstance) dos efeitos ja usados neste turno."""
 
+    # Mindspeak: links entre personagens para pack coordination
+    mindspeak_links: list[dict] = field(default_factory=list)
+    """Cada dict: {player_id, caster_uid, packmate_uid, caster_name, packmate_name}"""
+
     def __post_init__(self):
         """Propaga o RNG do jogo para todos os jogadores."""
         for p in self.players:
@@ -1276,6 +1280,32 @@ class GameState:
                     drawn = p.redraw_combat()
                     if drawn:
                         self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de combate')
+
+                # Mindspeak: draw bonus se personagens vinculados estao vivos
+                for p in self.players:
+                    bonus = 0
+                    for link in self.mindspeak_links:
+                        if link['player_id'] != p.id:
+                            continue
+                        # Verifica se ambos personagens ainda estao vivos
+                        caster_vivo = any(
+                            id(c) == link['caster_uid'] and c.health_current > 0
+                            for c in p.pack_home + p.hunting_grounds + p.umbra
+                        )
+                        packmate_vivo = any(
+                            id(c) == link['packmate_uid'] and c.health_current > 0
+                            for c in p.pack_home + p.hunting_grounds + p.umbra
+                        )
+                        if caster_vivo and packmate_vivo:
+                            bonus = 1
+                            break
+                    if bonus:
+                        extra = p.draw_combat(bonus)
+                        if extra:
+                            self.add_log(
+                                f'  [🧠 Mindspeak] {p.name} comprou '
+                                f'{len(extra)} carta(s) extra de combate'
+                            )
 
                 # Rewards of Leadership: janela para jogar Equipment/Ally/Territory
                 # antes da selecao de alphas (apos redraw de combate)
@@ -1750,6 +1780,12 @@ class GameState:
             m for m in self.game_modifiers
             if getattr(m, 'duration', '') != 'end_of_turn'
         ]
+
+        # Limpa Mindspeak links (duram ate o fim do turno)
+        if self.mindspeak_links:
+            self.add_log(
+                f'Links de Mindspeak expiraram ({len(self.mindspeak_links)} link(s))')
+            self.mindspeak_links.clear()
 
         # Nota: Purity of Spirit NAO e limpo no fim do turno.
         # O Gift fica anexado ate converter dano agravado em normal
