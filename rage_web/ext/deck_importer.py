@@ -18,6 +18,15 @@ logger = logging.getLogger(__name__)
 # Regex para linha de carta: "3 Nome da Carta" ou "1 Nome da Carta"
 CARD_LINE_RE = re.compile(r'^\s*(\d+)\s+(.+?)\s*$')
 
+# Regex para linha Discord: "`2x` Card Name"
+DISCORD_QTY_RE = re.compile(r'^\s*`(\d+)x?`\s+(.+)\s*$')
+
+# Regex para estatisticas entre parenteses no final "Card Name *(Rg3 Gn8 H5)*"
+STATS_SUFFIX_RE = re.compile(r'\s+\*\([^*)]*\)\*\s*$')
+
+# Regex para linha de bullet: "• Card Name"
+BULLET_RE = re.compile(r'^\s*[•\-\*]\s+(.+)\s*$')
+
 
 def parse_dek_xml(content: str) -> dict:
     """Analisa arquivo .dek XML do LackeyCCG.
@@ -59,7 +68,11 @@ def parse_text_deck(content: str) -> dict:
     Formatos aceitos:
       - "3 Nome da Carta"
       - "3x Nome da Carta"
-      - Linhas em branco separam seções (ex: Characters, Sept, Combat)
+      - "`3x` Nome da Carta" (Discord markdown)
+      - "• Nome da Carta" (bullet, qtd=1)
+      - "`3x` Nome *(Rg3 Gn8 H5)*" (Discord com stats)
+      - Seções: "Characters:", "**👤 Characters (4 types)**", etc.
+      - Linhas em branco separam seções
       - Tudo que não casa é ignorado (comentários, explicações)
 
     Retorna:
@@ -73,17 +86,52 @@ def parse_text_deck(content: str) -> dict:
         if not line:
             continue
 
-        # Pula cabeçalhos de seção (ex: "<u>Characters</u>" ou "Characters:")
-        if re.match(r'^<\/?u>|^[A-Z][a-z]+[:]', line):
+        # Pula cabeçalhos de seção (ex: "Characters:", "**👤 Characters**")
+        if re.match(r'^</?u>', line):
+            continue
+        if re.match(r'^[A-Z][a-z]+[:]', line):
+            continue
+        if re.match(r'^\*\*.*\(\d+ types.*\).*\*\*$', line):
+            continue
+        # Pula separadores, stats do deck, descrições italic
+        if line.startswith('---'):
+            continue
+        if line.startswith('**📊'):
+            continue
+        if re.match(r'^\*[^*]+\*$', line):
+            continue
+        if line.startswith('*Exportado do'):
             continue
 
         # Tenta extrair quantidade + nome
-        m = CARD_LINE_RE.match(line)
+        qtd = 1
+        name = None
+
+        # 1. Formato Discord: "`3x` Card Name"
+        m = DISCORD_QTY_RE.match(line)
         if m:
             qtd = int(m.group(1))
             name = m.group(2).strip()
+
+        # 2. Formato classico: "3 Nome da Carta"
+        if not name:
+            m = CARD_LINE_RE.match(line)
+            if m:
+                qtd = int(m.group(1))
+                name = m.group(2).strip()
+
+        # 3. Formato bullet: "• Nome da Carta"
+        if not name:
+            m = BULLET_RE.match(line)
+            if m:
+                qtd = 1
+                name = m.group(1).strip()
+
+        if name:
             # Remove tags HTML
             name = re.sub(r'<[^>]+>', '', name).strip()
+            # Remove estatisticas no formato *(Rg3 Gn8 H5)*
+            name = STATS_SUFFIX_RE.sub('', name).strip()
             # Remove span leftovers
             name = re.sub(r'\s+', ' ', name).strip()
             if name:
@@ -146,7 +194,7 @@ def import_deck_from_text(content: str, deck_name: str = '',
     if not deck_name:
         deck_name = parsed.get('title', 'Deck Importado')
 
-    deck = Deck(name=deck_name, description=description)
+    deck = Deck(name=deck_name, description=description, renown_cap=20)
     db.session.add(deck)
     db.session.flush()  # garante deck.id
 
