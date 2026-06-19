@@ -452,6 +452,19 @@ class PriorityBot:
                             if c.health_current > 0]
                         if not hg_vals:
                             continue  # Pula, nao ha alvos
+                    # Verifica condicao_uso (ex: Rewards of Leadership)
+                    from rage_web.game_engine.effects import (
+                        CARTAS_EXEMPLO, _validar_condicao_uso)
+                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                    if modelo and modelo.modos:
+                        cond_ok = all(
+                            not m.condicao_uso
+                            or _validar_condicao_uso(
+                                self.game, self.player, m.condicao_uso)
+                            for m in modelo.modos
+                        )
+                        if not cond_ok:
+                            continue  # Condicao nao atendida, pula
                     modo_idx = self._escolher_melhor_modo(card.modelo_id)
                     self._cards_played_this_turn += 1
                     return self._usar_carta_efeito(i, modo_idx, card)
