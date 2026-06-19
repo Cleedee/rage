@@ -6,8 +6,8 @@
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,
-  "total_cards": 59,
-  "total_renown": 61,
+  "total_cards": 65,
+  "total_renown": 67,
   "cards": [
     {
       "card_id": 27,
@@ -31,6 +31,12 @@
       "card_id": 110,
       "slug": "disembowelment",
       "name": "Disembowelment",
+      "quantity": 1
+    },
+    {
+      "card_id": 112,
+      "slug": "frenzy",
+      "name": "Frenzy",
       "quantity": 1
     },
     {
@@ -112,6 +118,12 @@
       "quantity": 1
     },
     {
+      "card_id": 463,
+      "slug": "corrupt-kinfolk",
+      "name": "Corrupt Kinfolk",
+      "quantity": 1
+    },
+    {
       "card_id": 469,
       "slug": "drunken-vandals",
       "name": "Drunken Vandals",
@@ -172,6 +184,18 @@
       "quantity": 1
     },
     {
+      "card_id": 823,
+      "slug": "checking-the-classifieds",
+      "name": "Checking the Classifieds",
+      "quantity": 1
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 1
+    },
+    {
       "card_id": 884,
       "slug": "lunar-eclipse",
       "name": "Lunar Eclipse",
@@ -187,6 +211,12 @@
       "card_id": 900,
       "slug": "rat",
       "name": "Rat",
+      "quantity": 1
+    },
+    {
+      "card_id": 941,
+      "slug": "burrow",
+      "name": "Burrow",
       "quantity": 1
     },
     {
@@ -283,6 +313,12 @@
       "card_id": 1414,
       "slug": "cornered-rat",
       "name": "Cornered Rat",
+      "quantity": 1
+    },
+    {
+      "card_id": 1435,
+      "slug": "foreign-aid-workers",
+      "name": "Foreign Aid Workers",
       "quantity": 1
     },
     {
