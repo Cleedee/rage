@@ -18,14 +18,18 @@ logger = logging.getLogger(__name__)
 # Regex para linha de carta: "3 Nome da Carta" ou "1 Nome da Carta"
 CARD_LINE_RE = re.compile(r'^\s*(\d+)\s+(.+?)\s*$')
 
-# Regex para linha Discord: "`2x` Card Name"
-DISCORD_QTY_RE = re.compile(r'^\s*`(\d+)x?`\s+(.+)\s*$')
+# Regex para linha Discord: "`2x` Card Name" ou "2x Card Name"
+DISCORD_QTY_RE = re.compile(r'^\s*`?(\d+)x`?\s+(.+)\s*$', re.IGNORECASE)
 
 # Regex para estatisticas entre parenteses no final "Card Name *(Rg3 Gn8 H5)*"
-STATS_SUFFIX_RE = re.compile(r'\s+\*\([^*)]*\)\*\s*$')
+# ou "Card Name (G8)" ou "Card Name (R2)" ou "Card Name (R3 G4 H2 Ren3)"
+STATS_SUFFIX_RE = re.compile(r'\s+[\*]*\([^()]*\)[\*]*\s*$')
 
 # Regex para linha de bullet: "• Card Name"
 BULLET_RE = re.compile(r'^\s*[•\-\*]\s+(.+)\s*$')
+
+# Regex para "Card Name (Stats)" sem bullet e sem qtd prefix
+NO_QTY_STATS_RE = re.compile(r'^\s*\w.*\([^()]*\)\s*$')
 
 
 def parse_dek_xml(content: str) -> dict:
@@ -126,6 +130,13 @@ def parse_text_deck(content: str) -> dict:
             if m:
                 qtd = 1
                 name = m.group(1).strip()
+
+        # 4. Formato "Card Name (Stats)" sem bullet e sem qtd prefix
+        if not name:
+            m = NO_QTY_STATS_RE.match(line)
+            if m:
+                qtd = 1
+                name = line.strip()
 
         if name:
             # Remove tags HTML

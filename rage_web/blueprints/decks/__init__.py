@@ -293,7 +293,11 @@ def import_deck():
             if stats['encontradas'] > 0:
                 flash(f'Deck importado com {stats["encontradas"]} cartas!')
                 if stats['nao_encontradas'] > 0:
-                    flash(f'{stats["nao_encontradas"]} cartas não encontradas.')
+                    missing_names = [c['name'] for c in stats['cards'] if not c['found']]
+                    missing_list = ', '.join(missing_names[:10])
+                    if len(missing_names) > 10:
+                        missing_list += f' e mais {len(missing_names) - 10}...'
+                    flash(f'{stats["nao_encontradas"]} cartas NÃO encontradas: {missing_list}', 'warning')
                 return redirect(url_for('decks.read_deck', id=stats.get('deck_id')))
             else:
                 flash('Nenhuma carta encontrada. Verifique o formato.')

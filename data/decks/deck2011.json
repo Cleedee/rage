@@ -1,0 +1,337 @@
+{
+  "id": 2011,
+  "name": "Hakimu - Gaia Umbra",
+  "description": "",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 61,
+  "total_renown": 38,
+  "cards": [
+    {
+      "card_id": 98,
+      "slug": "command-attention",
+      "name": "Command Attention",
+      "quantity": 1
+    },
+    {
+      "card_id": 110,
+      "slug": "disembowelment",
+      "name": "Disembowelment",
+      "quantity": 1
+    },
+    {
+      "card_id": 118,
+      "slug": "hamstringed",
+      "name": "Hamstringed",
+      "quantity": 2
+    },
+    {
+      "card_id": 183,
+      "slug": "markhat",
+      "name": "Markhat",
+      "quantity": 1
+    },
+    {
+      "card_id": 286,
+      "slug": "bite",
+      "name": "Bite",
+      "quantity": 1
+    },
+    {
+      "card_id": 287,
+      "slug": "block",
+      "name": "Block",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 295,
+      "slug": "careful-strike",
+      "name": "Careful Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 322,
+      "slug": "fetal-position",
+      "name": "Fetal Position",
+      "quantity": 1
+    },
+    {
+      "card_id": 448,
+      "slug": "a-bus-full-of-people",
+      "name": "A Bus Full of People",
+      "quantity": 2
+    },
+    {
+      "card_id": 450,
+      "slug": "anaconda-gafflings",
+      "name": "Anaconda Gafflings",
+      "quantity": 2
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 627,
+      "slug": "cellular-phone",
+      "name": "Cellular Phone",
+      "quantity": 1
+    },
+    {
+      "card_id": 660,
+      "slug": "lost-map",
+      "name": "Lost Map",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 1
+    },
+    {
+      "card_id": 748,
+      "slug": "dead-zone",
+      "name": "Dead Zone",
+      "quantity": 1
+    },
+    {
+      "card_id": 752,
+      "slug": "hidden-lair",
+      "name": "Hidden Lair",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 1
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": 809,
+      "slug": "step-sideways",
+      "name": "Step Sideways",
+      "quantity": 1
+    },
+    {
+      "card_id": 823,
+      "slug": "checking-the-classifieds",
+      "name": "Checking the Classifieds",
+      "quantity": 1
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 856,
+      "slug": "gaia-s-breath",
+      "name": "Gaia's Breath",
+      "quantity": 1
+    },
+    {
+      "card_id": 875,
+      "slug": "iron-will",
+      "name": "Iron Will",
+      "quantity": 1
+    },
+    {
+      "card_id": 919,
+      "slug": "umbral-wave",
+      "name": "Umbral Wave",
+      "quantity": 1
+    },
+    {
+      "card_id": 957,
+      "slug": "feline-grace",
+      "name": "Feline Grace",
+      "quantity": 1
+    },
+    {
+      "card_id": 960,
+      "slug": "fortuna",
+      "name": "Fortuna",
+      "quantity": 1
+    },
+    {
+      "card_id": 1010,
+      "slug": "night-terror",
+      "name": "Night terror",
+      "quantity": 1
+    },
+    {
+      "card_id": 1049,
+      "slug": "shriek",
+      "name": "Shriek",
+      "quantity": 1
+    },
+    {
+      "card_id": 1057,
+      "slug": "spirit-of-the-tiger",
+      "name": "Spirit of the Tiger",
+      "quantity": 1
+    },
+    {
+      "card_id": 1089,
+      "slug": "world-of-human",
+      "name": "World of Human",
+      "quantity": 1
+    },
+    {
+      "card_id": 1093,
+      "slug": "feral-grin",
+      "name": "Feral Grin",
+      "quantity": 1
+    },
+    {
+      "card_id": 1272,
+      "slug": "disarm",
+      "name": "Disarm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 1
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 1
+    },
+    {
+      "card_id": 1293,
+      "slug": "planned-strike",
+      "name": "Planned Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": 1298,
+      "slug": "reinforcements",
+      "name": "Reinforcements",
+      "quantity": 1
+    },
+    {
+      "card_id": 1302,
+      "slug": "riposte",
+      "name": "Riposte",
+      "quantity": 1
+    },
+    {
+      "card_id": 1316,
+      "slug": "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "name": "Cheap Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": 1317,
+      "slug": "superior-tactics",
+      "name": "Superior Tactics",
+      "quantity": 1
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 2
+    },
+    {
+      "card_id": 1325,
+      "slug": "umbral-flurry",
+      "name": "Umbral Flurry",
+      "quantity": 1
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1385,
+      "slug": "lord-hakimu",
+      "name": "Lord Hakimu",
+      "quantity": 1
+    },
+    {
+      "card_id": 1396,
+      "slug": "zari",
+      "name": "Zari",
+      "quantity": 1
+    },
+    {
+      "card_id": 1426,
+      "slug": "clawstorm",
+      "name": "Clawstorm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1427,
+      "slug": "ojas-surge",
+      "name": "Ojas Surge",
+      "quantity": 1
+    },
+    {
+      "card_id": 1428,
+      "slug": "submit",
+      "name": "Submit",
+      "quantity": 1
+    },
+    {
+      "card_id": 1651,
+      "slug": "assimilation-a",
+      "name": "Assimilation A",
+      "quantity": 1
+    },
+    {
+      "card_id": 1726,
+      "slug": "gnosis-bomb",
+      "name": "Gnosis Bomb",
+      "quantity": 1
+    },
+    {
+      "card_id": 1737,
+      "slug": "spirited-strike",
+      "name": "Spirited Strike",
+      "quantity": 1
+    }
+  ]
+}
