@@ -1,0 +1,181 @@
+{
+  "id": 2002,
+  "name": "virtual_-_gaia_umbra",
+  "description": "virtual_-_gaia_umbra (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 53,
+  "total_renown": 101,
+  "cards": [
+    {
+      "card_id": 123,
+      "slug": "instinctive-attack",
+      "name": "Instinctive Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 174,
+      "slug": "lone-wolf-circles",
+      "name": "Lone Wolf Circles",
+      "quantity": 1
+    },
+    {
+      "card_id": 269,
+      "slug": "sweet-luna-s-smile",
+      "name": "Sweet Luna's Smile",
+      "quantity": 1
+    },
+    {
+      "card_id": 280,
+      "slug": "anatomy-lesson",
+      "name": "Anatomy Lesson",
+      "quantity": 2
+    },
+    {
+      "card_id": 288,
+      "slug": "block-and-roll",
+      "name": "Block and Roll",
+      "quantity": 2
+    },
+    {
+      "card_id": 324,
+      "slug": "flicker",
+      "name": "Flicker",
+      "quantity": 2
+    },
+    {
+      "card_id": 374,
+      "slug": "sand-s-last-king",
+      "name": "Sand's Last King",
+      "quantity": 2
+    },
+    {
+      "card_id": 391,
+      "slug": "carpet-snake",
+      "name": "Carpet Snake",
+      "quantity": 3
+    },
+    {
+      "card_id": 408,
+      "slug": "haunter",
+      "name": "Haunter",
+      "quantity": 1
+    },
+    {
+      "card_id": 446,
+      "slug": "oracle-of-sobek",
+      "name": "Oracle of Sobek",
+      "quantity": 1
+    },
+    {
+      "card_id": 573,
+      "slug": "dream-hunter",
+      "name": "Dream Hunter",
+      "quantity": 3
+    },
+    {
+      "card_id": 609,
+      "slug": "lake-nasser-wallow",
+      "name": "Lake Nasser Wallow",
+      "quantity": 3
+    },
+    {
+      "card_id": 725,
+      "slug": "animal-mummy",
+      "name": "Animal Mummy",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 3
+    },
+    {
+      "card_id": 945,
+      "slug": "chant-of-morpheus",
+      "name": "Chant of Morpheus",
+      "quantity": 3
+    },
+    {
+      "card_id": 1071,
+      "slug": "the-badger-s-heart",
+      "name": "The Badger's Heart",
+      "quantity": 2
+    },
+    {
+      "card_id": 1099,
+      "slug": "primal-anger",
+      "name": "Primal Anger",
+      "quantity": 2
+    },
+    {
+      "card_id": 1147,
+      "slug": "mnesis-dreams",
+      "name": "Mnesis Dreams",
+      "quantity": 1
+    },
+    {
+      "card_id": 1179,
+      "slug": "rite-of-the-opened-caern",
+      "name": "Rite of the Opened Caern",
+      "quantity": 2
+    },
+    {
+      "card_id": 1306,
+      "slug": "savage-beatdown",
+      "name": "Savage Beatdown",
+      "quantity": 2
+    },
+    {
+      "card_id": 1314,
+      "slug": "submission-hold",
+      "name": "Submission Hold",
+      "quantity": 1
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1330,
+      "slug": "searching-for-weakness",
+      "name": "Searching for Weakness",
+      "quantity": 2
+    },
+    {
+      "card_id": 1331,
+      "slug": "tail-lash",
+      "name": "Tail Lash",
+      "quantity": 1
+    },
+    {
+      "card_id": 1332,
+      "slug": "duck-and-cover",
+      "name": "Duck and Cover",
+      "quantity": 2
+    },
+    {
+      "card_id": 1341,
+      "slug": "elethoi",
+      "name": "Elethoi",
+      "quantity": 3
+    },
+    {
+      "card_id": 1345,
+      "slug": "smrtihara-eater-of-memory",
+      "name": "\"Smrtihara, Eater of Memory",
+      "quantity": 1
+    },
+    {
+      "card_id": 1359,
+      "slug": "aggressive-bite",
+      "name": "Aggressive Bite",
+      "quantity": 2
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "id": 2000,
+  "name": "Apocalypse: First Team 28",
+  "description": "Apocalypse: First Team 28 (28 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 28,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 55,
+  "total_renown": 44,
+  "cards": [
+    {
+      "card_id": 280,
+      "slug": "anatomy-lesson",
+      "name": "Anatomy Lesson",
+      "quantity": 1
+    },
+    {
+      "card_id": 315,
+      "slug": "entrail-rend",
+      "name": "Entrail Rend",
+      "quantity": 1
+    },
+    {
+      "card_id": 467,
+      "slug": "detective-jourgensen",
+      "name": "Detective Jourgensen",
+      "quantity": 1
+    },
+    {
+      "card_id": 571,
+      "slug": "yunwi-amai-yine-hi",
+      "name": "Yunwi Amai'yine'hi",
+      "quantity": 3
+    },
+    {
+      "card_id": 611,
+      "slug": "9mm-semi-auto-pistol",
+      "name": "9mm Semi-Auto Pistol",
+      "quantity": 1
+    },
+    {
+      "card_id": 628,
+      "slug": "chainsaw",
+      "name": "Chainsaw",
+      "quantity": 3
+    },
+    {
+      "card_id": 692,
+      "slug": "rocket-launcher",
+      "name": "Rocket Launcher",
+      "quantity": 3
+    },
+    {
+      "card_id": 695,
+      "slug": "shotgun",
+      "name": "Shotgun",
+      "quantity": 3
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 2
+    },
+    {
+      "card_id": 986,
+      "slug": "infectious-touch",
+      "name": "Infectious Touch",
+      "quantity": 3
+    },
+    {
+      "card_id": 1023,
+      "slug": "psychotic-hallucinations",
+      "name": "Psychotic Hallucinations",
+      "quantity": 3
+    },
+    {
+      "card_id": 1085,
+      "slug": "webbing",
+      "name": "Webbing",
+      "quantity": 3
+    },
+    {
+      "card_id": 1123,
+      "slug": "in-the-public-eye",
+      "name": "In the Public Eye",
+      "quantity": 3
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 1
+    },
+    {
+      "card_id": 1289,
+      "slug": "overextended-attack",
+      "name": "Overextended Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1294,
+      "slug": "rapid-reload",
+      "name": "Rapid Reload",
+      "quantity": 1
+    },
+    {
+      "card_id": 1313,
+      "slug": "stunning-strike",
+      "name": "Stunning Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 1414,
+      "slug": "cornered-rat",
+      "name": "Cornered Rat",
+      "quantity": 1
+    },
+    {
+      "card_id": 1436,
+      "slug": "elwood-slicer-nedervitch-crinos",
+      "name": "Elwood 'Slicer' Nedervitch (Crinos)",
+      "quantity": 1
+    },
+    {
+      "card_id": 1437,
+      "slug": "carlotta-stearns",
+      "name": "Carlotta Stearns",
+      "quantity": 1
+    },
+    {
+      "card_id": 1438,
+      "slug": "charlene-brell",
+      "name": "Charlene Brell",
+      "quantity": 1
+    },
+    {
+      "card_id": 1439,
+      "slug": "leergo-cat-swallower",
+      "name": "Leergo Cat Swallower",
+      "quantity": 1
+    },
+    {
+      "card_id": 1440,
+      "slug": "melvin-spivey",
+      "name": "Melvin Spivey",
+      "quantity": 1
+    },
+    {
+      "card_id": 1482,
+      "slug": "sniper-fire",
+      "name": "Sniper Fire",
+      "quantity": 3
+    },
+    {
+      "card_id": 1516,
+      "slug": "sever",
+      "name": "Sever",
+      "quantity": 1
+    },
+    {
+      "card_id": 1517,
+      "slug": "blood-lust",
+      "name": "Blood Lust",
+      "quantity": 2
+    },
+    {
+      "card_id": 1520,
+      "slug": "dismember",
+      "name": "Dismember",
+      "quantity": 2
+    },
+    {
+      "card_id": 1523,
+      "slug": "iron-skin",
+      "name": "Iron Skin",
+      "quantity": 1
+    },
+    {
+      "card_id": 1525,
+      "slug": "rally-to-battle",
+      "name": "Rally to Battle",
+      "quantity": 2
+    },
+    {
+      "card_id": 1531,
+      "slug": "whirlwind-defense",
+      "name": "Whirlwind Defense",
+      "quantity": 2
+    }
+  ]
+}

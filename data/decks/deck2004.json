@@ -1,0 +1,205 @@
+{
+  "id": 2004,
+  "name": "Classic: Questor Defence",
+  "description": "Classic: Questor Defence (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 53,
+  "total_renown": 74,
+  "cards": [
+    {
+      "card_id": 47,
+      "slug": "blossom",
+      "name": "Blossom",
+      "quantity": 1
+    },
+    {
+      "card_id": 111,
+      "slug": "fox-frenzy",
+      "name": "Fox Frenzy",
+      "quantity": 1
+    },
+    {
+      "card_id": 112,
+      "slug": "frenzy",
+      "name": "Frenzy",
+      "quantity": 1
+    },
+    {
+      "card_id": 175,
+      "slug": "longtooth-soulkiller",
+      "name": "Longtooth Soulkiller",
+      "quantity": 1
+    },
+    {
+      "card_id": 227,
+      "slug": "questor",
+      "name": "Questor",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 1
+    },
+    {
+      "card_id": 313,
+      "slug": "dry-gulch",
+      "name": "Dry Gulch",
+      "quantity": 2
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 535,
+      "slug": "renegade-werewolf-hunter",
+      "name": "Renegade Werewolf Hunter",
+      "quantity": 3
+    },
+    {
+      "card_id": 565,
+      "slug": "vigilante",
+      "name": "Vigilante",
+      "quantity": 3
+    },
+    {
+      "card_id": 568,
+      "slug": "wild-animals",
+      "name": "Wild Animals",
+      "quantity": 3
+    },
+    {
+      "card_id": 630,
+      "slug": "chronicle-of-the-black-labyrinth",
+      "name": "Chronicle of the Black Labyrinth",
+      "quantity": 1
+    },
+    {
+      "card_id": 697,
+      "slug": "skin-of-the-hellbound",
+      "name": "Skin of the Hellbound",
+      "quantity": 3
+    },
+    {
+      "card_id": 700,
+      "slug": "spiral-boomerang",
+      "name": "Spiral Boomerang",
+      "quantity": 2
+    },
+    {
+      "card_id": 706,
+      "slug": "tambertail-s-heart",
+      "name": "Tambertail's heart",
+      "quantity": 1
+    },
+    {
+      "card_id": 713,
+      "slug": "vampire-blood",
+      "name": "Vampire Blood",
+      "quantity": 2
+    },
+    {
+      "card_id": 716,
+      "slug": "war-knife-of-benning-simon",
+      "name": "War Knife of Benning Simon",
+      "quantity": 1
+    },
+    {
+      "card_id": 720,
+      "slug": "whip-of-the-wicked",
+      "name": "Whip of the Wicked",
+      "quantity": 1
+    },
+    {
+      "card_id": 777,
+      "slug": "the-pit",
+      "name": "The Pit",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 3
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 3
+    },
+    {
+      "card_id": 964,
+      "slug": "gaia-s-will-corrupted",
+      "name": "Gaia's Will Corrupted",
+      "quantity": 3
+    },
+    {
+      "card_id": 1270,
+      "slug": "curb-stomp",
+      "name": "Curb Stomp",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1308,
+      "slug": "septum-crushed",
+      "name": "Septum Crushed",
+      "quantity": 1
+    },
+    {
+      "card_id": 1309,
+      "slug": "shieldmate",
+      "name": "Shieldmate",
+      "quantity": 1
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1326,
+      "slug": "vital-blow",
+      "name": "Vital Blow",
+      "quantity": 2
+    }
+  ]
+}

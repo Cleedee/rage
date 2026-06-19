@@ -1,0 +1,229 @@
+{
+  "id": 2008,
+  "name": "Classic: Grimfang Moot",
+  "description": "Classic: Grimfang Moot (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 57,
+  "total_renown": 110,
+  "cards": [
+    {
+      "card_id": 25,
+      "slug": "diem",
+      "name": "Diem",
+      "quantity": 1
+    },
+    {
+      "card_id": 111,
+      "slug": "fox-frenzy",
+      "name": "Fox Frenzy",
+      "quantity": 2
+    },
+    {
+      "card_id": 112,
+      "slug": "frenzy",
+      "name": "Frenzy",
+      "quantity": 1
+    },
+    {
+      "card_id": 134,
+      "slug": "grimfang",
+      "name": "Grimfang",
+      "quantity": 1
+    },
+    {
+      "card_id": 148,
+      "slug": "ivan-korda",
+      "name": "Ivan Korda",
+      "quantity": 1
+    },
+    {
+      "card_id": 207,
+      "slug": "old-storm-chaser",
+      "name": "Old Storm-Chaser",
+      "quantity": 1
+    },
+    {
+      "card_id": 222,
+      "slug": "aegis",
+      "name": "Aegis",
+      "quantity": 1
+    },
+    {
+      "card_id": 284,
+      "slug": "beat-unmerciful",
+      "name": "Beat Unmerciful",
+      "quantity": 1
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 321,
+      "slug": "feint",
+      "name": "Feint",
+      "quantity": 1
+    },
+    {
+      "card_id": 395,
+      "slug": "dreamspeaker-mage",
+      "name": "Dreamspeaker Mage",
+      "quantity": 1
+    },
+    {
+      "card_id": 402,
+      "slug": "flame-spirit",
+      "name": "Flame Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 420,
+      "slug": "kinfolk-tv-reporter",
+      "name": "Kinfolk TV Reporter",
+      "quantity": 3
+    },
+    {
+      "card_id": 582,
+      "slug": "caern-of-the-crescent-moon",
+      "name": "Caern of the Crescent Moon",
+      "quantity": 3
+    },
+    {
+      "card_id": 642,
+      "slug": "elder-stone",
+      "name": "Elder Stone",
+      "quantity": 3
+    },
+    {
+      "card_id": 708,
+      "slug": "the-silver-crown",
+      "name": "The Silver Crown",
+      "quantity": 1
+    },
+    {
+      "card_id": 850,
+      "slug": "falcon",
+      "name": "Falcon",
+      "quantity": 1
+    },
+    {
+      "card_id": 1055,
+      "slug": "spirit-drain",
+      "name": "Spirit Drain",
+      "quantity": 1
+    },
+    {
+      "card_id": 1113,
+      "slug": "yuri-tvarivich",
+      "name": "Yuri Tvarivich",
+      "quantity": 1
+    },
+    {
+      "card_id": 1125,
+      "slug": "legendary-leadership",
+      "name": "Legendary Leadership",
+      "quantity": 1
+    },
+    {
+      "card_id": 1145,
+      "slug": "umbral-quest",
+      "name": "Umbral Quest",
+      "quantity": 2
+    },
+    {
+      "card_id": 1198,
+      "slug": "caern-building",
+      "name": "Caern Building",
+      "quantity": 1
+    },
+    {
+      "card_id": 1237,
+      "slug": "silver-record",
+      "name": "Silver Record",
+      "quantity": 3
+    },
+    {
+      "card_id": 1238,
+      "slug": "skindancer",
+      "name": "Skindancer",
+      "quantity": 3
+    },
+    {
+      "card_id": 1242,
+      "slug": "the-litany-s-guidance",
+      "name": "The Litany's Guidance",
+      "quantity": 1
+    },
+    {
+      "card_id": 1243,
+      "slug": "the-stolen-wolf",
+      "name": "The Stolen Wolf",
+      "quantity": 1
+    },
+    {
+      "card_id": 1245,
+      "slug": "tribal-war",
+      "name": "Tribal War",
+      "quantity": 2
+    },
+    {
+      "card_id": 1247,
+      "slug": "winter-wolf",
+      "name": "Winter Wolf",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 2
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1319,
+      "slug": "surprise-attack",
+      "name": "Surprise Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 2
+    }
+  ]
+}

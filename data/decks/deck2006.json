@@ -1,0 +1,193 @@
+{
+  "id": 2006,
+  "name": "Classic: Wyrm Frenzy",
+  "description": "Classic: Wyrm Frenzy (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 52,
+  "total_renown": 19,
+  "cards": [
+    {
+      "card_id": 18,
+      "slug": "count-vladimir-rustovitch",
+      "name": "Count Vladimir Rustovitch",
+      "quantity": 1
+    },
+    {
+      "card_id": 29,
+      "slug": "allonzo-montoya",
+      "name": "Allonzo Montoya",
+      "quantity": 1
+    },
+    {
+      "card_id": 100,
+      "slug": "consumption-of-gaia",
+      "name": "Consumption of Gaia",
+      "quantity": 3
+    },
+    {
+      "card_id": 112,
+      "slug": "frenzy",
+      "name": "Frenzy",
+      "quantity": 2
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 315,
+      "slug": "entrail-rend",
+      "name": "Entrail Rend",
+      "quantity": 2
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 1
+    },
+    {
+      "card_id": 321,
+      "slug": "feint",
+      "name": "Feint",
+      "quantity": 2
+    },
+    {
+      "card_id": 579,
+      "slug": "caern-of-rytthiku",
+      "name": "Caern of Rytthiku",
+      "quantity": 1
+    },
+    {
+      "card_id": 663,
+      "slug": "mage-s-talisman",
+      "name": "Mage's Talisman",
+      "quantity": 1
+    },
+    {
+      "card_id": 697,
+      "slug": "skin-of-the-hellbound",
+      "name": "Skin of the Hellbound",
+      "quantity": 3
+    },
+    {
+      "card_id": 700,
+      "slug": "spiral-boomerang",
+      "name": "Spiral Boomerang",
+      "quantity": 1
+    },
+    {
+      "card_id": 720,
+      "slug": "whip-of-the-wicked",
+      "name": "Whip of the Wicked",
+      "quantity": 1
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 3
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 3
+    },
+    {
+      "card_id": 880,
+      "slug": "kirijama-the-hidden-foe",
+      "name": "\"Kirijama, 'The Hidden Foe'",
+      "quantity": 1
+    },
+    {
+      "card_id": 954,
+      "slug": "eyes-of-hate",
+      "name": "Eyes of Hate",
+      "quantity": 2
+    },
+    {
+      "card_id": 984,
+      "slug": "horns-of-the-impaler",
+      "name": "Horns of the Impaler",
+      "quantity": 2
+    },
+    {
+      "card_id": 1016,
+      "slug": "patagia",
+      "name": "Patagia",
+      "quantity": 2
+    },
+    {
+      "card_id": 1063,
+      "slug": "subjugation-of-gaia",
+      "name": "Subjugation of Gaia",
+      "quantity": 2
+    },
+    {
+      "card_id": 1079,
+      "slug": "true-fear",
+      "name": "True Fear",
+      "quantity": 3
+    },
+    {
+      "card_id": 1090,
+      "slug": "wyrm-hide",
+      "name": "Wyrm Hide",
+      "quantity": 2
+    },
+    {
+      "card_id": 1272,
+      "slug": "disarm",
+      "name": "Disarm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1281,
+      "slug": "mangle",
+      "name": "Mangle",
+      "quantity": 2
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 1
+    },
+    {
+      "card_id": 1318,
+      "slug": "surprise-ally",
+      "name": "Surprise Ally",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1324,
+      "slug": "umbral-escape",
+      "name": "Umbral Escape",
+      "quantity": 1
+    },
+    {
+      "card_id": 1326,
+      "slug": "vital-blow",
+      "name": "Vital Blow",
+      "quantity": 2
+    }
+  ]
+}

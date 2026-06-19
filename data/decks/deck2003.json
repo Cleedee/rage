@@ -1,0 +1,187 @@
+{
+  "id": 2003,
+  "name": "virtual_-_ajaba_aggression",
+  "description": "virtual_-_ajaba_aggression (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 58,
+  "total_renown": 87,
+  "cards": [
+    {
+      "card_id": 96,
+      "slug": "clan-of-hyenas",
+      "name": "Clan of Hyenas",
+      "quantity": 1
+    },
+    {
+      "card_id": 123,
+      "slug": "instinctive-attack",
+      "name": "Instinctive Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 280,
+      "slug": "anatomy-lesson",
+      "name": "Anatomy Lesson",
+      "quantity": 2
+    },
+    {
+      "card_id": 288,
+      "slug": "block-and-roll",
+      "name": "Block and Roll",
+      "quantity": 2
+    },
+    {
+      "card_id": 361,
+      "slug": "amber-eyes-like-knives",
+      "name": "Amber Eyes-Like-Knives",
+      "quantity": 2
+    },
+    {
+      "card_id": 369,
+      "slug": "ironjaw",
+      "name": "Ironjaw",
+      "quantity": 2
+    },
+    {
+      "card_id": 373,
+      "slug": "njoki-scarface",
+      "name": "Njoki Scarface",
+      "quantity": 2
+    },
+    {
+      "card_id": 376,
+      "slug": "thousand-cubs",
+      "name": "Thousand Cubs",
+      "quantity": 2
+    },
+    {
+      "card_id": 553,
+      "slug": "toreador-poseur",
+      "name": "Toreador Poseur",
+      "quantity": 2
+    },
+    {
+      "card_id": 780,
+      "slug": "termite-mounds",
+      "name": "Termite Mounds",
+      "quantity": 3
+    },
+    {
+      "card_id": 937,
+      "slug": "blur-of-the-milky-eye",
+      "name": "Blur of the Milky Eye",
+      "quantity": 2
+    },
+    {
+      "card_id": 978,
+      "slug": "gnaw",
+      "name": "Gnaw",
+      "quantity": 1
+    },
+    {
+      "card_id": 1094,
+      "slug": "laughter-of-the-soul",
+      "name": "Laughter of the Soul",
+      "quantity": 3
+    },
+    {
+      "card_id": 1095,
+      "slug": "sense-of-the-prey",
+      "name": "Sense of the Prey",
+      "quantity": 3
+    },
+    {
+      "card_id": 1099,
+      "slug": "primal-anger",
+      "name": "Primal Anger",
+      "quantity": 2
+    },
+    {
+      "card_id": 1149,
+      "slug": "scavenger-s-quest",
+      "name": "Scavenger's Quest",
+      "quantity": 2
+    },
+    {
+      "card_id": 1277,
+      "slug": "leaping-rake",
+      "name": "Leaping Rake",
+      "quantity": 2
+    },
+    {
+      "card_id": 1278,
+      "slug": "low-blow",
+      "name": "Low Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1281,
+      "slug": "mangle",
+      "name": "Mangle",
+      "quantity": 1
+    },
+    {
+      "card_id": 1288,
+      "slug": "overbear",
+      "name": "Overbear",
+      "quantity": 2
+    },
+    {
+      "card_id": 1306,
+      "slug": "savage-beatdown",
+      "name": "Savage Beatdown",
+      "quantity": 1
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 1
+    },
+    {
+      "card_id": 1330,
+      "slug": "searching-for-weakness",
+      "name": "Searching for Weakness",
+      "quantity": 1
+    },
+    {
+      "card_id": 1332,
+      "slug": "duck-and-cover",
+      "name": "Duck and Cover",
+      "quantity": 2
+    },
+    {
+      "card_id": 1335,
+      "slug": "bitter-hatar",
+      "name": "Bitter Hatar",
+      "quantity": 2
+    },
+    {
+      "card_id": 1337,
+      "slug": "ootani-oil-bane",
+      "name": "Ootani Oil Bane",
+      "quantity": 3
+    },
+    {
+      "card_id": 1348,
+      "slug": "tzinzie",
+      "name": "Tzinzie",
+      "quantity": 3
+    },
+    {
+      "card_id": 1359,
+      "slug": "aggressive-bite",
+      "name": "Aggressive Bite",
+      "quantity": 2
+    },
+    {
+      "card_id": 1360,
+      "slug": "dust-storm",
+      "name": "Dust Storm",
+      "quantity": 3
+    }
+  ]
+}

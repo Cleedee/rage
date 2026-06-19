@@ -1,0 +1,175 @@
+{
+  "id": 2001,
+  "name": "morgans_bully_quest",
+  "description": "morgans_bully_quest (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 56,
+  "total_renown": 67,
+  "cards": [
+    {
+      "card_id": 46,
+      "slug": "blood-on-the-wind",
+      "name": "Blood-on-the-Wind",
+      "quantity": 2
+    },
+    {
+      "card_id": 114,
+      "slug": "gang-beating",
+      "name": "Gang Beating",
+      "quantity": 1
+    },
+    {
+      "card_id": 119,
+      "slug": "head-or-gut",
+      "name": "Head or Gut ?",
+      "quantity": 2
+    },
+    {
+      "card_id": 123,
+      "slug": "instinctive-attack",
+      "name": "Instinctive Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 207,
+      "slug": "old-storm-chaser",
+      "name": "Old Storm-Chaser",
+      "quantity": 2
+    },
+    {
+      "card_id": 213,
+      "slug": "visit-from-white-father",
+      "name": "Visit from White Father",
+      "quantity": 3
+    },
+    {
+      "card_id": 215,
+      "slug": "wendigo",
+      "name": "Wendigo",
+      "quantity": 1
+    },
+    {
+      "card_id": 284,
+      "slug": "beat-unmerciful",
+      "name": "Beat Unmerciful",
+      "quantity": 2
+    },
+    {
+      "card_id": 285,
+      "slug": "bitch-slap",
+      "name": "Bitch Slap",
+      "quantity": 2
+    },
+    {
+      "card_id": 320,
+      "slug": "fast-strike",
+      "name": "Fast Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 349,
+      "slug": "whispers-in-pines",
+      "name": "Whispers-in-Pines",
+      "quantity": 2
+    },
+    {
+      "card_id": 402,
+      "slug": "flame-spirit",
+      "name": "Flame Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 546,
+      "slug": "street-bum",
+      "name": "Street Bum",
+      "quantity": 2
+    },
+    {
+      "card_id": 547,
+      "slug": "suburban-high-school-kid",
+      "name": "Suburban High School Kid",
+      "quantity": 3
+    },
+    {
+      "card_id": 717,
+      "slug": "war-lodge",
+      "name": "War lodge",
+      "quantity": 1
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 937,
+      "slug": "blur-of-the-milky-eye",
+      "name": "Blur of the Milky Eye",
+      "quantity": 1
+    },
+    {
+      "card_id": 944,
+      "slug": "catfeet",
+      "name": "Catfeet",
+      "quantity": 3
+    },
+    {
+      "card_id": 994,
+      "slug": "knife-wind",
+      "name": "Knife Wind",
+      "quantity": 3
+    },
+    {
+      "card_id": 1096,
+      "slug": "sense-prey",
+      "name": "Sense Prey",
+      "quantity": 3
+    },
+    {
+      "card_id": 1115,
+      "slug": "bully-s-quest",
+      "name": "Bully's Quest",
+      "quantity": 3
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 1
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1323,
+      "slug": "telling-blow",
+      "name": "Telling Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1349,
+      "slug": "child-soldier",
+      "name": "Child Soldier",
+      "quantity": 3
+    }
+  ]
+}

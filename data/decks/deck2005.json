@@ -1,0 +1,217 @@
+{
+  "id": 2005,
+  "name": "Classic: Wailer special",
+  "description": "Classic: Wailer special (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 63,
+  "total_renown": 96,
+  "cards": [
+    {
+      "card_id": 42,
+      "slug": "barnaby-shadrack",
+      "name": "Barnaby Shadrack",
+      "quantity": 1
+    },
+    {
+      "card_id": 47,
+      "slug": "blossom",
+      "name": "Blossom",
+      "quantity": 1
+    },
+    {
+      "card_id": 64,
+      "slug": "fangs-through-eye",
+      "name": "Fangs-Through-Eye",
+      "quantity": 1
+    },
+    {
+      "card_id": 90,
+      "slug": "unseelie-troll",
+      "name": "Unseelie Troll",
+      "quantity": 2
+    },
+    {
+      "card_id": 119,
+      "slug": "head-or-gut",
+      "name": "Head or Gut ?",
+      "quantity": 1
+    },
+    {
+      "card_id": 122,
+      "slug": "hunting-party",
+      "name": "Hunting Party",
+      "quantity": 1
+    },
+    {
+      "card_id": 281,
+      "slug": "ass-whuppin-lynch-mob",
+      "name": "Ass Whuppin' Lynch Mob",
+      "quantity": 1
+    },
+    {
+      "card_id": 284,
+      "slug": "beat-unmerciful",
+      "name": "Beat Unmerciful",
+      "quantity": 1
+    },
+    {
+      "card_id": 305,
+      "slug": "gooshy-gooze",
+      "name": "Gooshy Gooze",
+      "quantity": 3
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 1
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 347,
+      "slug": "wailer",
+      "name": "Wailer",
+      "quantity": 1
+    },
+    {
+      "card_id": 398,
+      "slug": "enticer",
+      "name": "Enticer",
+      "quantity": 3
+    },
+    {
+      "card_id": 418,
+      "slug": "kinfolk-small-town-cop",
+      "name": "Kinfolk Small Town Cop",
+      "quantity": 2
+    },
+    {
+      "card_id": 430,
+      "slug": "pentex-executive-and-limousine",
+      "name": "Pentex Executive and Limousine",
+      "quantity": 3
+    },
+    {
+      "card_id": 448,
+      "slug": "a-bus-full-of-people",
+      "name": "A Bus Full of People",
+      "quantity": 1
+    },
+    {
+      "card_id": 491,
+      "slug": "greenpeace-assault-team",
+      "name": "Greenpeace Assault Team",
+      "quantity": 2
+    },
+    {
+      "card_id": 586,
+      "slug": "caern-of-the-unwashed-child",
+      "name": "Caern of the Unwashed Child",
+      "quantity": 3
+    },
+    {
+      "card_id": 806,
+      "slug": "shapeshift",
+      "name": "Shapeshift",
+      "quantity": 3
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 3
+    },
+    {
+      "card_id": 818,
+      "slug": "beast-of-war",
+      "name": "Beast-of-War",
+      "quantity": 2
+    },
+    {
+      "card_id": 885,
+      "slug": "mass-pollution",
+      "name": "Mass Pollution",
+      "quantity": 3
+    },
+    {
+      "card_id": 986,
+      "slug": "infectious-touch",
+      "name": "Infectious Touch",
+      "quantity": 3
+    },
+    {
+      "card_id": 1032,
+      "slug": "roar-of-the-wyrm",
+      "name": "Roar of the Wyrm",
+      "quantity": 3
+    },
+    {
+      "card_id": 1060,
+      "slug": "stench-of-death",
+      "name": "Stench of Death",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1289,
+      "slug": "overextended-attack",
+      "name": "Overextended Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1296,
+      "slug": "reckless-swing",
+      "name": "Reckless Swing",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 2
+    },
+    {
+      "card_id": 1309,
+      "slug": "shieldmate",
+      "name": "Shieldmate",
+      "quantity": 1
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1319,
+      "slug": "surprise-attack",
+      "name": "Surprise Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    }
+  ]
+}

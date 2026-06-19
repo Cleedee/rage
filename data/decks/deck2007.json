@@ -1,0 +1,235 @@
+{
+  "id": 2007,
+  "name": "Classic: Gaia Weenie",
+  "description": "Classic: Gaia Weenie (20 Renown). Importado de rageccg.weebly.com",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 63,
+  "total_renown": 78,
+  "cards": [
+    {
+      "card_id": 4,
+      "slug": "carleson-ruah",
+      "name": "Carleson Ruah",
+      "quantity": 1
+    },
+    {
+      "card_id": 8,
+      "slug": "cesare-sodalis",
+      "name": "Cesare Sodalis",
+      "quantity": 1
+    },
+    {
+      "card_id": 24,
+      "slug": "dharma-bum",
+      "name": "Dharma Bum",
+      "quantity": 1
+    },
+    {
+      "card_id": 41,
+      "slug": "banana-split",
+      "name": "Banana Split",
+      "quantity": 1
+    },
+    {
+      "card_id": 71,
+      "slug": "frenar",
+      "name": "Frenar",
+      "quantity": 1
+    },
+    {
+      "card_id": 122,
+      "slug": "hunting-party",
+      "name": "Hunting Party",
+      "quantity": 2
+    },
+    {
+      "card_id": 159,
+      "slug": "jubati",
+      "name": "Jubati",
+      "quantity": 1
+    },
+    {
+      "card_id": 209,
+      "slug": "passer",
+      "name": "Passer",
+      "quantity": 1
+    },
+    {
+      "card_id": 218,
+      "slug": "wyldstorm",
+      "name": "Wyldstorm",
+      "quantity": 1
+    },
+    {
+      "card_id": 267,
+      "slug": "susan-anthony",
+      "name": "Susan Anthony",
+      "quantity": 1
+    },
+    {
+      "card_id": 282,
+      "slug": "attacking-the-wyrm",
+      "name": "Attacking the Wyrm",
+      "quantity": 1
+    },
+    {
+      "card_id": 285,
+      "slug": "bitch-slap",
+      "name": "Bitch Slap",
+      "quantity": 2
+    },
+    {
+      "card_id": 286,
+      "slug": "bite",
+      "name": "Bite",
+      "quantity": 1
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 315,
+      "slug": "entrail-rend",
+      "name": "Entrail Rend",
+      "quantity": 2
+    },
+    {
+      "card_id": 395,
+      "slug": "dreamspeaker-mage",
+      "name": "Dreamspeaker Mage",
+      "quantity": 1
+    },
+    {
+      "card_id": 402,
+      "slug": "flame-spirit",
+      "name": "Flame Spirit",
+      "quantity": 1
+    },
+    {
+      "card_id": 413,
+      "slug": "ka-spirit",
+      "name": "Ka Spirit",
+      "quantity": 3
+    },
+    {
+      "card_id": 418,
+      "slug": "kinfolk-small-town-cop",
+      "name": "Kinfolk Small Town Cop",
+      "quantity": 3
+    },
+    {
+      "card_id": 440,
+      "slug": "shadow-walker",
+      "name": "Shadow Walker",
+      "quantity": 1
+    },
+    {
+      "card_id": 517,
+      "slug": "pentex-first-team-43",
+      "name": "Pentex First Team 43",
+      "quantity": 1
+    },
+    {
+      "card_id": 520,
+      "slug": "pentex-refinery",
+      "name": "Pentex Refinery",
+      "quantity": 2
+    },
+    {
+      "card_id": 597,
+      "slug": "sky-river-caern",
+      "name": "Sky River Caern",
+      "quantity": 2
+    },
+    {
+      "card_id": 628,
+      "slug": "chainsaw",
+      "name": "Chainsaw",
+      "quantity": 2
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 3
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 3
+    },
+    {
+      "card_id": 808,
+      "slug": "stand-like-a-fool",
+      "name": "Stand like a Fool",
+      "quantity": 3
+    },
+    {
+      "card_id": 890,
+      "slug": "new-moon",
+      "name": "New Moon",
+      "quantity": 3
+    },
+    {
+      "card_id": 1061,
+      "slug": "sticky-paws",
+      "name": "Sticky Paws",
+      "quantity": 2
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1286,
+      "slug": "off-balanced-attack",
+      "name": "Off-balanced Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1289,
+      "slug": "overextended-attack",
+      "name": "Overextended Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1296,
+      "slug": "reckless-swing",
+      "name": "Reckless Swing",
+      "quantity": 2
+    },
+    {
+      "card_id": 1303,
+      "slug": "run-like-hell",
+      "name": "Run Like Hell",
+      "quantity": 2
+    },
+    {
+      "card_id": 1312,
+      "slug": "stinging-wound",
+      "name": "Stinging Wound",
+      "quantity": 2
+    },
+    {
+      "card_id": 1319,
+      "slug": "surprise-attack",
+      "name": "Surprise Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    }
+  ]
+}
