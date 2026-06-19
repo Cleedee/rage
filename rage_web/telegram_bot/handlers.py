@@ -59,6 +59,7 @@ BOT_TELEGRAM_ID = -1
 BOT_DECKS: dict[int, str] = {
     465: 'Apocalypse — First Team #21 (Wyrm Pentex, aggro)',
     1044: 'Ajaba — Hienas da Savana (combo, Frenesi+Crush)',
+    1045: 'Kitsune — Raposas da Fortuna (controle, Gnosis+moot)',
     1055: 'O Julgamento — Philodox (controle, cura+defesa)',
 }
 
@@ -66,6 +67,7 @@ BOT_DECKS: dict[int, str] = {
 BOT_NAMES: dict[int, str] = {
     465: 'Bot Wyrm',
     1044: 'Bot Ajaba',
+    1045: 'Bot Kitsune',
     1055: 'Bot Philodox',
 }
 
