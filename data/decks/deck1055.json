@@ -1,0 +1,85 @@
+{
+  "id": 1055,
+  "name": "O Julgamento — Philodox (controle, cura+defesa)",
+  "description": "Philodox pack. Justica, equilibrio e defesa.",
+  "renown_cap": 25,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 20,
+  "total_renown": 23,
+  "cards": [
+    {
+      "card_id": 3,
+      "slug": "carla-grimsson",
+      "name": "Carla Grimsson",
+      "quantity": 1
+    },
+    {
+      "card_id": 193,
+      "slug": "morgan-the-unworthy",
+      "name": "Morgan the Unworthy",
+      "quantity": 1
+    },
+    {
+      "card_id": 286,
+      "slug": "bite",
+      "name": "Bite",
+      "quantity": 2
+    },
+    {
+      "card_id": 293,
+      "slug": "brutal-kick",
+      "name": "Brutal Kick",
+      "quantity": 2
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 2
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 1009,
+      "slug": "mother-s-touch",
+      "name": "Mother's Touch",
+      "quantity": 2
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 2
+    },
+    {
+      "card_id": 1612,
+      "slug": "death-express",
+      "name": "Death Express",
+      "quantity": 2
+    },
+    {
+      "card_id": 1616,
+      "slug": "laora-d-avennes",
+      "name": "Laora d'Avennes",
+      "quantity": 1
+    },
+    {
+      "card_id": 1618,
+      "slug": "lone-wolf",
+      "name": "Lone Wolf",
+      "quantity": 1
+    }
+  ]
+}

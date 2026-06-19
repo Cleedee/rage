@@ -1,4 +1,4 @@
-.PHONY: run run-bot run-web install test shell
+.PHONY: run run-bot run-web install test shell backup db-health export-decks import-decks backup-full
 
 # ── Ambiente ──────────────────────────────────────────────────────
 
@@ -40,6 +40,28 @@ checklist: install
 # Rodar testes
 test: install
 	.venv/bin/python3 -m pytest -v
+
+# ── Backup e Integridade ──────────────────────────────────────────
+
+# Verificar integridade do banco
+db-health: install
+	.venv/bin/flask db-health
+
+# Exportar todos os decks para JSON versionáveis
+export-decks: install
+	.venv/bin/flask export-decks
+
+# Importar decks de JSON
+import-decks: install
+	.venv/bin/flask import-decks
+
+# Fazer backup do banco de dados
+backup: install
+	.venv/bin/flask backup-db
+
+# Backup completo: exporta decks + copia banco
+backup-full: export-decks backup
+	@echo '✅ Backup completo!'
 
 # ── Docker ────────────────────────────────────────────────────────
 

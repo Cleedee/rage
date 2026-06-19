@@ -1,0 +1,121 @@
+{
+  "id": 1045,
+  "name": "Kitsune — Raposas da Fortuna (controle, Gnosis+moot)",
+  "description": "Kitsune Hengeyokai. Misticos, ilusionistas, foco em Gnosis e votacao.",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 31,
+  "total_renown": 19,
+  "cards": [
+    {
+      "card_id": 216,
+      "slug": "whippoorwill",
+      "name": "Whippoorwill",
+      "quantity": 2
+    },
+    {
+      "card_id": 221,
+      "slug": "rewards-of-leadership",
+      "name": "Rewards of Leadership",
+      "quantity": 2
+    },
+    {
+      "card_id": 322,
+      "slug": "fetal-position",
+      "name": "Fetal Position",
+      "quantity": 2
+    },
+    {
+      "card_id": 326,
+      "slug": "forceful-wind",
+      "name": "Forceful Wind",
+      "quantity": 2
+    },
+    {
+      "card_id": 627,
+      "slug": "cellular-phone",
+      "name": "Cellular Phone",
+      "quantity": 2
+    },
+    {
+      "card_id": 635,
+      "slug": "corporate-credit-card",
+      "name": "Corporate Credit Card",
+      "quantity": 2
+    },
+    {
+      "card_id": 660,
+      "slug": "lost-map",
+      "name": "Lost Map",
+      "quantity": 2
+    },
+    {
+      "card_id": 908,
+      "slug": "spiritual-revelation",
+      "name": "Spiritual Revelation",
+      "quantity": 2
+    },
+    {
+      "card_id": 982,
+      "slug": "heightened-senses",
+      "name": "Heightened Senses",
+      "quantity": 2
+    },
+    {
+      "card_id": 995,
+      "slug": "leap-of-the-kangaroo",
+      "name": "Leap of the Kangaroo",
+      "quantity": 2
+    },
+    {
+      "card_id": 1044,
+      "slug": "second-sight",
+      "name": "Second Sight",
+      "quantity": 2
+    },
+    {
+      "card_id": 1298,
+      "slug": "reinforcements",
+      "name": "Reinforcements",
+      "quantity": 2
+    },
+    {
+      "card_id": 1317,
+      "slug": "superior-tactics",
+      "name": "Superior tactics",
+      "quantity": 2
+    },
+    {
+      "card_id": 1676,
+      "slug": "mei-fei-quan",
+      "name": "Mei-Fei Quan",
+      "quantity": 1
+    },
+    {
+      "card_id": 1679,
+      "slug": "ozatu-junichiro",
+      "name": "Ozatu Junichiro",
+      "quantity": 1
+    },
+    {
+      "card_id": 1685,
+      "slug": "wu-bingshu",
+      "name": "Wu Bingshu",
+      "quantity": 1
+    },
+    {
+      "card_id": 1687,
+      "slug": "katsuko-moon-saint",
+      "name": "Katsuko Moon-Saint",
+      "quantity": 1
+    },
+    {
+      "card_id": 1716,
+      "slug": "kim",
+      "name": "Kim",
+      "quantity": 1
+    }
+  ]
+}

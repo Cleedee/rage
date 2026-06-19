@@ -18,3 +18,9 @@ instance/
 
 # Database copies
 data/rage_web.db
+
+# Backups (auto-generated, não versionar)
+backups/
+
+# Auto-generated JSONs (criados por scripts de deck)
+data/cards/auto_*.json

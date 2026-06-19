@@ -1,0 +1,91 @@
+{
+  "id": 1044,
+  "name": "Ajaba — Hienas da Savana (combo, Frenesi+Crush)",
+  "description": "Ajaba werehyenas. Pack hunters, bullying tactico.",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 22,
+  "total_renown": 20,
+  "cards": [
+    {
+      "card_id": 118,
+      "slug": "hamstringed",
+      "name": "Hamstringed",
+      "quantity": 2
+    },
+    {
+      "card_id": 292,
+      "slug": "broken-limb",
+      "name": "Broken Limb",
+      "quantity": 2
+    },
+    {
+      "card_id": 316,
+      "slug": "evade-and-strike",
+      "name": "Evade and Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 364,
+      "slug": "chuki",
+      "name": "Chuki",
+      "quantity": 1
+    },
+    {
+      "card_id": 371,
+      "slug": "mtupeni",
+      "name": "Mtupeni",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 2
+    },
+    {
+      "card_id": 632,
+      "slug": "concertina-wire",
+      "name": "Concertina Wire",
+      "quantity": 2
+    },
+    {
+      "card_id": 1025,
+      "slug": "razor-claws",
+      "name": "Razor Claws",
+      "quantity": 2
+    },
+    {
+      "card_id": 1046,
+      "slug": "sense-wyrm",
+      "name": "Sense Wyrm",
+      "quantity": 2
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 2
+    },
+    {
+      "card_id": 1416,
+      "slug": "cub-s-cry",
+      "name": "Cub's Cry",
+      "quantity": 2
+    },
+    {
+      "card_id": 1443,
+      "slug": "kisasi",
+      "name": "Kisasi",
+      "quantity": 1
+    },
+    {
+      "card_id": 1625,
+      "slug": "shari",
+      "name": "Shari",
+      "quantity": 1
+    }
+  ]
+}

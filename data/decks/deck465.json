@@ -1,0 +1,109 @@
+{
+  "id": 465,
+  "name": "Apocalypse — First Team #21 (Wyrm Pentex, aggro)",
+  "description": "Wyrm Pentex aggro squad. Liderado por Ragnor the Terror. 20 Renown.",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 28,
+  "total_renown": 20,
+  "cards": [
+    {
+      "card_id": 17,
+      "slug": "corinna",
+      "name": "Corinna",
+      "quantity": 1
+    },
+    {
+      "card_id": 108,
+      "slug": "devoted-servant",
+      "name": "Devoted Servant",
+      "quantity": 2
+    },
+    {
+      "card_id": 219,
+      "slug": "wyrm-taint",
+      "name": "Wyrm Taint",
+      "quantity": 2
+    },
+    {
+      "card_id": 229,
+      "slug": "ragnor-the-terror",
+      "name": "Ragnor the Terror",
+      "quantity": 1
+    },
+    {
+      "card_id": 270,
+      "slug": "sybil",
+      "name": "Sybil",
+      "quantity": 1
+    },
+    {
+      "card_id": 292,
+      "slug": "broken-limb",
+      "name": "Broken Limb",
+      "quantity": 2
+    },
+    {
+      "card_id": 296,
+      "slug": "cleft-in-twain",
+      "name": "Cleft in Twain",
+      "quantity": 2
+    },
+    {
+      "card_id": 329,
+      "slug": "t-f-macneil",
+      "name": "T. F. MacNeil",
+      "quantity": 1
+    },
+    {
+      "card_id": 626,
+      "slug": "bureaucratic-blueprints",
+      "name": "Bureaucratic Blueprints",
+      "quantity": 2
+    },
+    {
+      "card_id": 644,
+      "slug": "experimental-cybernetics",
+      "name": "Experimental Cybernetics",
+      "quantity": 2
+    },
+    {
+      "card_id": 833,
+      "slug": "corporate-take-over",
+      "name": "Corporate Take-over",
+      "quantity": 2
+    },
+    {
+      "card_id": 836,
+      "slug": "defiler",
+      "name": "Defiler",
+      "quantity": 2
+    },
+    {
+      "card_id": 838,
+      "slug": "dragon",
+      "name": "Dragon",
+      "quantity": 2
+    },
+    {
+      "card_id": 917,
+      "slug": "town-meeting",
+      "name": "Town Meeting",
+      "quantity": 2
+    },
+    {
+      "card_id": 942,
+      "slug": "call-of-the-wyrm",
+      "name": "Call of the Wyrm",
+      "quantity": 2
+    },
+    {
+      "card_id": 1285,
+      "slug": "no-escape",
+      "name": "No Escape",
+      "quantity": 2
+    }
+  ]
+}
