@@ -1,0 +1,35 @@
+{
+  "id": "mr-iguana_r6",
+  "nome": "Mr. Iguana",
+  "tipo": "Character - Wyrm",
+  "acoes": [
+    "jogar"
+  ],
+  "atributos": {
+    "rage": 3,
+    "rage_morph": 7,
+    "gnosis": 4,
+    "health": 3,
+    "renown": 6,
+    "palavras_chave": [
+      "Iliad",
+      "Fomori",
+      "Pentex",
+      "Homid",
+      "Eater-of-Souls",
+      "Wyrm",
+      "Male"
+    ]
+  },
+  "modos": [
+    {
+      "descricao": "Mr. Iguana handles many of Pentex's 'special' projects.",
+      "efeitos": []
+    }
+  ],
+  "habilidades_passivas": [],
+  "_metadata": {
+    "card_id": 196,
+    "precisa_revisao": false
+  }
+}
