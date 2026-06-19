@@ -636,17 +636,62 @@ def validar_opponent_gift(gift_card: 'CardInstance', game_phase: str) -> bool:
 def gift_eh_permanente(gift_card: 'CardInstance') -> bool:
     """Verifica se um Gift e permanente (permanece em jogo apos usar).
 
-    Regra: Gifts que dizem 'permanent' no texto nao sao descartados
-    apos o uso. Ficam em jogo como marcadores.
+    Regra: Gifts que permanecem em jogo apos o uso nao sao descartados.
+    Ficam como marcadores anexados a uma criatura.
+
+    A permanencia e determinada pelo modelo JSON:
+    - Se o efeito tem duracao 'permanente', 'ate_fim_combate', 'ate_fim_turno',
+      'proximo_turno', 'proximo_round', 'proximo_ataque', 'este_moot'
+      → o gift fica em jogo ate a duracao expirar.
+    - Se NAO tem duracao (efeito instantaneo) → descartado apos uso.
+    - Fallback: se nao ha modelo JSON, verifica 'permanent' no texto.
 
     Args:
-        gift_card: A carta Gift.
+        gift_card: A carta Gift (CardInstance ou objeto com modelo_id/text).
 
     Returns:
-        True se o Gift e permanente.
+        True se o Gift deve permanecer em jogo.
     """
+    # Tenta determinar pelo modelo JSON
+    modelo_id = getattr(gift_card, 'modelo_id', None)
+    if modelo_id:
+        from rage_web.game_engine.effects import CARTAS_EXEMPLO
+        modelo = CARTAS_EXEMPLO.get(modelo_id)
+        if modelo and modelo.modos:
+            # Verifica se algum modo/efeito tem duracao que implica permanencia
+            DURACOES_PERMANENTES = {
+                'permanente', 'ate_fim_combate', 'ate_fim_turno',
+                'proximo_turno', 'proximo_round', 'proximo_ataque',
+                'este_moot', 'enquanto_umbra',
+            }
+            for modo in modelo.modos:
+                for efeito in (modo.efeitos or []):
+                    params = getattr(efeito, 'params', {}) or {}
+                    if isinstance(params, dict):
+                        duracao = params.get('duracao', '')
+                        if duracao in DURACOES_PERMANENTES:
+                            return True
+                    # Efeitos do tipo 'anular' tambem sao permanentes
+                    # (ex: Resist Pain anula efeitos de Rage)
+                    tipo = getattr(efeito, 'tipo', '')
+                    if tipo == 'anular' and not params.get('quantidade', 0):
+                        return True
+
+    # Fallback: texto original
     text = (gift_card.text or '').lower()
-    return 'permanent' in text
+    if 'permanent' in text:
+        return True
+    if 'attach this gift' in text:
+        return True
+    if 'discard this gift when' in text:
+        # Gift que dura ate condicao — permanece em jogo
+        return True
+    if 'until' in text and 'discard' in text:
+        return True
+    if 'place the' in text and 'card with' in text:
+        return True
+
+    return False
 
 
 def pode_usar_rite(player: 'PlayerState',
