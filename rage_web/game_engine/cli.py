@@ -1170,7 +1170,18 @@ def build_game_from_decks_n(*deck_ids: int, seed: int = 42) -> GameState:
                 qtd = row.quantity
                 for _ in range(qtd):
                     slug = card_model.slug or f'card_{card_model.id}'
-                    modelo_id = slug if slug in CARTAS_EXEMPLO else None
+                    # Tenta match exato; se falhar, busca em CARTAS_EXEMPLO
+                    # por chave que comeca com o slug
+                    if slug in CARTAS_EXEMPLO:
+                        modelo_id = slug
+                    else:
+                        # Verifica se alguma chave comeca com 'slug_' ou 'slug-' 
+                        # (ex: 'corrupt-kinfolk_r3' para slug 'corrupt-kinfolk')
+                        modelo_id = next(
+                            (k for k in CARTAS_EXEMPLO
+                             if k.startswith(f'{slug}_') or k.startswith(f'{slug}-')),
+                            None
+                        )
 
                     ci = CardInstance(
                         card_id=card_model.id,

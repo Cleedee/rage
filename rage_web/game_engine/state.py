@@ -1626,8 +1626,8 @@ class GameState:
                     candidates.sort(key=lambda x: x[0].effective_rage, reverse=True)
                     alvo, dono_alvo = candidates[0]
 
-            # --- 463 - Corrupt Kinfolk: ataca Gaia Garou com maior Renome ---
-            elif vitima.card_id == 463:
+            # --- Corrupt Kinfolk: ataca Gaia Garou com maior Renome ---
+            elif vitima.modelo_id == 'corrupt-kinfolk_r3':
                 candidates = [
                     (c, p) for c, p in todos_personagens
                     if ('Garou' in (c.keywords or '')
@@ -2354,7 +2354,7 @@ class GameState:
             self.add_log(
                 f'{card.name}: atacara maior Rage Wyrm no fim do combate')
 
-        elif card.card_id == 463:  # Corrupt Kinfolk
+        elif slug == 'corrupt-kinfolk_r3':  # Corrupt Kinfolk
             # Ataca Gaia Garou com maior Renome no fim de cada Combat Phase
             # (processado em _check_victim_attacks)
             self.add_log(
