@@ -15,7 +15,9 @@ e o Matchmaker.
 
 from __future__ import annotations
 
+import os
 import re
+import json
 import random
 import asyncio
 from typing import Optional
@@ -401,7 +403,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'`/duel @jogador <deck_id>` — Desafia jogador\n'
         f'`/accept @jogador <deck_id>` — Aceita desafio\n'
         f'`/decline @jogador` — Recusa desafio\n'
-        f'`/cancel @jogador` — Cancela desafio enviado'
+        f'`/cancel @jogador` — Cancela desafio enviado\n'
+        f'`/duel_bot <seu_deck> [bot_deck]` — Desafia um bot com IA\n'
+        f'`/bots` — Lista bots disponiveis para desafiar'
     )
     await update.message.reply_text(msg, parse_mode='Markdown')
 
@@ -2754,6 +2758,50 @@ async def duel_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Se o bot joga primeiro, executa as turnos do bot imediatamente
     await _run_bot_turns(context, game, gid, uid)
+
+
+async def bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Comando /bots — mostra os bots disponiveis para desafiar."""
+    lang = context.user_data.get('lang', 'pt_BR')
+
+    msg = (
+        f'🤖 *Bots Disponiveis*\n\n'
+    )
+
+    for deck_id in sorted(BOT_DECKS.keys()):
+        name = BOT_NAMES.get(deck_id, f'Bot (Deck {deck_id})')
+        desc = BOT_DECKS[deck_id]
+        # Tenta ler o config JSON para info extra
+        estilo = ''
+        config_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+            'data', 'deck_strategies', f'deck{deck_id}_config.json'
+        )
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, 'r') as f:
+                    cfg = json.load(f)
+                    if 'notes' in cfg:
+                        notas = cfg['notes']
+                        if isinstance(notas, list):
+                            estilo = ' ' + notas[0][:120]
+                        elif isinstance(notas, str):
+                            estilo = ' ' + notas[:120]
+            except Exception:
+                pass
+
+        msg += (
+            f'• *{name}* (deck {deck_id})\n'
+            f'  _{desc}_{estilo}\n'
+            f'  Desafie: `/duel_bot <seu_deck_id> {deck_id}`\n'
+        )
+
+    msg += (
+        f'\n{ICONES["info"]} Sem escolher, o bot seleciona um aleatorio.'
+        f'\n{ICONES["warning"]} Apenas decks com config de estrategia (JSON) estao listados.'
+    )
+
+    await update.message.reply_text(msg, parse_mode='Markdown')
 
 
 async def _run_bot_turns(context, game, gid, human_tid):
