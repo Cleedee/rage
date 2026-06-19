@@ -994,6 +994,34 @@ class PriorityBot:
         """Age na fase de Combat: acao alfa + cartas + atacar."""
         me = self.player
         g = self.game
+
+        # ── REWARDS OF LEADERSHIP: janela pre-alpha ──
+        # Se o jogador tem o modifier, joga Equipment/Ally/Territory da mao
+        if any(m.modifier == 'rewards_leadership_play' and m.card_uid == id(me)
+               for m in g.game_modifiers):
+            # Remove o modifier (uso unico)
+            g.game_modifiers = [m for m in g.game_modifiers
+                                if not (m.modifier == 'rewards_leadership_play'
+                                       and m.card_uid == id(me))]
+            for i, card in enumerate(me.hand):
+                ct = (card.card_type or '').lower()
+                if 'equipment' in ct or ct == 'ally' or ct == 'territory':
+                    if self._pode_pagar_custos(card):
+                        from rage_web.game_engine.rules import zona_da_carta
+                        zona = zona_da_carta(card.card_type or '')
+                        if card.modelo_id:
+                            modo_idx = self._escolher_melhor_modo(card.modelo_id)
+                            self._cards_played_this_turn += 1
+                            g.add_log(f'[BOT] {me.name}: Rewards — jogando {card.name}')
+                            return self._usar_carta_efeito(i, modo_idx, card)
+                        else:
+                            self._play_card(i)
+                            self._cards_played_this_turn += 1
+                            g.add_log(f'[BOT] {me.name}: Rewards — jogando {card.name}')
+                            return f'rewards_play_{card.card_id}'
+            # Nao havia cartas elegiveis ou viaveis; continua
+            g.add_log(f'[BOT] {me.name}: Rewards — nenhuma carta viavel na mao')
+
         lento = self._is_slow_deck()
 
         # ── ACAO ALFA ──

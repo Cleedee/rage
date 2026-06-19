@@ -4,7 +4,7 @@
   "tipo": "Event",
   "modos": [
     {
-      "descricao": "Buscar Ally/Equipment/Territory no deck",
+      "descricao": "Buscar Ally/Equipment/Territory no deck + janela de jogo no inicio do combate",
       "efeitos": [
         {
           "tipo": "buscar_no_deck",
@@ -12,6 +12,14 @@
           "quantidade": 1,
           "params": {
             "filtro": "Ally|Equipment|Territory"
+          }
+        },
+        {
+          "tipo": "adicionar_modifier",
+          "condicao_alvo": "jogador_aliado",
+          "quantidade": 0,
+          "params": {
+            "modifier": "rewards_leadership_play"
           }
         }
       ],

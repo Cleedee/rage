@@ -1269,6 +1269,36 @@ class GameState:
                     drawn = p.redraw_combat()
                     if drawn:
                         self.add_log(f'{p.name} comprou {len(drawn)} carta(s) de combate')
+
+                # Rewards of Leadership: janela para jogar Equipment/Ally/Territory
+                # antes da selecao de alphas (apos redraw de combate)
+                for p in self.players:
+                    if any(m.modifier == 'rewards_leadership_play'
+                           and m.card_uid == id(p)
+                           for m in self.game_modifiers):
+                        # Remove o modifier (uso unico)
+                        self.game_modifiers = [
+                            m for m in self.game_modifiers
+                            if not (m.modifier == 'rewards_leadership_play'
+                                   and m.card_uid == id(p))
+                        ]
+                        # Tenta jogar cartas elegiveis da mao
+                        # (Equipment, Ally, Territory)
+                        elegiveis = [
+                            (i, c) for i, c in enumerate(p.hand)
+                            if (c.card_type or '').lower() in ('equipment', 'ally', 'territory')
+                            or 'equipment' in (c.card_type or '').lower()
+                        ]
+                        if elegiveis:
+                            self.add_log(
+                                f'{p.name}: Rewards of Leadership — '
+                                f'pode jogar {len(elegiveis)} carta(s) '
+                                f'(Equipment/Ally/Territory) antes do alpha'
+                            )
+                            # Para bots: joga automaticamente
+                            # (jogadores humanos usam o frontend)
+                            # A implementacao para bots e feita em _agir_combate()
+
                 # Selecao de alfas (automática para bots/jogador unico)
                 from rage_web.game_engine.combat_queue import selecionar_alfa, calcular_ordem_alfa
                 for p in self.players:

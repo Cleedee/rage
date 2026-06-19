@@ -2994,18 +2994,23 @@ class ResolvedorEfeitos:
             )
             return False
 
-        # Atualiza o deck (remove as cartas encontradas)
-        jogador.deck_sept = restantes
-
-        # Poe na mao (max = quantidade)
+        # Poe na mao (max = quantidade) e remove apenas essas do deck
         colocadas = []
         for carta in encontradas[:quantidade]:
             carta.zone = Zone.HAND
             jogador.hand.append(carta)
-            colocadas.append(carta.name)
+            colocadas.append(carta)
 
+        # Atualiza o deck: remove apenas as que foram colocadas na mao
+        uids_colocadas = {id(c) for c in colocadas}
+        jogador.deck_sept = [
+            c for c in jogador.deck_sept
+            if id(c) not in uids_colocadas
+        ]
+
+        nomes = [c.name for c in colocadas]
         self.game.add_log(
-            f'{origem.name}: buscou "{", ".join(colocadas)}" '
+            f'{origem.name}: buscou "{", ".join(nomes)}" '
             f'do sept deck para a mao'
         )
         return True
@@ -3233,6 +3238,19 @@ class ResolvedorEfeitos:
             alvos_crit = [origem]
 
         aplicados = 0
+        # Se o alvo do efeito for o proprio jogador (nao uma criatura),
+        # adiciona modifier no jogador em vez de numa criatura
+        if isinstance(alvo, PlayerState):
+            modifier = GameModifier(
+                card_uid=id(alvo),
+                modifier=modifier_name,
+            )
+            self.game.game_modifiers.append(modifier)
+            self.game.add_log(
+                f'{origem.name}: modifier "{modifier_name}" no jogador {alvo.name}'
+            )
+            return True
+
         for criatura in alvos_crit:
             # Adiciona modifier na carta
             modifier = GameModifier(
