@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import re
 import random
+import asyncio
 from typing import Optional
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -45,6 +46,26 @@ from rage_web.telegram_bot.render import (
 game_manager = GameManager()
 matchmaker = Matchmaker()
 stats_manager = StatsManager()
+
+
+# ── Decks com estratégia disponíveis para o bot ──────────────────────
+
+# Telegram ID fake para o bot (nao conflita com usuarios reais)
+BOT_TELEGRAM_ID = -1
+
+# Decks que o bot pode usar (tem config de estrategia)
+BOT_DECKS: dict[int, str] = {
+    465: 'Apocalypse — First Team #21 (Wyrm Pentex, aggro)',
+    1044: 'Ajaba — Hienas da Savana (combo, Frenesi+Crush)',
+    1055: 'O Julgamento — Philodox (controle, cura+defesa)',
+}
+
+# Nomes para os bots
+BOT_NAMES: dict[int, str] = {
+    465: 'Bot Wyrm',
+    1044: 'Bot Ajaba',
+    1055: 'Bot Philodox',
+}
 
 
 # ── Helpers ─────────────────────────────────────────────────────────
@@ -1158,6 +1179,11 @@ async def play(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'{ICONES["play"]} *{player.name}* jogou *{card.name}*!',
         )
 
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
+
 
 async def use_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /use <N> — usa carta de efeito da mão (Gift, Rite, etc)."""
@@ -1239,6 +1265,11 @@ async def use_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
         )
 
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
+
 
 async def attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /attack <atacante_id> [defensor_id] — inicia combate."""
@@ -1294,6 +1325,11 @@ async def attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
         )
 
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
+
 
 async def declare(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /declare <card_id> <ação> — declara ação de combate."""
@@ -1336,6 +1372,11 @@ async def declare(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'{ICONES["check"]} {card_id}: {action} declarada.'
     )
 
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
+
 
 async def reveal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /reveal — revela ações de combate."""
@@ -1370,6 +1411,11 @@ async def reveal(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
         )
 
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
+
 
 async def feint(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /feint <card_id> <ação> — troca ação (último a declarar)."""
@@ -1401,6 +1447,11 @@ async def feint(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'{ICONES["check"]} Feint: {card_id} agora executa {new_action}.'
     )
+
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
 
 
 async def resolve(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1440,6 +1491,9 @@ async def resolve(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Verifica vitória
     _check_victory(update, context, game, gid)
 
+    # Roda turnos do bot se necessario
+    await _run_bot_turns_if_needed(update, context, gid)
+
 
 async def endcombat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /endcombat — encerra combate forçadamente."""
@@ -1463,6 +1517,11 @@ async def endcombat(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=op_tid,
             text=f'{ICONES["check"]} Combate encerrado.',
         )
+
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
 
 
 async def draw(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1492,6 +1551,11 @@ async def draw(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'{ICONES["hand"]} Comprou {len(drawn)} carta(s) do deck {deck}:'
         f' {drawn_names}',
     )
+
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
 
 
 async def pass_turn(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1563,6 +1627,9 @@ async def pass_turn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Verifica vitória
     _check_victory(update, context, game, gid)
 
+    # Roda turnos do bot se necessario
+    await _run_bot_turns_if_needed(update, context, gid)
+
 
 async def next_phase(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Comando /next — avança fase forçadamente."""
@@ -1597,6 +1664,11 @@ async def next_phase(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f' {old_phase} → {game.phase}'
             ),
         )
+
+    # Roda turnos do bot se necessario
+    ps = game_manager.get_player_session(uid)
+    if ps:
+        await _run_bot_turns_if_needed(update, context, ps.game_id)
 
 
 async def concede(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2574,6 +2646,274 @@ async def turn_timeout_handler(game_id: str, timed_out_tid: int):
                     )
         except Exception as e:
             __import__('logging').error(f'Erro notificando timeout: {e}')
+
+
+# ── Modo contra-bot ────────────────────────────────────────────────
+# Comando /duel-bot <deck_id> [bot_deck_id] — desafia um bot.
+# O bot usa PriorityBot com decisoes automaticas.
+
+async def duel_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Comando /duel-bot <deck_id> [bot_deck_id] — desafia um bot."""
+    if not _ensure_not_in_game(update, context):
+        return
+
+    uid = _get_player_id(update)
+    name = _get_player_name(update)
+    args = context.args
+
+    if len(args) < 1:
+        await update.message.reply_text(
+            f'{ICONES["warning"]} Uso: `/duel-bot <deck_id> [bot_deck_id]`\n'
+            f'Exemplo: `/duel-bot 7 1055` (deck 7 vs Bot Philodox)\n'
+            f'Exemplo: `/duel-bot 7` (bot escolhe aleatorio)',
+            parse_mode='Markdown',
+        )
+        return
+
+    player_deck_id = _parse_int(args[0])
+    if not player_deck_id:
+        await update.message.reply_text(
+            f'{ICONES["warning"]} Informe o ID do seu deck.'
+            f' Exemplo: `/duel-bot 7`',
+            parse_mode='Markdown',
+        )
+        return
+
+    # Deck do bot: especificado ou aleatorio entre os configurados
+    if len(args) >= 2:
+        bot_deck_id = _parse_int(args[1])
+        if not bot_deck_id or bot_deck_id not in BOT_DECKS:
+            disponiveis = ', '.join(str(k) for k in BOT_DECKS)
+            await update.message.reply_text(
+                f'{ICONES["warning"]} Deck do bot invalido.'
+                f' Disponiveis: {disponiveis}\n'
+                f'Exemplo: `/duel-bot {player_deck_id} 1055`',
+            )
+            return
+    else:
+        bot_deck_id = random.choice(list(BOT_DECKS.keys()))
+
+    # Verifica se o deck do jogador existe
+    try:
+        from rage_web.models.deck import Deck
+        from rage_web.ext.database import db
+        from rage_web import create_app
+
+        flask_app = create_app()
+        with flask_app.app_context():
+            deck = db.session.get(Deck, player_deck_id)
+            if not deck:
+                await update.message.reply_text(
+                    f'{ICONES["cross"]} Deck {player_deck_id} nao encontrado.'
+                )
+                return
+            player_deck_name = deck.name or f'Deck {player_deck_id}'
+    except Exception as e:
+        await update.message.reply_text(
+            f'{ICONES["cross"]} Erro ao verificar deck: {e}'
+        )
+        return
+
+    # Cria a partida
+    import random as rng_mod
+    seed = rng_mod.randint(0, 999999)
+
+    try:
+        from rage_web.game_engine.cli import build_game_from_decks_n
+        game = build_game_from_decks_n(player_deck_id, bot_deck_id, seed=seed)
+    except Exception as e:
+        await update.message.reply_text(
+            f'{ICONES["cross"]} Erro ao criar partida: {e}'
+        )
+        return
+
+    # Renomeia o bot player para algo mais amigavel
+    bot_name = BOT_NAMES.get(bot_deck_id, f'Bot (Deck {bot_deck_id})')
+    for p in game.players:
+        if 'Jogador 2' in p.name or 'Deck 2' in p.name or p.id == 'p2':
+            p.name = bot_name
+            p.deck_id = bot_deck_id
+
+    bot_desc = BOT_DECKS.get(bot_deck_id, f'Deck {bot_deck_id}')
+
+    # Registra no GameManager
+    player_map = {uid: 'p1', BOT_TELEGRAM_ID: 'p2'}
+    gid = game_manager.create_game(game, player_map)
+
+    # Mensagem de inicio
+    msg = (
+        f'⚔️ *Partida contra Bot!*\n\n'
+        f'Seu deck: `{player_deck_name}` ({player_deck_id})\n'
+        f'Bot: `{bot_name}` ({bot_desc})\n'
+        f'Seed: {seed}\n\n'
+        f'{ICONES["info"]} O bot joga automaticamente. '
+        f'Use `/board` para ver o tabuleiro e os comandos de jogo.\n'
+        f'{ICONES["warning"]} Para sair, use `/concede`.'
+    )
+    await update.message.reply_text(msg, parse_mode='Markdown')
+
+    # Se o bot joga primeiro, executa as turnos do bot imediatamente
+    await _run_bot_turns(context, game, gid, uid)
+
+
+async def _run_bot_turns(context, game, gid, human_tid):
+    """Executa turnos do bot ate que seja a vez do humano ou a partida termine.
+
+    Chamado apos cada acao do jogador humano. O bot joga automaticamente
+    usando PriorityBot.
+    """
+    from rage_web.game_engine.bot.priority_bot import PriorityBot
+
+    max_loops = 100  # Seguranca: evita loop infinito
+    loop_count = 0
+
+    while loop_count < max_loops:
+        # Verifica se a partida ainda existe
+        session = game_manager.get_session(gid)
+        if not session:
+            return
+
+        cp = game.current_player
+
+        # Se e a vez do humano, para
+        if cp.id == 'p1':
+            # Envia board pro humano
+            pid = game_manager.get_player_id_in_game(human_tid)
+            if pid:
+                await _update_board_message(
+                    None, context, game, pid, chat_id=human_tid,
+                )
+            return
+
+        # Se nao e a vez do bot (outro jogador), espera
+        if cp.id != 'p2':
+            return
+
+        # Cancela timer (bot joga agora, nao precisa de timeout)
+        game_manager.cancel_turn_timer(gid)
+
+        # Cria bot e decide acao
+        try:
+            bot = PriorityBot(game, cp.id, difficulty='hard')
+            action = bot.decide()
+        except Exception as e:
+            __import__('logging').error(f'Erro no bot decide(): {e}')
+            break
+
+        if not action or action == 'wait':
+            break
+
+        # Log da acao do bot
+        __import__('logging').info(
+            f'[BOT] {cp.name}: {action}'
+        )
+
+        # Pequena pausa para nao floodar
+        await asyncio.sleep(0.05)
+
+        # Verifica vitoria/eliminacao
+        from rage_web.game_engine.combat_queue import (
+            _tem_character, _eliminar_jogador,
+        )
+        for p in game.players:
+            if not _tem_character(p) and not getattr(p, 'eliminado', False):
+                _eliminar_jogador(game, p)
+                __import__('logging').info(
+                    f'{p.name} foi eliminado! (sem Characters)'
+                )
+
+        # Verifica se alguem venceu
+        vencedor = None
+        for p in game.players:
+            if p.victory_points >= p.renown_level:
+                vencedor = p
+                game.add_log(
+                    f'🏆 {p.name} VENCEU! ({p.victory_points}/{p.renown_level} VP)'
+                )
+                break
+
+        if vencedor:
+            # Encerra a partida
+            msg = render_victory(game, vencedor.id)
+            try:
+                await context.bot.send_message(
+                    chat_id=human_tid,
+                    text=msg,
+                    parse_mode='Markdown',
+                )
+            except Exception:
+                pass
+            game_manager.remove_game(gid)
+            return
+
+        jogadores_ativos = [p for p in game.players
+                           if not getattr(p, 'eliminado', False)]
+        if len(jogadores_ativos) <= 1:
+            if jogadores_ativos:
+                v = jogadores_ativos[0]
+                msg = render_victory(game, v.id)
+            else:
+                msg = '💀 Todos os jogadores foram eliminados! Empate.'
+            try:
+                await context.bot.send_message(
+                    chat_id=human_tid,
+                    text=msg,
+                    parse_mode='Markdown',
+                )
+            except Exception:
+                pass
+            game_manager.remove_game(gid)
+            return
+
+        loop_count += 1
+
+    # Se saiu do loop sem ser a vez do humano, envia board
+    pid = game_manager.get_player_id_in_game(human_tid)
+    if pid and game_manager.get_session(gid):
+        await _update_board_message(
+            None, context, game, pid, chat_id=human_tid,
+        )
+
+
+async def _is_bot_game(game) -> bool:
+    """Verifica se a partida atual e contra um bot."""
+    return hasattr(game, 'players') and any(
+        hasattr(p, 'deck_id') and p.deck_id in BOT_DECKS
+        for p in game.players if p.id == 'p2'
+    )
+
+
+async def _run_bot_turns_if_needed(update, context, gid):
+    """Helper: verifica se e partida contra bot e roda turnos do bot."""
+    if not gid:
+        return
+    session = game_manager.get_session(gid)
+    if not session:
+        return
+    game = session.game
+    if not game:
+        return
+
+    # Verifica se e partida contra bot
+    is_bot = False
+    for tid in session.players:
+        if tid == BOT_TELEGRAM_ID:
+            is_bot = True
+            break
+    if not is_bot:
+        return
+
+    # Verifica de quem e a vez
+    cp = game.current_player
+    if cp.id == 'p2':
+        # E a vez do bot — descobre o Telegram ID do humano
+        human_tid = None
+        for tid, pid in session.players.items():
+            if pid == 'p1':
+                human_tid = tid
+                break
+        if human_tid:
+            await _run_bot_turns(context, game, gid, human_tid)
 
 
 # ── Error handler ──────────────────────────────────────────────────

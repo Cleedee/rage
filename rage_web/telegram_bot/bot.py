@@ -82,6 +82,7 @@ from rage_web.telegram_bot.handlers import (
     decks,
     # Matchmaking
     decline,
+    duel_bot,
     # Jogabilidade
     board,
     hand,
@@ -152,6 +153,7 @@ COMMANDS = [
     ('pass', '⏭️ Passar a vez'),
     ('next', '⏩ Avançar fase'),
     ('concede', '🏳️ Desistir'),
+    ('duel_bot', '🤖 Desafiar bot: /duel-bot <deck_id> [bot_deck_id]'),
 ]
 
 
@@ -251,6 +253,9 @@ def build_application(token: str) -> Application:
 
     # ── Galeria de Decks ──
     app.add_handler(CommandHandler('deck', deck_command))
+
+    # ── Bot Duel ──
+    app.add_handler(CommandHandler('duel_bot', duel_bot))
 
     # ── Callback handler (inline keyboards) ──
     app.add_handler(CallbackQueryHandler(handle_callback))
