@@ -908,6 +908,54 @@ Em 3 fases de combate (jogo típico), ~9 CAs são usadas — o deck tem 2-3x iss
 
 ---
 
+## 🧠 StrategyEngine — Config de Estratégia por JSON
+
+O **StrategyEngine** (`rage_web/game_engine/bot/strategy_engine.py`) permite
+guiar o PriorityBot com configurações JSON por deck, sem modificar o código
+do bot.
+
+**Documentação completa:** `data/deck_strategies/README.md`
+
+### Arquivos
+
+```
+data/deck_strategies/
+├── README.md                    ← documentação completa
+├── deck<id>_config.json         ← config do bot (motor lê)
+└── deck<id>_<nome>.md           ← documentação humana da estratégia
+```
+
+### Configs existentes
+
+| Deck | Arquivo | Estilo |
+|---|---|---|
+| 1055 — O Julgamento (Philodox) | `deck1055_config.json` | control |
+| 1044 — Ajaba: Hienas da Savana | `deck1044_config.json` | combo |
+| 465 — Apocalypse: Primeiro Esquadrão #21 | `deck465_config.json` | aggro |
+
+### Seções do config
+
+| Seção | O que faz |
+|---|---|
+| `gift_priorities` | Ordena gifts por prioridade + condições |
+| `resource_play_order` | Ordem de tipos na Resource Phase |
+| `combat_action_preferences` | Ações de combate preferidas por personagem (+20 de bônus) |
+| `equipment_assignments` | Quem equipa o quê |
+| `caern_preferences` | Qual Caern jogar primeiro |
+| `target_priority` | Quem atacar (inclui estratégia FFA) |
+| `umbra_strategy` | Quem entra/sai da Umbra |
+| `redraw_rules` | O que nunca descartar no redraw |
+| `moot_strategy` | Como votar em Juntas |
+| `notes` | Documentação humana (não lido pelo motor) |
+
+### Retrocompatibilidade
+
+Sem config, o bot usa heurística original. **100% retrocompatível.**
+Se não há `data/deck_strategies/deck<id>_config.json`, o bot funciona
+como antes.
+
+---
+
 ### Observações sobre campos do banco
 
 **IMPORTANTE:** O campo `rage` tem significados DIFERENTES dependendo do tipo de carta:
