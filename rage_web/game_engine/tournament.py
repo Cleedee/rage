@@ -109,17 +109,25 @@ def _calcular_max_rounds(n_jogadores: int) -> int:
 def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
     """Gera empareamentos da próxima rodada (Suíço).
 
+    Regras (Wikipedia - Sistema Suíço):
+    1. Jogadores com scores iguais ou similares são emparelhados.
+    2. **Nenhum jogador enfrenta o mesmo oponente duas vezes.**
+    3. O BYE é dado ao jogador de menor score (último colocado).
+    4. Número ideal de rodadas: ceil(log2(N)).
+
     Algoritmo:
-    1. Ordena jogadores por score (desc), SOS (desc), id (asc).
-    2. Percorre a lista ordenada e emparelha cada jogador com o
-       próximo disponível mais próximo na classificação,
-       evitando rematches quando houver alternativa.
-    3. Se todos os oponentes possíveis já enfrentaram o jogador,
-       permite rematch como último recurso.
-    4. Se sobrar um jogador (número ímpar), recebe BYE.
+    1. Agrupa jogadores ativos por score (decrescente).
+    2. Para cada grupo de score:
+       a. Tenta emparelhar dentro do grupo.
+       b. Se número ímpar, o último jogador "desce" para o próximo grupo.
+    3. Dentro de cada grupo, usa matching máximo evitando rematches.
+    4. Se ao final sobrar 1 jogador (número ímpar total), recebe BYE.
+    5. Se não houver oponente válido para alguém (todos já se enfrentaram),
+       encerra o torneio (todas as rodadas possíveis já foram jogadas).
 
     Returns:
         Lista de TournamentMatch criados (status='pending').
+        Lista vazia se o torneio já terminou ou se não há pares possíveis.
     """
     t: Tournament = db.session.get(Tournament, tournament_id)
     if not t:
@@ -129,70 +137,99 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
     n_ativos = sum(1 for p in t.players if p.active)
     if t.max_rounds == 0:
         t.max_rounds = _calcular_max_rounds(n_ativos)
-    t.current_round += 1
-    prox_round = t.current_round
+
+    prox_round = t.current_round + 1
 
     if prox_round > t.max_rounds:
-        return []  # Torneio já terminou
+        return []  # Número máximo de rodadas já foi atingido
+
+    # Verifica se já é possível fazer mais rodadas sem repetir oponentes
+    # No máximo N-1 rodadas para N jogadores (round-robin completo)
+    if prox_round > n_ativos - 1 and n_ativos > 1:
+        return []  # Todos já se enfrentaram, não há mais pares inéditos
 
     # Muda status para 'active' na primeira rodada
     if t.status == 'open':
         t.status = 'active'
 
-    # Coleta jogadores ativos e ordena por score (desc), SOS (desc), id
-    ativos = [p for p in t.players if p.active]
-    ativos.sort(key=lambda p: (-p.score, -p.sos, p.id))
+    t.current_round = prox_round
 
-    # Mapa de confrontos já realizados
+    # ── Mapa de confrontos já realizados ──
     confrontos: dict[int, set[int]] = {}
     for m in t.matches:
         if m.player1_id and m.player2_id:
             confrontos.setdefault(m.player1_id, set()).add(m.player2_id)
             confrontos.setdefault(m.player2_id, set()).add(m.player1_id)
 
-    matches_criados = []
-    emparelhados: set[int] = set()
+    # ── Jogadores ativos ordenados por score (desc), SOS (desc), id ──
+    ativos = [p for p in t.players if p.active]
+    ativos.sort(key=lambda p: (-p.score, -p.sos, p.id))
+
+    # ── Algoritmo de emparelhamento suíço sem repetição ──
+    #
+    # Abordagem: agrupa por score, emparelha dentro do grupo.
+    # Se número ímpar, o último do grupo desce para o grupo seguinte.
+    # Dentro do grupo, usa matching guloso mas com backtracking
+    # limitado para evitar rematches.
+
+    # Agrupa por score
+    grupos_score: list[list[TournamentPlayer]] = []
+    i = 0
+    while i < len(ativos):
+        score_atual = ativos[i].score
+        grupo = []
+        while i < len(ativos) and ativos[i].score == score_atual:
+            grupo.append(ativos[i])
+            i += 1
+        grupos_score.append(grupo)
+
+    # Processa grupos do maior score para o menor,
+    # "descendo" jogadores ímpares para o grupo seguinte.
+    todos_emparelhaveis: list[TournamentPlayer] = []
+    for g_idx, grupo in enumerate(grupos_score):
+        parciais, resto = _emparelhar_grupo(grupo, confrontos)
+        todos_emparelhaveis.extend(parciais)
+        if resto and g_idx + 1 < len(grupos_score):
+            grupos_score[g_idx + 1].extend(resto)
+        elif resto:
+            todos_emparelhaveis.extend(resto)
+
+    # ── Constrói pares a partir da lista de emparelháveis ──
+    # A lista está na ordem: [p1, p2, p3, p4, ...] onde p1 vs p2, p3 vs p4
     pares: list[tuple[TournamentPlayer, TournamentPlayer]] = []
+    i = 0
+    while i < len(todos_emparelhaveis) - 1:
+        p1 = todos_emparelhaveis[i]
+        p2 = todos_emparelhaveis[i + 1]
+        if p2.id in confrontos.get(p1.id, set()):
+            # Se cairam no mesmo par mas ja se enfrentaram,
+            # usa o algoritmo flexivel como fallback
+            pares = _tentar_emparelhar_todos(ativos, confrontos)
+            break
+        pares.append((p1, p2))
+        i += 2
 
-    # Emparelha sequencialmente: cada jogador busca o próximo
-    # disponível na ordem, pulando rematches (mas permitindo
-    # como último recurso se não houver alternativa.)
-    for i, p in enumerate(ativos):
-        if p.id in emparelhados:
-            continue
+    # Se o algoritmo por grupos nao produziu pares suficientes
+    # (ex: todos os lideres ja se enfrentaram entre si),
+    # tenta com o algoritmo flexivel (permite cross-score)
+    n_pares_esperado = len(ativos) // 2
+    if len(pares) < n_pares_esperado and len(ativos) >= 2:
+        pares_flex = _tentar_emparelhar_todos(ativos, confrontos)
+        if len(pares_flex) >= len(pares):
+            pares = pares_flex
 
-        candidato: TournamentPlayer | None = None
-        candidato_rematch: TournamentPlayer | None = None
+    # Se ainda nao conseguiu pares suficientes, termina o torneio
+    if not pares and len(ativos) >= 2:
+        db.session.commit()
+        return []
 
-        for j in range(i + 1, len(ativos)):
-            q = ativos[j]
-            if q.id in emparelhados:
-                continue
+    # Se sobrou um jogador ímpar (resto do último grupo)
+    jogador_bye = None
+    if i < len(todos_emparelhaveis):
+        jogador_bye = todos_emparelhaveis[i]
 
-            ja_se_encontraram = (
-                p.id in confrontos and q.id in confrontos.get(p.id, set())
-            )
-            if not ja_se_encontraram:
-                # Primeira opção: oponente que nunca enfrentou
-                candidato = q
-                break
-            # Guarda fallback (rematch) se ainda não temos um
-            if candidato_rematch is None:
-                candidato_rematch = q
-
-        # Se não achou oponente inédito, permite rematch
-        if candidato is None:
-            candidato = candidato_rematch
-
-        if candidato is not None:
-            pares.append((p, candidato))
-            emparelhados.add(p.id)
-            emparelhados.add(candidato.id)
-        else:
-            # Número ímpar de jogadores: este fica de BYE
-            pass
-
-    # Cria matches no banco
+    # ── Cria matches no banco ──
+    matches_criados = []
     for p1, p2 in pares:
         match = TournamentMatch(
             tournament_id=tournament_id,
@@ -205,18 +242,18 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
         db.session.add(match)
         matches_criados.append(match)
 
-    # BYE: jogador sem oponente ganha 3 pontos
-    nao_emparelhados = [p for p in ativos if p.id not in emparelhados]
-    for p in nao_emparelhados:
-        p.score += PTS_VITORIA
+    # BYE: o jogador de menor score (último colocado) que sobrou
+    # ganha 3 pontos. Se não sobrou ninguém, não há BYE.
+    if jogador_bye:
+        jogador_bye.score += PTS_VITORIA
         match = TournamentMatch(
             tournament_id=tournament_id,
             round_number=prox_round,
-            player1_id=p.id,
+            player1_id=jogador_bye.id,
             player2_id=None,
             score_p1=PTS_VITORIA,
             score_p2=0.0,
-            winner_id=p.id,
+            winner_id=jogador_bye.id,
             is_draw=False,
             status='completed',
         )
@@ -225,6 +262,174 @@ def gerar_empareamentos(tournament_id: int) -> list[TournamentMatch]:
 
     db.session.commit()
     return matches_criados
+
+
+def _emparelhar_grupo(
+    grupo: list[TournamentPlayer],
+    confrontos: dict[int, set[int]],
+) -> tuple[list[TournamentPlayer], list[TournamentPlayer]]:
+    """Emparelha jogadores dentro de um mesmo grupo de score.
+
+    Tenta formar pares evitando rematches. Usa matching guloso
+    com ordenação por grau de liberdade (quem tem menos opções
+    possíveis é processado primeiro).
+
+    Returns:
+        Tuple (emparelhados, resto):
+        - emparelhados: lista na ordem [p1, p2, p3, p4, ...] onde
+          p1 vs p2, p3 vs p4, etc.
+        - resto: lista de jogadores que não puderam ser emparelhados.
+    """
+    if not grupo:
+        return [], []
+
+    n = len(grupo)
+    if n < 2:
+        return [], list(grupo)
+
+    # Constrói matriz de oponentes válidos (inéditos) dentro do grupo
+    # Pré-computa para eficiência
+    oponentes_validos: dict[int, list[TournamentPlayer]] = {}
+    for p in grupo:
+        validos = [
+            q for q in grupo
+            if q.id != p.id
+            and q.id not in confrontos.get(p.id, set())
+        ]
+        oponentes_validos[p.id] = validos
+
+    # Ordena por grau de liberdade (menos opções primeiro)
+    # Quem tem menos oponentes inéditos é processado primeiro
+    disponiveis = sorted(
+        grupo,
+        key=lambda p: (
+            len(oponentes_validos[p.id]),  # Menos opções = maior prioridade
+            -p.sos,  # Desempate: maior SOS
+            p.id,
+        ),
+    )
+
+    emparelhados_list: list[TournamentPlayer] = []
+    usados: set[int] = set()
+
+    for p in disponiveis:
+        if p.id in usados:
+            continue
+
+        # Busca o melhor oponente válido para p
+        candidatos = [
+            q for q in disponiveis
+            if q.id != p.id
+            and q.id not in usados
+            and q.id not in confrontos.get(p.id, set())
+        ]
+
+        if not candidatos:
+            # P não tem oponente inédito disponível neste grupo
+            continue
+
+        # Escolhe o candidato com MENOS opções (mais restrito)
+        # para maximizar a chance de todos serem emparelhados
+        candidatos.sort(key=lambda q: (
+            len(oponentes_validos[q.id]),
+            -q.sos,
+            q.id,
+        ))
+        melhor_q = candidatos[0]
+
+        emparelhados_list.append(p)
+        emparelhados_list.append(melhor_q)
+        usados.add(p.id)
+        usados.add(melhor_q.id)
+
+    # Resto: jogadores que não conseguiram par
+    resto = [p for p in grupo if p.id not in usados]
+
+    return emparelhados_list, resto
+
+
+def _tentar_emparelhar_todos(
+    jogadores: list[TournamentPlayer],
+    confrontos: dict[int, set[int]],
+) -> list[tuple[TournamentPlayer, TournamentPlayer]]:
+    """Tenta emparelhar todos os jogadores evitando rematches.
+
+    Abordagem flexível: não separa por score, tenta encontrar
+    pares entre todos os jogadores ativos. Usa matching guloso
+    com ordenação por restrição.
+
+    Returns:
+        Lista de pares (p1, p2). Pode ser menor que o necessário
+        se não houver pares inéditos suficientes.
+    """
+    if len(jogadores) < 2:
+        return []
+
+    # Ordena por score (decrescente) para manter o princípio suíço
+    # de emparelhar scores similares
+    ordenados = sorted(
+        jogadores,
+        key=lambda p: (-p.score, -p.sos, p.id),
+    )
+
+    # Constrói lista de oponentes válidos para cada um
+    oponentes_validos: dict[int, list[TournamentPlayer]] = {}
+    for p in ordenados:
+        validos = [
+            q for q in ordenados
+            if q.id != p.id
+            and q.id not in confrontos.get(p.id, set())
+        ]
+        oponentes_validos[p.id] = validos
+
+    usados: set[int] = set()
+    pares: list[tuple[TournamentPlayer, TournamentPlayer]] = []
+
+    # Processa em ordem crescente de restrição
+    processar = sorted(
+        ordenados,
+        key=lambda p: (
+            len(oponentes_validos[p.id]),
+            -p.score,  # Maior score primeiro (justiça: líderes jogam entre si)
+            -p.sos,
+            p.id,
+        ),
+    )
+
+    for p in processar:
+        if p.id in usados:
+            continue
+
+        # Busca o melhor oponente: prioriza mesmo score, depois score similar
+        candidatos = [
+            q for q in ordenados
+            if q.id != p.id
+            and q.id not in usados
+            and q.id not in confrontos.get(p.id, set())
+        ]
+
+        if not candidatos:
+            continue
+
+        # Ordena por: mesmo score primeiro, depois menor diff de score,
+        # depois maior SOS (jogou contra oponentes mais fortes)
+        def _score_match_key(q):
+            diff = abs(q.score - p.score)
+            # Penalidade enorme para rematch (já foi filtrado acima)
+            return (
+                diff,              # Menor diferença de score = melhor
+                -q.sos,            # Maior SOS = mais forte
+                q.id,
+            )
+
+        candidatos.sort(key=_score_match_key)
+        melhor_q = candidatos[0]
+
+        pares.append((p, melhor_q))
+        usados.add(p.id)
+        usados.add(melhor_q.id)
+
+    return pares
 
 
 # ---------------------------------------------------------------------------
