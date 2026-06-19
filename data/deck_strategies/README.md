@@ -66,13 +66,13 @@ Controla **qual gift jogar** na Resource Phase e na Umbra.
 ```json
 "gift_priorities": [
   {
-    "card_id": 1021,
+    "slug": "power-of-the-ways",
     "priority": 100,
     "condition": "umbra_available",
     "desc": "Power of the Ways — cura na Umbra"
   },
   {
-    "card_id": 1029,
+    "slug": "resist-pain",
     "priority": 90,
     "condition": "combat_likely",
     "desc": "Resist Pain — redução de dano"
@@ -82,7 +82,7 @@ Controla **qual gift jogar** na Resource Phase e na Umbra.
 
 | Campo | Tipo | Descrição |
 |---|---|---|
-| `card_id` | int | ID da carta no banco SQLite |
+| `slug` | string | Slug da carta no banco (ex: `power-of-the-ways`, `razor-claws`) |
 | `priority` | int | Prioridade (0-100). Mais alto = jogado primeiro |
 | `condition` | string | Condição para ativar (veja tabela abaixo) |
 | `desc` | string | (opcional) Descrição humana |
@@ -91,7 +91,7 @@ Controla **qual gift jogar** na Resource Phase e na Umbra.
 - Se múltiplos gifts estão na mão, o bot ordena por priority decrescente.
 - Se a `condition` não é satisfeita, a prioridade é reduzida em 100
   (ou seja, o gift só é jogado se a condição estiver ativa).
-- Uma mesma `card_id` pode aparecer múltiplas vezes com condições
+- Uma mesma `slug` pode aparecer múltiplas vezes com condições
   diferentes (ex: Power of the Ways com `umbra_available` priority 100,
   e com `has_injured_character` priority 80).
 
@@ -280,7 +280,7 @@ Controla **o que descartar** na fase de redraw.
 | Campo | Tipo | Descrição |
 |---|---|---|
 | `never_discard` | string[] | Nomes de cartas que nunca são descartadas |
-| `always_discard_if_duplicate` | int[] | card_ids que são descartados se há cópia duplicada |
+| `always_discard_if_duplicate` | string[] | **Slugs** de cartas que são descartados se há cópia duplicada |
 | `prefer_discard_types` | string[] | Tipos preferenciais para descarte |
 
 ### 9. `moot_strategy` — Estratégia de Juntas
@@ -428,7 +428,7 @@ done
   "style": "midrange",
 
   "gift_priorities": [
-    {"card_id": 1021, "priority": 100, "condition": "always", "desc": "Power of the Ways"}
+    {"slug": "power-of-the-ways", "priority": 100, "condition": "always", "desc": "Power of the Ways"}
   ],
 
   "redraw_rules": {

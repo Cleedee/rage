@@ -189,6 +189,25 @@ class StrategyEngine:
 
     # ─── Gifts ───────────────────────────────────────────────────────
 
+    def _resolve_card_ref(self, entry: dict, game: GameState | None = None) -> int | None:
+        """Resolve uma referencia de carta (slug ou card_id) para card_id.
+
+        Suporta:
+          - slug: 'spirit-of-the-fray'
+          - card_id: 1056
+        """
+        cid = entry.get('card_id') or entry.get('id')
+        if cid:
+            return int(cid)
+        slug = entry.get('slug')
+        if slug:
+            # Busca no banco de dados pelo slug
+            from rage_web.models.card import Card as CardModel
+            card = CardModel.query.filter(CardModel.slug == slug).first()
+            if card:
+                return card.id
+        return None
+
     def sorted_gifts(self, hand_cards: list[CardInstance],
                      game: GameState, player: PlayerState,
                      bot) -> list[tuple[int, CardInstance]]:
@@ -201,10 +220,10 @@ class StrategyEngine:
         if not priorities:
             return []
 
-        # Indexa por card_id
+        # Indexa por card_id (slug resolve na hora)
         priority_map: dict[int, tuple[int, str]] = {}
         for entry in priorities:
-            cid = entry.get('card_id') or entry.get('id')
+            cid = self._resolve_card_ref(entry, game)
             if cid:
                 condicao = entry.get('condition', 'always')
                 priority_map[cid] = (entry.get('priority', 50), condicao)
@@ -224,11 +243,18 @@ class StrategyEngine:
         scored.sort(key=lambda x: x[0], reverse=True)
         return scored
 
-    def get_gift_priority(self, card_id: int) -> int:
+    def get_gift_priority(self, card_id: int, game: GameState | None = None) -> int:
         """Retorna prioridade base de um gift (sem condicao)."""
         for entry in self.get('gift_priorities', []):
             if entry.get('card_id') == card_id or entry.get('id') == card_id:
                 return entry.get('priority', 0)
+            # Tambem resolve por slug
+            slug = entry.get('slug')
+            if slug:
+                from rage_web.models.card import Card as CardModel
+                card = CardModel.query.filter(CardModel.slug == slug).first()
+                if card and card.id == card_id:
+                    return entry.get('priority', 0)
         return 0
 
     # ─── Resource play order ─────────────────────────────────────────
@@ -351,8 +377,22 @@ class StrategyEngine:
         return self.get('redraw_rules', {}).get('never_discard', [])
 
     def always_discard_ids(self) -> list[int]:
-        """Retorna lista de card_ids que devem ser descartados se duplicados."""
-        return self.get('redraw_rules', {}).get('always_discard_if_duplicate', [])
+        """Retorna lista de card_ids que devem ser descartados se duplicados.
+
+        Suporta slugs e card_ids na config.
+        """
+        rules = self.get('redraw_rules', {})
+        ids: list[int] = []
+        for ref in rules.get('always_discard_if_duplicate', []):
+            if isinstance(ref, int):
+                ids.append(ref)
+            elif isinstance(ref, str):
+                # Slug — busca no banco
+                from rage_web.models.card import Card as CardModel
+                card = CardModel.query.filter(CardModel.slug == ref).first()
+                if card:
+                    ids.append(card.id)
+        return ids
 
     def should_keep_in_redraw(self, card: CardInstance) -> Optional[bool]:
         """Retorna se uma carta deve ser mantida no redraw.

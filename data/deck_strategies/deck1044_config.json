@@ -2,25 +2,98 @@
   "deck_id": 1044,
   "name": "Ajaba — Hienas da Savana",
   "style": "combo",
-
   "gift_priorities": [
-    {"card_id": 1033, "priority": 100, "condition": "always", "desc": "Spirit of the Fray — atacar primeiro com Shari"},
-    {"card_id": 1040, "priority": 95, "condition": "combat_likely", "desc": "Razor Claws x2 — +2 dano agravado no ataque de Shari"},
-    {"card_id": 999,  "priority": 90, "condition": "has_character_named:kisasi", "desc": "Song of Rage — Kisasi causa Frenesi em Shari! Crinos!"},
-    {"card_id": 1037, "priority": 85, "condition": "always", "desc": "Sense of the Prey — atacar novamente apos combate (Shari/Kisasi)"},
-    {"card_id": 1013, "priority": 80, "condition": "has_character_named:kisasi", "desc": "Mindspeak — Kisasi compra cartas (Galliard, Gn:3)"},
-    {"card_id": 1049, "priority": 75, "condition": "has_character_named:kisasi", "desc": "Battle Song — Kisasi buff de combate (Galliard, Gn:4)"},
-    {"card_id": 945,  "priority": 70, "condition": "ffa_mode", "desc": "Chant of Morpheus — Kisasi neutraliza ameaca (sono)"},
-    {"card_id": 1036, "priority": 65, "condition": "always", "desc": "Sense Prey — buscar Victims do sept adversario (Ajaba)"},
-    {"card_id": 1067, "priority": 60, "condition": "has_character_named:shari", "desc": "Purity of Spirit — Shari imune a dano agravado na Umbra"},
-    {"card_id": 1057, "priority": 55, "condition": "has_character_named:chuki", "desc": "Sense Wyrm x2 — Chuki busca Enemies (Metis, Gn:1)"},
-    {"card_id": 1097, "priority": 50, "condition": "character_in_umbra", "desc": "Spirit of the Tiger — +1 combat card em BF"},
-    {"card_id": 1041, "priority": 45, "condition": "has_character_named:kisasi", "desc": "Scent of Distinction — Kisasi scouting Crinos stats"},
-    {"card_id": 1048, "priority": 40, "condition": "always", "desc": "Song of Rage — segunda copia, ativar Shari se necessario"},
-    {"card_id": 1080, "priority": 35, "condition": "has_character_named:chuki", "desc": "Primal Anger — Chuki +Rage em combate (Ajaba-Metis, Gn:1)"},
-    {"card_id": 1089, "priority": 30, "condition": "has_characters", "desc": "World of Human — ajustar Gauntlet (Homid)"}
+    {
+      "priority": 100,
+      "condition": "always",
+      "desc": "Spirit of the Fray — atacar primeiro com Shari",
+      "slug": "spirit-of-the-fray"
+    },
+    {
+      "priority": 95,
+      "condition": "combat_likely",
+      "desc": "Razor Claws x2 — +2 dano agravado no ataque de Shari",
+      "slug": "razor-claws"
+    },
+    {
+      "priority": 90,
+      "condition": "has_character_named:kisasi",
+      "desc": "Song of Rage — Kisasi causa Frenesi em Shari! Crinos!",
+      "slug": "song-of-rage"
+    },
+    {
+      "priority": 85,
+      "condition": "always",
+      "desc": "Sense of the Prey — atacar novamente apos combate (Shari/Kisasi)",
+      "slug": "sense-of-the-prey"
+    },
+    {
+      "priority": 80,
+      "condition": "has_character_named:kisasi",
+      "desc": "Mindspeak — Kisasi compra cartas (Galliard, Gn:3)",
+      "slug": "mindspeak"
+    },
+    {
+      "priority": 75,
+      "condition": "has_character_named:kisasi",
+      "desc": "Battle Song — Kisasi buff de combate (Galliard, Gn:4)",
+      "slug": "battle-song"
+    },
+    {
+      "priority": 70,
+      "condition": "ffa_mode",
+      "desc": "Chant of Morpheus — Kisasi neutraliza ameaca (sono)",
+      "slug": "chant-of-morpheus"
+    },
+    {
+      "priority": 65,
+      "condition": "always",
+      "desc": "Sense Prey — buscar Victims do sept adversario (Ajaba)",
+      "slug": "sense-prey"
+    },
+    {
+      "priority": 60,
+      "condition": "has_character_named:shari",
+      "desc": "Purity of Spirit — Shari imune a dano agravado na Umbra",
+      "slug": "purity-of-spirit"
+    },
+    {
+      "priority": 55,
+      "condition": "has_character_named:chuki",
+      "desc": "Sense Wyrm x2 — Chuki busca Enemies (Metis, Gn:1)",
+      "slug": "sense-wyrm"
+    },
+    {
+      "priority": 50,
+      "condition": "character_in_umbra",
+      "desc": "Spirit of the Tiger — +1 combat card em BF",
+      "slug": "spirit-of-the-tiger"
+    },
+    {
+      "priority": 45,
+      "condition": "has_character_named:kisasi",
+      "desc": "Scent of Distinction — Kisasi scouting Crinos stats",
+      "slug": "scent-of-distinction"
+    },
+    {
+      "priority": 40,
+      "condition": "always",
+      "desc": "Song of Rage — segunda copia, ativar Shari se necessario",
+      "slug": "song-of-rage"
+    },
+    {
+      "priority": 35,
+      "condition": "has_character_named:chuki",
+      "desc": "Primal Anger — Chuki +Rage em combate (Ajaba-Metis, Gn:1)",
+      "slug": "primal-anger"
+    },
+    {
+      "priority": 30,
+      "condition": "has_characters",
+      "desc": "World of Human — ajustar Gauntlet (Homid)",
+      "slug": "world-of-human"
+    }
   ],
-
   "resource_play_order": [
     "character",
     "event",
@@ -30,7 +103,6 @@
     "victim",
     "enemy"
   ],
-
   "combat_action_preferences": {
     "Shari": [
       "fast_strike",
@@ -88,25 +160,56 @@
       "block_and_roll"
     ]
   },
-
   "equipment_assignments": [
-    {"card_name": "Bivouac", "target": "Shari", "priority": 90, "desc": "Cura extra na regen para a matadora"},
-    {"card_name": "Bivouac", "target": "Kisasi", "priority": 50, "desc": "Segundo Bivouac na lider"},
-    {"card_name": "Cellular Phone", "target": "Kisasi", "priority": 60, "desc": "Draw support na lider"},
-    {"card_name": "Lost Map", "target": "Shari", "priority": 40, "desc": "Busca para a matadora"},
-    {"card_name": "Concertina Wire", "target": "", "priority": 70, "desc": "Protecao de Territory — nao equipa em personagem"},
-    {"card_name": "Corporate Credit Card", "target": "Kisasi", "priority": 30, "desc": "Draw extra na lider"}
+    {
+      "card_name": "Bivouac",
+      "target": "Shari",
+      "priority": 90,
+      "desc": "Cura extra na regen para a matadora"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Kisasi",
+      "priority": 50,
+      "desc": "Segundo Bivouac na lider"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Kisasi",
+      "priority": 60,
+      "desc": "Draw support na lider"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Shari",
+      "priority": 40,
+      "desc": "Busca para a matadora"
+    },
+    {
+      "card_name": "Concertina Wire",
+      "target": "",
+      "priority": 70,
+      "desc": "Protecao de Territory — nao equipa em personagem"
+    },
+    {
+      "card_name": "Corporate Credit Card",
+      "target": "Kisasi",
+      "priority": 30,
+      "desc": "Draw extra na lider"
+    }
   ],
-
   "caern_preferences": [],
-
   "umbra_strategy": {
-    "enter_characters": ["Shari", "Kisasi"],
-    "save_for_combat": ["Shari"],
+    "enter_characters": [
+      "Shari",
+      "Kisasi"
+    ],
+    "save_for_combat": [
+      "Shari"
+    ],
     "always_enter_if_opponent_cannot": true,
     "enter_with_high_gnosis": true
   },
-
   "target_priority": {
     "prefer_low_health": true,
     "character_kill_order": "lowest_health",
@@ -114,10 +217,12 @@
     "avoid_overextend": false,
     "hunting_grounds": {
       "prefer_prey_over_enemy": true,
-      "priority_types": ["Victim", "Enemy"]
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
     }
   },
-
   "redraw_rules": {
     "never_discard": [
       "Shari",
@@ -130,16 +235,21 @@
       "Bivouac"
     ],
     "always_discard_if_duplicate": [],
-    "prefer_discard_types": ["Moot", "Board Meeting"]
+    "prefer_discard_types": [
+      "Moot",
+      "Board Meeting"
+    ]
   },
-
   "moot_strategy": {
     "call_if_available": [],
-    "always_vote_yes": ["Own"],
-    "vote_no_against": ["Leader"],
+    "always_vote_yes": [
+      "Own"
+    ],
+    "vote_no_against": [
+      "Leader"
+    ],
     "strategic_vote": true
   },
-
   "notes": {
     "combo_principal": "Song of Rage (Kisasi) → Frenesi Shari → Crinos Rg:10 → Spirit of the Fray → Fast Strike/Stunning Strike → Sense of the Prey → atacar novamente",
     "combo_caca": "Sense Prey → Victims no HG → Mtupeni ataca (Rg+2 vs Ren≤1) → Shari finaliza",
