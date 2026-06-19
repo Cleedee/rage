@@ -1,0 +1,30 @@
+{
+  "id": "whippoorwill",
+  "nome": "Whippoorwill",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Reciclar Ally ou Victim descartado",
+      "efeitos": [
+        {
+          "tipo": "mover_para",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 1,
+          "params": {
+            "filtro": "tipo=Ally|Victim",
+            "origem": "discard",
+            "destino": "hand"
+          }
+        }
+      ],
+      "condicao_uso": "quando_ally_victim_descartado"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 216,
+    "texto_original": "When a Victim or Ally is removed or discarded from play and put in a discard pile, you may take that card into your hand instead.",
+    "precisa_revisao": true,
+    "slug": "whippoorwill"
+  }
+}

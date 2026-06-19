@@ -1,0 +1,26 @@
+{
+  "id": "wu-bingshu",
+  "nome": "Wu Bingshu",
+  "tipo": "Character - Kitsune",
+  "modos": [
+    {
+      "descricao": "Voto extra por leal no pack",
+      "efeitos": [
+        {
+          "tipo": "moot_restricao_global",
+          "condicao_alvo": "jogador_aliado",
+          "params": {
+            "votos_extras_por_leal": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 1685,
+    "texto_original": "Wu Bingshu has 1 extra vote for each packmate loyal to him.",
+    "precisa_revisao": true,
+    "slug": "wu-bingshu"
+  }
+}

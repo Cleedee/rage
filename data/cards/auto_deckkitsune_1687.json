@@ -1,0 +1,30 @@
+{
+  "id": "katsuko-moon-saint",
+  "nome": "Katsuko Moon-Saint",
+  "tipo": "Character - Kitsune",
+  "modos": [
+    {
+      "descricao": "Usar cartas Philodox e CoG",
+      "efeitos": [
+        {
+          "tipo": "registrar_trigger_combate",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "trigger": "passivo",
+            "filtro_cartas": [
+              "Philodox",
+              "Children of Gaia"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 1687,
+    "texto_original": "Hengeyokai. Katsuko can use Philodox and Children of Gaia cards while Matsuko Sun-Devil is in her pack.",
+    "precisa_revisao": true,
+    "slug": "katsuko-moon-saint"
+  }
+}

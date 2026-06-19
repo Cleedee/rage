@@ -1,0 +1,31 @@
+{
+  "id": "shari",
+  "nome": "Shari",
+  "tipo": "Character - Ajaba",
+  "modos": [
+    {
+      "descricao": "Anti-Bastet em combate",
+      "efeitos": [
+        {
+          "tipo": "modificar_atributo_passivo",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "atributos": [
+              "rage",
+              "gnosis"
+            ],
+            "valor": 2,
+            "condicao": "contra_bastet"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_ajaba",
+    "card_id": 1625,
+    "texto_original": "Iksakku. Shari harbors great resentment towards the Bastet. When facing Bastet in combat, Shari acts at +2 Rage and +2 Gnosis.",
+    "precisa_revisao": true,
+    "slug": "shari"
+  }
+}

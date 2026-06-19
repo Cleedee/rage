@@ -1,0 +1,29 @@
+{
+  "id": "reinforcements",
+  "nome": "Reinforcements",
+  "tipo": "Combat Event",
+  "modos": [
+    {
+      "descricao": "Adicionar até 10 Renome em reforços",
+      "efeitos": [
+        {
+          "tipo": "ataque_imediato",
+          "condicao_alvo": "criatura_aliada",
+          "quantidade": 10,
+          "params": {
+            "reforcos": true,
+            "apos_round": 3
+          }
+        }
+      ],
+      "condicao_uso": "apos_round_3"
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_kitsune",
+    "card_id": 1298,
+    "texto_original": "Any time after the third round of combat you may add up to 10 Renown worth of characters to the combat.",
+    "precisa_revisao": true,
+    "slug": "reinforcements"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "defiler-event",
+  "nome": "Defiler",
+  "tipo": "Event",
+  "modos": [
+    {
+      "descricao": "Tomar um caern",
+      "efeitos": [
+        {
+          "tipo": "mover_para",
+          "condicao_alvo": "criatura_inimiga",
+          "quantidade": 1,
+          "params": {
+            "filtro": "caern",
+            "origem": "inimigo",
+            "destino": "aliado",
+            "descarte_carta": true
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_wyrm",
+    "card_id": 836,
+    "texto_original": "You may discard the Defiler to take any 1 caern in play and make it your own. Ignore the territory requirements.",
+    "precisa_revisao": true,
+    "slug": "defiler-event"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "kisasi",
+  "nome": "Kisasi",
+  "tipo": "Character - Ajaba",
+  "modos": [
+    {
+      "descricao": "Lealdade entre Ajaba e não-Ajaba no pack",
+      "efeitos": [
+        {
+          "tipo": "registrar_trigger_combate",
+          "condicao_alvo": "criatura_aliada",
+          "params": {
+            "trigger": "pack_inicio_jogo",
+            "efeito": "lealdade_mutua"
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "novo_deck_ajaba",
+    "card_id": 1443,
+    "texto_original": "If you start with Kisasi in play, Kisasi and non-Ajaba Characters in her pack gain Loyalty to each other.",
+    "precisa_revisao": true,
+    "slug": "kisasi"
+  }
+}
