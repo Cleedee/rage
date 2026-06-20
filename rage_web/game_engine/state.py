@@ -1610,9 +1610,6 @@ class GameState:
         Chamado ao fim do Combat phase, antes da verificacao de vitoria.
         Cada presa ataca conforme sua habilidade especial.
         """
-        from rage_web.game_engine.state import anexar_dano
-        from rage_web.game_engine.combat_queue import _remove_creature
-
         vitimas = self._coletar_todas_vitimas_hg()
         if not vitimas:
             return
@@ -1693,34 +1690,15 @@ class GameState:
                 continue
 
             if alvo and dono_alvo:
+                # A presa "ataca", mas nao tem Combat Action para causar dano.
+                # Para causar dano em Rage CCG, e necessario jogar uma Combat Action
+                # que cause dano (Strike, Head Butt, Savage Beatdown etc).
+                # O ataque automatico da presa e apenas uma declaracao sem efeito
+                # mecanico — a menos que alguem jogue "pela presa" (regra 6.6.3).
                 self.add_log(
-                    f'⚔️ {vitima.name} atacou {alvo.name} '
-                    f'com {dano_base} de dano{" agravado" if agravado else ""}!'
+                    f'⚠️ {vitima.name} atacou {alvo.name}, '
+                    f'mas nao tem Combat Action para causar dano!'
                 )
-                # Cria carta de combate virtual para o dano da presa
-                carta_virtual = CardInstance(
-                    card_id=vitima.card_id,
-                    name=vitima.name,
-                    card_type='Combat Action',
-                    zone=Zone.OUT_OF_PLAY,
-                    owner_id=dono_vitima_id,
-                    controller_id=dono_vitima_id,
-                )
-                anexar_dano(alvo, vitima, dano_base, dono_alvo.id,
-                            is_aggravated=agravado,
-                            carta_combate=carta_virtual,
-                            game=self)
-                # Flip para Crinos se threshold atingido
-                from rage_web.game_engine.combat_queue import _flipar_para_crinos
-                _flipar_para_crinos(self, alvo)
-
-                if alvo.health_current <= 0:
-                    _remove_creature(self, alvo)
-                    alvo.zone = Zone.DISCARD_COMBAT
-                    dono_alvo.discard_combat.append(alvo)
-                    self.add_log(
-                        f'💀 {alvo.name} foi morto por {vitima.name}!'
-                    )
 
         # ── Fim do Combat Phase: Fomori Cop descarta equipamento nao-fetich de Gaia ──
         for vitima, dono_vitima_id in vitimas:

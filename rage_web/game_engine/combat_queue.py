@@ -4109,8 +4109,8 @@ def end_combat(game: GameState) -> bool:
             game.add_log(f'{p.name} sem cartas de combate no deck '
                          f'({antes}/{p.hand_size_combat})')
 
-    # Executa ataques automaticos de presas no HG
-    game._check_victim_attacks()
+    # Ataques de presas sao processados em next_phase(), apos
+    # reabastecer mao de combate e antes de verificar vitoria.
 
     # Limpa estado de frenesi de todas as criaturas (6.11.2)
     for p in game.players:

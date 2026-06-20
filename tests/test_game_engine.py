@@ -2364,12 +2364,16 @@ class TestVictimAutoAttack:
                            keywords='Garou - Black Spiral Dancer - Wyrm')
         p2.pack_home.append(bsd)
         game._check_victim_attacks()
-        # O ataque matou o BSD (3 de vida, 7 de dano agravado)
-        assert bsd in p2.discard_combat  # Morreu e foi para o descarte
-        assert bsd.health_current <= 0  # Morto
-        # O dano foi agravado — verificado pelo fato de que
-        # o ataque do Werewolf Hunter (card_id=535) sempre causa
-        # dano agravado a Wyrm/BSD
+        # O ataque da presa e apenas uma declaracao sem Combat Action.
+        # Para causar dano em Rage CCG, e necessario uma Combat Action
+        # que cause dano (regra 6.2). A presa nao tem mao de combate,
+        # portanto o ataque nao causa dano.
+        assert bsd not in getattr(p2, 'discard_combat', [])  # Nao morreu
+        assert bsd.health_current > 0  # Continua vivo
+        # Verifica que o log registrou o ataque sem dano
+        logs = [l for l in game.log if '\u26a0\ufe0f' in l and 'atacou' in l
+                and 'mas nao tem Combat Action' in l]
+        assert len(logs) >= 1
 
     def test_wild_animals_ataca_maior_rage_wyrm(self):
         """Wild Animals ataca Wyrm com maior Rage."""
@@ -2393,7 +2397,8 @@ class TestVictimAutoAttack:
                            rage=3, health=4, health_current=4)
         p1.pack_home.append(gaia)
         game._check_victim_attacks()
-        assert wyrm.health_current < 8  # Longtooth (rage 8) tomou dano
+        # Sem Combat Action, o ataque da presa nao causa dano
+        assert wyrm.health_current == 8  # Longtooth intocado
         assert gaia.health_current == 4  # Gaia intocado
 
     def test_victim_ignora_se_sem_alvo_valido(self):
@@ -2426,8 +2431,9 @@ class TestVictimAutoAttack:
                              keywords='Wyrm')
         p2.pack_home.append(fraco)
         game._check_victim_attacks()
-        assert fraco.health_current <= 0
-        assert fraco not in p2.pack_home
+        # Sem Combat Action, o ataque nao causa dano
+        assert fraco.health_current == 2  # Continua vivo
+        assert fraco in p2.pack_home
 
 
 class TestPreyTriggerSystem:
@@ -2450,7 +2456,8 @@ class TestPreyTriggerSystem:
                            keywords='Vampire - Eater-of-Souls - Wyrm')
         p2.pack_home.append(wyrm)
         game._check_victim_attacks()
-        assert wyrm.health_current < 6
+        # Sem Combat Action, ataque nao causa dano
+        assert wyrm.health_current == 6
 
     def test_wild_animals_ignora_se_sem_wyrm(self):
         """Wild Animals nao ataca se nao ha Wyrm."""
@@ -2492,7 +2499,8 @@ class TestPreyTriggerSystem:
                             keywords='Wyrm')
         p2.pack_home.extend([wyrm1, wyrm2])
         game._check_victim_attacks()
-        assert wyrm2.health_current < 7  # Allonzo (rage 7) foi atacado
+        # Sem Combat Action, ataque nao causa dano
+        assert wyrm2.health_current == 7  # Allonzo intocado
         assert wyrm1.health_current == 6  # Vladimir intocado
 
     def test_vigilante_ataca_killer_de_vitima(self):
@@ -2517,7 +2525,8 @@ class TestPreyTriggerSystem:
                                    owner_id='p2', controller_id='p2')
         game.registrar_kill_vitima(id(killer_card))
         game._check_victim_attacks()
-        assert killer.health_current < 6
+        # Sem Combat Action, ataque nao causa dano
+        assert killer.health_current == 6
 
     def test_vigilante_fallback_sem_killer_registrado(self):
         """Vigilante ataca maior Renome se nao ha killer registrado."""
@@ -2536,7 +2545,8 @@ class TestPreyTriggerSystem:
         p2.pack_home.append(char)
         # Sem killer registrado
         game._check_victim_attacks()
-        assert char.health_current < 6  # Atacado (fallback)
+        # Sem Combat Action, ataque nao causa dano
+        assert char.health_current == 6  # Intocado
 
     def test_mage_remove_lowest_renown_victim(self):
         """Mage of Celestial Chorus remove menor Renome victim no fim do turno."""
