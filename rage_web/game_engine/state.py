@@ -1212,6 +1212,65 @@ class GameState:
     used_effects: list[int] = field(default_factory=list)
     """Lista de id(CardInstance) dos efeitos ja usados neste turno."""
 
+    # ── Eventos registrados para fim da fase de combate ──
+    # Cada entrada: {
+    #   'type': str (ex: 'victim_attack', 'fomori_cop_discard'),
+    #   'source': str (nome da carta/origem),
+    #   'condition': callable(game) -> bool,
+    #   'action': callable(game) -> bool (True = novo combate iniciado),
+    # }
+    end_of_combat_triggers: list[dict] = field(default_factory=list)
+
+    def _registrar_trigger_fim_combate(self, trigger_type: str, source: str,
+                                        condition, action):
+        """Registra um trigger para ser processado ao fim da fase de combate.
+
+        Args:
+            trigger_type: Tipo do trigger (ex: 'victim_attack').
+            source: Nome descritivo da origem.
+            condition: Funcao(game) -> bool, retorna True se deve disparar.
+            action: Funcao(game) -> bool, executa acao.
+                    Retorna True se um novo combate foi iniciado.
+        """
+        self.end_of_combat_triggers.append({
+            'type': trigger_type,
+            'source': source,
+            'condition': condition,
+            'action': action,
+        })
+
+    def _processar_eventos_fim_combate(self) -> bool:
+        """Processa todos os triggers registrados para fim da fase de combate.
+
+        Percorre os triggers registrados, executa condicao e acao de cada um.
+        Se uma acao iniciar um novo combate, retorna True imediatamente
+        para que o game loop processe o combate.
+
+        Returns:
+            True se um novo combate foi iniciado por algum trigger.
+        """
+        if not self.end_of_combat_triggers:
+            return False
+
+        triggers = self.end_of_combat_triggers.copy()
+        self.end_of_combat_triggers.clear()
+
+        for trigger in triggers:
+            try:
+                if trigger['condition'](self):
+                    self.add_log(
+                        f'[Evento Fim Combate] {trigger["source"]} '
+                        f'({trigger["type"]}) disparou'
+                    )
+                    if trigger['action'](self):
+                        return True  # Novo combate iniciado
+            except Exception as e:
+                self.add_log(
+                    f'[ERRO] Trigger {trigger["type"]} '
+                    f'({trigger["source"]}): {e}'
+                )
+
+        return False
     # Mindspeak: links entre personagens para pack coordination
     mindspeak_links: list[dict] = field(default_factory=list)
     """Cada dict: {player_id, caster_uid, packmate_uid, caster_name, packmate_name}"""
@@ -1366,10 +1425,12 @@ class GameState:
                         selecionar_alfa(self, p.id, str(melhor.card_id))
                 calcular_ordem_alfa(self)
         else:
-            # Fim do Combat phase: vitimas atacam automaticamente
-            # Se uma presa iniciar combate, next_phase() retorna
-            # imediatamente para que o combate seja processado.
-            if self._check_victim_attacks():
+            # Fim do Combat phase: registra eventos de presas e processa
+            # triggers registrados (victim_attack, fomori_cop_discard, etc).
+            # Se um trigger iniciar combate, next_phase() retorna
+            # imediatamente para que o game loop processe o combate.
+            self._registrar_ataques_vitimas()
+            if self._processar_eventos_fim_combate():
                 return  # Combate de presa iniciado — game loop processa
 
             # Verificar vitoria
@@ -1607,26 +1668,23 @@ class GameState:
                             todos.append((c, p))
         return todos
 
-    def _check_victim_attacks(self) -> bool:
-        """Executa ataques automaticos de Presas (Victim/Enemy) no Hunting Grounds.
+    def _registrar_ataques_vitimas(self):
+        """Registra triggers de fim de combate para Presas/Vítimas no HG.
 
-        Chamado ao fim do Combat phase, antes da verificacao de vitoria.
-        Cada presa ataca conforme sua habilidade especial, iniciando um
-        combate completo com todos os passos normais (declaration, reveal,
-        resolve). O dono da presa joga Combat Events/Actions por ela;
-        o alvo faz o mesmo.
-
-        Returns:
-            True se um novo combate foi iniciado (next_phase() deve
-            permanecer na fase de combate).
+        Cada presa com habilidade de auto-ataque registra um trigger
+        do tipo 'victim_attack'. Os triggers sao processados por
+        _processar_eventos_fim_combate(), que inicia combate completo
+        via start_combat() para cada presa.
         """
         vitimas = self._coletar_todas_vitimas_hg()
         if not vitimas:
-            return False
+            return
 
         todos_personagens = self._coletar_todos_personagens()
         if not todos_personagens:
-            return False
+            return
+
+        from rage_web.game_engine.combat_queue import start_combat
 
         for vitima, dono_vitima_id in vitimas:
             alvo = None
@@ -1657,7 +1715,6 @@ class GameState:
                             )
                             break
                 if alvo is None:
-                    # Fallback: ataca personagem com maior Renome
                     todos_personagens.sort(key=lambda x: x[0].renown, reverse=True)
                     alvo, dono_alvo = todos_personagens[0]
 
@@ -1682,51 +1739,43 @@ class GameState:
                     candidates.sort(key=lambda x: x[0].renown, reverse=True)
                     alvo, dono_alvo = candidates[0]
 
-            # --- 503 - Mage of the Celestial Chorus: remove no fim do turno ---
-            elif vitima.card_id == 503:
-                continue
-
-            # --- Fomori Cop (slug fomori-cop_r5): descarta equipamento nao-fetich ---
-            elif vitima.modelo_id == 'fomori-cop_r5':
-                continue
-
-            # --- Outras presas sem auto-ataque ---
-            else:
-                continue
-
             if alvo and dono_alvo:
-                # ── Inicia combate completo via start_combat() ──
-                # A presa usa habilidade especial (card_ability=True) para
-                # atacar. O dono da presa pode jogar Combat Events/Actions
-                # por ela; o alvo faz o mesmo. Combate passa por todos os
-                # passos: declaration, reveal, resolve.
-                from rage_web.game_engine.combat_queue import start_combat
                 vitima_id = str(vitima.card_id)
                 alvo_id = str(alvo.card_id)
-                self.add_log(
-                    f'⚔️ {vitima.name} atacou {alvo.name} '
-                    f'(iniciando combate presa vs personagem)'
-                )
-                result = start_combat(
-                    self,
-                    attackers=[vitima_id],
-                    defenders=[alvo_id],
-                    card_ability=True,  # Habilidade especial da presa
-                )
-                if result:
-                    return True
-                else:
-                    self.add_log(
-                        f'⚠️ {vitima.name} tentou atacar {alvo.name}, '
-                        f'mas nao foi possivel iniciar combate'
-                    )
+                vitima_nome = vitima.name
+                alvo_nome = alvo.name
 
-        # ── Fim do Combat Phase: Fomori Cop descarta equipamento nao-fetich de Gaia ──
+                # Cria closure que captura os IDs corretos
+                def _fabricar_trigger(v_id=vitima_id, a_id=alvo_id,
+                                      v_nome=vitima_nome, a_nome=alvo_nome):
+                    return {
+                        'type': 'victim_attack',
+                        'source': f'{v_nome} → {a_nome}',
+                        'condition': lambda g, _v_id=v_id: (
+                            _find_card_in_game(g, _v_id) is not None
+                        ),
+                        'action': lambda g, _v_id=v_id, _a_id=a_id,
+                                      _v_nome=v_nome, _a_nome=a_nome: (
+                            _do_victim_combat(g, _v_id, _a_id, _v_nome, _a_nome)
+                        ),
+                    }
+                trigger = _fabricar_trigger()
+                self.end_of_combat_triggers.append(trigger)
+
+        # ── Fomori Cop registra trigger de descarte de equipamento ──
         for vitima, dono_vitima_id in vitimas:
             if vitima.modelo_id == 'fomori-cop_r5' and vitima.health_current > 0:
-                self._fomori_cop_discard_equipment()
-
-        return False
+                # Cria closure para capturar a vitima especifica
+                def _fab_cop(v=vitima):
+                    return {
+                        'type': 'fomori_cop_discard',
+                        'source': 'Fomori Cop',
+                        'condition': lambda g, _v=v: _v.health_current > 0,
+                        'action': lambda g, _v=v: (
+                            self._fomori_cop_discard_equipment() or False
+                        ),
+                    }
+                self.end_of_combat_triggers.append(_fab_cop())
 
     def registrar_kill_vitima(self, killer_card_uid: int):
         """Registra quem matou a vitima de menor Renome (para Vigilante)."""
@@ -3120,3 +3169,50 @@ class GameState:
         """Adiciona entrada no log da partida."""
         entry = f'[T{self.turn_number} {self.phase.upper()}] {message}'
         self.log.append(entry)
+
+
+# ── Funcoes auxiliares para o sistema de eventos de fim de combate ──
+
+
+def _find_card_in_game(game: 'GameState', card_id_str: str) -> Optional[CardInstance]:
+    """Encontra uma carta viva pelo card_id (string) em qualquer zona."""
+    for p in game.players:
+        for zone_list in (p.pack_home, p.hunting_grounds, p.umbra, p.hand):
+            for c in zone_list:
+                if str(c.card_id) == card_id_str and c.health_current > 0:
+                    return c
+    for c in game.hunting_grounds_cards:
+        if str(c.card_id) == card_id_str and c.health_current > 0:
+            return c
+    for p in game.players:
+        for zone_list in (p.discard_combat, p.discard_sept, p.victory_pile):
+            for c in zone_list:
+                if str(c.card_id) == card_id_str:
+                    return c
+    return None
+
+
+def _do_victim_combat(game: 'GameState', vitima_id: str, alvo_id: str,
+                       vitima_nome: str, alvo_nome: str) -> bool:
+    """Inicia um combate completo de uma presa contra seu alvo.
+
+    Returns:
+        True se o combate foi iniciado.
+    """
+    from rage_web.game_engine.combat_queue import start_combat
+    game.add_log(
+        f'⚔️ {vitima_nome} atacou {alvo_nome} '
+        f'(iniciando combate presa vs personagem)'
+    )
+    result = start_combat(
+        game,
+        attackers=[vitima_id],
+        defenders=[alvo_id],
+        card_ability=True,
+    )
+    if not result:
+        game.add_log(
+            f'⚠️ {vitima_nome} tentou atacar {alvo_nome}, '
+            f'mas nao foi possivel iniciar combate'
+        )
+    return result

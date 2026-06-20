@@ -2363,7 +2363,8 @@ class TestVictimAutoAttack:
                            rage=3, health=3, health_current=3, renown=8,
                            keywords='Garou - Black Spiral Dancer - Wyrm')
         p2.pack_home.append(bsd)
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve ter iniciado um combate completo
         assert result, "_check_victim_attacks deveria iniciar combate"
         assert game.combat.is_active, "Combate deve estar ativo"
@@ -2391,7 +2392,8 @@ class TestVictimAutoAttack:
                            owner_id='p1', controller_id='p1',
                            rage=3, health=4, health_current=4)
         p1.pack_home.append(gaia)
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate contra o Wyrm com maior Rage (Allonzo, Rg=7)
         assert result, "_check_victim_attacks deveria iniciar combate"
         assert game.combat.is_active
@@ -2406,7 +2408,8 @@ class TestVictimAutoAttack:
                               owner_id='', controller_id='',
                               rage=6, health=4, health_current=4)
         game.hunting_grounds_cards.append(animals)
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Nao deve iniciar combate (vouga sem alvo valido)
         assert not result, "Nao deveria iniciar combate sem alvo"
         assert not game.combat.is_active
@@ -2427,7 +2430,8 @@ class TestVictimAutoAttack:
                              rage=1, health=2, health_current=2,
                              keywords='Wyrm')
         p2.pack_home.append(fraco)
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate completo (dano sera resolvido no ciclo de combate)
         assert result, "_check_victim_attacks deveria iniciar combate"
         assert game.combat.is_active
@@ -2453,7 +2457,8 @@ class TestPreyTriggerSystem:
                            rage=5, health=6, health_current=6,
                            keywords='Vampire - Eater-of-Souls - Wyrm')
         p2.pack_home.append(wyrm)
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate contra o Wyrm
         assert result
         assert game.combat.is_active
@@ -2473,7 +2478,8 @@ class TestPreyTriggerSystem:
                            owner_id='p2', controller_id='p2',
                            rage=3, health=4, health_current=4)
         p2.pack_home.append(gaia)
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate contra o Wyrm
         assert not result
         assert not game.combat.is_active
@@ -2499,7 +2505,8 @@ class TestPreyTriggerSystem:
                             rage=7, health=7, health_current=7,
                             keywords='Wyrm')
         p2.pack_home.extend([wyrm1, wyrm2])
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate contra o Wyrm com maior Rage (Allonzo, Rg=7)
         assert result
         assert game.combat.is_active
@@ -2526,7 +2533,8 @@ class TestPreyTriggerSystem:
                                    card_type='Character', zone=Zone.PACK_HOME,
                                    owner_id='p2', controller_id='p2')
         game.registrar_kill_vitima(id(killer_card))
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate (Vigilante ataca quem matou vitima)
         assert result
         assert game.combat.is_active
@@ -2547,7 +2555,8 @@ class TestPreyTriggerSystem:
                            rage=5, health=6, health_current=6)
         p2.pack_home.append(char)
         # Sem killer registrado
-        result = game._check_victim_attacks()
+        game._registrar_ataques_vitimas()
+        result = game._processar_eventos_fim_combate()
         # Deve iniciar combate (fallback: ataca maior Renome)
         assert result
         assert game.combat.is_active
