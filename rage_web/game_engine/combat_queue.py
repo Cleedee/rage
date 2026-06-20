@@ -2991,12 +2991,41 @@ def _processar_bluff(game: GameState) -> bool:
             rage_req = dano_info.get('rage_requirement', 0) or 0
 
         # 6.9.1: Verificar ilegais (requisitos nao-Rage)
-        # Combat Events jogados face-down sao ilegais
+        # Combat Events jogados face-down: verifica se tem
+        # propriedades conhecidas (pack_attack, puxa_pack, etc.)
+        # Se tiver, e legitimo (ex: Bum Rush, Pack Defense).
         if action.startswith('ce_'):
-            game.combat.illegal_cards.add(cid)
-            game.add_log(f'  [Bluff] {card.name} jogou Combat Event '
-                         f'face-down -> ILEGAL (6.9.1)')
-            continue
+            ce_card_id = game.combat.ce_face_down.get(cid)
+            if ce_card_id:
+                ce_card = _find_card(game, ce_card_id)
+                if ce_card:
+                    nome_slug = (ce_card.name or '').lower().replace(
+                        ' ', '_').replace('-', '_')
+                    ce_props = COMBAT_ACTION_PROPS.get(nome_slug, {})
+                    # Se tem pack_attack ou puxa_pack, e legitimo
+                    if ce_props.get('pack_attack') or ce_props.get('puxa_pack'):
+                        game.add_log(
+                            f'  [Bluff] {ce_card.name} e um Combat Event '
+                            f'legitimo -> permitido')
+                        # Nao marca como ilegal; processa na resolucao
+                    else:
+                        game.combat.illegal_cards.add(cid)
+                        game.add_log(
+                            f'  [Bluff] {card.name} jogou Combat Event '
+                            f'face-down -> ILEGAL (6.9.1)')
+                        continue
+                else:
+                    game.combat.illegal_cards.add(cid)
+                    game.add_log(
+                        f'  [Bluff] {card.name} jogou Combat Event '
+                        f'face-down -> ILEGAL (6.9.1)')
+                    continue
+            else:
+                game.combat.illegal_cards.add(cid)
+                game.add_log(
+                    f'  [Bluff] {card.name} jogou Combat Event '
+                    f'face-down -> ILEGAL (6.9.1)')
+                continue
 
         # 6.6.6a: Restricted Play — se a carta nao atende a
         # restricao, e considerada ilegal.

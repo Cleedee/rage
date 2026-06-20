@@ -64,13 +64,12 @@
     "Tracker By Moonlight": 50,
     "Son-of-Moonlight": 40
   },
-  "combat_event_priority": {
-    "bum_rush": 95,
-    "attacking_the_wyrm": 90,
-    "pack_defense": 80,
-    "hunting_party": 85,
-    "reinforcements": 75,
-    "rally_to_battle": 65
-  },
-  "notes": "Sempre guardar Bum Rush/Attacking the Wyrm para o play card step. Pack inteiro entra em combate, cada um declara Combat Action. Tag Teaming como Combat Action de pack para dobrar pressao. 69 cartas (26 combat + 43 sept), Renown 84."
+  "combat_event_priorities": [
+    {"priority": 95, "slug": "bum-rush", "desc": "Bum Rush — traz todo o pack para combate"},
+    {"priority": 90, "slug": "hunting-party", "desc": "Hunting Party — allies entram no combate"},
+    {"priority": 85, "slug": "attacking-the-wyrm", "desc": "Attacking the Wyrm — pack ataca HG"},
+    {"priority": 80, "slug": "pack-defense", "desc": "Pack Defense — pack defende junto"},
+    {"priority": 70, "slug": "reinforcements", "desc": "Reinforcements — substituto de combate"}
+  ],
+  "notes": "Sempre guardar Bum Rush/Attacking the Wyrm para o play card step (config-driven via combat_event_priorities). Pack inteiro entra em combate, cada um declara Combat Action. Tag Teaming como Combat Action de pack para dobrar pressao. 69 cartas (26 combat + 43 sept), Renown 84."
 }

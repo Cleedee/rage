@@ -316,6 +316,64 @@ class StrategyEngine:
         scored.sort(key=lambda x: x[0], reverse=True)
         return scored
 
+    # ─── Combat Events (jogados face-down no play_card step) ─────────
+
+    def sorted_combat_events(self, combat_hand_cards: list) -> list[tuple[int, object]]:
+        """Ordena Combat Events na mao de combate por prioridade da config.
+
+        Usado pelo bot no play_card step para jogar Combat Events
+        estrategicos (Bum Rush, Pack Defense, etc.) ANTES de declarar
+        acoes individuais.
+
+        Suporta dois formatos de config:
+        - `combat_event_priorities` (lista de dicts, igual gift_priorities)
+        - `combat_event_priority` (dict slug -> prioridade, formato legado)
+
+        Args:
+            combat_hand_cards: Lista de CardInstance da mao de combate.
+
+        Returns:
+            Lista de (priority, CardInstance) ordenada decrescente.
+            Vazia se nao ha config ou nenhum CE priorizado.
+        """
+        # Tenta formato novo (lista de dicts)
+        priorities_list = self.get('combat_event_priorities', [])
+        # Fallback para formato legado (dict slug -> priority)
+        priorities_dict = self.get('combat_event_priority', {})
+
+        if not priorities_list and not priorities_dict:
+            return []
+
+        priority_map: dict[int, int] = {}
+
+        # Formato novo: lista de dicts
+        for entry in priorities_list:
+            cid = self._resolve_card_ref(entry)
+            if cid:
+                priority_map[cid] = entry.get('priority', 50)
+
+        # Formato legado: dict slug -> priority
+        from rage_web.models.card import Card as CardModel
+        for slug, prio in priorities_dict.items():
+            card = CardModel.query.filter(CardModel.slug == slug).first()
+            if card:
+                # So adiciona se nao foi definido pelo formato novo
+                if card.id not in priority_map:
+                    priority_map[card.id] = prio
+
+        scored = []
+        for card in combat_hand_cards:
+            ct = (card.card_type or '').lower()
+            if 'combat event' not in ct and ct != 'combat_event':
+                continue
+            prio = priority_map.get(card.card_id)
+            if prio is None:
+                continue
+            scored.append((prio, card))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return scored
+
     # ─── Combat Actions ──────────────────────────────────────────────
 
     def preferred_actions(self, character_name: str) -> list[str]:

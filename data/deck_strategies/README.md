@@ -121,7 +121,72 @@ O bot percorre a lista na ordem definida. Tipos não listados são jogados
 por último (ordem original do bot). Isso permite, por exemplo, jogar
 `character` antes de `equipment` (para equipar o personagem recém-chegado).
 
-### 3. `combat_action_preferences` — Preferências de Ação de Combate
+### 3. `event_priorities` — Prioridade de Eventos
+
+Funciona de forma idêntica a `gift_priorities` mas para cartas do tipo Event.
+
+```json
+"event_priorities": [
+  {"priority": 85, "condition": "always", "slug": "fenris", "desc": "Fenris — buff"},
+  {"priority": 80, "condition": "always", "slug": "grandfather-thunder", "desc": "Grandfather Thunder — ataque"}
+]
+```
+
+Mesmo formato, mesmas condições.
+
+### 4. `combat_event_priorities` — Prioridade de Combat Events (Pack Actions)
+
+Controla **quais Combat Events** o bot tenta jogar face-down no `play_card`
+step durante o combate, ANTES de declarar ações individuais.
+
+Isso é essencial para decks de **pack combat** (Bum Rush, Pack Defense,
+Attacking the Wyrm) que precisam trazer múltiplos personagens para o
+combate antes que cada um declare sua Combat Action.
+
+```json
+"combat_event_priorities": [
+  {"priority": 95, "slug": "bum-rush", "desc": "Bum Rush — traz todo o pack para combate"},
+  {"priority": 90, "slug": "hunting-party", "desc": "Hunting Party — allies entram no combate"},
+  {"priority": 85, "slug": "pack-defense", "desc": "Pack Defense — pack defende junto"},
+  {"priority": 75, "slug": "reinforcements", "desc": "Reinforcements — substituto de combate"}
+]
+```
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `slug` | string | Slug da carta no banco (ex: `bum-rush`, `pack-defense`) |
+| `priority` | int | Prioridade (0-100). Mais alto = jogado primeiro |
+| `desc` | string | (opcional) Descrição humana |
+
+**Como funciona no motor:**
+1. Durante o `play_card` step, o bot verifica se a config tem
+   `combat_event_priorities`.
+2. Se sim, varre a `combat_hand` em busca de Combat Events com slug
+   na lista, ordenados por prioridade.
+3. Para o CE de maior prioridade, chama `_jogar_ce_face_down()` que
+   coloca o CE face-down como ação de combate (`ce_<id>`).
+4. No Bluff Step (6.2.4), CEs com propriedades `pack_attack` ou
+   `puxa_pack` (Bum Rush, Pack Defense, Attacking the Wyrm) são
+   reconhecidos como **legítimos** (não marcados como ilegais).
+5. `_process_pack_combat()` expande os combatentes, adicionando
+   todos os personagens vivos do pack do dono.
+6. Novo round: os personagens recém-chegados podem declarar suas
+   próprias Combat Actions.
+
+**Formato legado** (`combat_event_priority` como dict) também é
+suportado para retrocompatibilidade:
+
+```json
+"combat_event_priority": {
+  "bum-rush": 95,
+  "pack-defense": 80
+}
+```
+
+**Dica:** Coloque `bum-rush` com priority 95 para que o bot sempre
+tente trazer o pack inteiro antes de declarar ataques individuais.
+
+### 5. `combat_action_preferences` — Preferências de Ação de Combate
 
 Define **quais Combat Actions** cada personagem prefere usar.
 
@@ -160,7 +225,7 @@ Define **quais Combat Actions** cada personagem prefere usar.
 `aggressive_bite`, `lobotomy`, `dismember`, `whirlwind_defense`,
 `iron_skin`.
 
-### 4. `equipment_assignments` — Designação de Equipamentos
+### 6. `equipment_assignments` — Designação de Equipamentos
 
 Define **quem deve receber** cada equipamento.
 
@@ -193,7 +258,7 @@ Define **quem deve receber** cada equipamento.
 - `target: ""` com priority alta pode ser usado para equipamentos
   que *não* devem ser equipados em personagens (ex: Concertina Wire).
 
-### 5. `caern_preferences` — Preferência de Caern
+### 7. `caern_preferences` — Preferência de Caern
 
 Define qual Caern jogar primeiro.
 
@@ -205,7 +270,7 @@ Define qual Caern jogar primeiro.
 
 O bot tenta jogar o Caern da lista primeiro (comparação `in` no nome).
 
-### 6. `target_priority` — Prioridade de Alvos
+### 8. `target_priority` — Prioridade de Alvos
 
 Controla **quem atacar** no combate.
 
@@ -234,7 +299,7 @@ Controla **quem atacar** no combate.
 - `attack_weakest`: Ataca o jogador com menos personagens
 - `balanced`: Ataca quem tem mais personagens (maior ameaça imediata)
 
-### 7. `umbra_strategy` — Estratégia da Umbra
+### 9. `umbra_strategy` — Estratégia da Umbra
 
 Controla **quem entra na Umbra** e quando.
 
@@ -260,7 +325,7 @@ Controla **quem entra na Umbra** e quando.
 | `enter_with_high_gnosis` | bool | Prefere entrar com quem tem Gnosis alto |
 | `save_umbra_actions` | bool | Preserva ações de Umbra (não gasta desnecessariamente) |
 
-### 8. `redraw_rules` — Regras de Redraw
+### 10. `redraw_rules` — Regras de Redraw
 
 Controla **o que descartar** na fase de redraw.
 
@@ -283,7 +348,7 @@ Controla **o que descartar** na fase de redraw.
 | `always_discard_if_duplicate` | string[] | **Slugs** de cartas que são descartados se há cópia duplicada |
 | `prefer_discard_types` | string[] | Tipos preferenciais para descarte |
 
-### 9. `moot_strategy` — Estratégia de Juntas
+### 11. `moot_strategy` — Estratégia de Juntas
 
 Controla **como votar** nas Juntas (Board Meetings).
 
@@ -303,7 +368,7 @@ Controla **como votar** nas Juntas (Board Meetings).
 | `vote_no_against` | string[] | `"Leader"` = vota não contra o líder; ou nomes de cartas |
 | `strategic_vote` | bool | Vota com base na situação do jogo (não aleatório) |
 
-### 10. `notes` (documentação humana)
+### 12. `notes` (documentação humana)
 
 Comentários sobre a estratégia do deck, não usado pelo motor.
 
@@ -351,6 +416,7 @@ O `PriorityBot` verifica a estratégia nos seguintes métodos:
 | `_agir_moot()` | `moot_strategy` (vote yes/no) |
 | `_try_eliminate_threat()` | `target_priority` (ffa_diplomacy) |
 | `_escolher_gift()` | `gift_priorities` (ordenar por prioridade) |
+| `_decide_combat()` / `play_card` step | `combat_event_priorities` (jogar CE face-down estratégico) |
 
 **Fallback:** Se o `deck_id` do jogador não tem config (`deck<id>_config.json`
 não existe), o bot usa a heurística original — nenhuma modificação no

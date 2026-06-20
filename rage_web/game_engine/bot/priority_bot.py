@@ -1579,6 +1579,28 @@ class PriorityBot:
                                 )
                                 return self._usar_carta_efeito(i, modo_idx, gift_card)
 
+                    # ── Strategic Combat Events (config-driven) ──
+                    # Antes de tentar acoes individuais, verifica se ha
+                    # Combat Events priorizados na config (ex: Bum Rush).
+                    # So para criaturas do proprio jogador (nao para presa).
+                    if not _eh_prey_no_hg(g, cid):
+                        if self.strategy and self.strategy.is_loaded():
+                            from rage_web.game_engine.combat_queue import \
+                                _jogar_ce_face_down
+                            ce_sorted = self.strategy.sorted_combat_events(
+                                self.player.combat_hand)
+                            for _prio, ce_card in ce_sorted:
+                                if ce_card not in self.player.combat_hand:
+                                    continue
+                                result = _jogar_ce_face_down(
+                                    g, cid, str(ce_card.card_id))
+                                if result:
+                                    g.add_log(
+                                        f'[BOT] {self.player.name} jogou '
+                                        f'{ce_card.name} (CE) em '
+                                        f'{card.name}')
+                                    return f'declare_{cid}_ce_{ce_card.card_id}'
+
                     # P4+P8: Tenta usar carta da mao de combate como acao
                     # ANTES de tentar blefe (primeiro carta valida, depois ilegal)
                     carta_acao, carta_combate = self._escolher_carta_combate_como_acao(card)
