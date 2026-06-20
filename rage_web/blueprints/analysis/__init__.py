@@ -311,6 +311,7 @@ def run_analysis():
     _alpha_index = 0
     _alpha_map = {}
     _alpha_phase = False
+    _alpha_cycle_done = False  # True apos todos alfas agirem
 
     from rage_web.game_engine.combat_queue import (
         _tem_character, _eliminar_jogador
@@ -318,7 +319,11 @@ def run_analysis():
 
     while step < max_steps:
         # Gerenciamento de alphas (mesma lógica do match.py)
-        if game.phase == 'combat' and game.combat.alpha_order and not _alpha_order:
+        # So popula _alpha_order na primeira entrada em combate.
+        # Apos todos os alfas agirem, nao repopula mesmo se um novo
+        # combate (ex: ataque de presa) reiniciar a fase de combate.
+        if (game.phase == 'combat' and game.combat.alpha_order
+                and not _alpha_order and not _alpha_cycle_done):
             _alpha_order = list(game.combat.alpha_order)
             _alpha_index = 0
             _alpha_map = {cid: pid for pid, cid in game.combat.alphas.items()}
@@ -337,6 +342,7 @@ def run_analysis():
                 cp = game.current_player
         else:
             _alpha_phase = False
+            _alpha_cycle_done = True  # Todos alfas agiram
             cp = game.current_player
 
         bot = bots.get(cp.id)
@@ -359,6 +365,7 @@ def run_analysis():
                 _alpha_index = 0
                 _alpha_map.clear()
                 _alpha_phase = False
+                _alpha_cycle_done = False
             # Captura snapshot ao mudar de fase
             log_offset = _capture_state(game, states, log_offset)
         else:
