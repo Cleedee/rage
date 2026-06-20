@@ -1273,7 +1273,8 @@ def advance_combat_step(game: GameState) -> bool:
 def start_combat(game: GameState, attackers: list[str],
                  defenders: list[str],
                  attack_type: str = 'creature',
-                 target_card_id: Optional[str] = None) -> bool:
+                 target_card_id: Optional[str] = None,
+                 card_ability: bool = False) -> bool:
     """Inicia um combate entre atacantes e defensores (6.1).
 
     Regra (6.1):
@@ -1284,6 +1285,10 @@ def start_combat(game: GameState, attackers: list[str],
     - Beginning-of-Combat step (6.1.3): Open Play para gifts.
     - Em seguida começam as rodadas de combate (6.2).
 
+    Regra (6.5.1):
+    - Apenas alfas podem declarar ataques, a menos que seja
+      uma carta/abilidade (card_ability=True).
+
     Args:
         game: Estado da partida.
         attackers: Lista de IDs das criaturas atacantes.
@@ -1292,6 +1297,9 @@ def start_combat(game: GameState, attackers: list[str],
                       'battlefield', 'bind').
         target_card_id: ID do Territory/Battlefield/Spirit atacado
                          (usado para attack_type != 'creature').
+        card_ability: True se o combate foi iniciado por uma carta
+                       ou abilidade (pack attack, evento, etc).
+                       False se é uma ação de alfa (padrão).
 
     Returns:
         True se o combate foi iniciado.
@@ -1339,6 +1347,26 @@ def start_combat(game: GameState, attackers: list[str],
                     f'Combate cancelado: {atk} e {dfd} estao em '
                     f'lados diferentes do Gauntlet')
                 return False
+
+    # Regra (6.5.1): apenas alfas podem declarar ataques,
+    # a menos que o combate foi iniciado por carta/abilidade.
+    if not card_ability:
+        for atk in attackers:
+            if atk == 'hg':
+                continue
+            atk_card = _find_card(game, atk)
+            if not atk_card:
+                continue
+            dono = _find_owner(game, atk_card)
+            if dono:
+                if game.combat:
+                    alpha_id = game.combat.alphas.get(dono.id)
+                    if alpha_id and str(atk_card.card_id) != alpha_id:
+                        game.add_log(
+                            f'Combate cancelado: {atk_card.name} nao e o '
+                            f'alpha de {dono.name} (regra 6.5.1)')
+                        return False
+                # Se nao tem combat state ou alpha, permite (fallback)
 
     # ── Sky River Caern: bloqueia ataque a nao-alfa ANTES do Frenar ──
     # Regra: "Non-alpha members of your pack cannot be challenged or
