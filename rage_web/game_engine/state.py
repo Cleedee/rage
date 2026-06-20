@@ -424,9 +424,12 @@ class PlayerState:
     rng: random.Random = field(default_factory=random.Random)
 
     # Passageiros na Umbra (Parting the Velvet Curtain)
-    # Lista de UIDs de cartas transportadas para Umbra que
-    # retornam ao Pack Home ao final da fase Umbra.
-    umbra_passengers: list[int] = field(default_factory=list)
+    # Transportes pendentes (Gift anexada ao usuario, nao usada ainda):
+    # cada dict: {user_uid: int, passenger_uid: int, gift_name: str}
+    umbra_transport_pending: list[dict] = field(default_factory=list)
+    # Transportes ativos (passageiro ja esta na Umbra, vinculado ao usuario):
+    # cada dict: {user_uid: int, passenger_uid: int}
+    umbra_transport_active: list[dict] = field(default_factory=list)
 
     @property
     def caerns_no_hunting_grounds(self) -> list[CardInstance]:
@@ -744,6 +747,26 @@ class PlayerState:
             self.pack_home.remove(card)
             card.zone = Zone.UMBRA
             self.umbra.append(card)
+
+            # ── Parting the Velvet Curtain: transporta passageiro ──
+            for pend in list(self.umbra_transport_pending):
+                if pend['user_uid'] == id(card):
+                    for c in list(self.pack_home):
+                        if id(c) == pend['passenger_uid']:
+                            self.pack_home.remove(c)
+                            c.zone = Zone.UMBRA
+                            self.umbra.append(c)
+                            # Remove Gift das attached_gifts do usuario
+                            for g in list(card.attached_gifts):
+                                if g.modelo_id == 'parting-the-velvet-curtain':
+                                    card.attached_gifts.remove(g)
+                            # Move de pending para active
+                            self.umbra_transport_active.append({
+                                'user_uid': pend['user_uid'],
+                                'passenger_uid': pend['passenger_uid'],
+                            })
+                            self.umbra_transport_pending.remove(pend)
+                            break
             return True
         return False
 
@@ -753,6 +776,19 @@ class PlayerState:
             self.umbra.remove(card)
             card.zone = Zone.PACK_HOME
             self.pack_home.append(card)
+
+            # ── Parting the Velvet Curtain: passageiro retorna ──
+            for ativo in list(self.umbra_transport_active):
+                if ativo['user_uid'] == id(card):
+                    for c in list(self.umbra):
+                        if id(c) == ativo['passenger_uid']:
+                            self.umbra.remove(c)
+                            c.zone = Zone.PACK_HOME
+                            self.pack_home.append(c)
+                            break
+                    self.umbra_transport_active.remove(ativo)
+                    break
+
             return True
         return False
 
@@ -1432,8 +1468,11 @@ class GameState:
                         selecionar_alfa(self, p.id, str(melhor.card_id))
                 calcular_ordem_alfa(self)
 
-            # ── Limpeza ao sair da Umbra ──
-            # Retorna passageiros da Umbra (Parting the Velvet Curtain)
+            # ── Fallback: Limpeza ao sair da Umbra ──
+            # Retorna passageiros esquecidos (Parting the Velvet Curtain).
+            # O retorno normal ocorre via step_back() do usuario.
+            # Este fallback e para casos em que o usuario foi destruido
+            # ou removido enquanto estava na Umbra.
             if old_phase == 'umbra' and nova_fase != 'umbra':
                 self._return_umbra_passengers()
         else:
@@ -2001,23 +2040,33 @@ class GameState:
     def _return_umbra_passengers(self):
         """Retorna os passageiros da Umbra ao Pack Home.
 
-        Chamado ao sair da fase Umbra (transicao para Moot).
-        Os passageiros sao cartas transportadas por efeitos como
-        Parting the Velvet Curtain.
+        Chamado como fallback de cleanup (ex: usuario destruido na Umbra).
+        O retorno normal ocorre via step_back() quando o usuario sai da Umbra.
         """
         for p in self.players:
-            if not p.umbra_passengers:
+            pendentes = p.umbra_transport_pending
+            ativos = p.umbra_transport_active
+            if not pendentes and not ativos:
                 continue
+
+            # Remove transportes pending (Gift nunca foi usada)
+            # Cria lista de passageiros pendentes que nunca foram transportados
+            for pend in list(pendentes):
+                # Se o usuario nao esta mais em jogo, Gift perdida
+                p.umbra_transport_pending.remove(pend)
+
+            # Retorna passageiros ativos que estao na Umbra
             devolvidos = 0
-            for uid in list(p.umbra_passengers):
+            for ativo in list(ativos):
                 for c in list(p.umbra):
-                    if id(c) == uid:
+                    if id(c) == ativo['passenger_uid']:
                         p.umbra.remove(c)
                         c.zone = Zone.PACK_HOME
                         p.pack_home.append(c)
                         devolvidos += 1
                         break
-                p.umbra_passengers.remove(uid)
+                p.umbra_transport_active.remove(ativo)
+
             if devolvidos:
                 self.add_log(
                     f'{p.name}: {devolvidos} passageiro(s) retornaram '

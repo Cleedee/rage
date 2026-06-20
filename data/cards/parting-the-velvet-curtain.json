@@ -4,7 +4,7 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Transportar aliado para a Umbra (Gn4, descartar)",
+      "descricao": "Anexar Gift ao portador (Gn4). Passageiro vai para Umbra quando portador step sideways.",
       "efeitos": [
         {
           "tipo": "umbra_transport",

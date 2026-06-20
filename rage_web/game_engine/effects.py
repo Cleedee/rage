@@ -3770,21 +3770,18 @@ class ResolvedorEfeitos:
                                    origem: CardInstance,
                                    jogador: PlayerState,
                                    alvo) -> bool:
-        """Transporta uma carta aliada para a Umbra (Parting the Velvet Curtain).
+        """Anexa Gift a um Garou e registra transporte pendente (Parting the Velvet Curtain).
 
-        Move o alvo (deve estar no Pack Home) para a Umbra, mesmo que
-        ele nao possa stepping sideways normalmente (ex: Kinfolk,
-        humanos, aliados nao-Garou).
+        A Gift e anexada a um personagem Garou (auto-selecionado: o de
+        maior poder de combate no Pack Home). Quando esse personagem
+        stepping sideways (fase Umbra), o alvo (passageiro) vai para
+        a Umbra junto, e a Gift e descartada.
 
-        O alvo retorna ao Pack Home ao final da fase Umbra
-        (tratado em state.py::_return_umbra_passengers).
+        Se o usuario step back da Umbra, o passageiro retorna junto.
 
         params:
-        - ignorar_restricoes: bool (default True) — ignora Gnosis/Gauntlet
+        - ignorar_restricoes: bool (default True)
         """
-        params = efeito.params or {}
-        ignorar_restricoes = params.get('ignorar_restricoes', True)
-
         if not alvo:
             self.game.add_log(
                 f'{origem.name}: nenhum alvo valido para transporte'
@@ -3798,24 +3795,37 @@ class ResolvedorEfeitos:
             )
             return False
 
-        # Verifica se o alvo ja esta na Umbra
-        if alvo in jogador.umbra:
+        # Encontra o melhor Garou no Pack Home para ser o usuario (portador)
+        usuarios = [
+            c for c in jogador.pack_home
+            if 'Character' in (c.card_type or '')
+            and c.health_current > 0
+        ]
+        if not usuarios:
             self.game.add_log(
-                f'{origem.name}: {alvo.name} ja esta na Umbra'
+                f'{origem.name}: nenhum Garou no Pack Home para usar o Gift'
             )
             return False
 
-        # Move para a Umbra
-        jogador.pack_home.remove(alvo)
-        alvo.zone = Zone.UMBRA
-        jogador.umbra.append(alvo)
+        # Seleciona o mais forte
+        usuario = max(usuarios,
+                      key=lambda c: c.effective_rage * c.effective_health)
 
-        # Registra como passageiro (retorna ao final da fase Umbra)
-        jogador.umbra_passengers.append(id(alvo))
+        # Anexa a Gift ao usuario
+        origem.zone = Zone.OUT_OF_PLAY
+        usuario.attached_gifts.append(origem)
+
+        # Registra transporte pendente
+        jogador.umbra_transport_pending.append({
+            'user_uid': id(usuario),
+            'passenger_uid': id(alvo),
+            'gift_name': origem.name,
+        })
 
         self.game.add_log(
-            f'[🌙 Parting the Velvet Curtain] {alvo.name} '
-            f'foi transportado para a Umbra!'
+            f'[🌙 Parting the Velvet Curtain] {origem.name} anexada '
+            f'a {usuario.name} (portador). {alvo.name} sera '
+            f'transportado quando {usuario.name} entrar na Umbra.'
         )
         return True
 
