@@ -1951,19 +1951,65 @@ def reveal_all(game: GameState) -> bool:
     if game.combat.step not in ('declare', 'play_card', 'declaration'):
         return False
 
-    # Antes de revelar, auto-declara 'block' para presas que ainda
-    # nao receberam declaracao de nenhum jogador.
-    # Regra: qualquer jogador exceto o atacante pode declarar por uma presa.
-    # Se ninguem o fez, a presa bloqueia por padrao.
+    # Antes de revelar, verifica presas que ainda nao declararam.
+    # Regra (6.6.3): o jogador designado joga pela presa.
     for dfd in game.combat.defenders:
-        if dfd != 'hg' and _eh_prey_no_hg(game, dfd):
-            if dfd not in game.combat.declarations:
-                card = _find_card(game, dfd)
-                if card:
-                    declare_action(game, dfd, 'block', acoes_extra=['block'])
-                    game.add_log(
-                        f'  {card.name} (Presa) defende-se automaticamente'
-                    )
+        if dfd == 'hg' or not _eh_prey_no_hg(game, dfd):
+            continue
+        if dfd in game.combat.declarations:
+            continue
+        prey_card = _find_card(game, dfd)
+        if not prey_card:
+            continue
+
+        # Tenta encontrar carta defensiva na mao do designado
+        designado_id = game.combat.prey_player.get(dfd)
+        declarou = False
+        if designado_id:
+            desig = next((p for p in game.players
+                          if p.id == designado_id), None)
+            if desig and desig.combat_hand:
+                for acao_tentada in ('block', 'dodge'):
+                    for cc in desig.combat_hand:
+                        nome_slug = (cc.name or '').lower()\
+                            .replace(' ', '_').replace('-', '_')
+                        if nome_slug == acao_tentada:
+                            props = COMBAT_ACTION_PROPS.get(acao_tentada, {})
+                            req = props.get('rage_requirement', 0)
+                            if prey_card.effective_rage >= req:
+                                declare_action(
+                                    game, dfd, acao_tentada,
+                                    acoes_extra=[acao_tentada],
+                                    carta_combate=cc)
+                                game.combat.played_combat_cards[dfd] = cc
+                                game.add_log(
+                                    f'  {prey_card.name} '
+                                    f'(Presa) defende-se com {cc.name}')
+                                declarou = True
+                                break
+                        elif nome_slug == 'evasion' and acao_tentada == 'dodge':
+                            props = COMBAT_ACTION_PROPS.get('dodge', {})
+                            req = props.get('rage_requirement', 0)
+                            if prey_card.effective_rage >= req:
+                                declare_action(
+                                    game, dfd, 'dodge',
+                                    acoes_extra=['dodge'],
+                                    carta_combate=cc)
+                                game.combat.played_combat_cards[dfd] = cc
+                                game.add_log(
+                                    f'  {prey_card.name} '
+                                    f'(Presa) defende-se com {cc.name}')
+                                declarou = True
+                                break
+                    if declarou:
+                        break
+
+        if not declarou:
+            # Nenhuma carta defensiva encontrada — presa sem acao
+            game.combat.declarations[dfd] = ''
+            game.add_log(
+                f'  {prey_card.name} (Presa) nao tem defesa '
+                f'disponivel — fica sem acao')
 
     combatants = get_combatants(game)
     if not game.combat.all_declared(combatants):

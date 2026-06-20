@@ -1623,10 +1623,57 @@ class PriorityBot:
                             return ce_jogado
 
                     if not result:
+                        # Se for Presa e bot e designado, tenta carta propria
+
+                        if _eh_prey_no_hg(g, cid):
+
+                            desig = g.combat.prey_player.get(cid)
+
+                            if desig and desig == self.player_id:
+
+                                # Tenta encontrar carta de combate na mao
+
+                                # (busca tambem no combat_hand)
+
+                                carta_acao2, carta_combate2 = self._escolher_carta_combate_como_acao(card)
+
+                                if carta_acao2 and carta_combate2:
+
+                                    result2 = declare_action(g, cid, carta_acao2,
+
+                                                              carta_combate=carta_combate2)
+
+                                    if result2:
+
+                                        if not carta_acao2.startswith('dano_'):
+
+                                            if carta_combate2 in self.player.hand:
+
+                                                self.player.hand.remove(carta_combate2)
+
+                                                carta_combate2.zone = Zone.OUT_OF_PLAY
+
+                                        self._usou_carta_combate = True
+
+                                        g.add_log(f'{self.player.name} usou '
+
+                                                  f'{carta_combate2.name} para '
+
+                                                  f'{card.name} (Presa)')
+
+                                        return f'declare_{cid}_{carta_acao2}'
+
+
+                    if not result:
+
                         # Ainda falhou: marca como passou (impede loop)
+
                         g.combat.played_cards[cid] = ''
+
                         self._pass_turn()
+
                         return 'combat_wait'
+
                     return f'declare_{cid}_{action}'
 
             # Todos os combatentes do bot jogaram
