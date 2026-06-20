@@ -23,7 +23,7 @@
     {"priority": 60, "condition": "always", "slug": "scouting-mission", "desc": "Scouting Mission — busca"},
     {"priority": 55, "condition": "always", "slug": "saving-face", "desc": "Saving Face — defesa social"},
     {"priority": 50, "condition": "always", "slug": "leadership-challenge", "desc": "Leadership Challenge — controle de alfa"},
-    {"priority": 45, "condition": "moot_likely", "slug": "town-meeting", "desc": "Town Meeting — junta"},
+    {"priority": 40, "condition": "always", "slug": "town-meeting", "desc": "Town Meeting — junta"},
     {"priority": 35, "condition": "always", "slug": "bear", "desc": "Bear — Ally tanque"},
     {"priority": 30, "condition": "always", "slug": "boar", "desc": "Boar — Ally agressivo"},
     {"priority": 25, "condition": "always", "slug": "stag", "desc": "Stag — Ally espiritual"},

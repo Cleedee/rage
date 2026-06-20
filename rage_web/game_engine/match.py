@@ -571,4 +571,8 @@ Exemplos:
 
 
 if __name__ == '__main__':
-    main()
+    # Cria app context para que o bot possa acessar o banco
+    from rage_web import create_app
+    app = create_app()
+    with app.app_context():
+        main()
