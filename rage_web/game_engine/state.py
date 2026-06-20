@@ -423,6 +423,11 @@ class PlayerState:
     # Gerador aleatorio (para reembaralhar decks)
     rng: random.Random = field(default_factory=random.Random)
 
+    # Passageiros na Umbra (Parting the Velvet Curtain)
+    # Lista de UIDs de cartas transportadas para Umbra que
+    # retornam ao Pack Home ao final da fase Umbra.
+    umbra_passengers: list[int] = field(default_factory=list)
+
     @property
     def caerns_no_hunting_grounds(self) -> list[CardInstance]:
         """Retorna lista de Caerns no Hunting Grounds do jogador."""
@@ -1304,6 +1309,8 @@ class GameState:
         """
         from rage_web.game_engine.rules import PHASES
         idx = PHASES.index(self.phase)
+        # Salva fase anterior para cleanup ao sair da Umbra
+        old_phase = self.phase
         if idx + 1 < len(PHASES):
             nova_fase = PHASES[idx + 1]
             # Expirar efeitos temporarios antes de entrar na nova fase
@@ -1424,6 +1431,11 @@ class GameState:
                         melhor = max(candidatos, key=lambda c: c.renown)
                         selecionar_alfa(self, p.id, str(melhor.card_id))
                 calcular_ordem_alfa(self)
+
+            # ── Limpeza ao sair da Umbra ──
+            # Retorna passageiros da Umbra (Parting the Velvet Curtain)
+            if old_phase == 'umbra' and nova_fase != 'umbra':
+                self._return_umbra_passengers()
         else:
             # Fim do Combat phase: registra eventos de presas e processa
             # triggers registrados (victim_attack, fomori_cop_discard, etc).
@@ -1985,6 +1997,32 @@ class GameState:
                 self.add_log(f'  [🐀 Plague Vermin] {c.name} juntou-se ao enxame!')
 
         self._atualizar_plague_vermin_stats()
+
+    def _return_umbra_passengers(self):
+        """Retorna os passageiros da Umbra ao Pack Home.
+
+        Chamado ao sair da fase Umbra (transicao para Moot).
+        Os passageiros sao cartas transportadas por efeitos como
+        Parting the Velvet Curtain.
+        """
+        for p in self.players:
+            if not p.umbra_passengers:
+                continue
+            devolvidos = 0
+            for uid in list(p.umbra_passengers):
+                for c in list(p.umbra):
+                    if id(c) == uid:
+                        p.umbra.remove(c)
+                        c.zone = Zone.PACK_HOME
+                        p.pack_home.append(c)
+                        devolvidos += 1
+                        break
+                p.umbra_passengers.remove(uid)
+            if devolvidos:
+                self.add_log(
+                    f'{p.name}: {devolvidos} passageiro(s) retornaram '
+                    f'da Umbra ao Pack Home'
+                )
 
     def register_card_passives(self, card: CardInstance, owner: PlayerState):
         """Registra efeitos passivos especiais de cartas sem efeitos

@@ -112,6 +112,7 @@ class EfeitoTipo(str, Enum):
     MOOT_REBAIXAR_FORMA = 'moot_rebaixar_forma'  # Reverte a forma breed (The Stolen Wolf)
     MOOT_CONSTRUIR_CAERN = 'moot_construir_caern'  # Constrói um Caern (Caern Building)
     RECRUTAR_TEMPORARIO = 'recrutar_temporario'  # Recruta inimigos do HG temporariamente por 1 combate (Allies Below)
+    UMBRA_TRANSPORT = 'umbra_transport'  # Transporta aliado nao-Garou para a Umbra (Parting the Velvet Curtain)
 
 
 # -----------------------------------------------------------------------
@@ -320,6 +321,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.REMOVER_RENOME_BAIXO: self._resolver_remover_renome_baixo,
             EfeitoTipo.IMPEDIR_REGENERACAO: self._resolver_impedir_regeneracao,
             EfeitoTipo.RECRUTAR_TEMPORARIO: self._resolver_recrutar_temporario,
+            EfeitoTipo.UMBRA_TRANSPORT: self._resolver_umbra_transport,
             EfeitoTipo.REDIRECIONAR: self._resolver_redirecionar,
         }
         return resolvedores.get(tipo)
@@ -3762,6 +3764,59 @@ class ResolvedorEfeitos:
         if once_per_game:
             self.game.used_effects.append(efeito_id)
 
+        return True
+
+    def _resolver_umbra_transport(self, efeito: Efeito,
+                                   origem: CardInstance,
+                                   jogador: PlayerState,
+                                   alvo) -> bool:
+        """Transporta uma carta aliada para a Umbra (Parting the Velvet Curtain).
+
+        Move o alvo (deve estar no Pack Home) para a Umbra, mesmo que
+        ele nao possa stepping sideways normalmente (ex: Kinfolk,
+        humanos, aliados nao-Garou).
+
+        O alvo retorna ao Pack Home ao final da fase Umbra
+        (tratado em state.py::_return_umbra_passengers).
+
+        params:
+        - ignorar_restricoes: bool (default True) — ignora Gnosis/Gauntlet
+        """
+        params = efeito.params or {}
+        ignorar_restricoes = params.get('ignorar_restricoes', True)
+
+        if not alvo:
+            self.game.add_log(
+                f'{origem.name}: nenhum alvo valido para transporte'
+            )
+            return False
+
+        # Verifica se o alvo esta no Pack Home
+        if alvo not in jogador.pack_home:
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} nao esta no Pack Home'
+            )
+            return False
+
+        # Verifica se o alvo ja esta na Umbra
+        if alvo in jogador.umbra:
+            self.game.add_log(
+                f'{origem.name}: {alvo.name} ja esta na Umbra'
+            )
+            return False
+
+        # Move para a Umbra
+        jogador.pack_home.remove(alvo)
+        alvo.zone = Zone.UMBRA
+        jogador.umbra.append(alvo)
+
+        # Registra como passageiro (retorna ao final da fase Umbra)
+        jogador.umbra_passengers.append(id(alvo))
+
+        self.game.add_log(
+            f'[🌙 Parting the Velvet Curtain] {alvo.name} '
+            f'foi transportado para a Umbra!'
+        )
         return True
 
 

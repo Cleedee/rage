@@ -4,24 +4,20 @@
   "tipo": "Gift",
   "modos": [
     {
-      "descricao": "Usar Gift (Gn4)",
+      "descricao": "Transportar aliado para a Umbra (Gn4, descartar)",
       "efeitos": [
         {
-          "tipo": "modificar_atributo",
+          "tipo": "umbra_transport",
           "condicao_alvo": "criatura_aliada",
           "params": {
-            "atributos": [
-              "rage"
-            ],
-            "valor": 1,
-            "duracao": "ate_fim_combate"
+            "ignorar_restricoes": true
           }
         }
       ]
     }
   ],
   "_metadata": {
-    "fonte": "auto_json",
+    "fonte": "curado",
     "card_id": 1015,
     "texto_original": "The Garou can choose one non-Garou and bring him into the Umbra when stepping sideways. This may include individuals who cannot normally access the Umbra (like Kinfolk). The 'hitchhiker' must leave the Umbra when the Gift user does. This Gift is discarded",
     "keywords": "",
