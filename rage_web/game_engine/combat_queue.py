@@ -1549,6 +1549,37 @@ def start_combat(game: GameState, attackers: list[str],
                     f'  [🧠 Mindspeak] {link["caster_name"]} juntou-se '
                     f'a defesa de {link["packmate_name"]}!')
 
+    # ── Playing for Prey (6.6.3): determina quem joga por cada presa ──
+    for i, dfd in enumerate(game.combat.defenders):
+        if dfd == 'hg':
+            continue
+        dfd_card = _find_card(game, dfd)
+        if not dfd_card:
+            continue
+        ct = (dfd_card.card_type or '').lower()
+        if not any(t in ct for t in ('victim', 'enemy')):
+            continue
+        # Esta presa esta sendo atacada
+        if i < len(game.combat.attackers):
+            atk_id = game.combat.attackers[i]
+            atk_card = _find_card(game, atk_id)
+            if atk_card:
+                game.combat.prey_attackers[atk_card.owner_id] = True
+                # Jogador designado para jogar pela presa:
+                # qualquer um EXCETO o atacante
+                candidatos = []
+                for p in game.players:
+                    if p.id != atk_card.owner_id and not p.eliminado:
+                        candidatos.append(p)
+                if candidatos:
+                    # Escolhe o que tem mais cartas de combate na mao
+                    candidatos.sort(key=lambda p: len(p.hand), reverse=True)
+                    escolhido = candidatos[0]
+                    game.combat.prey_player[dfd] = escolhido.id
+                    game.add_log(
+                        f'  [Presa] {dfd_card.name}: {escolhido.name} '
+                        f'jogara por esta presa')
+
     return True
 
 

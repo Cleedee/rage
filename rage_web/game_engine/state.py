@@ -874,6 +874,13 @@ class CombatState:
     pack_added_defenders: list[str] = field(default_factory=list)
     """IDs dos combatentes adicionados como defensores via pack combat."""
 
+    # Playing for Prey (6.6.3): jogador designado para jogar cartas por presas
+    prey_attackers: dict[str, bool] = field(default_factory=dict)
+    """player_id -> True se este jogador esta atacando a presa neste combate.
+        Usado para determinar quem pode 'play for prey'."""
+    prey_player: dict[str, str] = field(default_factory=dict)
+    """prey_card_id -> player_id do jogador designado para jogar por esta presa."""
+
     # Metadados de compatibilidade com o sistema anterior
     # declarations: mapeia card_id -> action (antigo declare_action)
     declarations: dict[str, Optional[str]] = field(default_factory=dict)

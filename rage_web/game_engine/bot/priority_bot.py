@@ -1523,6 +1523,10 @@ class PriorityBot:
                     if _eh_prey_no_hg(g, cid):
                         if _eh_atacante_da_presa(g, cid, self.player_id):
                             continue  # Atacante nao pode declarar pela Presa
+                        # Verifica se este jogador e o designado (6.6.3)
+                        desig = g.combat.prey_player.get(cid)
+                        if desig and desig != self.player_id:
+                            continue  # Nao e o jogador designado para esta presa
                     else:
                         # Criatura normal: so o dono declara
                         if card.owner_id != self.player_id:
@@ -1554,6 +1558,10 @@ class PriorityBot:
                     # Se for Presa e nao-atacante: tenta jogar Gift para ela
                     # Regra: Prey pode usar Gifts que correspondam ao seu tipo
                     if _eh_prey_no_hg(g, cid) and not _eh_atacante_da_presa(g, cid, self.player_id):
+                        # Verifica se este jogador e o designado (6.6.3)
+                        desig = g.combat.prey_player.get(cid)
+                        if desig and desig != self.player_id:
+                            pass  # Gift nao tem restricao de jogador unico
                         from rage_web.game_engine.rules import pode_usar_gift_para_presa
                         for i, gift_card in enumerate(self.player.hand):
                             ct = (gift_card.card_type or '').lower()
