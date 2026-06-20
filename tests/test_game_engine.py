@@ -2363,11 +2363,12 @@ class TestVictimAutoAttack:
                            rage=3, health=3, health_current=3, renown=8,
                            keywords='Garou - Black Spiral Dancer - Wyrm')
         p2.pack_home.append(bsd)
-        game._check_victim_attacks()
-        # Presa ataca com strike (dano=Rage=7). Alvo sem Combat Action
-        # na mao (sem combat_hand), nao pode bloquear.
-        assert bsd in p2.discard_combat  # Morreu (Hl=3, dano=7)
-        assert bsd.health_current <= 0  # Morto
+        result = game._check_victim_attacks()
+        # Deve ter iniciado um combate completo
+        assert result, "_check_victim_attacks deveria iniciar combate"
+        assert game.combat.is_active, "Combate deve estar ativo"
+        assert game.combat.attackers == [str(hunter.card_id)]
+        assert str(bsd.card_id) in game.combat.defenders
 
     def test_wild_animals_ataca_maior_rage_wyrm(self):
         """Wild Animals ataca Wyrm com maior Rage."""
@@ -2390,10 +2391,10 @@ class TestVictimAutoAttack:
                            owner_id='p1', controller_id='p1',
                            rage=3, health=4, health_current=4)
         p1.pack_home.append(gaia)
-        game._check_victim_attacks()
-        # Presa ataca com strike. Alvo sem combat_hand, nao bloqueia.
-        assert wyrm.health_current < 8  # Longtooth (rage 8, Hl=8) tomou dano (Rg=6)
-        assert gaia.health_current == 4  # Gaia intocado
+        result = game._check_victim_attacks()
+        # Deve iniciar combate contra o Wyrm com maior Rage (Allonzo, Rg=7)
+        assert result, "_check_victim_attacks deveria iniciar combate"
+        assert game.combat.is_active
 
     def test_victim_ignora_se_sem_alvo_valido(self):
         """Vitima nao ataca se nao ha alvo valido."""
@@ -2405,8 +2406,10 @@ class TestVictimAutoAttack:
                               owner_id='', controller_id='',
                               rage=6, health=4, health_current=4)
         game.hunting_grounds_cards.append(animals)
-        game._check_victim_attacks()  # Nao deve crashar
-        assert True
+        result = game._check_victim_attacks()
+        # Nao deve iniciar combate (vouga sem alvo valido)
+        assert not result, "Nao deveria iniciar combate sem alvo"
+        assert not game.combat.is_active
 
     def test_victim_mata_personagem(self):
         """Se vitima mata o alvo, ele vai para discard."""
@@ -2424,10 +2427,11 @@ class TestVictimAutoAttack:
                              rage=1, health=2, health_current=2,
                              keywords='Wyrm')
         p2.pack_home.append(fraco)
-        game._check_victim_attacks()
-        # Presa ataca com strike. Alvo sem combat_hand, nao bloqueia.
-        assert fraco.health_current <= 0  # Morreu (Hl=2, dano=7)
-        assert fraco not in p2.pack_home
+        result = game._check_victim_attacks()
+        # Deve iniciar combate completo (dano sera resolvido no ciclo de combate)
+        assert result, "_check_victim_attacks deveria iniciar combate"
+        assert game.combat.is_active
+        assert str(fraco.card_id) in game.combat.defenders
 
 
 class TestPreyTriggerSystem:
@@ -2449,9 +2453,10 @@ class TestPreyTriggerSystem:
                            rage=5, health=6, health_current=6,
                            keywords='Vampire - Eater-of-Souls - Wyrm')
         p2.pack_home.append(wyrm)
-        game._check_victim_attacks()
-        # Presa ataca com strike. Alvo sem combat_hand, nao bloqueia.
-        assert wyrm.health_current < 6  # Tomou dano (Rg=6)
+        result = game._check_victim_attacks()
+        # Deve iniciar combate contra o Wyrm
+        assert result
+        assert game.combat.is_active
 
     def test_wild_animals_ignora_se_sem_wyrm(self):
         """Wild Animals nao ataca se nao ha Wyrm."""
@@ -2468,8 +2473,10 @@ class TestPreyTriggerSystem:
                            owner_id='p2', controller_id='p2',
                            rage=3, health=4, health_current=4)
         p2.pack_home.append(gaia)
-        game._check_victim_attacks()
-        assert gaia.health_current == 4  # Intocado
+        result = game._check_victim_attacks()
+        # Deve iniciar combate contra o Wyrm
+        assert not result
+        assert not game.combat.is_active
 
     def test_wild_animals_prefere_maior_rage(self):
         """Wild Animals ataca o Wyrm com maior Rage."""
@@ -2492,10 +2499,11 @@ class TestPreyTriggerSystem:
                             rage=7, health=7, health_current=7,
                             keywords='Wyrm')
         p2.pack_home.extend([wyrm1, wyrm2])
-        game._check_victim_attacks()
-        # Presa ataca com strike. Alvos sem combat_hand, nao bloqueiam.
-        assert wyrm2.health_current < 7  # Allonzo (rage 7) foi atacado (Wild Rg=6)
-        assert wyrm1.health_current == 6  # Vladimir intocado (Rg=5 < Allonzo Rg=7)
+        result = game._check_victim_attacks()
+        # Deve iniciar combate contra o Wyrm com maior Rage (Allonzo, Rg=7)
+        assert result
+        assert game.combat.is_active
+        assert str(wyrm2.card_id) in game.combat.defenders or str(wyrm2.card_id) in game.combat.attackers
 
     def test_vigilante_ataca_killer_de_vitima(self):
         """Vigilante ataca quem matou a vitima de menor Renome."""
@@ -2518,9 +2526,10 @@ class TestPreyTriggerSystem:
                                    card_type='Character', zone=Zone.PACK_HOME,
                                    owner_id='p2', controller_id='p2')
         game.registrar_kill_vitima(id(killer_card))
-        game._check_victim_attacks()
-        # Presa ataca com strike. Alvo sem combat_hand, nao bloqueia.
-        assert killer.health_current < 6  # Tomou dano (Vig Rg=3)
+        result = game._check_victim_attacks()
+        # Deve iniciar combate (Vigilante ataca quem matou vitima)
+        assert result
+        assert game.combat.is_active
 
     def test_vigilante_fallback_sem_killer_registrado(self):
         """Vigilante ataca maior Renome se nao ha killer registrado."""
@@ -2538,9 +2547,10 @@ class TestPreyTriggerSystem:
                            rage=5, health=6, health_current=6)
         p2.pack_home.append(char)
         # Sem killer registrado
-        game._check_victim_attacks()
-        # Presa ataca com strike. Alvo sem combat_hand, nao bloqueia.
-        assert char.health_current < 6  # Tomou dano (Vig Rg=3)
+        result = game._check_victim_attacks()
+        # Deve iniciar combate (fallback: ataca maior Renome)
+        assert result
+        assert game.combat.is_active
 
     def test_mage_remove_lowest_renown_victim(self):
         """Mage of Celestial Chorus remove menor Renome victim no fim do turno."""

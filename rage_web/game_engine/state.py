@@ -1367,7 +1367,10 @@ class GameState:
                 calcular_ordem_alfa(self)
         else:
             # Fim do Combat phase: vitimas atacam automaticamente
-            self._check_victim_attacks()
+            # Se uma presa iniciar combate, next_phase() retorna
+            # imediatamente para que o combate seja processado.
+            if self._check_victim_attacks():
+                return  # Combate de presa iniciado — game loop processa
 
             # Verificar vitoria
             from rage_web.game_engine.combat_queue import verificar_vitoria
@@ -1604,25 +1607,30 @@ class GameState:
                             todos.append((c, p))
         return todos
 
-    def _check_victim_attacks(self):
+    def _check_victim_attacks(self) -> bool:
         """Executa ataques automaticos de Presas (Victim/Enemy) no Hunting Grounds.
 
         Chamado ao fim do Combat phase, antes da verificacao de vitoria.
-        Cada presa ataca conforme sua habilidade especial.
+        Cada presa ataca conforme sua habilidade especial, iniciando um
+        combate completo com todos os passos normais (declaration, reveal,
+        resolve). O dono da presa joga Combat Events/Actions por ela;
+        o alvo faz o mesmo.
+
+        Returns:
+            True se um novo combate foi iniciado (next_phase() deve
+            permanecer na fase de combate).
         """
         vitimas = self._coletar_todas_vitimas_hg()
         if not vitimas:
-            return
+            return False
 
         todos_personagens = self._coletar_todos_personagens()
         if not todos_personagens:
-            return
+            return False
 
         for vitima, dono_vitima_id in vitimas:
             alvo = None
             dono_alvo = None
-            dano_base = max(1, vitima.effective_rage)
-            agravado = False
 
             # --- 535 - Renegade Werewolf Hunter: ataca maior Renome BSD/Wyrm ---
             if vitima.card_id == 535:
@@ -1634,7 +1642,6 @@ class GameState:
                 if candidates:
                     candidates.sort(key=lambda x: x[0].renown, reverse=True)
                     alvo, dono_alvo = candidates[0]
-                    agravado = True
 
             # --- 565 - Vigilante: ataca quem matou a vitima de menor Renome ---
             elif vitima.card_id == 565:
@@ -1681,107 +1688,45 @@ class GameState:
 
             # --- Fomori Cop (slug fomori-cop_r5): descarta equipamento nao-fetich ---
             elif vitima.modelo_id == 'fomori-cop_r5':
-                continue  # Auto-ataque removido: Rage e requisito para Combat Actions,
-                         # nao dano direto. Habilidade principal e o descarte
-                         # de equipamento no fim do Combat Phase (abaixo).
+                continue
 
             # --- Outras presas sem auto-ataque ---
             else:
                 continue
 
             if alvo and dono_alvo:
-                # ── A presa ataca com uma Combat Action virtual (strike) ──
-                # A presa nao tem mao de combate, mas usa 'strike' basico
-                # que causa dano = Rage. O defensor pode usar Block/Dodge
-                # da propria mao de combate para se defender.
-                # Isso implementa a regra: para causar dano, e necessario
-                # uma Combat Action (regra 6.2).
-                from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS, anexar_dano
-                from rage_web.game_engine.state import Zone, CardInstance
-
-                # Acoes da presa: strike basico (dano = Rage)
-                acao_atk = 'strike'
-                props_atk = COMBAT_ACTION_PROPS.get(acao_atk, {})
-                dano_atk = vitima.effective_rage if props_atk.get('damage') is None else props_atk['damage']
-
-                # Acoes do defensor: busca Block/Dodge na mao de combate
-                acao_def = None
-                carta_def = None
-                if dono_alvo.combat_hand:
-                    for ca in dono_alvo.combat_hand:
-                        ca_name = (ca.name or '').lower().strip()
-                        # Tenta encontrar Combat Action de defesa
-                        if ca_name in ('block', 'dodge'):
-                            acao_def = ca_name
-                            carta_def = ca
-                            break
-                    if carta_def:
-                        dono_alvo.combat_hand.remove(carta_def)
-                        dono_alvo.discard_combat.append(carta_def)
-
-                # Calcula dano final com base nas Combat Actions
-                dano_final = dano_atk
-                if acao_def == 'dodge':
-                    dano_final = 0
-                    self.add_log(
-                        f'🛡️ {alvo.name} esquivou do ataque de {vitima.name}!'
-                    )
-                elif acao_def == 'block':
-                    props_def = COMBAT_ACTION_PROPS.get('block', {})
-                    block_value = props_def.get('block_value')
-                    if block_value is None:
-                        block_value = alvo.effective_rage  # Block usa Rage do defensor
-                    dano_final = max(0, dano_atk - block_value)
-                    if dano_final == 0:
-                        self.add_log(
-                            f'🛡️ {alvo.name} bloqueou o ataque de {vitima.name}!'
-                        )
-                    else:
-                        self.add_log(
-                            f'🛡️ {alvo.name} bloqueou parcialmente '
-                            f'({block_value} de {dano_atk}, restam {dano_final})'
-                        )
-
-                if dano_final > 0:
-                    # Cria carta de combate virtual para o dano da presa
-                    carta_virtual = CardInstance(
-                        card_id=vitima.card_id,
-                        name=vitima.name,
-                        card_type='Combat Action',
-                        zone=Zone.OUT_OF_PLAY,
-                        owner_id=dono_vitima_id,
-                        controller_id=dono_vitima_id,
-                    )
-                    self.add_log(
-                        f'⚔️ {vitima.name} atingiu {alvo.name} '
-                        f'com {dano_final} de dano{" agravado" if agravado else ""}!'
-                    )
-                    anexar_dano(alvo, vitima, dano_final, dono_alvo.id,
-                                is_aggravated=agravado,
-                                carta_combate=carta_virtual,
-                                game=self)
-                    # Flip para Crinos se threshold atingido
-                    from rage_web.game_engine.combat_queue import _flipar_para_crinos
-                    _flipar_para_crinos(self, alvo)
-
-                    if alvo.health_current <= 0:
-                        from rage_web.game_engine.combat_queue import _remove_creature
-                        _remove_creature(self, alvo)
-                        alvo.zone = Zone.DISCARD_COMBAT
-                        dono_alvo.discard_combat.append(alvo)
-                        self.add_log(
-                            f'💀 {alvo.name} foi morto por {vitima.name}!'
-                        )
+                # ── Inicia combate completo via start_combat() ──
+                # A presa usa habilidade especial (card_ability=True) para
+                # atacar. O dono da presa pode jogar Combat Events/Actions
+                # por ela; o alvo faz o mesmo. Combate passa por todos os
+                # passos: declaration, reveal, resolve.
+                from rage_web.game_engine.combat_queue import start_combat
+                vitima_id = str(vitima.card_id)
+                alvo_id = str(alvo.card_id)
+                self.add_log(
+                    f'⚔️ {vitima.name} atacou {alvo.name} '
+                    f'(iniciando combate presa vs personagem)'
+                )
+                result = start_combat(
+                    self,
+                    attackers=[vitima_id],
+                    defenders=[alvo_id],
+                    card_ability=True,  # Habilidade especial da presa
+                )
+                if result:
+                    return True
                 else:
                     self.add_log(
-                        f'⚠️ {vitima.name} atacou {alvo.name}, '
-                        f'mas {alvo.name} se defendeu!'
+                        f'⚠️ {vitima.name} tentou atacar {alvo.name}, '
+                        f'mas nao foi possivel iniciar combate'
                     )
 
         # ── Fim do Combat Phase: Fomori Cop descarta equipamento nao-fetich de Gaia ──
         for vitima, dono_vitima_id in vitimas:
             if vitima.modelo_id == 'fomori-cop_r5' and vitima.health_current > 0:
                 self._fomori_cop_discard_equipment()
+
+        return False
 
     def registrar_kill_vitima(self, killer_card_uid: int):
         """Registra quem matou a vitima de menor Renome (para Vigilante)."""
