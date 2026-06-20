@@ -1690,15 +1690,93 @@ class GameState:
                 continue
 
             if alvo and dono_alvo:
-                # A presa "ataca", mas nao tem Combat Action para causar dano.
-                # Para causar dano em Rage CCG, e necessario jogar uma Combat Action
-                # que cause dano (Strike, Head Butt, Savage Beatdown etc).
-                # O ataque automatico da presa e apenas uma declaracao sem efeito
-                # mecanico — a menos que alguem jogue "pela presa" (regra 6.6.3).
-                self.add_log(
-                    f'⚠️ {vitima.name} atacou {alvo.name}, '
-                    f'mas nao tem Combat Action para causar dano!'
-                )
+                # ── A presa ataca com uma Combat Action virtual (strike) ──
+                # A presa nao tem mao de combate, mas usa 'strike' basico
+                # que causa dano = Rage. O defensor pode usar Block/Dodge
+                # da propria mao de combate para se defender.
+                # Isso implementa a regra: para causar dano, e necessario
+                # uma Combat Action (regra 6.2).
+                from rage_web.game_engine.combat_queue import COMBAT_ACTION_PROPS, anexar_dano
+                from rage_web.game_engine.state import Zone, CardInstance
+
+                # Acoes da presa: strike basico (dano = Rage)
+                acao_atk = 'strike'
+                props_atk = COMBAT_ACTION_PROPS.get(acao_atk, {})
+                dano_atk = vitima.effective_rage if props_atk.get('damage') is None else props_atk['damage']
+
+                # Acoes do defensor: busca Block/Dodge na mao de combate
+                acao_def = None
+                carta_def = None
+                if dono_alvo.combat_hand:
+                    for ca in dono_alvo.combat_hand:
+                        ca_name = (ca.name or '').lower().strip()
+                        # Tenta encontrar Combat Action de defesa
+                        if ca_name in ('block', 'dodge'):
+                            acao_def = ca_name
+                            carta_def = ca
+                            break
+                    if carta_def:
+                        dono_alvo.combat_hand.remove(carta_def)
+                        dono_alvo.discard_combat.append(carta_def)
+
+                # Calcula dano final com base nas Combat Actions
+                dano_final = dano_atk
+                if acao_def == 'dodge':
+                    dano_final = 0
+                    self.add_log(
+                        f'🛡️ {alvo.name} esquivou do ataque de {vitima.name}!'
+                    )
+                elif acao_def == 'block':
+                    props_def = COMBAT_ACTION_PROPS.get('block', {})
+                    block_value = props_def.get('block_value')
+                    if block_value is None:
+                        block_value = alvo.effective_rage  # Block usa Rage do defensor
+                    dano_final = max(0, dano_atk - block_value)
+                    if dano_final == 0:
+                        self.add_log(
+                            f'🛡️ {alvo.name} bloqueou o ataque de {vitima.name}!'
+                        )
+                    else:
+                        self.add_log(
+                            f'🛡️ {alvo.name} bloqueou parcialmente '
+                            f'({block_value} de {dano_atk}, restam {dano_final})'
+                        )
+
+                if dano_final > 0:
+                    # Cria carta de combate virtual para o dano da presa
+                    carta_virtual = CardInstance(
+                        card_id=vitima.card_id,
+                        name=vitima.name,
+                        card_type='Combat Action',
+                        zone=Zone.OUT_OF_PLAY,
+                        owner_id=dono_vitima_id,
+                        controller_id=dono_vitima_id,
+                    )
+                    self.add_log(
+                        f'⚔️ {vitima.name} atingiu {alvo.name} '
+                        f'com {dano_final} de dano{" agravado" if agravado else ""}!'
+                    )
+                    anexar_dano(alvo, vitima, dano_final, dono_alvo.id,
+                                is_aggravated=agravado,
+                                carta_combate=carta_virtual,
+                                game=self)
+                    # Flip para Crinos se threshold atingido
+                    from rage_web.game_engine.combat_queue import _flipar_para_crinos
+                    _flipar_para_crinos(self, alvo)
+
+                    if alvo.health_current <= 0:
+                        from rage_web.game_engine.combat_queue import _remove_creature
+                        _remove_creature(self, alvo)
+                        alvo.zone = Zone.DISCARD_COMBAT
+                        dono_alvo.discard_combat.append(alvo)
+                        self.add_log(
+                            f'💀 {alvo.name} foi morto por {vitima.name}!'
+                        )
+                else:
+                    self.add_log(
+                        f'⚠️ {vitima.name} atacou {alvo.name}, '
+                        f'mas {alvo.name} se defendeu!'
+                    )
 
         # ── Fim do Combat Phase: Fomori Cop descarta equipamento nao-fetich de Gaia ──
         for vitima, dono_vitima_id in vitimas:
