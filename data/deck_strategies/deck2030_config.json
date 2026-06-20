@@ -1,8 +1,8 @@
 {
   "deck_id": 2030,
-  "name": "Pack Attack — Fianna v2",
+  "name": "Pack Attack — Fianna v4",
   "style": "aggro",
-  "game_plan": "Gloom At Midnight (Renown 10, Rg=4) declara ataque. Bum Rush no play card step traz o pack (7 chars). Cada Fianna joga Head Butt (Rg 2, dano 4) ou Block and Roll. Sky River Caern para recursos, Bivouac em Gloom para regeneracao. Inspiracao + Battle Song no resource phase.",
+  "game_plan": "Gloom At Midnight (Renown 10, Rg=4) ataca como alpha. Bum Rush traz o pack + allies. Water Spirit cura, Shadow Walker ataca com Rg=5, Dreamspeaker Mage step sideways, Kinfolk Folk Singer gera card draw. Sky River Caern para recursos.",
   "gift_priorities": [
     {"priority": 100, "condition": "always", "slug": "master-of-the-pack", "desc": "Master of the Pack — reforcos para o pack"},
     {"priority": 90, "condition": "combat_likely", "slug": "battle-song", "desc": "Battle Song — +dano no combate em pack"},
@@ -11,8 +11,7 @@
     {"priority": 65, "condition": "always", "slug": "whispering-campaign", "desc": "Whispering Campaign — disrupção"},
     {"priority": 55, "condition": "has_injured_character", "slug": "mists-of-vengeance", "desc": "Mists of Vengeance — defesa"},
     {"priority": 50, "condition": "always", "slug": "moon-bridge-escape", "desc": "Moon Bridge Escape — fuga tática"},
-    {"priority": 40, "condition": "always", "slug": "roll-over", "desc": "Roll Over — remoção de equipamento"},
-    {"priority": 30, "condition": "always", "slug": "leap-of-the-kangaroo", "desc": "Leap of the Kangaroo — mobilidade"}
+    {"priority": 40, "condition": "always", "slug": "roll-over", "desc": "Roll Over — remoção de equipamento"}
   ],
   "event_priorities": [
     {"priority": 100, "condition": "always", "slug": "sky-river-caern", "desc": "Sky River Caern — recurso e regeneracao"},
@@ -23,8 +22,7 @@
     {"priority": 60, "condition": "always", "slug": "hidden-supplies", "desc": "Hidden Supplies — recursos"},
     {"priority": 55, "condition": "always", "slug": "saving-face", "desc": "Saving Face — defesa social"},
     {"priority": 50, "condition": "always", "slug": "town-meeting", "desc": "Town Meeting — junta"},
-    {"priority": 40, "condition": "always", "slug": "falcon", "desc": "Falcon — totem escoteiro"},
-    {"priority": 30, "condition": "always", "slug": "boar", "desc": "Boar — totem agressivo"}
+    {"priority": 40, "condition": "always", "slug": "falcon", "desc": "Falcon — totem escoteiro"}
   ],
   "combat_event_priorities": [
     {"priority": 95, "slug": "bum-rush", "desc": "Bum Rush — traz todo o pack para combate"},
@@ -35,6 +33,8 @@
   ],
   "resource_play_order": [
     "character",
+    "ally",
+    "caern",
     "event",
     "equipment",
     "gift",
@@ -42,41 +42,37 @@
   ],
   "combat_action_preferences": {
     "Gloom At Midnight": ["head_butt", "body_slam", "careful_strike", "savage_beatdown", "block_and_roll", "block"],
-    "Morgan the Unworthy": ["head_butt", "body_slam", "careful_strike", "savage_beatdown", "block_and_roll", "dodge"],
     "Laora d'Avennes": ["head_butt", "careful_strike", "savage_beatdown", "block", "block_and_roll", "fancy_footwork"],
     "Duncan MacIvor": ["head_butt", "careful_strike", "savage_beatdown", "block_and_roll", "dodge"],
-    "Bron Mac Fionn": ["block", "block_and_roll", "head_butt", "dodge", "lucky_blow"],
-    "Tracker By Moonlight": ["block", "dodge", "head_butt", "block_and_roll", "fancy_footwork"],
-    "Son-of-Moonlight": ["block", "dodge", "head_butt", "block_and_roll"]
+    "Bron Mac Fionn": ["block", "block_and_roll", "head_butt", "dodge", "lucky_blow"]
   },
   "equipment_assignments": [
-    {"card_name": "William Wallace's Bones", "target": "Bron Mac Fionn", "priority": 90},
-    {"card_name": "Bivouac", "target": "Gloom At Midnight", "priority": 95},
-    {"card_name": "Suit of Mirrors", "target": "Morgan the Unworthy", "priority": 85},
-    {"card_name": "Anubis Stone", "target": "Laora d'Avennes", "priority": 80},
-    {"card_name": "Concertina Wire", "target": "", "priority": 70}
+    {"card_name": "William Wallace's Bones", "target": "Bron Mac Fionn", "priority": 90, "desc": "Bron ganha +2 Rage efetiva"},
+    {"card_name": "Bivouac", "target": "Gloom At Midnight", "priority": 95, "desc": "Regeneracao extra para o alpha"},
+    {"card_name": "Suit of Mirrors", "target": "Laora d'Avennes", "priority": 85, "desc": "Defesa para a lutadora"},
+    {"card_name": "Anubis Stone", "target": "Duncan MacIvor", "priority": 80, "desc": "Draw de cartas"},
+    {"card_name": "Concertina Wire", "target": "", "priority": 70, "desc": "Dano em quem o atacar"}
   ],
   "alpha_priority": {
     "Gloom At Midnight": 100,
-    "Morgan the Unworthy": 70,
     "Duncan MacIvor": 60,
     "Laora d'Avennes": 50
   },
+  "caern_preferences": [
+    {"card_name": "Sky River Caern", "priority": 100}
+  ],
   "target_priority": {
     "prefer_low_health": true,
     "character_kill_order": "lowest_health",
     "avoid_overextend": false
   },
-  "caern_preferences": [
-    {"card_name": "Sky River Caern", "priority": 100}
-  ],
   "redraw_rules": {
-    "never_discard": ["Bum Rush", "Pack Defense", "Bivouac"],
+    "never_discard": ["Bum Rush", "Pack Defense", "Bivouac", "Sky River Caern"],
     "prefer_discard_types": ["Event", "Moot"]
   },
   "notes": {
-    "estrategia": "Pack attack Fianna v3. Sky River Caern para recursos, Bivouac em Gloom para regeneracao. Bum Rush traz o pack. Head Butt (dano 4) como damage dealer principal. William Wallace's Bones em Bron (+2 Rage efetiva). 60 cartas (30 combat + 30 sept).",
-    "fraca_contra": "Decks com muito block/dodge (Ajaba), controle de mao (Gaia Weenie) ou remocao em massa (Kitsune).",
-    "renown_characters": "Gloom 10 + Morgan 3 + Laora 9 + Duncan 8 + Bron 10 + Tracker 7 + Son-of-Moonlight 7 = 54"
+    "estrategia": "Pack attack Fianna v4. 4 chars + 4 allies. Bum Rush traz o pack. Water Spirit cura, Shadow Walker (Rg=5) ataca forte. Kinfolk Folk Singer gera card draw (descarta sept card, compra 2). Sky River Caern para recursos. 58 cartas (28 combat + 30 sept).",
+    "fraca_contra": "Decks com muito block/dodge (Ajaba), controle de mao (Gaia Weenie) ou remocao em massa.",
+    "renown_characters": "Gloom 10 + Laora 9 + Duncan 8 + Bron 10 = 37"
   }
 }

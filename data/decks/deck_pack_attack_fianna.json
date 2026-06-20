@@ -1,16 +1,19 @@
 {
-  "name": "Pack Attack — Fianna v3",
-  "description": "Pack Fianna refinado (v3): 7 personagens, Bum Rush x3 para pack attack, Bivouac para regeneracao, Sky River Caern para recursos. Foco em sobrevivencia + pressao constante. Gloom ataca como alpha, Bum Rush traz o pack, Head Butt como damage dealer principal.",
+  "name": "Pack Attack — Fianna v4",
+  "description": "Pack Fianna com 4 personagens fortes + 4 Allies. Bum Rush x3 como core. Water Spirit para cura, Shadow Walker para ataque, Dreamspeaker Mage para Umbra, Kinfolk Folk Singer para draw. Sky River Caern para recursos. 58 cartas (28 combat + 30 sept).",
   "is_public": true,
   "cards": {
-    "=== CHARACTERS (7) ===": "",
+    "=== CHARACTERS (4) ===": "",
     "Gloom At Midnight": 1,
-    "Morgan the Unworthy": 1,
     "Laora d'Avennes": 1,
     "Duncan MacIvor": 1,
     "Bron Mac Fionn": 1,
-    "Tracker By Moonlight": 1,
-    "Son-of-Moonlight": 1,
+
+    "=== ALLIES (4) ===": "",
+    "Water Spirit": 1,
+    "Shadow Walker": 1,
+    "Dreamspeaker Mage": 1,
+    "Kinfolk Folk Singer": 1,
 
     "=== COMBAT EVENTS (pack enablers, 7) ===": "",
     "Bum Rush": 3,
@@ -19,8 +22,8 @@
     "Hunting Party": 1,
     "Reinforcements": 1,
 
-    "=== COMBAT ACTIONS (23) ===": "",
-    "Block": 4,
+    "=== COMBAT ACTIONS (21) ===": "",
+    "Block": 3,
     "Dodge": 3,
     "Head Butt": 4,
     "Careful Strike": 2,
@@ -29,7 +32,6 @@
     "Body Slam": 2,
     "Lucky Blow": 2,
     "Fancy Footwork": 1,
-    "Evade and Strike": 1,
 
     "=== EQUIPMENT (5) ===": "",
     "William Wallace's Bones": 1,
@@ -48,7 +50,7 @@
     "Moon Bridge Escape": 1,
     "Mists of Vengeance": 1,
 
-    "=== EVENTS (10) ===": "",
+    "=== EVENTS (9) ===": "",
     "Sky River Caern": 1,
     "Scouting Mission": 1,
     "Connections": 1,
@@ -57,7 +59,6 @@
     "Town Meeting": 1,
     "Grandfather Thunder": 1,
     "Fenris": 1,
-    "Falcon": 1,
-    "Boar": 1
+    "Falcon": 1
   }
 }

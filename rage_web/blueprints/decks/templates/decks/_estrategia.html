@@ -79,7 +79,7 @@
           <td><span class="tag is-light">{{ eq.priority }}</span></td>
           <td>{{ eq.card_name }}</td>
           <td>{{ eq.target }}</td>
-          <td class="has-text-grey">{{ eq.desc[:80] }}</td>
+          <td class="has-text-grey">{{ eq.desc[:80] if eq.desc else '' }}</td>
         </tr>
         {% endfor %}
       </tbody>
