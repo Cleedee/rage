@@ -1868,22 +1868,28 @@ class GameState:
         """Atualiza Rage e Health de todos os Plague Vermin em jogo.
 
         Rage = Health = numero de Plague Vermin em jogo (self.plague_vermin_count).
+        Conta copias no Hunting Grounds e no Pack Home (quando recrutado como Ally).
         """
         count = 0
-        # Conta todos os Plague Vermin vivos em qualquer HG
-        for c, _ in self._coletar_todas_vitimas_hg():
-            if c.card_id == 524:
-                count += 1
+        # Conta todos os Plague Vermin vivos em qualquer zona
+        for p in self.players:
+            for c in p.hunting_grounds:
+                if c.card_id == 524 and c.health_current > 0:
+                    count += 1
+            for c in p.pack_home:
+                if c.card_id == 524 and c.health_current > 0:
+                    count += 1
         self.plague_vermin_count = count
 
         # Atualiza buff_rage e buff_health de cada copia
-        for c, _ in self._coletar_todas_vitimas_hg():
-            if c.card_id == 524:
-                # buff = count - base (base e 0, entao buff = count)
-                novo_buff = count - (c.rage if c.rage > 0 else 0)
-                if c.buff_rage != novo_buff:
-                    c.buff_rage = novo_buff
-                    c.buff_health = novo_buff
+        for p in self.players:
+            for c in p.hunting_grounds + p.pack_home:
+                if c.card_id == 524:
+                    # buff = count - base (base e 0, entao buff = count)
+                    novo_buff = count - (c.rage if c.rage > 0 else 0)
+                    if c.buff_rage != novo_buff:
+                        c.buff_rage = novo_buff
+                        c.buff_health = novo_buff
                     if count > 1:
                         self.add_log(
                             f'  [🐀 Plague Vermin] {c.name} agora '
@@ -1893,7 +1899,7 @@ class GameState:
 
     def _buscar_todas_copias_plague_vermin(self, jogador: PlayerState,
                                             origem: CardInstance):
-        """Busca todas as copias de Plague Vermin no deck e joga no HG."""
+        """Busca todas as copias de Plague Vermin no deck e joga na mesma zona que a original."""
         encontradas = []
         for c in list(jogador.deck_sept):
             if c.card_id == 524:
@@ -1903,15 +1909,23 @@ class GameState:
             self.add_log(f'{origem.name}: nenhuma copia extra de Plague Vermin no deck')
             return
 
+        zona_destino = origem.zone
+        modo_ally = (zona_destino == Zone.PACK_HOME)
+
         for c in encontradas:
             if c in jogador.deck_sept:
                 jogador.deck_sept.remove(c)
-            c.zone = Zone.HUNTING_GROUNDS
+            c.zone = zona_destino
             c.health_current = 1  # Sera atualizado por _atualizar_plague_vermin_stats
             c.owner_id = jogador.id
             c.controller_id = jogador.id
-            jogador.hunting_grounds.append(c)
-            self.add_log(f'  [🐀 Plague Vermin] {c.name} juntou-se ao enxame!')
+            if modo_ally:
+                c.card_type = 'Ally - Enemy'
+                jogador.pack_home.append(c)
+                self.add_log(f'  [🐀 Plague Vermin] {c.name} recrutado como Ally!')
+            else:
+                jogador.hunting_grounds.append(c)
+                self.add_log(f'  [🐀 Plague Vermin] {c.name} juntou-se ao enxame!')
 
         self._atualizar_plague_vermin_stats()
 

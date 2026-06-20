@@ -4,7 +4,7 @@
   "tipo": "Enemy",
   "modos": [
     {
-      "descricao": "Busca todas as copias do deck e joga; Rage/Health = numero em jogo",
+      "descricao": "Jogar como Presa no Hunting Grounds",
       "efeitos": [
         {
           "tipo": "buscar_todas_copias",
@@ -13,7 +13,23 @@
           "params": {
             "nome_carta": "Plague Vermin",
             "zona": "hunting_grounds",
-            "atualizar_stats": true
+            "modo_ally": false
+          }
+        }
+      ]
+    },
+    {
+      "descricao": "Recrutar como Aliado (requer Ratkin)",
+      "condicao_uso": "tem_ratkin_character",
+      "efeitos": [
+        {
+          "tipo": "buscar_todas_copias",
+          "condicao_alvo": "jogador",
+          "quantidade": 0,
+          "params": {
+            "nome_carta": "Plague Vermin",
+            "zona": "pack_home",
+            "modo_ally": true
           }
         }
       ]
@@ -28,7 +44,7 @@
     "rage": 0,
     "health": 0,
     "slug": "plague-vermin",
-    "implementado_em": "TBD — precisa de BUSCAR_TODAS_COPIAS + escala de stats",
+    "implementado_em": "effects.py:buscar_todas_copias + state.py:_buscar_todas_copias_plague_vermin",
     "data_implementacao": "2026-06-19"
   }
 }

@@ -3035,6 +3035,7 @@ class ResolvedorEfeitos:
         params = efeito.params or {}
         nome_carta = params.get('nome_carta', origem.name)
         zona_destino = params.get('zona', 'hunting_grounds')
+        modo_ally = params.get('modo_ally', False)
 
         # Busca no deck sept
         encontradas = []
@@ -3050,13 +3051,25 @@ class ResolvedorEfeitos:
         for c in encontradas:
             if c in jogador.deck_sept:
                 jogador.deck_sept.remove(c)
-            c.zone = Zone.HUNTING_GROUNDS
-            c.health_current = 1  # Valor temporario, sera recalculado
-            c.owner_id = jogador.id
-            c.controller_id = jogador.id
-            jogador.hunting_grounds.append(c)
-            self.game.add_log(
-                f'  [🐀 {nome_carta}] {c.name} juntou-se ao enxame!')
+            if modo_ally:
+                # Recrutar como Ally: vai para Pack Home
+                c.zone = Zone.PACK_HOME
+                c.card_type = 'Ally - Enemy'
+                c.health_current = 1
+                c.owner_id = jogador.id
+                c.controller_id = jogador.id
+                jogador.pack_home.append(c)
+                self.game.add_log(
+                    f'  [🐀 {nome_carta}] {c.name} recrutado como Ally!')
+            else:
+                # Jogar como Presa: vai para Hunting Grounds
+                c.zone = Zone.HUNTING_GROUNDS
+                c.health_current = 1
+                c.owner_id = jogador.id
+                c.controller_id = jogador.id
+                jogador.hunting_grounds.append(c)
+                self.game.add_log(
+                    f'  [🐀 {nome_carta}] {c.name} juntou-se ao enxame!')
 
         # Atualiza stats de todos os Plague Vermin em jogo
         self.game._atualizar_plague_vermin_stats()
@@ -3784,6 +3797,8 @@ def _validar_condicao_uso(game: GameState, jogador: 'PlayerState',
             lambda: _condicao_alpha_attack_hg(game, jogador),
         'apos_vencer_junta':
             lambda: _condicao_apos_vencer_junta(game, jogador),
+        'tem_ratkin_character':
+            lambda: _condicao_tem_ratkin_character(game, jogador),
     }
     validador = validadores.get(condicao)
     if validador:
@@ -3876,6 +3891,21 @@ def _condicao_apos_vencer_junta(game: GameState,
     if game.moot_atual.dono_id != jogador.id:
         return False
     return True
+
+
+def _condicao_tem_ratkin_character(game: GameState,
+                                   jogador: 'PlayerState') -> bool:
+    """Verifica se o jogador tem um personagem Ratkin no pack.
+
+    Usado por Plague Vermin: Ratkin Characters may recruit Plague Vermin.
+    """
+    for c in jogador.pack_home:
+        if c.health_current <= 0:
+            continue
+        keywords = (c.keywords or '').lower()
+        if 'ratkin' in keywords and 'character' in (c.card_type or '').lower():
+            return True
+    return False
 
 
 def _validar_gauntlet_para_carta(game: GameState, jogador: 'PlayerState',

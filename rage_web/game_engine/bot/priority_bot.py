@@ -3315,8 +3315,27 @@ class PriorityBot:
                 return
             zona = zona_da_carta(card.card_type or '')
             if zona == 'hunting_grounds':
+                # ── Plague Vermin: Ratkin pode recrutar como Ally (Pack Home) ──
+                if card.card_id == 524:
+                    # Verifica se tem Ratkin character para recrutar como Ally
+                    tem_ratkin = any(
+                        'ratkin' in (c.keywords or '').lower()
+                        and 'Character' in (c.card_type or '')
+                        and c.health_current > 0
+                        for c in self.player.pack_home
+                    )
+                    if tem_ratkin:
+                        card.zone = Zone.PACK_HOME
+                        card.health_current = 1
+                        card.card_type = 'Ally - Enemy'
+                        self.player.pack_home.append(card)
+                        self.game.add_log(
+                            f'[BOT] {self.player.name} recrutou {card.name}'
+                            f' como Ally (Ratkin)')
+                        self.game.register_card_passives(card, self.player)
+                        return
                 card.zone = Zone.HUNTING_GROUNDS
-                card.health_current = card.health
+                card.health_current = card.health if card.health > 0 else 1
                 self.player.hunting_grounds.append(card)
                 self.game.add_log(
                     f'[BOT] {self.player.name} jogou {card.name} '
