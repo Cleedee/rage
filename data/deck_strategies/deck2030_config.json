@@ -1,75 +1,82 @@
 {
   "deck_id": 2030,
-  "name": "Pack Attack — Fianna",
+  "name": "Pack Attack — Fianna v2",
   "style": "aggro",
-  "game_plan": "Declarar ataque com Gloom-at-Midnight (Renown 10), usar Bum Rush no play card step para trazer todo o pack. Cada Fianna no combate joga sua Combat Action. Objetivo: sobrecarregar o oponente com volume de ataques.",
+  "game_plan": "Gloom At Midnight (Renown 10, Rg=4) declara ataque. Bum Rush no play card step traz o pack (7 chars). Cada Fianna joga Head Butt (Rg 2, dano 4) ou Block and Roll. Sky River Caern para recursos, Bivouac em Gloom para regeneracao. Inspiracao + Battle Song no resource phase.",
   "gift_priorities": [
-    {"priority": 90, "condition": "always", "slug": "master-of-the-pack", "desc": "Master of the Pack — reforcos para o pack"},
-    {"priority": 85, "condition": "combat_likely", "slug": "inspiration", "desc": "Inspiration — compra cartas"},
-    {"priority": 80, "condition": "combat_likely", "slug": "mindspeak", "desc": "Mindspeak — vincula packmate"},
-    {"priority": 70, "condition": "combat_likely", "slug": "battle-song", "desc": "Battle Song — +dano no combate"},
-    {"priority": 60, "condition": "always", "slug": "whispering-campaign", "desc": "Whispering Campaign — disrupcao"},
-    {"priority": 50, "condition": "always", "slug": "call-of-the-wyrm", "desc": "Call of the Wyrm — busca Wyrm"},
-    {"priority": 45, "condition": "always", "slug": "moon-bridge-escape", "desc": "Moon Bridge Escape — fuga"},
-    {"priority": 40, "condition": "always", "slug": "mists-of-vengeance", "desc": "Mists of Vengeance — defesa"},
-    {"priority": 30, "condition": "always", "slug": "leap-of-the-kangaroo", "desc": "Leap of the Kangaroo — mobilidade"},
-    {"priority": 20, "condition": "always", "slug": "roll-over", "desc": "Roll Over — remocao de equipamento"}
+    {"priority": 100, "condition": "always", "slug": "master-of-the-pack", "desc": "Master of the Pack — reforcos para o pack"},
+    {"priority": 90, "condition": "combat_likely", "slug": "battle-song", "desc": "Battle Song — +dano no combate em pack"},
+    {"priority": 85, "condition": "combat_likely", "slug": "inspiration", "desc": "Inspiration — compra + buff Rage/Gnosis"},
+    {"priority": 80, "condition": "combat_likely", "slug": "mindspeak", "desc": "Mindspeak — vincula packmate para coordenação"},
+    {"priority": 65, "condition": "always", "slug": "whispering-campaign", "desc": "Whispering Campaign — disrupção"},
+    {"priority": 55, "condition": "has_injured_character", "slug": "mists-of-vengeance", "desc": "Mists of Vengeance — defesa"},
+    {"priority": 50, "condition": "always", "slug": "moon-bridge-escape", "desc": "Moon Bridge Escape — fuga tática"},
+    {"priority": 40, "condition": "always", "slug": "roll-over", "desc": "Roll Over — remoção de equipamento"},
+    {"priority": 30, "condition": "always", "slug": "leap-of-the-kangaroo", "desc": "Leap of the Kangaroo — mobilidade"}
   ],
   "event_priorities": [
+    {"priority": 100, "condition": "always", "slug": "sky-river-caern", "desc": "Sky River Caern — recurso e regeneracao"},
+    {"priority": 90, "condition": "always", "slug": "grandfather-thunder", "desc": "Grandfather Thunder — ataque direto"},
     {"priority": 85, "condition": "always", "slug": "fenris", "desc": "Fenris — buff de combate"},
-    {"priority": 80, "condition": "always", "slug": "grandfather-thunder", "desc": "Grandfather Thunder — ataque direto"},
-    {"priority": 75, "condition": "always", "slug": "connections", "desc": "Connections — busca cartas"},
-    {"priority": 65, "condition": "always", "slug": "hidden-supplies", "desc": "Hidden Supplies — recursos"},
-    {"priority": 60, "condition": "always", "slug": "scouting-mission", "desc": "Scouting Mission — busca"},
+    {"priority": 75, "condition": "always", "slug": "connections", "desc": "Connections — busca cartas no sept deck"},
+    {"priority": 65, "condition": "always", "slug": "scouting-mission", "desc": "Scouting Mission — busca no combat deck"},
+    {"priority": 60, "condition": "always", "slug": "hidden-supplies", "desc": "Hidden Supplies — recursos"},
     {"priority": 55, "condition": "always", "slug": "saving-face", "desc": "Saving Face — defesa social"},
-    {"priority": 50, "condition": "always", "slug": "leadership-challenge", "desc": "Leadership Challenge — controle de alfa"},
-    {"priority": 40, "condition": "always", "slug": "town-meeting", "desc": "Town Meeting — junta"},
-    {"priority": 35, "condition": "always", "slug": "bear", "desc": "Bear — Ally tanque"},
-    {"priority": 30, "condition": "always", "slug": "boar", "desc": "Boar — Ally agressivo"},
-    {"priority": 25, "condition": "always", "slug": "stag", "desc": "Stag — Ally espiritual"},
-    {"priority": 20, "condition": "always", "slug": "chimera", "desc": "Chimera — Ally versatil"},
-    {"priority": 15, "condition": "always", "slug": "falcon", "desc": "Falcon — Ally escoteiro"},
-    {"priority": 10, "condition": "always", "slug": "raven", "desc": "Raven — Ally informante"},
-    {"priority": 5, "condition": "always", "slug": "owl", "desc": "Owl — Ally sabio"}
+    {"priority": 50, "condition": "always", "slug": "town-meeting", "desc": "Town Meeting — junta"},
+    {"priority": 40, "condition": "always", "slug": "falcon", "desc": "Falcon — totem escoteiro"},
+    {"priority": 30, "condition": "always", "slug": "boar", "desc": "Boar — totem agressivo"}
+  ],
+  "combat_event_priorities": [
+    {"priority": 95, "slug": "bum-rush", "desc": "Bum Rush — traz todo o pack para combate"},
+    {"priority": 90, "slug": "hunting-party", "desc": "Hunting Party — allies entram no combate"},
+    {"priority": 85, "slug": "attacking-the-wyrm", "desc": "Attacking the Wyrm — pack ataca HG inimigo"},
+    {"priority": 80, "slug": "pack-defense", "desc": "Pack Defense — pack defende em bloco"},
+    {"priority": 70, "slug": "reinforcements", "desc": "Reinforcements — substituto de combate"}
   ],
   "resource_play_order": [
     "character",
     "event",
     "equipment",
     "gift",
-    "action",
-    "victim",
-    "enemy"
+    "action"
   ],
   "combat_action_preferences": {
-    "Gloom At Midnight": ["fast_strike", "flying_tiger", "head_butt", "savage_beatdown", "block_and_roll"],
-    "Laora d'Avennes": ["careful_strike", "body_slam", "evade_and_strike", "tag_teaming"],
-    "Bron Mac Fionn": ["planned_strike", "block_and_roll", "block", "tag_teaming"],
-    "Duncan MacIvor": ["fast_strike", "head_butt", "block", "block_and_roll"],
-    "Tracker By Moonlight": ["fancy_footwork", "dodge", "block", "evade_and_strike"],
-    "Son-of-Moonlight": ["fast_strike", "head_butt", "planned_strike"],
-    "Silvertongue": ["fancy_footwork", "tag_teaming", "block", "dodge"],
-    "Runs-without-Pack": ["block", "dodge", "block_and_roll"],
-    "Chaser-After": ["block", "dodge", "fancy_footwork"],
-    "Goll Mac Mourna": ["evade_and_strike", "block_and_roll", "dodge"],
-    "No'iri'n Ni' Dhonaill": ["dodge", "block", "fancy_footwork"],
-    "Corcoran Mac Andrews": ["dodge", "block", "evade_and_strike"],
-    "Heart-of-Impala": ["block", "dodge", "block_and_roll"]
+    "Gloom At Midnight": ["head_butt", "body_slam", "careful_strike", "savage_beatdown", "block_and_roll", "block"],
+    "Morgan the Unworthy": ["head_butt", "body_slam", "careful_strike", "savage_beatdown", "block_and_roll", "dodge"],
+    "Laora d'Avennes": ["head_butt", "careful_strike", "savage_beatdown", "block", "block_and_roll", "fancy_footwork"],
+    "Duncan MacIvor": ["head_butt", "careful_strike", "savage_beatdown", "block_and_roll", "dodge"],
+    "Bron Mac Fionn": ["block", "block_and_roll", "head_butt", "dodge", "lucky_blow"],
+    "Tracker By Moonlight": ["block", "dodge", "head_butt", "block_and_roll", "fancy_footwork"],
+    "Son-of-Moonlight": ["block", "dodge", "head_butt", "block_and_roll"]
   },
-  "alpha_priority": {
-    "Gloom At Midnight": 90,
-    "Laora d'Avennes": 80,
-    "Bron Mac Fionn": 70,
-    "Duncan MacIvor": 60,
-    "Tracker By Moonlight": 50,
-    "Son-of-Moonlight": 40
-  },
-  "combat_event_priorities": [
-    {"priority": 95, "slug": "bum-rush", "desc": "Bum Rush — traz todo o pack para combate"},
-    {"priority": 90, "slug": "hunting-party", "desc": "Hunting Party — allies entram no combate"},
-    {"priority": 85, "slug": "attacking-the-wyrm", "desc": "Attacking the Wyrm — pack ataca HG"},
-    {"priority": 80, "slug": "pack-defense", "desc": "Pack Defense — pack defende junto"},
-    {"priority": 70, "slug": "reinforcements", "desc": "Reinforcements — substituto de combate"}
+  "equipment_assignments": [
+    {"card_name": "William Wallace's Bones", "target": "Bron Mac Fionn", "priority": 90},
+    {"card_name": "Bivouac", "target": "Gloom At Midnight", "priority": 95},
+    {"card_name": "Suit of Mirrors", "target": "Morgan the Unworthy", "priority": 85},
+    {"card_name": "Anubis Stone", "target": "Laora d'Avennes", "priority": 80},
+    {"card_name": "Concertina Wire", "target": "", "priority": 70}
   ],
-  "notes": "Sempre guardar Bum Rush/Attacking the Wyrm para o play card step (config-driven via combat_event_priorities). Pack inteiro entra em combate, cada um declara Combat Action. Tag Teaming como Combat Action de pack para dobrar pressao. 69 cartas (26 combat + 43 sept), Renown 84."
+  "alpha_priority": {
+    "Gloom At Midnight": 100,
+    "Morgan the Unworthy": 70,
+    "Duncan MacIvor": 60,
+    "Laora d'Avennes": 50
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "avoid_overextend": false
+  },
+  "caern_preferences": [
+    {"card_name": "Sky River Caern", "priority": 100}
+  ],
+  "redraw_rules": {
+    "never_discard": ["Bum Rush", "Pack Defense", "Bivouac"],
+    "prefer_discard_types": ["Event", "Moot"]
+  },
+  "notes": {
+    "estrategia": "Pack attack Fianna v3. Sky River Caern para recursos, Bivouac em Gloom para regeneracao. Bum Rush traz o pack. Head Butt (dano 4) como damage dealer principal. William Wallace's Bones em Bron (+2 Rage efetiva). 60 cartas (30 combat + 30 sept).",
+    "fraca_contra": "Decks com muito block/dodge (Ajaba), controle de mao (Gaia Weenie) ou remocao em massa (Kitsune).",
+    "renown_characters": "Gloom 10 + Morgan 3 + Laora 9 + Duncan 8 + Bron 10 + Tracker 7 + Son-of-Moonlight 7 = 54"
+  }
 }
