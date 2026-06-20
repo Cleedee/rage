@@ -7,7 +7,7 @@
   {% if style %}
   <div class="tags" style="margin-bottom: 1rem;">
     <span class="tag is-info is-light">{{ style }}</span>
-    <span class="tag is-light">{{ estrategia.get('notes', {}).get('combo_principal', '')[:80] }}</span>
+    <span class="tag is-info is-light">{{ estrategia.get('notes', {}).get('combo_principal', '')[:80] }}</span>
   </div>
   {% endif %}
 
@@ -26,9 +26,9 @@
     <tbody>
       {% for g in estrategia.gift_priorities[:15] %}
       <tr>
-        <td><span class="tag {% if g.priority >= 90 %}is-danger{% elif g.priority >= 70 %}is-warning{% else %}is-light{% endif %}">{{ g.priority }}</span></td>
+        <td><span class="tag {% if g.priority >= 90 %}is-danger{% elif g.priority >= 70 %}is-warning{% else %}is-info{% endif %}">{{ g.priority }}</span></td>
         <td><code>{{ g.slug }}</code></td>
-        <td><span class="tag is-light is-small">{{ g.condition }}</span></td>
+        <td><span class="tag is-info is-light is-small">{{ g.condition }}</span></td>
         <td class="has-text-grey">{{ g.desc[:100] }}</td>
       </tr>
       {% endfor %}
@@ -76,7 +76,7 @@
       <tbody>
         {% for eq in estrategia.equipment_assignments %}
         <tr>
-          <td><span class="tag is-light">{{ eq.priority }}</span></td>
+          <td><span class="tag is-info is-light">{{ eq.priority }}</span></td>
           <td>{{ eq.card_name }}</td>
           <td>{{ eq.target }}</td>
           <td class="has-text-grey">{{ eq.desc[:80] if eq.desc else '' }}</td>
@@ -96,7 +96,7 @@
     <div class="content" style="font-size:0.85rem;">
       <p><strong>Entram na Umbra:</strong>
         {% for c in estrategia.umbra_strategy.get('enter_characters', []) %}
-        <span class="tag is-light">{{ c }}</span>
+        <span class="tag is-info is-light">{{ c }}</span>
         {% endfor %}
       </p>
       {% if estrategia.umbra_strategy.get('save_for_combat') %}
@@ -133,7 +133,7 @@
       {% if estrategia.redraw_rules.get('prefer_discard_types') %}
       <p><strong>Preferir descartar:</strong>
         {% for t in estrategia.redraw_rules.prefer_discard_types %}
-        <span class="tag is-light">{{ t }}</span>
+        <span class="tag is-info is-light">{{ t }}</span>
         {% endfor %}
       </p>
       {% endif %}
@@ -151,7 +151,7 @@
       {% if estrategia.moot_strategy.get('call_if_available') %}
       <p><strong>Convocar se disponível:</strong>
         {% for t in estrategia.moot_strategy.call_if_available %}
-        <span class="tag is-light">{{ t }}</span>
+        <span class="tag is-info is-light">{{ t }}</span>
         {% endfor %}
       </p>
       {% endif %}
