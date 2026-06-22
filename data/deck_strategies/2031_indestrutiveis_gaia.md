@@ -3,23 +3,23 @@
 **Pack:** Gaia — Tanques + Caerns  
 **Renome:** 20/20 (Modi Rn:9 + Cernonous Rn:6 + Hogling Rn:5)  
 **Lealdade:** Gaia (2 Gaia)  
-**Cartas:** 35 (13 combate + 9 gifts + 7 equipamentos + 3 Caerns + 2 personagens + 1 inimigo)
+**Cartas:** 52 (19 combate + 13 gifts + 9 equipamentos + 6 Caerns + 2 personagens + 2 events + 1 inimigo)
 
 ---
 
 ## 📜 Conceito
 
-> **Não ataque. Deixe que venham até você.**
+> **Tanques que contra-atacam.**
 
-Este deck **NÃO** joga combate ofensivo. A estratégia é **defesa absoluta**:
+Este deck é **defensivo-agressivo**: prioriza defesa, mas usa o **ThreatAnalyzer** para detectar ameaças reais (Flak Jacket, Luna's Armor, etc.) e contra-atacar quando a severidade é alta (≥0.50).
 
 1. Coloque **Sky River Caern** → não-alfa imune a challenge/sneak attack
 2. Equipe **Modi Votishal** (Hl:10 → 12 com Luna's Armor) como tanque
 3. Coloque **Caern of Rytthiku** → mate **inimigos** no Hunting Grounds por VP
 4. **Defenda-se**: Block and Strike, Evasion, Flak Jacket, Vampire Blood
-5. O oponente ataca, se desgasta, e **morre nas nossas defesas**
+5. **Contra-ataque**: ThreatAnalyzer detecta equipamentos/gifts perigosos e Modi elimina o portador
 
-**Não inicie combates alfa. Não ataque personagens do oponente.** Eles que venham.
+**Estratégia:** Defesa primeiro, HG targets segundo, contra-ataque a ameaças sérias por último.
 
 ---
 
