@@ -123,6 +123,76 @@ THREAT_CATALOG: dict[str, tuple[float, str, str, str]] = {
                                'Fomori Cop: descarta carta do deck de combate',
                                'kill_hg'),
 
+    # ── Territories ──
+    'ancestral-burial-mounds': (0.35, 'territory',
+                                'Burial Mounds: fonte de Rage para Wendigo',
+                                'attack_owner'),
+    'backwoods-kinfolk-hideaway': (0.30, 'territory',
+                                   'Hideaway: Kinfolk Allies +1 Health e regeneram',
+                                   'attack_owner'),
+    'toxic-waste-dump':       (0.50, 'territory',
+                                'Toxic Waste: dano a personagens Gaia no inicio de cada turno',
+                                'destroy_territory'),
+    'shadow-lord-territory':  (0.40, 'territory',
+                                'Shadow Lord Territory: +1 Rage para Shadow Lords',
+                                'attack_owner'),
+    'silver-fang-territory':  (0.35, 'territory',
+                                'Silver Fang Territory: +1 Renown moot para Silver Fangs',
+                                'attack_owner'),
+    'glass-walker-territory': (0.30, 'territory',
+                                'Glass Walker Territory: bonus tecnologia',
+                                'attack_owner'),
+    'stargazer-territory':    (0.35, 'territory',
+                                'Stargazer Territory: bonus Gnosis',
+                                'attack_owner'),
+    'black-fury-territory':   (0.35, 'territory',
+                                'Black Fury Territory: bonus para Black Furies',
+                                'attack_owner'),
+    'children-of-gaia-territory': (0.30, 'territory',
+                                   'Children of Gaia Territory: bonus cura',
+                                   'attack_owner'),
+    'silent-strider-territory': (0.40, 'territory',
+                                 'Silent Strider Territory: bonus Umbra',
+                                 'attack_owner'),
+    'red-talon-territory':    (0.35, 'territory',
+                                'Red Talon Territory: bonus Lupus',
+                                'attack_owner'),
+    'wendigo-territory':      (0.40, 'territory',
+                                'Wendigo Territory: bonus Rage para Wendigo',
+                                'attack_owner'),
+    'uktena-territory':       (0.35, 'territory',
+                                'Uktena Territory: bonus magia',
+                                'attack_owner'),
+    'fianna-territory':       (0.30, 'territory',
+                                'Fianna Territory: bonus gifts',
+                                'attack_owner'),
+    'get-of-fenris-territory': (0.35, 'territory',
+                                 'Get of Fenris Territory: bonus combate',
+                                 'attack_owner'),
+    'bone-gnawer-territory':  (0.25, 'territory',
+                                'Bone Gnawer Territory: bonus sobrevivencia',
+                                'attack_owner'),
+
+    # ── Battlefields ──
+    'urban-clash':            (0.45, 'battlefield',
+                                'Urban Clash: +2 combat cards para atacante/defensor',
+                                'contest_battlefield'),
+    'village-annexation':     (0.40, 'battlefield',
+                                'Village Annexation: +2 combat cards',
+                                'contest_battlefield'),
+    'warehouse-brawl':        (0.35, 'battlefield',
+                                'Warehouse Brawl: +1 combat card, sem armas',
+                                'contest_battlefield'),
+    'war-of-attrition':       (0.55, 'battlefield',
+                                'War of Attrition: +4 combat cards, Ren20',
+                                'contest_battlefield'),
+    'battle-of-screaming-mud': (0.60, 'battlefield',
+                                 'Battle of Screaming Mud: Rn:10, +4 cards, 1/2 Rage',
+                                 'contest_battlefield'),
+    'caern-siege':            (0.50, 'battlefield',
+                                'Caern Siege: batalha por Caern',
+                                'contest_battlefield'),
+
     # ── Combat Event ──
     'iron-will':              (0.50, 'event',
                                'Iron Will: protege contra gifts inimigos',
@@ -299,8 +369,9 @@ class ThreatAnalyzer:
         return ameacas
 
     def _scan_enemies_hg(self) -> list[Threat]:
-        """Escaneia inimigos no HG do oponente."""
+        """Escaneia inimigos/presas no HG (do oponente e global)."""
         ameacas = []
+        # HG de cada oponente
         for p in self._opponents:
             for c in p.hunting_grounds:
                 ct = (c.card_type or '').lower()
@@ -315,7 +386,103 @@ class ThreatAnalyzer:
                         reason=reason, response=resp,
                         response_detail=f'{c.name} no HG do oponente',
                     ))
+        # HG global (cartas sem dono ou de todos)
+        for c in self.game.hunting_grounds_cards:
+            ct = (c.card_type or '').lower()
+            if 'enemy' not in ct and 'victim' not in ct:
+                continue
+            slug = self._find_card_slug(c)
+            if slug in THREAT_CATALOG:
+                base_sev, ttype, reason, resp = THREAT_CATALOG[slug]
+                dono_nome = ''
+                if c.owner_id:
+                    d = self._find_player(c.owner_id)
+                    if d:
+                        dono_nome = f' (dono: {d.name})'
+                ameacas.append(Threat(
+                    card=c, card_name=c.name, card_slug=slug,
+                    threat_type=ttype, severity=base_sev,
+                    reason=reason, response=resp,
+                    response_detail=f'{c.name} no HG global{dono_nome}',
+                ))
         return ameacas
+
+    def _scan_territories(self, owner: 'PlayerState') -> list[Threat]:
+        """Escaneia Territories do oponente.
+
+        Territories sao permanentes que concedem bonus ao dono
+        ou penalidades ao oponente. Ex: Shadow Lord Territory
+        da +1 Rage para Shadow Lords.
+        """
+        ameacas = []
+        for c in owner.pack_home:
+            ct = (c.card_type or '').lower()
+            if 'territory' not in ct:
+                continue
+            slug = self._find_card_slug(c)
+            if slug in THREAT_CATALOG:
+                base_sev, ttype, reason, resp = THREAT_CATALOG[slug]
+                ameacas.append(Threat(
+                    card=c, card_name=c.name, card_slug=slug,
+                    threat_type=ttype, severity=base_sev,
+                    reason=reason, response=resp,
+                    response_detail=f'Territory {c.name} do oponente',
+                ))
+        return ameacas
+
+    def _scan_battlefields(self) -> list[Threat]:
+        """Escaneia Battlefields no HG.
+
+        Battlefields sao cartas no HG que geram VP e concedem
+        bonus de combate para atacantes/defensores.
+        """
+        ameacas = []
+        fonte_cartas = list(self.game.hunting_grounds_cards)
+        for p in self.game.players:
+            fonte_cartas.extend(p.hunting_grounds)
+        for c in fonte_cartas:
+            ct = (c.card_type or '').lower()
+            if 'battlefield' not in ct:
+                continue
+            slug = self._find_card_slug(c)
+            if slug in THREAT_CATALOG:
+                base_sev, ttype, reason, resp = THREAT_CATALOG[slug]
+                ameacas.append(Threat(
+                    card=c, card_name=c.name, card_slug=slug,
+                    threat_type=ttype, severity=base_sev,
+                    reason=reason, response=resp,
+                    response_detail=f'Battlefield {c.name} no HG',
+                ))
+        return ameacas
+
+    def _scan_opponent_actives(self, owner: 'PlayerState') -> list[Threat]:
+        """Escaneia Action/Event cards ativos do oponente.
+
+        Alguns Events e Actions sao jogados e permanecem em jogo
+        (Pack Totems como Wendigo/Falcon).
+        """
+        ameacas = []
+        for c in owner.pack_home:
+            ct = (c.card_type or '').lower()
+            if ct not in ('action', 'event'):
+                continue
+            slug = self._find_card_slug(c)
+            if slug in THREAT_CATALOG:
+                base_sev, ttype, reason, resp = THREAT_CATALOG[slug]
+                ameacas.append(Threat(
+                    card=c, card_name=c.name, card_slug=slug,
+                    threat_type=ttype, severity=base_sev,
+                    reason=reason, response=resp,
+                    response_detail=f'{ct.title()} ativo: {c.name}',
+                ))
+        return ameacas
+
+    def _find_player(self, player_id: str) -> Optional['PlayerState']:
+        """Busca jogador por ID."""
+        for p in self.game.players:
+            if p.id == player_id:
+                return p
+        return None
 
     def analyze(self) -> list[Threat]:
         """Analisa todas as ameaças no tabuleiro.
@@ -327,9 +494,12 @@ class ThreatAnalyzer:
         for opp in self._opponents:
             todas.extend(self._scan_equipment_gifts(opp))
             todas.extend(self._scan_caerns(opp))
+            todas.extend(self._scan_territories(opp))
             todas.extend(self._scan_opponent_chars(opp))
+            todas.extend(self._scan_opponent_actives(opp))
         todas.extend(self._scan_modifiers())
         todas.extend(self._scan_enemies_hg())
+        todas.extend(self._scan_battlefields())
 
         # Ordena por severidade decrescente
         todas.sort(key=lambda t: (-t.severity, t.threat_type))
