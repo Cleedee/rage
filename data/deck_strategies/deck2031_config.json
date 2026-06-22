@@ -1,0 +1,175 @@
+{
+  "deck_id": 2031,
+  "name": "Os Indestrutíveis — Tanques de Gaia",
+  "style": "control",
+  "desc": "Deck ultra-resistente com 2 tanques (Modi Hl:10, Cernonous Hl:7). NÃO atacar personagens inimigos diretamente. Vence acumulando VP ao matar inimigos no Hunting Grounds (Caern of Rytthiku). Defesa em 3 camadas: Caerns (Sky River, Hollow Heart), gifts defensivos (Resist Pain, Stench of Death), equipamentos (Flak Jacket, Vampire Blood, Skin of the Hellbound). Deixar o oponente se esgotar atacando nossas defesas.",
+
+  "gift_priorities": [
+    {
+      "slug": "luna-s-armor",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Luna's Armor (Gn:4) — +2 Health em Modi (Hl:10→12). Vital para o tanque."
+    },
+    {
+      "slug": "resist-pain",
+      "priority": 92,
+      "condition": "always",
+      "desc": "Resist Pain (Gn:3) — Protege contra redução de Rage. Permanente."
+    },
+    {
+      "slug": "heightened-senses",
+      "priority": 88,
+      "condition": "always",
+      "desc": "Heightened Senses (Gn:1) — Recusa challenges. Essencial com só 2 chars."
+    },
+    {
+      "slug": "spirit-of-the-fray",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Spirit of the Fray (Gn:3) — Ataca primeiro quando necessário."
+    },
+    {
+      "slug": "stench-of-death",
+      "priority": 78,
+      "condition": "always",
+      "desc": "Stench of Death (Gn:2) — Só espíritos/Banes/Metis podem atacar. Permanente."
+    }
+  ],
+
+  "resource_play_order": [
+    "caern",
+    "gift",
+    "equipment",
+    "event",
+    "action",
+    "character",
+    "territory",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+
+  "caern_preferences": [
+    {
+      "card_name": "Sky River Caern",
+      "priority": 95,
+      "desc": "Sky River Caern (Gn:3) — Não-alfa imune a challenge/sneak attack. Vital com 2 chars."
+    },
+    {
+      "card_name": "Hollow Heart Caern",
+      "priority": 85,
+      "desc": "Hollow Heart Caern (Gn:4) — Personagens nunca perdem Gnosis."
+    },
+    {
+      "card_name": "Caern of Rytthiku",
+      "priority": 80,
+      "desc": "Caern of Rytthiku (Gn:3) — Permite atacar inimigos no HG por VP (vitória alternativa)."
+    }
+  ],
+
+  "combat_action_preferences": {
+    "modi-votishal": [
+      "block-and-strike",
+      "evasion",
+      "massive-wound",
+      "head-butt",
+      "disembowelment",
+      "umbral-escape",
+      "run-like-hell"
+    ],
+    "cernonous": [
+      "block-and-strike",
+      "evasion",
+      "head-butt",
+      "massive-wound",
+      "disembowelment",
+      "umbral-escape",
+      "run-like-hell"
+    ]
+  },
+
+  "equipment_assignments": [
+    {
+      "card_name": "Flak Jacket",
+      "target": "Modi Votishal",
+      "priority": 92,
+      "desc": "Flak Jacket — Anula 4 dano. Modi como tanque principal (Hl:10+2)."
+    },
+    {
+      "card_name": "Flak Jacket",
+      "target": "Cernonous",
+      "priority": 85,
+      "desc": "Flak Jacket — Proteção para o segundo tanque."
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Modi Votishal",
+      "priority": 87,
+      "desc": "Vampire Blood — Cura a qualquer momento. Modi tanka e se cura."
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Cernonous",
+      "priority": 80,
+      "desc": "Vampire Blood — Cura para Cernonous."
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Modi Votishal",
+      "priority": 82,
+      "desc": "Skin of the Hellbound — Imune a dano Rg≥6. Modi tanka ataques pesados."
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Cernonous",
+      "priority": 75,
+      "desc": "Skin of the Hellbound — Imune a dano Rg≥6."
+    },
+    {
+      "card_name": "War Knife of Benning Simon",
+      "target": "Modi Votishal",
+      "priority": 65,
+      "desc": "War Knife — Dano agravado para quando precisar atacar (raramente)."
+    }
+  ],
+
+  "umbra_strategy": {
+    "enter_characters": ["Cernonous"],
+    "save_for_combat": ["Modi Votishal"],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true,
+    "desc": "Cernonous (Gn:7) entra na Umbra para explorar. Modi (Gn:8, Hl:10+2) fica no HG como tanque. Sky River Caern protege Cernonous enquanto está fora."
+  },
+
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": false,
+      "priority_types": ["Enemy", "Victim"],
+      "enemy_kill_order": ["Hogling"],
+      "desc": "Matar Hogling no HG por VP (5 VP cada). NÃO atacar personagens do oponente — deixar que se matem em nossas defesas."
+    },
+    "ffa_diplomacy": "weaken_largest",
+    "defensive_only": true,
+    "never_initiate_alpha_combat": true
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Modi Votishal",
+      "Cernonous",
+      "Luna's Armor",
+      "Resist Pain",
+      "Flak Jacket",
+      "Block and Strike",
+      "Sky River Caern"
+    ],
+    "always_discard_if_duplicate": [
+      "Run Like Hell",
+      "Hogling"
+    ],
+    "prefer_discard_types": ["enemy"]
+  }
+}
