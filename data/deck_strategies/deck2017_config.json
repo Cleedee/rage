@@ -1,192 +1,167 @@
 {
   "deck_id": 2017,
   "name": "Fúria e Sabedoria",
-  "style": "balanced",
+  "style": "control",
+  "desc": "Deck Fianna Wyrm-hunter com apenas 2 personagens (Big Fisher + Margrave Konietzko). Big Fisher pode jogar 2 Combat Actions por rodada em Homid — combo devastador com Spirit of the Fray + War Knife of Benning Simon (dano agravado em ações Rg≤4). Estratégia: sobreviver, equipar Big Fisher, eliminar ameaças Wyrm no Hunting Grounds.",
+
   "gift_priorities": [
     {
       "slug": "luna-s-armor",
-      "priority": 90,
+      "priority": 95,
       "condition": "always",
-      "desc": "Luna's Armor (Gn:4)"
-    },
-    {
-      "slug": "silver-claws",
-      "priority": 82,
-      "condition": "always",
-      "desc": "Silver Claws (Gn:3)"
+      "desc": "Luna's Armor (Gn:4) — +2 Health vital para sobrevivencia dos 2 personagens"
     },
     {
       "slug": "spirit-of-the-fray",
-      "priority": 74,
+      "priority": 90,
       "condition": "always",
-      "desc": "Spirit of the Fray (Gn:3)"
-    }
-  ],
-  "event_priorities": [
-    {
-      "slug": "wendigo",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Wendigo"
+      "desc": "Spirit of the Fray (Gn:3) — Big Fisher ataca primeiro, dobrando efetividade com 2 acoes"
     },
     {
-      "slug": "iron-will",
-      "priority": 75,
+      "slug": "silver-claws",
+      "priority": 65,
       "condition": "always",
-      "desc": "Iron Will"
+      "desc": "Silver Claws (Gn:3) — Dano agravado, bom mas situacional"
+    }
+  ],
+
+  "event_priorities": [
+    {
+      "slug": "iron-will",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Iron Will — Protege contra efeitos de perda de acao. Essencial com poucos personagens"
+    },
+    {
+      "slug": "wendigo",
+      "priority": 85,
+      "condition": "always",
+      "desc": "Wendigo — +1 mao de combate. Big Fisher com mais opcoes = 2 ataques melhores"
     },
     {
       "slug": "mass-pollution",
-      "priority": 75,
+      "priority": 30,
       "condition": "always",
-      "desc": "Mass Pollution"
+      "desc": "Mass Pollution — Prejudica nossos personagens Gaia. Usar apenas em emergencia contra Wyrm"
     }
   ],
+
   "resource_play_order": [
+    "gift",
+    "equipment",
+    "event",
+    "action",
     "character",
     "caern",
     "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
     "ally",
     "victim",
     "enemy"
   ],
+
   "combat_action_preferences": {
-    "margrave-konietzko": [
-      "head-butt",
-      "maim",
-      "massive-wound",
-      "vital-blow",
-      "disembowelment",
-      "low-blow",
-      "lucky-blow",
-      "off-balanced-attack",
-      "block-and-strike",
-      "evasion",
-      "run-like-hell",
-      "umbral-escape"
-    ],
     "big-fisher": [
-      "head-butt",
-      "maim",
       "massive-wound",
+      "maim",
+      "head-butt",
       "vital-blow",
       "disembowelment",
       "low-blow",
       "lucky-blow",
       "off-balanced-attack",
+      "evasion",
+      "umbral-escape",
+      "block-and-strike",
+      "run-like-hell"
+    ],
+    "margrave-konietzko": [
       "block-and-strike",
       "evasion",
-      "run-like-hell",
-      "umbral-escape"
+      "massive-wound",
+      "head-butt",
+      "vital-blow",
+      "maim",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "umbral-escape",
+      "off-balanced-attack",
+      "run-like-hell"
     ]
   },
+
   "equipment_assignments": [
     {
-      "card_name": "Flak Jacket",
-      "target": "Margrave Konietzko",
-      "priority": 60,
-      "desc": "Flak Jacket — Margrave Konietzko"
-    },
-    {
-      "card_name": "Flak Jacket",
+      "card_name": "War Knife of Benning Simon",
       "target": "Big Fisher",
-      "priority": 60,
-      "desc": "Flak Jacket — Big Fisher"
-    },
-    {
-      "card_name": "Shotgun",
-      "target": "Margrave Konietzko",
-      "priority": 80,
-      "desc": "Shotgun — Margrave Konietzko"
+      "priority": 95,
+      "desc": "War Knife — Dano agravado em Disembowelment/Low Blow/Lucky Blow (Rg≤4). Big Fisher ataca 2x com agravado"
     },
     {
       "card_name": "Shotgun",
       "target": "Big Fisher",
-      "priority": 80,
-      "desc": "Shotgun — Big Fisher"
-    },
-    {
-      "card_name": "Skin of the Hellbound",
-      "target": "Margrave Konietzko",
-      "priority": 65,
-      "desc": "Skin of the Hellbound — Margrave Konietzko"
-    },
-    {
-      "card_name": "Skin of the Hellbound",
-      "target": "Big Fisher",
-      "priority": 65,
-      "desc": "Skin of the Hellbound — Big Fisher"
-    },
-    {
-      "card_name": "Spiral Boomerang",
-      "target": "Margrave Konietzko",
-      "priority": 65,
-      "desc": "Spiral Boomerang — Margrave Konietzko"
+      "priority": 90,
+      "desc": "Shotgun — Alcance e suporte para Combat Actions de ate Rg:7"
     },
     {
       "card_name": "Spiral Boomerang",
       "target": "Big Fisher",
-      "priority": 65,
-      "desc": "Spiral Boomerang — Big Fisher"
+      "priority": 80,
+      "desc": "Spiral Boomerang — Remove ameaca para Umbra por 2 turnos. Big Fisher como atacante principal"
+    },
+    {
+      "card_name": "Flak Jacket",
+      "target": "Margrave Konietzko",
+      "priority": 80,
+      "desc": "Flak Jacket — Para ate 4 dano. Margrave como suporte defensivo"
     },
     {
       "card_name": "Vampire Blood",
       "target": "Margrave Konietzko",
-      "priority": 65,
-      "desc": "Vampire Blood — Margrave Konietzko"
+      "priority": 75,
+      "desc": "Vampire Blood — Cura a qualquer momento. Margrave mantem os 2 personagens vivos"
     },
     {
-      "card_name": "Vampire Blood",
-      "target": "Big Fisher",
-      "priority": 65,
-      "desc": "Vampire Blood — Big Fisher"
-    },
-    {
-      "card_name": "War Knife of Benning Simon",
+      "card_name": "Skin of the Hellbound",
       "target": "Margrave Konietzko",
-      "priority": 80,
-      "desc": "War Knife of Benning Simon — Margrave Konietzko"
-    },
-    {
-      "card_name": "War Knife of Benning Simon",
-      "target": "Big Fisher",
-      "priority": 80,
-      "desc": "War Knife of Benning Simon — Big Fisher"
+      "priority": 70,
+      "desc": "Skin of the Hellbound — Imune a dano Rg≥6. Protege contra ataques pesados"
     }
   ],
+
   "umbra_strategy": {
-    "enter_characters": [
-      "Margrave Konietzko",
-      "Big Fisher"
-    ],
-    "save_for_combat": [
-      "Margrave Konietzko"
-    ],
+    "enter_characters": ["Margrave Konietzko"],
+    "save_for_combat": ["Big Fisher"],
     "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
+    "enter_with_high_gnosis": true,
+    "desc": "Margrave (Gn:7) entra na Umbra para explorar. Big Fisher (Gn:7, Rg:5) fica no Hunting Grounds como atacante principal. Se oponente entrar, Margrave segue para counter."
   },
+
   "target_priority": {
     "prefer_low_health": true,
     "character_kill_order": "lowest_health",
     "hunting_grounds": {
-      "prefer_prey_over_enemy": true,
-      "priority_types": [
-        "Victim",
-        "Enemy"
-      ]
+      "prefer_prey_over_enemy": false,
+      "priority_types": ["Enemy", "Victim"],
+      "enemy_kill_order": ["Hogling", "Fomori Cop", "Excitable Good Ol' Boy"],
+      "desc": "Hogling primeiro (imune a equipamento nao-fetichizado), depois Fomori Cop (destroi equipamento), depois Good Ol' Boy (ataca alfa)"
     },
     "ffa_diplomacy": "weaken_largest"
   },
+
   "redraw_rules": {
     "never_discard": [
+      "Big Fisher",
       "Margrave Konietzko",
-      "Big Fisher"
+      "Luna's Armor",
+      "Spirit of the Fray",
+      "War Knife of Benning Simon",
+      "Massive Wound"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
+    "always_discard_if_duplicate": [
+      "Mass Pollution",
+      "Run Like Hell"
+    ],
+    "prefer_discard_types": ["enemy"]
   }
 }
