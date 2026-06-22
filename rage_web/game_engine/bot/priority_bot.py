@@ -14,6 +14,7 @@ from typing import Optional
 
 from rage_web.game_engine.bot.evaluator import BoardEvaluator, TargetPrioritizer
 from rage_web.game_engine.bot.strategy_engine import StrategyEngine
+from rage_web.game_engine.bot.threat_analyzer import ThreatAnalyzer, Threat
 from rage_web.game_engine.cli import create_sample_game
 from rage_web.game_engine.combat_queue import (
     COMBAT_ACTIONS, can_feint, declare_action, end_combat,
@@ -47,6 +48,11 @@ class PriorityBot:
         self._has_strategy = self.strategy.is_loaded()
         if self._has_strategy:
             logger.info(f'[Bot] Estrategia carregada para {self.player.name}')
+
+        # Analisador de ameaças
+        self.threat_analyzer = ThreatAnalyzer(game, player_id)
+        self._ameacas_atuais: list[Threat] = []
+        self._ameaca_alvo_uid: Optional[int] = None  # UID do alvo prioritario
 
         # Heuristicas do bot
         self._cards_played_this_turn = 0
@@ -191,8 +197,20 @@ class PriorityBot:
         - Buffs sao jogados DEPOIS dos personagens
         - Cartas sem alvo viavel sao ignoradas
         - Max 3 cartas por turno (preservar mao)
+
+        ThreatAnalyzer: escaneia ameacas no inicio da fase
+        para priorizar contra-medidas.
         """
         me = self.player
+
+        # Escaneia ameacas no inicio da Resource Phase
+        self._scaneia_ameacas()
+        if self._ameacas_atuais:
+            top = self._ameacas_atuais[0]
+            logger.info(
+                f'[ThreatAnalyzer] Resource Phase: ameaca top = '
+                f'{top.card_name} (sev={top.severity:.2f})'
+            )
 
         if self._cards_played_this_turn >= 3:
             self._pass_turn()
@@ -1291,8 +1309,17 @@ class PriorityBot:
         # 1. Tenta desafiar nao-alfa de alto valor (6.5.2)
         # P1: Antes de desafiar, calcula chance de aceitacao
         # (so desafia se prob >= 50% e threat alto)
+        # P2: ThreatAnalyzer — prioriza personagens com ameacas
         from rage_web.game_engine.combat_queue import _tentar_desafio
         melhores_nao_alfa = []
+
+        # Coleta UIDs de personagens que carregam equipment/gift ameacador
+        uids_ameaca = set()
+        ameacas = self._scaneia_ameacas()
+        for t in ameacas:
+            if t.target_uid and t.severity >= 0.35:
+                uids_ameaca.add(t.target_uid)
+
         for opp in opponents:
             for c in opp.pack_home:
                 if c.health_current <= 0:
@@ -1305,6 +1332,9 @@ class PriorityBot:
                 if not self.prioritizer.pode_eliminar(alpha_card, c):
                     continue
                 threat = self.prioritizer.rate_threat(c)
+                # Bônus de ameaça para portadores de equipment/gift perigoso
+                if id(c) in uids_ameaca:
+                    threat += 50  # Prioridade extra
                 melhores_nao_alfa.append((c, threat, opp))
 
         desafio_tentado = False
@@ -2443,17 +2473,204 @@ class PriorityBot:
         # 7. Cenario normal: tenta matar inimigo primeiro
         return False
 
+    def _scaneia_ameacas(self) -> list[Threat]:
+        """Escaneia o tabuleiro por ameacas e atualiza o cache interno."""
+        self._ameacas_atuais = self.threat_analyzer.analyze()
+        if self._ameacas_atuais:
+            top = self._ameacas_atuais[0]
+            self._ameaca_alvo_uid = top.target_uid
+            logger.info(
+                f'[ThreatAnalyzer] {len(self._ameacas_atuais)} ameacas '
+                f'detectadas. Top: {top.card_name} '
+                f'(sev={top.severity:.2f}, resp={top.response})'
+            )
+        else:
+            self._ameaca_alvo_uid = None
+        return self._ameacas_atuais
+
+    def _alvo_ameaca_uid(self) -> Optional[int]:
+        """Retorna o UID do personagem que carrega a maior ameaca."""
+        if not self._ameacas_atuais:
+            return None
+        for t in self._ameacas_atuais:
+            if t.target_uid and t.threat_type in ('equipment', 'gift', 'character'):
+                return t.target_uid
+        return None
+
+    def _responde_ameaca(self, threat: Threat) -> Optional[str]:
+        """Tenta responder a uma ameaca especifica.
+
+        Returns:
+            String de acao ou None se nao pode responder agora.
+        """
+        me = self.player
+
+        if threat.response in ('attack', 'attack_bearer', 'attack_ally',
+                               'attack_alpha', 'attack_from_umbra',
+                               'attack_with_evasion', 'attack_low_rage',
+                               'attack_multiple'):
+            # Delega ao sistema de combate
+            alvo = threat.card
+            if alvo and alvo.health_current > 0:
+                available = [c for c in me.pack_home
+                             if self._pode_atacar(c)]
+                if available:
+                    atacante = self.prioritizer.best_attacker_for(
+                        alvo, available)
+                    if atacante:
+                        pode = self.prioritizer.pode_eliminar(
+                            atacante, alvo, modo_lento=self._is_slow_deck())
+                        if pode:
+                            self._attack(str(atacante.card_id),
+                                         str(alvo.card_id))
+                            return (f'eliminate_threat_'
+                                    f'{atacante.card_id}_vs_{alvo.card_id}')
+
+        if threat.response == 'flee':
+            # Fugir: tenta Umbral Escape se disponivel
+            return self._try_flee_from_threat(threat)
+
+        if threat.response == 'cancel':
+            # Cancelar: tenta usar efeito de cancelamento
+            return self._try_cancel_threat(threat)
+
+        if threat.response == 'block':
+            # Bloquear: tenta usar combat action defensiva
+            return self._try_block_threat(threat)
+
+        if threat.response == 'use_spirit_attack':
+            # Stench of Death: so spirit/Bane/Metis ataca
+            # Verifica se temos personagem de tipo alternativo
+            for c in me.pack_home:
+                tags = (c.tags or '').lower()
+                ct = (c.card_type or '').lower()
+                if 'spirit' in tags or 'bane' in tags or 'metis' in tags:
+                    # Tem personagem que pode atacar
+                    if c.health_current > 0:
+                        available = [av for av in me.pack_home
+                                     if self._pode_atacar(av)]
+                        atacante = self.prioritizer.best_attacker_for(
+                            threat.card, available)
+                        if atacante and id(atacante) == id(c):
+                            self._attack(str(atacante.card_id),
+                                         str(threat.card.card_id))
+                            return (f'eliminate_spirit_'
+                                    f'{atacante.card_id}_'
+                                    f'vs_{threat.card.card_id}')
+
+        if threat.response == 'kill_hg':
+            # Matar inimigo no HG
+            from rage_web.game_engine.combat_queue import start_combat
+            meu_alpha = None
+            for c in me.pack_home:
+                ct = (c.card_type or '').lower()
+                if 'character' in ct and c.health_current > 0:
+                    meu_alpha = c
+                    break
+            if meu_alpha and threat.card and threat.card.health_current > 0:
+                start_combat(self.game, [str(meu_alpha.card_id)],
+                             [str(threat.card.card_id)])
+                return (f'eliminate_hg_threat_'
+                        f'{meu_alpha.card_id}_vs_{threat.card.card_id}')
+
+        if threat.response == 'clear_hg':
+            # Clear HG: atacar alvos no HG para negar VP ao oponente
+            return self._try_attack_hg_cleanup()
+
+        return None
+
+    def _try_flee_from_threat(self, threat: Threat) -> Optional[str]:
+        """Tenta fugir de uma ameaca usando Umbral Escape ou Run Like Hell."""
+        me = self.player
+        for i, card in enumerate(me.hand):
+            slug = getattr(card, 'modelo_id', '') or ''
+            ct = (card.card_type or '').lower()
+            if 'combat action' in ct and slug in ('umbral-escape', 'run-like-hell'):
+                # Usar em personagem ameacado
+                alvos = [c for c in me.pack_home if c.health_current > 0]
+                if alvos:
+                    self._use_card(i, str(alvos[0].card_id))
+                    return f'flee_threat_{card.card_id}'
+        return None
+
+    def _try_cancel_threat(self, threat: Threat) -> Optional[str]:
+        """Tenta cancelar uma ameaca usando efeitos de cancelamento."""
+        # Procura por cartas na mao que possam cancelar
+        me = self.player
+        for i, card in enumerate(me.hand):
+            ct = (card.card_type or '').lower()
+            if ct in ('event', 'gift') and card.modelo_id:
+                from rage_web.game_engine.effects import CARTAS_EXEMPLO
+                modelo = CARTAS_EXEMPLO.get(card.modelo_id)
+                if modelo and modelo.modos:
+                    for modo in modelo.modos:
+                        for ef in (modo.efeitos or []):
+                            if ef.tipo.value in ('anular', 'cancelar_acao',
+                                                   'impedir_acoes'):
+                                if self._pode_pagar_custos(card):
+                                    self._use_card(i)
+                                    return (f'cancel_threat_'
+                                            f'{card.card_id}')
+        return None
+
+    def _try_block_threat(self, threat: Threat) -> Optional[str]:
+        """Tenta bloquear uma ameaca usando combat actions defensivas."""
+        me = self.player
+        for i, card in enumerate(me.hand):
+            slug = getattr(card, 'modelo_id', '') or ''
+            ct = (card.card_type or '').lower()
+            if 'combat action' in ct and slug in ('block-and-strike', 'evasion',
+                                                    'fancy-footwork'):
+                alvos = [c for c in me.pack_home if c.health_current > 0]
+                if alvos:
+                    self._use_card(i, str(alvos[0].card_id))
+                    return f'block_threat_{card.card_id}'
+        return None
+
+    def _try_attack_hg_cleanup(self) -> Optional[str]:
+        """Ataca alvos no HG para negar VP (Caern of Rytthiku counter)."""
+        me = self.player
+        from rage_web.game_engine.combat_queue import start_combat
+        meu_alpha = None
+        for c in me.pack_home:
+            ct = (c.card_type or '').lower()
+            if 'character' in ct and c.health_current > 0:
+                meu_alpha = c
+                break
+        if not meu_alpha:
+            return None
+        # Encontra alvo no HG
+        for c in self.game.hunting_grounds_cards:
+            ct = (c.card_type or '').lower()
+            if 'enemy' in ct or 'victim' in ct:
+                if c.health_current > 0:
+                    start_combat(self.game, [str(meu_alpha.card_id)],
+                                 [str(c.card_id)])
+                    return f'hg_cleanup_{meu_alpha.card_id}_vs_{c.card_id}'
+        for p in self.game.players:
+            if p.id == me.id:
+                continue
+            for c in p.hunting_grounds:
+                ct = (c.card_type or '').lower()
+                if 'enemy' in ct or 'victim' in ct:
+                    if c.health_current > 0:
+                        start_combat(self.game, [str(meu_alpha.card_id)],
+                                     [str(c.card_id)])
+                        return f'hg_cleanup_{meu_alpha.card_id}_vs_{c.card_id}'
+        return None
+
     def _try_eliminate_threat(self) -> Optional[str]:
         """Prioridade 2: Eliminar ameaca.
 
-        Com N jogadores, avia ameacas de TODOS os oponentes,
-        priorizando criaturas do lider em VP.
+        Usa ThreatAnalyzer para detectar ameacas reais (equipment,
+        gifts, caerns, etc.) e responde de acordo.
+
+        Fallback: logica original (personagens com maior ameaca por stats).
         """
         # 🛑 REGRA: never_initiate_alpha_combat — bloquear se HG tem alvos
         if self._has_strategy:
             target_priority = self.strategy.get('target_priority', {})
             if target_priority.get('never_initiate_alpha_combat', False):
-                # So bloqueia se HA algo viavel no HG
                 hg_alvos = []
                 for c in self.game.hunting_grounds_cards:
                     if c.health_current > 0:
@@ -2469,11 +2686,33 @@ class PriorityBot:
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
 
-        # ── Strategy Engine: FFA diplomacy redireciona alvo ──
-        if self._has_strategy and len(opponents) >= 2:
-            target_id = self.strategy.get_ffa_target(self.game, me)
-            if target_id:
-                opponents.sort(key=lambda p: p.id != target_id)
+        # ── PASSO 1: ThreatAnalyzer — detecta ameacas estruturadas ──
+        ameacas = self._scaneia_ameacas()
+        if ameacas:
+            for ameaca in ameacas:
+                if ameaca.severity >= 0.35:
+                    resp = self._responde_ameaca(ameaca)
+                    if resp:
+                        logger.info(
+                            f'[ThreatAnalyzer] Respondendo a '
+                            f'{ameaca.card_name} com {resp}'
+                        )
+                        return resp
+
+        # ── PASSO 2: Fallback — logica original ──
+        if self._has_strategy:
+            target_priority = self.strategy.get('target_priority', {})
+            if target_priority.get('never_initiate_alpha_combat', False):
+                hg_alvos = []
+                for c in self.game.hunting_grounds_cards:
+                    if c.health_current > 0:
+                        hg_alvos.append(c)
+                for p in self.game.players:
+                    for c in p.hunting_grounds:
+                        if c.health_current > 0:
+                            hg_alvos.append(c)
+                if hg_alvos:
+                    return None
 
         if not me.pack_home:
             return None
@@ -2484,7 +2723,6 @@ class PriorityBot:
             return None
 
         # Agrega ameacas de todos os oponentes
-        # Prioriza Characters (dao VP) sobre nao-Characters
         alvos_character = []
         alvos_outros = []
         for opp in opponents:
@@ -2496,7 +2734,7 @@ class PriorityBot:
                     else:
                         alvos_outros.append(c)
 
-        # Characters: menor HP primeiro (kill facil = VP rapido)
+        # Characters: menor HP primeiro
         if alvos_character:
             alvos_character.sort(key=lambda c: c.health_current)
             for alvo in alvos_character:
