@@ -50,10 +50,17 @@ class GameModifier:
     """Modificador global do jogo aplicado por cartas em jogo.
 
     Ex: Lake Nasser Wallow — Rites/Gifts cruzam Gauntlet.
+    Pode ter duracao (ex: 'until_end_of_next_round', 'end_of_turn', 'permanente_ate_cancelar')
+    ou ser um modifier_id com atributo/valor (ex: Gauntlet adjustment).
     """
-    card_uid: int
-    modifier: str             # 'rites_gifts_cross_gauntlet'
+    card_uid: int = 0
+    modifier: str = ''  # 'rites_gifts_cross_gauntlet', 'dodge_all_next_round', etc.
     ativo: bool = True
+    duration: str = ''  # 'until_end_of_next_round', 'end_of_turn', 'permanente_ate_cancelar'
+    modifier_id: str = ''  # 'gauntlet_set_X', identificador unico
+    attribute: str = ''  # 'gauntlet'
+    value: int = 0
+    source: str = ''  # nome da carta origem
 
 
 @dataclass
