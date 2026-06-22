@@ -1,157 +1,183 @@
 {
   "deck_id": 2008,
   "name": "Classic: Grimfang Moot",
-  "style": "moot",
+  "style": "moot_voting",
+  "desc": "Deck focado em gerar VP via Moot Phase. Grimfang (Rn:10+3 moot) + Silver Crown (+6) + Falcon (+4) + TV Reporter x3 (+6) + Yuri Tvarivich (+8) = ~47 votos para passar qualquer proposta. Winter Wolf (12VP c/ Legendary Leadership), Caern Building (10VP), Silver Record x3 (4VP cada). Combate defensivo. 57 cartas.",
+
+  "moot_strategy": {
+    "always_call_moot": true,
+    "preferred_caller": "Grimfang",
+    "moot_proposal_priorities": [
+      {
+        "slug": "winter-wolf",
+        "priority": 95,
+        "condition": "has_opponent_garou_renown_6plus",
+        "desc": "Winter Wolf (Rn:6) — Remove Garou Rn≥6 + 6VP. Com Legendary Leadership = 12VP total."
+      },
+      {
+        "slug": "silver-record",
+        "priority": 90,
+        "condition": "always",
+        "desc": "Silver Record (Rn:2) — 2VP garantido + 2VP do Legendary = 4VP. 3 copias = 12VP total."
+      },
+      {
+        "slug": "caern-building",
+        "priority": 85,
+        "condition": "no_caern_or_second_caern_useful",
+        "desc": "Caern Building (Rn:6) — 4VP + Caern + 6VP do Legendary = 10VP."
+      },
+      {
+        "slug": "skindancer",
+        "priority": 75,
+        "condition": "has_opponent_troublesome_garou",
+        "desc": "Skindancer (Rn:6) — Remove Garou transformando em Enemy no HG. 6VP do Legendary."
+      },
+      {
+        "slug": "the-litany-s-guidance",
+        "priority": 50,
+        "condition": "multiple_gaia_opponents",
+        "desc": "The Litany's Guidance (Rn:7) — Nega VP de inimigos Gaia pelo jogo."
+      },
+      {
+        "slug": "tribal-war",
+        "priority": 40,
+        "condition": "situational",
+        "desc": "Tribal War (Rn:6) — Forca tribos a se atacarem. Situacional."
+      },
+      {
+        "slug": "the-stolen-wolf",
+        "priority": 35,
+        "condition": "has_strong_crinos_opponent",
+        "desc": "The Stolen Wolf (Rn:6) — Reverte forma de Garou. Situacional."
+      }
+    ],
+    "equipment_for_voting": ["The Silver Crown", "Elder Stone"],
+    "gifts_for_voting": ["Aegis", "Falcon"]
+  },
+
   "gift_priorities": [
     {
-      "slug": "spirit-drain",
+      "slug": "aegis",
       "priority": 90,
       "condition": "always",
-      "desc": "Spirit Drain (Gn:8)"
+      "desc": "Aegis (Gn:6) — +2 Health em Grimfang (Hl:3→5) +2 Renown moot. Vital para sobrevivencia do alfa."
     },
-    {
-      "slug": "aegis",
-      "priority": 82,
-      "condition": "always",
-      "desc": "Aegis (Gn:6)"
-    }
-  ],
-  "event_priorities": [
     {
       "slug": "falcon",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Falcon"
+      "priority": 85,
+      "condition": "no_pack_totem",
+      "desc": "Falcon (Pack Totem) — +1 Renown por membro do pack para votos moot. Essencial."
+    },
+    {
+      "slug": "spirit-drain",
+      "priority": 60,
+      "condition": "enemy_spirit_in_play",
+      "desc": "Spirit Drain (Gn:8) — Elimina espirito inimigo + cura total. Situacional."
     }
   ],
-  "resource_play_order": [
-    "character",
-    "caern",
-    "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
-    "ally",
-    "victim",
-    "enemy"
-  ],
-  "combat_action_preferences": {
-    "diem": [
-      "beat-unmerciful",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "evasion",
-      "fancy-footwork",
-      "feint",
-      "run-like-hell",
-      "umbral-escape",
-      "surprise-attack"
-    ],
-    "grimfang": [
-      "beat-unmerciful",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "evasion",
-      "fancy-footwork",
-      "feint",
-      "run-like-hell",
-      "umbral-escape",
-      "surprise-attack"
-    ],
-    "ivan-korda": [
-      "beat-unmerciful",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "evasion",
-      "fancy-footwork",
-      "feint",
-      "run-like-hell",
-      "umbral-escape",
-      "surprise-attack"
-    ],
-    "old-storm-chaser": [
-      "beat-unmerciful",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "evasion",
-      "fancy-footwork",
-      "feint",
-      "run-like-hell",
-      "umbral-escape",
-      "surprise-attack"
-    ]
-  },
+
   "equipment_assignments": [
     {
-      "card_name": "Elder Stone",
-      "target": "Diem",
-      "priority": 65,
-      "desc": "Elder Stone — Diem"
+      "slug": "the-silver-crown",
+      "priority": 95,
+      "assign_to": "grimfang",
+      "desc": "The Silver Crown (+6 Renown moot, +6 Gn). Prioridade absoluta em Grimfang."
     },
     {
-      "card_name": "Elder Stone",
-      "target": "Grimfang",
-      "priority": 65,
-      "desc": "Elder Stone — Grimfang"
-    },
-    {
-      "card_name": "The Silver Crown",
-      "target": "Diem",
-      "priority": 65,
-      "desc": "The Silver Crown — Diem"
-    },
-    {
-      "card_name": "The Silver Crown",
-      "target": "Grimfang",
-      "priority": 65,
-      "desc": "The Silver Crown — Grimfang"
+      "slug": "elder-stone",
+      "priority": 80,
+      "assign_to": "grimfang",
+      "desc": "Elder Stone (+3 Gn). Backup para Grimfang."
     }
   ],
-  "caern_preferences": [
-    "Caern of the Crescent Moon"
+
+  "combat_action_preferences": {
+    "grimfang": {
+      "Rage": 2,
+      "defense_first": true,
+      "priorities": [
+        {"slug": "evasion", "priority": 95, "desc": "Esquiva — prioridade maxima para proteger Grimfang"},
+        {"slug": "fancy-footwork", "priority": 90, "desc": "Esquiva avancada"},
+        {"slug": "umbral-escape", "priority": 88, "desc": "Fuga para Umbra"},
+        {"slug": "run-like-hell", "priority": 85, "desc": "Fuga do combate"},
+        {"slug": "lucky-blow", "priority": 50, "desc": "Ataque quando forcado"},
+        {"slug": "surprise-attack", "priority": 45, "desc": "Ataque surpresa"},
+        {"slug": "stinging-wound", "priority": 40, "desc": "Dano leve"}
+      ]
+    },
+    "old_storm-chaser": {
+      "Rage": 3,
+      "defense_first": false,
+      "priorities": [
+        {"slug": "head-butt", "priority": 90, "desc": "Dano Rg:4 — principal ataque"},
+        {"slug": "beat-unmerciful", "priority": 88, "desc": "Dano Rg:4 — ataque pesado"},
+        {"slug": "feint", "priority": 85, "desc": "Finta + ataque"},
+        {"slug": "evasion", "priority": 60, "desc": "Defesa quando necessario"},
+        {"slug": "off-balanced-attack", "priority": 50, "desc": "Dano leve"}
+      ]
+    }
+  },
+
+  "event_priorities": [
+    {
+      "slug": "legendary-leadership",
+      "priority": 95,
+      "condition": "after_winning_moot",
+      "desc": "Legendary Leadership — Jogar IMEDIATAMENTE apos moot bem-sucedido. Gera VP igual ao Rn da proposta."
+    }
   ],
+
+  "combat_event_priorities": [
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 90,
+      "condition": "character_receives_mortal_wound",
+      "desc": "Taking the Death Blow — Redireciona ferimento mortal para outro packmate."
+    },
+    {
+      "slug": "fox-frenzy",
+      "priority": 85,
+      "condition": "between_rounds",
+      "desc": "Fox Frenzy — Remove personagem do combate entre rodadas."
+    },
+    {
+      "slug": "frenzy",
+      "priority": 70,
+      "condition": "character_about_to_die",
+      "desc": "Frenzy — Enlouquece personagem como ultimo recurso."
+    }
+  ],
+
+  "card_play_priority": {
+    "resource_play_order": [
+      "pack_totem", "equipment", "gift", "caern", "ally", "past_life"
+    ],
+    "gift_order": ["Falcon", "Aegis", "Spirit Drain"],
+    "equipment_order": ["The Silver Crown", "Elder Stone"]
+  },
+
   "umbra_strategy": {
-    "enter_characters": [
-      "Grimfang",
-      "Old Storm-Chaser"
-    ],
-    "save_for_combat": [
-      "Diem"
-    ],
-    "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
+    "enter_characters": ["Yuri Tvarivich"],
+    "save_for_combat": ["Grimfang", "Old Storm-Chaser"],
+    "desc": "Yuri Tvarivich entra na Umbra (Past Life nao conta pro Renown). NUNCA colocar Grimfang ou Storm-Chaser em risco na Umbra."
   },
+
   "target_priority": {
-    "prefer_low_health": true,
-    "character_kill_order": "lowest_health",
-    "avoid_overextend": true
-  },
-  "redraw_rules": {
-    "never_discard": [
-      "Diem",
-      "Grimfang",
-      "Aegis",
-      "Spirit Drain"
-    ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
-  },
-  "moot_strategy": {
-    "call_if_available": [
-      "moot"
-    ],
-    "always_vote_yes": [
-      "Own",
-      "Ally"
-    ],
-    "vote_no_against": [
-      "Leader"
-    ],
-    "strategic_vote": true
+    "never_initiate_alpha_combat": false,
+    "prefer_weakest": true,
+    "avoid_strong_opponents": true,
+    "challenge_preference": "never",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": false,
+      "priority_types": ["Enemy", "Victim"],
+      "enemy_kill_order": ["Drunken Vandals", "A Bus Full of People"],
+      "desc": "Atacar HG apenas se absolutamente necessario — prefere sempre Moot Phase a combate."
+    },
+    "redraw_rules": {
+      "never_discard": ["Grimfang", "Old Storm-Chaser", "Silver Crown", "Falcon"],
+      "always_discard_if_duplicate": ["Ivan Korda", "Diem"],
+      "prefer_discard_types": ["combat_action"],
+      "prefer_keep_types": ["moot", "equipment", "gift"]
+    }
   }
 }
