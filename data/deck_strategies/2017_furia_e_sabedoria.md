@@ -3,15 +3,18 @@
 **Pack:** Fianna — Caçadores de Wyrm  
 **Renome:** 20/20 (2 personagens × Ren:10)  
 **Lealdade:** Gaia (2 Gaia)  
-**Cartas:** 31 (12 combate + 6 equipamentos + 5 eventos/ações + 3 gifts + 3 inimigos)
+**Cartas:** 54 (21 combate + 8 equipamentos + 2 Caerns + 3 eventos + 5 gifts + 4 ações + 9 inimigos + 2 personagens)
 
 ---
 
 ## 📜 Visão Geral
 
-Um deck **Fianna** enxuto com apenas **2 personagens** de Gnosis altíssima (Gn:7 ambos).
-A estratégia é **sobrevivência + equipamento**: manter os 2 personagens vivos enquanto
-equipa Big Fisher com armas que potencializam sua habilidade única.
+Um deck **Fianna** com apenas **2 personagens** de Gnosis altíssima (Gn:7 ambos).
+A estratégia é **sobrevivência + proteção de Caern**: manter os 2 personagens vivos
+enquanto Sky River Caern protege o não-alfa de desafios e sneak attacks.
+
+A maior fraqueza do deck — apenas 2 personagens — é mitigada por **Sky River Caern**,
+que torna o não-alfa imune a challenges e sneak attacks.
 
 ### 🎯 Big Fisher — O Coração do Deck
 
@@ -34,9 +37,18 @@ Isso significa que **ele ataca duas vezes por rodada de combate**. Combinado com
 
 > *"If a Moot he calls fails, he may take an additional alpha action during the next Combat Phase."*
 
-Sua alta Gnosis (7) permite step sideways para a Umbra sem dificuldade.
 Equipado com **Flak Jacket** (para 4 dano), **Skin of the Hellbound** (imune a Rg≥6)
 e **Vampire Blood** (cura), ele mantém o pack vivo enquanto Big Fisher ataca.
+
+### 🏰 Sky River Caern — A Proteção
+
+**Sky River Caern** (Gn:3) é a peça defensiva central:
+
+> *"Non-alpha members of your pack cannot be challenged or sneak attacked."*
+
+Com apenas 2 personagens, um é sempre não-alfa. Isso significa que **metade do seu
+pack está sempre protegida**. Enquanto Big Fisher (como alfa) ataca no Hunting Grounds,
+Margrave (não-alfa) não pode ser desafiado ou Sneak Attacked — e vice-versa.
 
 ---
 
@@ -63,6 +75,20 @@ e **Vampire Blood** (cura), ele mantém o pack vivo enquanto Big Fisher ataca.
 ---
 
 ## 🎴 Combos e Sinergias
+
+### 🏰 Sky River Caern + Pack Defense (Proteção Dupla)
+
+```
+Sky River Caern (Gn:3):
+  → Não-alfa não pode ser desafiado ou Sneak Attacked
+  → Com 2 chars, alguém está sempre protegido
+
+Pack Defense (Combat Event):
+  → Puxa packmates para defesa (até 15 Ren)
+  → Big Fisher e Margrave somam juntos Ren:20
+
+Juntos: proteção passiva + ativa
+```
 
 ### 🔥 Big Fisher + Spirit of the Fray + War Knife (Combo Principal)
 
@@ -115,17 +141,22 @@ Essencial quando Big Fisher está em perigo
 
 | Prioridade | Ação | Motivo |
 |---|---|---|
-| 1 | **Luna's Armor** em Big Fisher | +2 Hl = sobrevivência |
-| 2 | **Spirit of the Fray** em Big Fisher | Atacar primeiro é crítico |
-| 3 | **War Knife** → Big Fisher | Dano agravado |
-| 4 | **Flak Jacket** → Margrave | Proteção imediata |
+| 1 | **Sky River Caern** | Proteção do não-alfa é crítica desde o turno 1 |
+| 2 | **Luna's Armor** em Big Fisher | +2 Hl = sobrevivência |
+| 3 | **Spirit of the Fray** em Big Fisher | Atacar primeiro é crítico |
+| 4 | **War Knife** → Big Fisher | Dano agravado |
 | 5 | **Wendigo** | +1 mão de combate |
+
+▸ **Sky River Caern primeiro!** Antes de qualquer equipamento ou gift,
+coloque o Caern em jogo. Com ele ativo, seu não-alfa está seguro desde
+o começo.
 
 ### Mid Game (Turno 3-5)
 
-1. **Margrave step sideways** → explora Umbra (Gn:7)
+1. **Margrave step sideways** → explora Umbra (Gn:7). Sky River Caern
+   protege Big Fisher enquanto Margrave está fora!
 2. **Iron Will** em Big Fisher → protege contra perda de ação
-3. **Shotgun** → Big Fisher se oponente tem alcance
+3. **Flak Jacket** → Margrave se não equipado ainda
 4. **Spiral Boomerang** → remove ameaça específica
 5. **Silver Claws** → dano agravado extra se War Knife não disponível
 
@@ -141,9 +172,17 @@ Essencial quando Big Fisher está em perigo
 
 | Ordem | Inimigo | Perigo | Estratégia |
 |---|---|---|---|
-| 1º | **Hogling** (Rg:5 Hl:5) | Imune a equipamento não-fetichizado. Mata primeiro | Big Fisher com ataques agravados |
+| 1º | **Hogling** (Rg:5 Hl:5) | Imune a equipamento não-fetichizado | Big Fisher com ataques agravados |
 | 2º | **Fomori Cop** (Rg:5 Hl:4) | Descarta equipamento no fim do combate | Eliminar rápido antes de perder War Knife |
 | 3º | **Excitable Good Ol' Boy** (Rg:4 Hl:3) | Ataca alfa de menor Renome antes das ações | Menor ameaça, deixa por último |
+
+---
+
+## 📋 Caern — Prioridades
+
+| Caern | Prioridade | Motivo |
+|---|---|---|
+| **Sky River Caern** (Gn:3) | 🔴 Máxima | Protege não-alfa de challenge/sneak attack. Deck tem só 2 chars — vital |
 
 ---
 
@@ -163,19 +202,16 @@ Essencial quando Big Fisher está em perigo
 ## ⚠️ Fraquezas
 
 1. **Apenas 2 personagens** — se um morre, o pack perde metade da força.
-   Se Big Fisher morre, o deck perde o dano principal.
+   Sky River Caern ajuda a proteger o não-alfa, mas o alfa continua vulnerável.
 2. **Renome baixo** — Ren:10 cada. Personagens com Renome maior
    (ex: Allonzo Ren:12) podem alpha sobre ambos.
-3. **Sem Caern** — sem proteção de Caern, qualquer personagem pode ser
-   desafiado ou Sneak Attacked.
+3. **Sky River Caern não protege o alfa** — challenges e sneak attacks
+   no personagem alfa ainda são possíveis. Margrave precisa proteger Big Fisher.
 4. **Sem dano em área** — só ataca 1 alvo por vez. Contra packs com
    muitos aliados/equipamentos, fica em desvantagem numérica.
 5. **Hogling é counter natural** — imune a equipamento não-fetichizado.
    War Knife e Shotgun são não-fetichizados. Precisa de ataques base
    ou Silver Claws para ferir Hogling.
-6. **Mass Pollution prejudica o próprio pack** — todos os personagens
-   são Gaia, então perdem Gnosis. Usar apenas em emergência contra
-   Wyrm que depende de Gnosis.
 
 ---
 
@@ -184,13 +220,14 @@ Essencial quando Big Fisher está em perigo
 | Métrica | Valor |
 |---|---|
 | Renome total | 20 / 20 |
-| Total cartas | 31 |
+| Total cartas | 54 |
 | Personagens | 2 (ambos Fianna Gaia) |
+| Caerns | 2× Sky River Caern (1 em jogo, 1 reserva) |
 | Maior Hl | 6 (Margrave) / 7 (Big Fisher c/ Luna's Armor) |
 | Maior Rg | 5 (Big Fisher) |
 | Maior Gn | 7 (ambos) |
-| Combat Actions | 12 (4 de dano alto, 4 de dano médio, 4 de utilidade) |
-| Equipamentos | 6 (3 armas, 2 armaduras, 1 cura) |
-| Gifts | 3 (1 defesa, 1 iniciativa, 1 dano) |
-| Eventos | 3 (1 proteção, 1 card draw, 1 situacional) |
-| Hunting Grounds | 3 Wyrm (Hogling, Fomori Cop, Good Ol' Boy) |
+| Combat Actions | 21 (dano + utilidade) |
+| Equipamentos | 8 (armas, armaduras, cura) |
+| Gifts | 5 (defesa, iniciativa, dano) |
+| Eventos | 3 (Iron Will, Wendigo) |
+| Hunting Grounds | 9 Wyrm (Hogling, Fomori Cop, Good Ol' Boy) |

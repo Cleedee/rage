@@ -37,26 +37,28 @@
       "priority": 85,
       "condition": "always",
       "desc": "Wendigo — +1 mao de combate. Big Fisher com mais opcoes = 2 ataques melhores"
-    },
-    {
-      "slug": "mass-pollution",
-      "priority": 30,
-      "condition": "always",
-      "desc": "Mass Pollution — Prejudica nossos personagens Gaia. Usar apenas em emergencia contra Wyrm"
     }
   ],
 
   "resource_play_order": [
     "gift",
+    "caern",
     "equipment",
     "event",
     "action",
     "character",
-    "caern",
     "territory",
     "ally",
     "victim",
     "enemy"
+  ],
+
+  "caern_preferences": [
+    {
+      "card_name": "Sky River Caern",
+      "priority": 85,
+      "desc": "Sky River Caern (Gn:3) — Protege nao-alfa de challenge/sneak attack"
+    }
   ],
 
   "combat_action_preferences": {
@@ -159,7 +161,6 @@
       "Massive Wound"
     ],
     "always_discard_if_duplicate": [
-      "Mass Pollution",
       "Run Like Hell"
     ],
     "prefer_discard_types": ["enemy"]
