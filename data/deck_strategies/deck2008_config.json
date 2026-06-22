@@ -1,0 +1,157 @@
+{
+  "deck_id": 2008,
+  "name": "Classic: Grimfang Moot",
+  "style": "moot",
+  "gift_priorities": [
+    {
+      "slug": "spirit-drain",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Spirit Drain (Gn:8)"
+    },
+    {
+      "slug": "aegis",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Aegis (Gn:6)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "falcon",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Falcon"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "diem": [
+      "beat-unmerciful",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "evasion",
+      "fancy-footwork",
+      "feint",
+      "run-like-hell",
+      "umbral-escape",
+      "surprise-attack"
+    ],
+    "grimfang": [
+      "beat-unmerciful",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "evasion",
+      "fancy-footwork",
+      "feint",
+      "run-like-hell",
+      "umbral-escape",
+      "surprise-attack"
+    ],
+    "ivan-korda": [
+      "beat-unmerciful",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "evasion",
+      "fancy-footwork",
+      "feint",
+      "run-like-hell",
+      "umbral-escape",
+      "surprise-attack"
+    ],
+    "old-storm-chaser": [
+      "beat-unmerciful",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "evasion",
+      "fancy-footwork",
+      "feint",
+      "run-like-hell",
+      "umbral-escape",
+      "surprise-attack"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Elder Stone",
+      "target": "Diem",
+      "priority": 65,
+      "desc": "Elder Stone — Diem"
+    },
+    {
+      "card_name": "Elder Stone",
+      "target": "Grimfang",
+      "priority": 65,
+      "desc": "Elder Stone — Grimfang"
+    },
+    {
+      "card_name": "The Silver Crown",
+      "target": "Diem",
+      "priority": 65,
+      "desc": "The Silver Crown — Diem"
+    },
+    {
+      "card_name": "The Silver Crown",
+      "target": "Grimfang",
+      "priority": 65,
+      "desc": "The Silver Crown — Grimfang"
+    }
+  ],
+  "caern_preferences": [
+    "Caern of the Crescent Moon"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Grimfang",
+      "Old Storm-Chaser"
+    ],
+    "save_for_combat": [
+      "Diem"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Diem",
+      "Grimfang",
+      "Aegis",
+      "Spirit Drain"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  },
+  "moot_strategy": {
+    "call_if_available": [
+      "moot"
+    ],
+    "always_vote_yes": [
+      "Own",
+      "Ally"
+    ],
+    "vote_no_against": [
+      "Leader"
+    ],
+    "strategic_vote": true
+  }
+}

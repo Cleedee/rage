@@ -1,0 +1,152 @@
+{
+  "deck_id": 2005,
+  "name": "Classic: Wailer special",
+  "style": "balanced",
+  "gift_priorities": [
+    {
+      "slug": "roar-of-the-wyrm",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Roar of the Wyrm (Gn:4)"
+    },
+    {
+      "slug": "infectious-touch",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Infectious Touch (Gn:3)"
+    },
+    {
+      "slug": "stench-of-death",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Stench of Death (Gn:2)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "beast-of-war",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Beast-of-War"
+    },
+    {
+      "slug": "mass-pollution",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Mass Pollution"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "barnaby-shadrack": [
+      "overextended-attack",
+      "beat-unmerciful",
+      "head-or-gut",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "blossom": [
+      "overextended-attack",
+      "beat-unmerciful",
+      "head-or-gut",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "fangs-through-eye": [
+      "overextended-attack",
+      "beat-unmerciful",
+      "head-or-gut",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "wailer": [
+      "overextended-attack",
+      "beat-unmerciful",
+      "head-or-gut",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Barnaby Shadrack",
+      "priority": 65,
+      "desc": "Gooshy Gooze — Barnaby Shadrack"
+    },
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Gooshy Gooze — Blossom"
+    }
+  ],
+  "caern_preferences": [
+    "Caern of the Unwashed Child"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Blossom"
+    ],
+    "save_for_combat": [
+      "Barnaby Shadrack"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "ffa_diplomacy": "weaken_largest"
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Barnaby Shadrack",
+      "Blossom"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

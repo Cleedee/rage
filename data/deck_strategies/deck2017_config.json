@@ -1,0 +1,192 @@
+{
+  "deck_id": 2017,
+  "name": "Fúria e Sabedoria",
+  "style": "balanced",
+  "gift_priorities": [
+    {
+      "slug": "luna-s-armor",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Luna's Armor (Gn:4)"
+    },
+    {
+      "slug": "silver-claws",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Silver Claws (Gn:3)"
+    },
+    {
+      "slug": "spirit-of-the-fray",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Spirit of the Fray (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "wendigo",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Wendigo"
+    },
+    {
+      "slug": "iron-will",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Iron Will"
+    },
+    {
+      "slug": "mass-pollution",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Mass Pollution"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "margrave-konietzko": [
+      "head-butt",
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "off-balanced-attack",
+      "block-and-strike",
+      "evasion",
+      "run-like-hell",
+      "umbral-escape"
+    ],
+    "big-fisher": [
+      "head-butt",
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "off-balanced-attack",
+      "block-and-strike",
+      "evasion",
+      "run-like-hell",
+      "umbral-escape"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Flak Jacket",
+      "target": "Margrave Konietzko",
+      "priority": 60,
+      "desc": "Flak Jacket — Margrave Konietzko"
+    },
+    {
+      "card_name": "Flak Jacket",
+      "target": "Big Fisher",
+      "priority": 60,
+      "desc": "Flak Jacket — Big Fisher"
+    },
+    {
+      "card_name": "Shotgun",
+      "target": "Margrave Konietzko",
+      "priority": 80,
+      "desc": "Shotgun — Margrave Konietzko"
+    },
+    {
+      "card_name": "Shotgun",
+      "target": "Big Fisher",
+      "priority": 80,
+      "desc": "Shotgun — Big Fisher"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Margrave Konietzko",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Margrave Konietzko"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Big Fisher",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Big Fisher"
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Margrave Konietzko",
+      "priority": 65,
+      "desc": "Spiral Boomerang — Margrave Konietzko"
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Big Fisher",
+      "priority": 65,
+      "desc": "Spiral Boomerang — Big Fisher"
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Margrave Konietzko",
+      "priority": 65,
+      "desc": "Vampire Blood — Margrave Konietzko"
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Big Fisher",
+      "priority": 65,
+      "desc": "Vampire Blood — Big Fisher"
+    },
+    {
+      "card_name": "War Knife of Benning Simon",
+      "target": "Margrave Konietzko",
+      "priority": 80,
+      "desc": "War Knife of Benning Simon — Margrave Konietzko"
+    },
+    {
+      "card_name": "War Knife of Benning Simon",
+      "target": "Big Fisher",
+      "priority": 80,
+      "desc": "War Knife of Benning Simon — Big Fisher"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Margrave Konietzko",
+      "Big Fisher"
+    ],
+    "save_for_combat": [
+      "Margrave Konietzko"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "ffa_diplomacy": "weaken_largest"
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Margrave Konietzko",
+      "Big Fisher"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

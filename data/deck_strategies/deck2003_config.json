@@ -1,0 +1,148 @@
+{
+  "deck_id": 2003,
+  "name": "virtual_-_ajaba_aggression",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "sense-of-the-prey",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Sense of the Prey (Gn:6)"
+    },
+    {
+      "slug": "gnaw",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Gnaw (Gn:5)"
+    },
+    {
+      "slug": "laughter-of-the-soul",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Laughter of the Soul (Gn:5)"
+    },
+    {
+      "slug": "blur-of-the-milky-eye",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Blur of the Milky Eye (Gn:2)"
+    },
+    {
+      "slug": "primal-anger",
+      "priority": 58,
+      "condition": "always",
+      "desc": "Primal Anger (Gn:1)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "tzinzie",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Tzinzie"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "amber-eyes-like-knives": [
+      "anatomy-lesson",
+      "head-butt",
+      "leaping-rake",
+      "mangle",
+      "aggressive-bite",
+      "instinctive-attack",
+      "low-blow",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "overbear",
+      "searching-for-weakness"
+    ],
+    "ironjaw": [
+      "anatomy-lesson",
+      "head-butt",
+      "leaping-rake",
+      "mangle",
+      "aggressive-bite",
+      "instinctive-attack",
+      "low-blow",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "overbear",
+      "searching-for-weakness"
+    ],
+    "njoki-scarface": [
+      "anatomy-lesson",
+      "head-butt",
+      "leaping-rake",
+      "mangle",
+      "aggressive-bite",
+      "instinctive-attack",
+      "low-blow",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "overbear",
+      "searching-for-weakness"
+    ],
+    "thousand-cubs": [
+      "anatomy-lesson",
+      "head-butt",
+      "leaping-rake",
+      "mangle",
+      "aggressive-bite",
+      "instinctive-attack",
+      "low-blow",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "overbear",
+      "searching-for-weakness"
+    ]
+  },
+  "umbra_strategy": {
+    "enter_characters": [
+      "Ironjaw",
+      "Thousand Cubs"
+    ],
+    "save_for_combat": [
+      "Amber Eyes-Like-Knives"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Amber Eyes-Like-Knives",
+      "Ironjaw",
+      "Gnaw",
+      "Laughter of the Soul"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

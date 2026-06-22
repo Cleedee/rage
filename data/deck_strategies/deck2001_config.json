@@ -1,0 +1,140 @@
+{
+  "deck_id": 2001,
+  "name": "morgans_bully_quest",
+  "style": "balanced",
+  "gift_priorities": [
+    {
+      "slug": "catfeet",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Catfeet (Gn:4)"
+    },
+    {
+      "slug": "knife-wind",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Knife Wind (Gn:3)"
+    },
+    {
+      "slug": "blur-of-the-milky-eye",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Blur of the Milky Eye (Gn:2)"
+    },
+    {
+      "slug": "sense-prey",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Sense Prey (Gn:2)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "visit-from-white-father",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Visit from White Father"
+    },
+    {
+      "slug": "wendigo",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Wendigo"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "blood-on-the-wind": [
+      "beat-unmerciful",
+      "bitch-slap",
+      "fast-strike",
+      "head-or-gut",
+      "instinctive-attack",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "run-like-hell",
+      "telling-blow"
+    ],
+    "old-storm-chaser": [
+      "beat-unmerciful",
+      "bitch-slap",
+      "fast-strike",
+      "head-or-gut",
+      "instinctive-attack",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "run-like-hell",
+      "telling-blow"
+    ],
+    "whispers-in-pines": [
+      "beat-unmerciful",
+      "bitch-slap",
+      "fast-strike",
+      "head-or-gut",
+      "instinctive-attack",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "run-like-hell",
+      "telling-blow"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "War lodge",
+      "target": "Blood-on-the-Wind",
+      "priority": 65,
+      "desc": "War lodge — Blood-on-the-Wind"
+    },
+    {
+      "card_name": "War lodge",
+      "target": "Old Storm-Chaser",
+      "priority": 65,
+      "desc": "War lodge — Old Storm-Chaser"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Blood-on-the-Wind",
+      "Old Storm-Chaser"
+    ],
+    "save_for_combat": [
+      "Blood-on-the-Wind"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "ffa_diplomacy": "weaken_largest"
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Blood-on-the-Wind",
+      "Old Storm-Chaser"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

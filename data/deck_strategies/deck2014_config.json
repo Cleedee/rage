@@ -1,0 +1,168 @@
+{
+  "deck_id": 2014,
+  "name": "Drain Team v1 (Ren20)",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "world-of-human",
+      "priority": 90,
+      "condition": "always",
+      "desc": "World of Human (Gn:6)"
+    },
+    {
+      "slug": "beckons",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Beckons (Gn:5)"
+    },
+    {
+      "slug": "disquiet",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Disquiet (Gn:5)"
+    },
+    {
+      "slug": "consumption-of-gaia",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Consumption of Gaia (Gn:4)"
+    },
+    {
+      "slug": "arms-of-the-abyss",
+      "priority": 58,
+      "condition": "always",
+      "desc": "Arms of the Abyss (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "eater-of-souls",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Eater-of-Souls"
+    },
+    {
+      "slug": "mass-pollution",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Mass Pollution"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "count-vladimir-rustovitch": [
+      "dry-gulch",
+      "head-butt",
+      "kneecapper",
+      "lucky-blow",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "evasion",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "allonzo-montoya": [
+      "dry-gulch",
+      "head-butt",
+      "kneecapper",
+      "lucky-blow",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "evasion",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "juicy-johnes": [
+      "dry-gulch",
+      "head-butt",
+      "kneecapper",
+      "lucky-blow",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "evasion",
+      "fancy-footwork",
+      "run-like-hell",
+      "surprise-attack"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Gooshy Gooze — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Gooshy Gooze — Allonzo Montoya"
+    },
+    {
+      "card_name": "Chronicle of the Black Labyrinth",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Chronicle of the Black Labyrinth — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Chronicle of the Black Labyrinth",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Chronicle of the Black Labyrinth — Allonzo Montoya"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Allonzo Montoya"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Count Vladimir Rustovitch",
+      "Allonzo Montoya"
+    ],
+    "save_for_combat": [
+      "Count Vladimir Rustovitch"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Count Vladimir Rustovitch",
+      "Allonzo Montoya",
+      "Disquiet",
+      "World of Human"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

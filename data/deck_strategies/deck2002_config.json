@@ -1,0 +1,141 @@
+{
+  "deck_id": 2002,
+  "name": "virtual_-_gaia_umbra",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "the-badger-s-heart",
+      "priority": 90,
+      "condition": "always",
+      "desc": "The Badger's Heart (Gn:6)"
+    },
+    {
+      "slug": "chant-of-morpheus",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Chant of Morpheus (Gn:5)"
+    },
+    {
+      "slug": "primal-anger",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Primal Anger (Gn:1)"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "lone-wolf-circles": [
+      "anatomy-lesson",
+      "head-butt",
+      "aggressive-bite",
+      "flicker",
+      "instinctive-attack",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "searching-for-weakness",
+      "submission-hold",
+      "tail-lash"
+    ],
+    "sweet-luna-s-smile": [
+      "anatomy-lesson",
+      "head-butt",
+      "aggressive-bite",
+      "flicker",
+      "instinctive-attack",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "searching-for-weakness",
+      "submission-hold",
+      "tail-lash"
+    ],
+    "sand-s-last-king": [
+      "anatomy-lesson",
+      "head-butt",
+      "aggressive-bite",
+      "flicker",
+      "instinctive-attack",
+      "savage-beatdown",
+      "block-and-roll",
+      "duck-and-cover",
+      "searching-for-weakness",
+      "submission-hold",
+      "tail-lash"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Animal Mummy",
+      "target": "Lone Wolf Circles",
+      "priority": 65,
+      "desc": "Animal Mummy — Lone Wolf Circles"
+    },
+    {
+      "card_name": "Animal Mummy",
+      "target": "Sweet Luna's Smile",
+      "priority": 65,
+      "desc": "Animal Mummy — Sweet Luna's Smile"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Lone Wolf Circles",
+      "priority": 80,
+      "desc": "Assegai — Lone Wolf Circles"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Sweet Luna's Smile",
+      "priority": 80,
+      "desc": "Assegai — Sweet Luna's Smile"
+    }
+  ],
+  "caern_preferences": [
+    "Lake Nasser Wallow"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Lone Wolf Circles",
+      "Sweet Luna's Smile",
+      "Sand's Last King"
+    ],
+    "save_for_combat": [
+      "Lone Wolf Circles"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Lone Wolf Circles",
+      "Sweet Luna's Smile",
+      "Chant of Morpheus",
+      "The Badger's Heart"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

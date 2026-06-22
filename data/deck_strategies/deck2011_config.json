@@ -1,0 +1,273 @@
+{
+  "deck_id": 2011,
+  "name": "Hakimu - Gaia Umbra",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "assimilation-a",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Assimilation A (Gn:8)"
+    },
+    {
+      "slug": "fortuna",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Fortuna (Gn:7)"
+    },
+    {
+      "slug": "world-of-human",
+      "priority": 74,
+      "condition": "always",
+      "desc": "World of Human (Gn:6)"
+    },
+    {
+      "slug": "clawstorm",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Clawstorm (Gn:5)"
+    },
+    {
+      "slug": "night-terror",
+      "priority": 58,
+      "condition": "always",
+      "desc": "Night terror (Gn:5)"
+    },
+    {
+      "slug": "ojas-surge",
+      "priority": 50,
+      "condition": "always",
+      "desc": "Ojas Surge (Gn:5)"
+    },
+    {
+      "slug": "command-attention",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Command Attention (Gn:4)"
+    },
+    {
+      "slug": "feline-grace",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Feline Grace (Gn:4)"
+    },
+    {
+      "slug": "spirit-of-the-tiger",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Spirit of the Tiger (Gn:4)"
+    },
+    {
+      "slug": "submit",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Submit (Gn:4)"
+    },
+    {
+      "slug": "shriek",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Shriek (Gn:2)"
+    },
+    {
+      "slug": "feral-grin",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Feral Grin (Gn:1)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "checking-the-classifieds",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Checking the Classifieds"
+    },
+    {
+      "slug": "close-gauntlet",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Close Gauntlet"
+    },
+    {
+      "slug": "gaia-s-breath",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Gaia's Breath"
+    },
+    {
+      "slug": "iron-will",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Iron Will"
+    },
+    {
+      "slug": "umbral-wave",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Umbral Wave"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "markhat": [
+      "head-butt",
+      "maim",
+      "bite",
+      "disembowelment",
+      "lucky-blow",
+      "planned-strike",
+      "spirited-strike",
+      "umbral-flurry",
+      "block",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "dodge",
+      "fancy-footwork",
+      "fetal-position",
+      "gnosis-bomb",
+      "umbral-escape",
+      "careful-strike",
+      "hamstringed",
+      "riposte"
+    ],
+    "lord-hakimu": [
+      "head-butt",
+      "maim",
+      "bite",
+      "disembowelment",
+      "lucky-blow",
+      "planned-strike",
+      "spirited-strike",
+      "umbral-flurry",
+      "block",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "dodge",
+      "fancy-footwork",
+      "fetal-position",
+      "gnosis-bomb",
+      "umbral-escape",
+      "careful-strike",
+      "hamstringed",
+      "riposte"
+    ],
+    "zari": [
+      "head-butt",
+      "maim",
+      "bite",
+      "disembowelment",
+      "lucky-blow",
+      "planned-strike",
+      "spirited-strike",
+      "umbral-flurry",
+      "block",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "dodge",
+      "fancy-footwork",
+      "fetal-position",
+      "gnosis-bomb",
+      "umbral-escape",
+      "careful-strike",
+      "hamstringed",
+      "riposte"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Bivouac",
+      "target": "Markhat",
+      "priority": 65,
+      "desc": "Bivouac — Markhat"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Lord Hakimu",
+      "priority": 65,
+      "desc": "Bivouac — Lord Hakimu"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Markhat",
+      "priority": 70,
+      "desc": "Cellular Phone — Markhat"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Lord Hakimu",
+      "priority": 70,
+      "desc": "Cellular Phone — Lord Hakimu"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Markhat",
+      "priority": 70,
+      "desc": "Lost Map — Markhat"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Lord Hakimu",
+      "priority": 70,
+      "desc": "Lost Map — Lord Hakimu"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Markhat",
+      "priority": 80,
+      "desc": "Assegai — Markhat"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Lord Hakimu",
+      "priority": 80,
+      "desc": "Assegai — Lord Hakimu"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Markhat",
+      "Lord Hakimu"
+    ],
+    "save_for_combat": [
+      "Markhat"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Markhat",
+      "Lord Hakimu",
+      "Fortuna"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

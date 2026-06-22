@@ -1,0 +1,272 @@
+{
+  "deck_id": 2015,
+  "name": "Trovão dos Metis v2 — Crinos Combat",
+  "style": "moot",
+  "gift_priorities": [
+    {
+      "slug": "purity-of-spirit",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Purity of Spirit (Gn:5)"
+    },
+    {
+      "slug": "born-to-nature",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Born to Nature (Gn:4)"
+    },
+    {
+      "slug": "burrow",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Burrow (Gn:4)"
+    },
+    {
+      "slug": "curse-of-hatred",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Curse of Hatred (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "close-gauntlet",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Close Gauntlet"
+    },
+    {
+      "slug": "gaia-s-breath",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Gaia's Breath"
+    },
+    {
+      "slug": "iron-will",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Iron Will"
+    },
+    {
+      "slug": "spirit-backlash",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Spirit Backlash"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "banana-split": [
+      "combat-reflexes",
+      "death-express",
+      "entrail-rend",
+      "heart-breaker",
+      "leaping-rake",
+      "lung-burst",
+      "maim",
+      "mangle",
+      "massive-wound",
+      "sever",
+      "shred",
+      "spine-crushed",
+      "vital-blow",
+      "broken-limb",
+      "disembowelment",
+      "fast-strike",
+      "block-and-strike",
+      "feint"
+    ],
+    "bjorn-blood-from-stone": [
+      "combat-reflexes",
+      "death-express",
+      "entrail-rend",
+      "heart-breaker",
+      "leaping-rake",
+      "lung-burst",
+      "maim",
+      "mangle",
+      "massive-wound",
+      "sever",
+      "shred",
+      "spine-crushed",
+      "vital-blow",
+      "broken-limb",
+      "disembowelment",
+      "fast-strike",
+      "block-and-strike",
+      "feint"
+    ],
+    "grimm-brings-blood": [
+      "combat-reflexes",
+      "death-express",
+      "entrail-rend",
+      "heart-breaker",
+      "leaping-rake",
+      "lung-burst",
+      "maim",
+      "mangle",
+      "massive-wound",
+      "sever",
+      "shred",
+      "spine-crushed",
+      "vital-blow",
+      "broken-limb",
+      "disembowelment",
+      "fast-strike",
+      "block-and-strike",
+      "feint"
+    ],
+    "harmon-truefriend": [
+      "combat-reflexes",
+      "death-express",
+      "entrail-rend",
+      "heart-breaker",
+      "leaping-rake",
+      "lung-burst",
+      "maim",
+      "mangle",
+      "massive-wound",
+      "sever",
+      "shred",
+      "spine-crushed",
+      "vital-blow",
+      "broken-limb",
+      "disembowelment",
+      "fast-strike",
+      "block-and-strike",
+      "feint"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Grand Klaive",
+      "target": "Banana Split",
+      "priority": 80,
+      "desc": "Grand Klaive — Banana Split"
+    },
+    {
+      "card_name": "Grand Klaive",
+      "target": "Bjorn-Blood from Stone",
+      "priority": 80,
+      "desc": "Grand Klaive — Bjorn-Blood from Stone"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Banana Split",
+      "priority": 65,
+      "desc": "Bivouac — Banana Split"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Bjorn-Blood from Stone",
+      "priority": 65,
+      "desc": "Bivouac — Bjorn-Blood from Stone"
+    },
+    {
+      "card_name": "Klaive",
+      "target": "Banana Split",
+      "priority": 80,
+      "desc": "Klaive — Banana Split"
+    },
+    {
+      "card_name": "Klaive",
+      "target": "Bjorn-Blood from Stone",
+      "priority": 80,
+      "desc": "Klaive — Bjorn-Blood from Stone"
+    },
+    {
+      "card_name": "Pine Dagger",
+      "target": "Banana Split",
+      "priority": 65,
+      "desc": "Pine Dagger — Banana Split"
+    },
+    {
+      "card_name": "Pine Dagger",
+      "target": "Bjorn-Blood from Stone",
+      "priority": 65,
+      "desc": "Pine Dagger — Bjorn-Blood from Stone"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Banana Split",
+      "priority": 80,
+      "desc": "Assegai — Banana Split"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Bjorn-Blood from Stone",
+      "priority": 80,
+      "desc": "Assegai — Bjorn-Blood from Stone"
+    },
+    {
+      "card_name": "Desert Klaive",
+      "target": "Banana Split",
+      "priority": 80,
+      "desc": "Desert Klaive — Banana Split"
+    },
+    {
+      "card_name": "Desert Klaive",
+      "target": "Bjorn-Blood from Stone",
+      "priority": 80,
+      "desc": "Desert Klaive — Bjorn-Blood from Stone"
+    }
+  ],
+  "caern_preferences": [
+    "Sky River Caern",
+    "Sept of the Last Stone"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Harmon Truefriend"
+    ],
+    "save_for_combat": [
+      "Banana Split"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Banana Split",
+      "Bjorn-Blood from Stone"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  },
+  "moot_strategy": {
+    "call_if_available": [
+      "moot"
+    ],
+    "always_vote_yes": [
+      "Own",
+      "Ally"
+    ],
+    "vote_no_against": [
+      "Leader"
+    ],
+    "strategic_vote": true
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "deck_id": 2012,
+  "name": "Os Porteiros (The Gatekeepers)",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "aegis",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Aegis (Gn:6)"
+    },
+    {
+      "slug": "purity-of-spirit",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Purity of Spirit (Gn:5)"
+    },
+    {
+      "slug": "burrow",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Burrow (Gn:4)"
+    },
+    {
+      "slug": "true-fear",
+      "priority": 66,
+      "condition": "always",
+      "desc": "True Fear (Gn:4)"
+    },
+    {
+      "slug": "awe",
+      "priority": 58,
+      "condition": "always",
+      "desc": "Awe (Gn:3)"
+    },
+    {
+      "slug": "silver-claws",
+      "priority": 50,
+      "condition": "always",
+      "desc": "Silver Claws (Gn:3)"
+    },
+    {
+      "slug": "spirit-of-the-fray",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Spirit of the Fray (Gn:3)"
+    },
+    {
+      "slug": "sticky-paws",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Sticky Paws (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "rewards-of-leadership",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Rewards of Leadership"
+    },
+    {
+      "slug": "checking-the-classifieds",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Checking the Classifieds"
+    },
+    {
+      "slug": "close-gauntlet",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Close Gauntlet"
+    },
+    {
+      "slug": "gaia-s-breath",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Gaia's Breath"
+    },
+    {
+      "slug": "iron-will",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Iron Will"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "charging-bull": [
+      "head-butt",
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "off-balanced-attack",
+      "spirited-strike",
+      "umbral-flurry",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "evasion",
+      "fancy-footwork",
+      "fetal-position",
+      "run-like-hell",
+      "umbral-escape",
+      "careful-strike"
+    ],
+    "anna-kliminski": [
+      "head-butt",
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "off-balanced-attack",
+      "spirited-strike",
+      "umbral-flurry",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "evasion",
+      "fancy-footwork",
+      "fetal-position",
+      "run-like-hell",
+      "umbral-escape",
+      "careful-strike"
+    ],
+    "fade-to-black": [
+      "head-butt",
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "off-balanced-attack",
+      "spirited-strike",
+      "umbral-flurry",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "evasion",
+      "fancy-footwork",
+      "fetal-position",
+      "run-like-hell",
+      "umbral-escape",
+      "careful-strike"
+    ],
+    "modi-votishal": [
+      "head-butt",
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "low-blow",
+      "lucky-blow",
+      "off-balanced-attack",
+      "spirited-strike",
+      "umbral-flurry",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "evasion",
+      "fancy-footwork",
+      "fetal-position",
+      "run-like-hell",
+      "umbral-escape",
+      "careful-strike"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Flak Jacket",
+      "target": "Charging Bull",
+      "priority": 60,
+      "desc": "Flak Jacket — Charging Bull"
+    },
+    {
+      "card_name": "Flak Jacket",
+      "target": "Anna Kliminski",
+      "priority": 60,
+      "desc": "Flak Jacket — Anna Kliminski"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Charging Bull",
+      "priority": 70,
+      "desc": "Cellular Phone — Charging Bull"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Anna Kliminski",
+      "priority": 70,
+      "desc": "Cellular Phone — Anna Kliminski"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Charging Bull",
+      "priority": 80,
+      "desc": "Chainsaw — Charging Bull"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Anna Kliminski",
+      "priority": 80,
+      "desc": "Chainsaw — Anna Kliminski"
+    },
+    {
+      "card_name": "Corporate Credit Card",
+      "target": "Charging Bull",
+      "priority": 65,
+      "desc": "Corporate Credit Card — Charging Bull"
+    },
+    {
+      "card_name": "Corporate Credit Card",
+      "target": "Anna Kliminski",
+      "priority": 65,
+      "desc": "Corporate Credit Card — Anna Kliminski"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Charging Bull",
+      "priority": 70,
+      "desc": "Lost Map — Charging Bull"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Anna Kliminski",
+      "priority": 70,
+      "desc": "Lost Map — Anna Kliminski"
+    },
+    {
+      "card_name": "Machete",
+      "target": "Charging Bull",
+      "priority": 65,
+      "desc": "Machete — Charging Bull"
+    },
+    {
+      "card_name": "Machete",
+      "target": "Anna Kliminski",
+      "priority": 65,
+      "desc": "Machete — Anna Kliminski"
+    },
+    {
+      "card_name": "Shotgun",
+      "target": "Charging Bull",
+      "priority": 80,
+      "desc": "Shotgun — Charging Bull"
+    },
+    {
+      "card_name": "Shotgun",
+      "target": "Anna Kliminski",
+      "priority": 80,
+      "desc": "Shotgun — Anna Kliminski"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Charging Bull",
+      "priority": 80,
+      "desc": "Assegai — Charging Bull"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Anna Kliminski",
+      "priority": 80,
+      "desc": "Assegai — Anna Kliminski"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Charging Bull",
+      "Anna Kliminski",
+      "Fade-To-Black"
+    ],
+    "save_for_combat": [
+      "Charging Bull"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Charging Bull",
+      "Anna Kliminski",
+      "Aegis"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

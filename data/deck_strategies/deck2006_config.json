@@ -1,0 +1,172 @@
+{
+  "deck_id": 2006,
+  "name": "Classic: Wyrm Frenzy",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "subjugation-of-gaia",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Subjugation of Gaia (Gn:7)"
+    },
+    {
+      "slug": "patagia",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Patagia (Gn:5)"
+    },
+    {
+      "slug": "consumption-of-gaia",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Consumption of Gaia (Gn:4)"
+    },
+    {
+      "slug": "eyes-of-hate",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Eyes of Hate (Gn:4)"
+    },
+    {
+      "slug": "true-fear",
+      "priority": 58,
+      "condition": "always",
+      "desc": "True Fear (Gn:4)"
+    },
+    {
+      "slug": "horns-of-the-impaler",
+      "priority": 50,
+      "condition": "always",
+      "desc": "Horns of the Impaler (Gn:3)"
+    },
+    {
+      "slug": "wyrm-hide",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Wyrm Hide (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "kirijama-the-hidden-foe",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Kirijama, 'The Hidden Foe'"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "count-vladimir-rustovitch": [
+      "entrail-rend",
+      "mangle",
+      "massive-wound",
+      "vital-blow",
+      "disarm",
+      "dodge",
+      "evasion",
+      "feint",
+      "run-like-hell",
+      "umbral-escape"
+    ],
+    "allonzo-montoya": [
+      "entrail-rend",
+      "mangle",
+      "massive-wound",
+      "vital-blow",
+      "disarm",
+      "dodge",
+      "evasion",
+      "feint",
+      "run-like-hell",
+      "umbral-escape"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Mage's Talisman",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Mage's Talisman — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Mage's Talisman",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Mage's Talisman — Allonzo Montoya"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Allonzo Montoya"
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Spiral Boomerang — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Spiral Boomerang — Allonzo Montoya"
+    },
+    {
+      "card_name": "Whip of the Wicked",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 65,
+      "desc": "Whip of the Wicked — Count Vladimir Rustovitch"
+    },
+    {
+      "card_name": "Whip of the Wicked",
+      "target": "Allonzo Montoya",
+      "priority": 65,
+      "desc": "Whip of the Wicked — Allonzo Montoya"
+    }
+  ],
+  "caern_preferences": [
+    "Caern of Rytthiku"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Count Vladimir Rustovitch",
+      "Allonzo Montoya"
+    ],
+    "save_for_combat": [
+      "Count Vladimir Rustovitch"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Count Vladimir Rustovitch",
+      "Allonzo Montoya"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

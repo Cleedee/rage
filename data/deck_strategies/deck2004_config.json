@@ -1,0 +1,185 @@
+{
+  "deck_id": 2004,
+  "name": "Classic: Questor Defence",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "gaia-s-will-corrupted",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Gaia's Will Corrupted (Gn:7)"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "blossom": [
+      "dry-gulch",
+      "septum-crushed",
+      "vital-blow",
+      "curb-stomp",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "block-and-strike",
+      "dodge",
+      "evasion",
+      "fancy-footwork"
+    ],
+    "longtooth-soulkiller": [
+      "dry-gulch",
+      "septum-crushed",
+      "vital-blow",
+      "curb-stomp",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "block-and-strike",
+      "dodge",
+      "evasion",
+      "fancy-footwork"
+    ],
+    "questor": [
+      "dry-gulch",
+      "septum-crushed",
+      "vital-blow",
+      "curb-stomp",
+      "lucky-blow",
+      "off-balanced-attack",
+      "stinging-wound",
+      "block-and-strike",
+      "dodge",
+      "evasion",
+      "fancy-footwork"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Chronicle of the Black Labyrinth",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Chronicle of the Black Labyrinth — Blossom"
+    },
+    {
+      "card_name": "Chronicle of the Black Labyrinth",
+      "target": "Longtooth Soulkiller",
+      "priority": 65,
+      "desc": "Chronicle of the Black Labyrinth — Longtooth Soulkiller"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Blossom"
+    },
+    {
+      "card_name": "Skin of the Hellbound",
+      "target": "Longtooth Soulkiller",
+      "priority": 65,
+      "desc": "Skin of the Hellbound — Longtooth Soulkiller"
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Spiral Boomerang — Blossom"
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Longtooth Soulkiller",
+      "priority": 65,
+      "desc": "Spiral Boomerang — Longtooth Soulkiller"
+    },
+    {
+      "card_name": "Tambertail's heart",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Tambertail's heart — Blossom"
+    },
+    {
+      "card_name": "Tambertail's heart",
+      "target": "Longtooth Soulkiller",
+      "priority": 65,
+      "desc": "Tambertail's heart — Longtooth Soulkiller"
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Vampire Blood — Blossom"
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Longtooth Soulkiller",
+      "priority": 65,
+      "desc": "Vampire Blood — Longtooth Soulkiller"
+    },
+    {
+      "card_name": "War Knife of Benning Simon",
+      "target": "Blossom",
+      "priority": 80,
+      "desc": "War Knife of Benning Simon — Blossom"
+    },
+    {
+      "card_name": "War Knife of Benning Simon",
+      "target": "Longtooth Soulkiller",
+      "priority": 80,
+      "desc": "War Knife of Benning Simon — Longtooth Soulkiller"
+    },
+    {
+      "card_name": "Whip of the Wicked",
+      "target": "Blossom",
+      "priority": 65,
+      "desc": "Whip of the Wicked — Blossom"
+    },
+    {
+      "card_name": "Whip of the Wicked",
+      "target": "Longtooth Soulkiller",
+      "priority": 65,
+      "desc": "Whip of the Wicked — Longtooth Soulkiller"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Blossom",
+      "Longtooth Soulkiller",
+      "Questor"
+    ],
+    "save_for_combat": [
+      "Blossom"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Blossom",
+      "Longtooth Soulkiller",
+      "Gaia's Will Corrupted"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

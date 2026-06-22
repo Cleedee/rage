@@ -1,0 +1,198 @@
+{
+  "deck_id": 2000,
+  "name": "Apocalypse: First Team 28",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "psychotic-hallucinations",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Psychotic Hallucinations (Gn:5)"
+    },
+    {
+      "slug": "infectious-touch",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Infectious Touch (Gn:3)"
+    },
+    {
+      "slug": "webbing",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Webbing (Gn:3)"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "elwood-slicer-nedervitch-crino": [
+      "anatomy-lesson",
+      "blood-lust",
+      "entrail-rend",
+      "massive-wound",
+      "overextended-attack",
+      "sever",
+      "dismember",
+      "iron-skin",
+      "rapid-reload",
+      "whirlwind-defense",
+      "stunning-strike"
+    ],
+    "carlotta-stearns": [
+      "anatomy-lesson",
+      "blood-lust",
+      "entrail-rend",
+      "massive-wound",
+      "overextended-attack",
+      "sever",
+      "dismember",
+      "iron-skin",
+      "rapid-reload",
+      "whirlwind-defense",
+      "stunning-strike"
+    ],
+    "charlene-brell": [
+      "anatomy-lesson",
+      "blood-lust",
+      "entrail-rend",
+      "massive-wound",
+      "overextended-attack",
+      "sever",
+      "dismember",
+      "iron-skin",
+      "rapid-reload",
+      "whirlwind-defense",
+      "stunning-strike"
+    ],
+    "leergo-cat-swallower": [
+      "anatomy-lesson",
+      "blood-lust",
+      "entrail-rend",
+      "massive-wound",
+      "overextended-attack",
+      "sever",
+      "dismember",
+      "iron-skin",
+      "rapid-reload",
+      "whirlwind-defense",
+      "stunning-strike"
+    ],
+    "melvin-spivey": [
+      "anatomy-lesson",
+      "blood-lust",
+      "entrail-rend",
+      "massive-wound",
+      "overextended-attack",
+      "sever",
+      "dismember",
+      "iron-skin",
+      "rapid-reload",
+      "whirlwind-defense",
+      "stunning-strike"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "9mm Semi-Auto Pistol",
+      "target": "Elwood Slicer Nedervitch Crinos",
+      "priority": 80,
+      "desc": "9mm Semi-Auto Pistol — Elwood Slicer Nedervitch Crinos"
+    },
+    {
+      "card_name": "9mm Semi-Auto Pistol",
+      "target": "Carlotta Stearns",
+      "priority": 80,
+      "desc": "9mm Semi-Auto Pistol — Carlotta Stearns"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Elwood Slicer Nedervitch Crinos",
+      "priority": 80,
+      "desc": "Chainsaw — Elwood Slicer Nedervitch Crinos"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Carlotta Stearns",
+      "priority": 80,
+      "desc": "Chainsaw — Carlotta Stearns"
+    },
+    {
+      "card_name": "Rocket Launcher",
+      "target": "Elwood Slicer Nedervitch Crinos",
+      "priority": 65,
+      "desc": "Rocket Launcher — Elwood Slicer Nedervitch Crinos"
+    },
+    {
+      "card_name": "Rocket Launcher",
+      "target": "Carlotta Stearns",
+      "priority": 65,
+      "desc": "Rocket Launcher — Carlotta Stearns"
+    },
+    {
+      "card_name": "Shotgun",
+      "target": "Elwood Slicer Nedervitch Crinos",
+      "priority": 80,
+      "desc": "Shotgun — Elwood Slicer Nedervitch Crinos"
+    },
+    {
+      "card_name": "Shotgun",
+      "target": "Carlotta Stearns",
+      "priority": 80,
+      "desc": "Shotgun — Carlotta Stearns"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Elwood Slicer Nedervitch Crinos",
+      "priority": 80,
+      "desc": "Assegai — Elwood Slicer Nedervitch Crinos"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Carlotta Stearns",
+      "priority": 80,
+      "desc": "Assegai — Carlotta Stearns"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Carlotta Stearns",
+      "Charlene Brell"
+    ],
+    "save_for_combat": [
+      "Elwood Slicer Nedervitch Crinos"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Elwood Slicer Nedervitch Crinos",
+      "Carlotta Stearns",
+      "Psychotic Hallucinations"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

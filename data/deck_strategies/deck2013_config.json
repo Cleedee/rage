@@ -1,0 +1,160 @@
+{
+  "deck_id": 2013,
+  "name": "Passos da Morte (Ren20)",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "sense-of-the-prey",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Sense of the Prey (Gn:6)"
+    },
+    {
+      "slug": "catfeet",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Catfeet (Gn:4)"
+    },
+    {
+      "slug": "spirit-of-the-fray",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Spirit of the Fray (Gn:3)"
+    },
+    {
+      "slug": "blur-of-the-milky-eye",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Blur of the Milky Eye (Gn:2)"
+    },
+    {
+      "slug": "inspiration",
+      "priority": 58,
+      "condition": "always",
+      "desc": "Inspiration (Gn:2)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "visit-from-white-father",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Visit from White Father"
+    },
+    {
+      "slug": "checking-the-classifieds",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Checking the Classifieds"
+    },
+    {
+      "slug": "owl",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Owl"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "allya-sun-follower": [
+      "head-butt",
+      "overextended-attack",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "evasion",
+      "surprise-attack",
+      "telling-blow"
+    ],
+    "stalks-death": [
+      "head-butt",
+      "overextended-attack",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "evasion",
+      "surprise-attack",
+      "telling-blow"
+    ],
+    "buries-the-dead": [
+      "head-butt",
+      "overextended-attack",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "evasion",
+      "surprise-attack",
+      "telling-blow"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Bivouac",
+      "target": "Allya Sun-Follower",
+      "priority": 65,
+      "desc": "Bivouac — Allya Sun-Follower"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Stalks Death",
+      "priority": 65,
+      "desc": "Bivouac — Stalks Death"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Allya Sun-Follower",
+      "priority": 80,
+      "desc": "Assegai — Allya Sun-Follower"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Stalks Death",
+      "priority": 80,
+      "desc": "Assegai — Stalks Death"
+    }
+  ],
+  "caern_preferences": [
+    "Sky River Caern"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Stalks Death",
+      "Buries the Dead"
+    ],
+    "save_for_combat": [
+      "Allya Sun-Follower"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Allya Sun-Follower",
+      "Stalks Death"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

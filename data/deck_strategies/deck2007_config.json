@@ -1,0 +1,192 @@
+{
+  "deck_id": 2007,
+  "name": "Classic: Gaia Weenie",
+  "style": "balanced",
+  "gift_priorities": [
+    {
+      "slug": "sticky-paws",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Sticky Paws (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "wyldstorm",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Wyldstorm"
+    },
+    {
+      "slug": "new-moon",
+      "priority": 75,
+      "condition": "always",
+      "desc": "New Moon"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "carleson-ruah": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "cesare-sodalis": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "dharma-bum": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "banana-split": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "frenar": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "jubati": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "passer": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ],
+    "susan-anthony": [
+      "entrail-rend",
+      "overextended-attack",
+      "bitch-slap",
+      "bite",
+      "lucky-blow",
+      "off-balanced-attack",
+      "reckless-swing",
+      "stinging-wound",
+      "dodge",
+      "run-like-hell",
+      "surprise-attack"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Chainsaw",
+      "target": "Carleson Ruah",
+      "priority": 80,
+      "desc": "Chainsaw — Carleson Ruah"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Cesare Sodalis",
+      "priority": 80,
+      "desc": "Chainsaw — Cesare Sodalis"
+    }
+  ],
+  "caern_preferences": [
+    "Sky River Caern"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Susan Anthony"
+    ],
+    "save_for_combat": [
+      "Carleson Ruah"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "ffa_diplomacy": "weaken_largest"
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Carleson Ruah",
+      "Cesare Sodalis"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

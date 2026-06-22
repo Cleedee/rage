@@ -1,0 +1,193 @@
+{
+  "deck_id": 2016,
+  "name": "Umbral Wardens",
+  "style": "aggro",
+  "gift_priorities": [
+    {
+      "slug": "parting-the-velvet-curtain",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Parting the Velvet Curtain (Gn:4)"
+    },
+    {
+      "slug": "power-of-the-ways",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Power of the Ways (Gn:4)"
+    },
+    {
+      "slug": "command-spirit",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Command Spirit (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "chimera",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Chimera"
+    },
+    {
+      "slug": "close-gauntlet",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Close Gauntlet"
+    },
+    {
+      "slug": "iron-will",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Iron Will"
+    },
+    {
+      "slug": "spirit-backlash",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Spirit Backlash"
+    },
+    {
+      "slug": "spiritual-revelation",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Spiritual Revelation"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "cernonous": [
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "lucky-blow",
+      "sap-spirit",
+      "umbral-flurry",
+      "block-and-strike",
+      "evasion",
+      "umbral-escape"
+    ],
+    "fade-to-black": [
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "lucky-blow",
+      "sap-spirit",
+      "umbral-flurry",
+      "block-and-strike",
+      "evasion",
+      "umbral-escape"
+    ],
+    "modi-votishal": [
+      "maim",
+      "massive-wound",
+      "vital-blow",
+      "disembowelment",
+      "lucky-blow",
+      "sap-spirit",
+      "umbral-flurry",
+      "block-and-strike",
+      "evasion",
+      "umbral-escape"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Grand Klaive",
+      "target": "Cernonous",
+      "priority": 80,
+      "desc": "Grand Klaive — Cernonous"
+    },
+    {
+      "card_name": "Grand Klaive",
+      "target": "Fade-To-Black",
+      "priority": 80,
+      "desc": "Grand Klaive — Fade-To-Black"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Cernonous",
+      "priority": 65,
+      "desc": "Bivouac — Cernonous"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Fade-To-Black",
+      "priority": 65,
+      "desc": "Bivouac — Fade-To-Black"
+    },
+    {
+      "card_name": "Concertina Wire",
+      "target": "Cernonous",
+      "priority": 65,
+      "desc": "Concertina Wire — Cernonous"
+    },
+    {
+      "card_name": "Concertina Wire",
+      "target": "Fade-To-Black",
+      "priority": 65,
+      "desc": "Concertina Wire — Fade-To-Black"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Cernonous",
+      "priority": 80,
+      "desc": "Assegai — Cernonous"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Fade-To-Black",
+      "priority": 80,
+      "desc": "Assegai — Fade-To-Black"
+    }
+  ],
+  "caern_preferences": [
+    "Caern of the Snow Leopard",
+    "Sky River Caern"
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Cernonous",
+      "Fade-To-Black",
+      "Modi Votishal"
+    ],
+    "save_for_combat": [
+      "Cernonous"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "ffa_diplomacy": "weaken_largest"
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Cernonous",
+      "Fade-To-Black"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "deck_id": 1054,
+  "name": "A Peste Negra — Ratkin (praga, contagio, enxame)",
+  "style": "control",
+  "gift_priorities": [
+    {
+      "slug": "crawling-poison",
+      "priority": 90,
+      "condition": "always",
+      "desc": "Crawling Poison (Gn:7)"
+    },
+    {
+      "slug": "riot",
+      "priority": 82,
+      "condition": "always",
+      "desc": "Riot (Gn:6)"
+    },
+    {
+      "slug": "deny-the-hungry",
+      "priority": 74,
+      "condition": "always",
+      "desc": "Deny the Hungry (Gn:5)"
+    },
+    {
+      "slug": "gnaw",
+      "priority": 66,
+      "condition": "always",
+      "desc": "Gnaw (Gn:5)"
+    },
+    {
+      "slug": "backbite",
+      "priority": 58,
+      "condition": "always",
+      "desc": "Backbite (Gn:4)"
+    },
+    {
+      "slug": "burrow",
+      "priority": 50,
+      "condition": "always",
+      "desc": "Burrow (Gn:4)"
+    },
+    {
+      "slug": "poison-tumors",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Poison Tumors (Gn:4)"
+    },
+    {
+      "slug": "cooking",
+      "priority": 45,
+      "condition": "always",
+      "desc": "Cooking (Gn:3)"
+    }
+  ],
+  "event_priorities": [
+    {
+      "slug": "urban-renewal",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Urban Renewal"
+    },
+    {
+      "slug": "rewards-of-leadership",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Rewards of Leadership"
+    },
+    {
+      "slug": "checking-the-classifieds",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Checking the Classifieds"
+    },
+    {
+      "slug": "iron-will",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Iron Will"
+    },
+    {
+      "slug": "lunar-eclipse",
+      "priority": 75,
+      "condition": "always",
+      "desc": "Lunar Eclipse"
+    }
+  ],
+  "resource_play_order": [
+    "character",
+    "caern",
+    "territory",
+    "gift",
+    "event",
+    "equipment",
+    "action",
+    "ally",
+    "victim",
+    "enemy"
+  ],
+  "combat_action_preferences": {
+    "allamande": [
+      "head-butt",
+      "maim",
+      "bite",
+      "brutal-kick",
+      "disembowelment",
+      "lucky-blow",
+      "planned-strike",
+      "reckless-swing",
+      "spirited-strike",
+      "block",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "dodge",
+      "fancy-footwork",
+      "fetal-position",
+      "umbral-escape",
+      "careful-strike",
+      "hamstringed",
+      "riposte"
+    ],
+    "lord-ebola": [
+      "head-butt",
+      "maim",
+      "bite",
+      "brutal-kick",
+      "disembowelment",
+      "lucky-blow",
+      "planned-strike",
+      "reckless-swing",
+      "spirited-strike",
+      "block",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "dodge",
+      "fancy-footwork",
+      "fetal-position",
+      "umbral-escape",
+      "careful-strike",
+      "hamstringed",
+      "riposte"
+    ],
+    "deadly-welcome": [
+      "head-butt",
+      "maim",
+      "bite",
+      "brutal-kick",
+      "disembowelment",
+      "lucky-blow",
+      "planned-strike",
+      "reckless-swing",
+      "spirited-strike",
+      "block",
+      "block-and-strike",
+      "you-unexpectedly-lash-out-at-your-opponent-catching-him-by-surprise-this-attack-can-not-be-dodged-sucker-punch-does-2-damage-if-it-is-a-bluff",
+      "disarm",
+      "dodge",
+      "fancy-footwork",
+      "fetal-position",
+      "umbral-escape",
+      "careful-strike",
+      "hamstringed",
+      "riposte"
+    ]
+  },
+  "equipment_assignments": [
+    {
+      "card_name": "Bivouac",
+      "target": "Allamande",
+      "priority": 65,
+      "desc": "Bivouac — Allamande"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Lord Ebola",
+      "priority": 65,
+      "desc": "Bivouac — Lord Ebola"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Allamande",
+      "priority": 70,
+      "desc": "Cellular Phone — Allamande"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Lord Ebola",
+      "priority": 70,
+      "desc": "Cellular Phone — Lord Ebola"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Allamande",
+      "priority": 80,
+      "desc": "Chainsaw — Allamande"
+    },
+    {
+      "card_name": "Chainsaw",
+      "target": "Lord Ebola",
+      "priority": 80,
+      "desc": "Chainsaw — Lord Ebola"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Allamande",
+      "priority": 70,
+      "desc": "Lost Map — Allamande"
+    },
+    {
+      "card_name": "Lost Map",
+      "target": "Lord Ebola",
+      "priority": 70,
+      "desc": "Lost Map — Lord Ebola"
+    }
+  ],
+  "umbra_strategy": {
+    "enter_characters": [
+      "Allamande",
+      "Lord Ebola",
+      "Deadly Welcome"
+    ],
+    "save_for_combat": [
+      "Allamande"
+    ],
+    "always_enter_if_opponent_cannot": true,
+    "enter_with_high_gnosis": true
+  },
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": [
+        "Victim",
+        "Enemy"
+      ]
+    },
+    "avoid_overextend": true
+  },
+  "redraw_rules": {
+    "never_discard": [
+      "Allamande",
+      "Lord Ebola",
+      "Crawling Poison"
+    ],
+    "always_discard_if_duplicate": [],
+    "prefer_discard_types": []
+  }
+}
