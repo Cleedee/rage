@@ -2,7 +2,7 @@
   "deck_id": 2031,
   "name": "Os Indestrutíveis — Tanques de Gaia v2",
   "style": "control",
-  "desc": "Deck ultra-resistente com 2 tanques (Modi Hl:10, Cernonous Hl:7). NÃO atacar personagens inimigos diretamente (never_initiate_alpha_combat=true). Vence acumulando VP ao matar PRÓPRIAS vítimas no Hunting Grounds: coloca Happy Tourists (Rn:3 Hl:5) e Cityboy Kinfolk (Rn:2 Hl:3) no HG na Resource Phase, mata no Combat Phase. Caern of Rytthiku permite matar inimigos também. Defesa em 4 camadas. 53 cartas totais.",
+  "desc": "Deck ultra-resistente com 2 tanques (Modi Hl:10, Cernonous Hl:7). never_initiate_alpha_combat: prefere HG targets quando disponiveis, ataca personagens como fallback. Vence por VP ao matar inimigos no HG (Caern of Rytthiku) ou matando personagens quando necessario. Defesa em 4 camadas: Caerns, gifts, equipamentos, combat actions. 52 cartas.",
 
   "gift_priorities": [
     {
@@ -174,9 +174,9 @@
     "character_kill_order": "lowest_health",
     "hunting_grounds": {
       "prefer_prey_over_enemy": false,
-      "priority_types": ["Victim", "Enemy"],
-      "victim_kill_order": ["Happy Tourists", "Cityboy Kinfolk"],
-      "desc": "Colocar vítimas próprias no HG na Resource Phase. Matá-las no Combat Phase por VP (Happy Tourists Rn:3, Cityboy Kinfolk Rn:2). Também mata inimigos do oponente se disponíveis."
+      "priority_types": ["Enemy", "Victim"],
+      "enemy_kill_order": ["Hogling"],
+      "desc": "Atacar inimigos no HG primeiro (Hogling Rn:5 com Caern of Rytthiku). Se HG vazio, atacar personagens do oponente (fallback). Gaia ganha 0 VP por Victims."
     },
     "ffa_diplomacy": "weaken_largest",
     "defensive_only": true,

@@ -1263,14 +1263,30 @@ class PriorityBot:
                          [str(alvo_hg.card_id)])
             return f'alpha_attack_hg_{meu_alpha_id}'
 
-        # 🛑 REGRA: never_initiate_alpha_combat — nao atacar personagens
+        # 🛑 REGRA: never_initiate_alpha_combat — preferir HG a personagens
         if self._has_strategy:
             target_priority = self.strategy.get('target_priority', {})
             if target_priority.get('never_initiate_alpha_combat', False):
-                self.game.add_log(
-                    f'[BOT] Alpha {alpha_card.name} passou '
-                    f'(never_initiate_alpha_combat — defesa pura)')
-                return None
+                # Verifica se ha ALGO viavel no HG (proprias vitimas ou inimigos)
+                hg_alvos = []
+                for c in self.game.hunting_grounds_cards:
+                    if c.health_current > 0:
+                        hg_alvos.append(c)
+                for p in self.game.players:
+                    for c in p.hunting_grounds:
+                        if c.health_current > 0:
+                            hg_alvos.append(c)
+                if not hg_alvos:
+                    # Sem nada no HG — permite ataque a personagens
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} — HG vazio, '
+                        f'atacando personagem (fallback)')
+                else:
+                    # Ha alvos no HG — nao atacar personagens
+                    self.game.add_log(
+                        f'[BOT] Alpha {alpha_card.name} passou '
+                        f'(never_initiate_alpha_combat — ha alvos no HG)')
+                    return None
 
         # 1. Tenta desafiar nao-alfa de alto valor (6.5.2)
         # P1: Antes de desafiar, calcula chance de aceitacao
@@ -2291,12 +2307,21 @@ class PriorityBot:
         for c in self.game.hunting_grounds_cards:
             ct = (c.card_type or '').lower()
             if any(t in ct for t in TIPOS_HG) and c.health_current > 0:
-                # Nao ataca propria presa
+                # Nao ataca propria presa (a menos que seja defensiva)
                 if c.owner_id and c.owner_id != self.player_id:
                     candidatos.append(c)
+                elif c.owner_id and c.owner_id == self.player_id and pode_atacar_proprias:
+                    candidatos.append(c)
+        # Verifica se pode atacar proprias vitimas (estrategia defensiva)
+        pode_atacar_proprias = False
+        if self._has_strategy:
+            tp = self.strategy.get('target_priority', {})
+            if tp.get('never_initiate_alpha_combat', False):
+                pode_atacar_proprias = True
+
         # HG de cada jogador
         for p in self.game.players:
-            if p.id == self.player_id:
+            if p.id == self.player_id and not pode_atacar_proprias:
                 continue  # Nao ataca proprias cartas
             for c in p.hunting_grounds:
                 ct = (c.card_type or '').lower()
@@ -2424,11 +2449,21 @@ class PriorityBot:
         Com N jogadores, avia ameacas de TODOS os oponentes,
         priorizando criaturas do lider em VP.
         """
-        # 🛑 REGRA: never_initiate_alpha_combat — nao atacar personagens
+        # 🛑 REGRA: never_initiate_alpha_combat — bloquear se HG tem alvos
         if self._has_strategy:
             target_priority = self.strategy.get('target_priority', {})
             if target_priority.get('never_initiate_alpha_combat', False):
-                return None
+                # So bloqueia se HA algo viavel no HG
+                hg_alvos = []
+                for c in self.game.hunting_grounds_cards:
+                    if c.health_current > 0:
+                        hg_alvos.append(c)
+                for p in self.game.players:
+                    for c in p.hunting_grounds:
+                        if c.health_current > 0:
+                            hg_alvos.append(c)
+                if hg_alvos:
+                    return None
 
         me = self.player
         opponents = self._get_opponents()
@@ -2752,11 +2787,21 @@ class PriorityBot:
         - control: so ataca se pode eliminar
         - vp_race: evita combate arriscado
         """
-        # 🛑 REGRA: never_initiate_alpha_combat — nao atacar personagens
+        # 🛑 REGRA: never_initiate_alpha_combat — bloquear se HG tem alvos
         if self._has_strategy:
             target_priority = self.strategy.get('target_priority', {})
             if target_priority.get('never_initiate_alpha_combat', False):
-                return None
+                # So bloqueia se HA algo viavel no HG
+                hg_alvos = []
+                for c in self.game.hunting_grounds_cards:
+                    if c.health_current > 0:
+                        hg_alvos.append(c)
+                for p in self.game.players:
+                    for c in p.hunting_grounds:
+                        if c.health_current > 0:
+                            hg_alvos.append(c)
+                if hg_alvos:
+                    return None
 
         me = self.player
         opponents = self._get_opponents()
