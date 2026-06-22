@@ -1,8 +1,8 @@
 {
   "deck_id": 2031,
-  "name": "Os Indestrutíveis — Tanques de Gaia",
+  "name": "Os Indestrutíveis — Tanques de Gaia v2",
   "style": "control",
-  "desc": "Deck ultra-resistente com 2 tanques (Modi Hl:10, Cernonous Hl:7). NÃO atacar personagens inimigos diretamente. Vence acumulando VP ao matar inimigos no Hunting Grounds (Caern of Rytthiku). Defesa em 3 camadas: Caerns (Sky River, Hollow Heart), gifts defensivos (Resist Pain, Stench of Death), equipamentos (Flak Jacket, Vampire Blood, Skin of the Hellbound). Deixar o oponente se esgotar atacando nossas defesas.",
+  "desc": "Deck ultra-resistente com 2 tanques (Modi Hl:10, Cernonous Hl:7). NÃO atacar personagens inimigos diretamente (never_initiate_alpha_combat=true). Vence acumulando VP ao matar inimigos no Hunting Grounds (Caern of Rytthiku). Defesa em 4 camadas: Caerns, gifts defensivos (Shroud, Stench of Death, Resist Pain), equipamentos (Flak Jacket, Vampire Blood, Bivouac, Skin), combat actions (Block and Strike, Evasion, Fancy Footwork, Umbral Escape). 52 cartas totais.",
 
   "gift_priorities": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "slug": "resist-pain",
-      "priority": 92,
+      "priority": 93,
       "condition": "always",
       "desc": "Resist Pain (Gn:3) — Protege contra redução de Rage. Permanente."
     },
@@ -25,15 +25,21 @@
     },
     {
       "slug": "spirit-of-the-fray",
-      "priority": 82,
+      "priority": 85,
       "condition": "always",
       "desc": "Spirit of the Fray (Gn:3) — Ataca primeiro quando necessário."
     },
     {
       "slug": "stench-of-death",
-      "priority": 78,
+      "priority": 82,
       "condition": "always",
       "desc": "Stench of Death (Gn:2) — Só espíritos/Banes/Metis podem atacar. Permanente."
+    },
+    {
+      "slug": "shroud",
+      "priority": 80,
+      "condition": "always",
+      "desc": "Shroud (Gn:2) — Encerra qualquer combate instantaneamente. Fuga de emergência."
     }
   ],
 
@@ -57,13 +63,18 @@
       "desc": "Sky River Caern (Gn:3) — Não-alfa imune a challenge/sneak attack. Vital com 2 chars."
     },
     {
+      "card_name": "Court of Five Chambers",
+      "priority": 88,
+      "desc": "Court of Five Chambers (Gn:4) — Compra 2 cartas de combate no início do combate."
+    },
+    {
       "card_name": "Hollow Heart Caern",
       "priority": 85,
       "desc": "Hollow Heart Caern (Gn:4) — Personagens nunca perdem Gnosis."
     },
     {
       "card_name": "Caern of Rytthiku",
-      "priority": 80,
+      "priority": 82,
       "desc": "Caern of Rytthiku (Gn:3) — Permite atacar inimigos no HG por VP (vitória alternativa)."
     }
   ],
@@ -72,18 +83,22 @@
     "modi-votishal": [
       "block-and-strike",
       "evasion",
+      "fancy-footwork",
       "massive-wound",
       "head-butt",
       "disembowelment",
+      "lucky-blow",
       "umbral-escape",
       "run-like-hell"
     ],
     "cernonous": [
       "block-and-strike",
       "evasion",
+      "fancy-footwork",
       "head-butt",
       "massive-wound",
       "disembowelment",
+      "lucky-blow",
       "umbral-escape",
       "run-like-hell"
     ]
@@ -93,38 +108,50 @@
     {
       "card_name": "Flak Jacket",
       "target": "Modi Votishal",
-      "priority": 92,
+      "priority": 93,
       "desc": "Flak Jacket — Anula 4 dano. Modi como tanque principal (Hl:10+2)."
     },
     {
       "card_name": "Flak Jacket",
       "target": "Cernonous",
-      "priority": 85,
+      "priority": 86,
       "desc": "Flak Jacket — Proteção para o segundo tanque."
     },
     {
       "card_name": "Vampire Blood",
       "target": "Modi Votishal",
-      "priority": 87,
-      "desc": "Vampire Blood — Cura a qualquer momento. Modi tanka e se cura."
+      "priority": 88,
+      "desc": "Vampire Blood — Cura a qualquer momento."
     },
     {
       "card_name": "Vampire Blood",
       "target": "Cernonous",
-      "priority": 80,
+      "priority": 81,
       "desc": "Vampire Blood — Cura para Cernonous."
     },
     {
       "card_name": "Skin of the Hellbound",
       "target": "Modi Votishal",
-      "priority": 82,
-      "desc": "Skin of the Hellbound — Imune a dano Rg≥6. Modi tanka ataques pesados."
+      "priority": 83,
+      "desc": "Skin of the Hellbound — Imune a dano Rg≥6."
     },
     {
       "card_name": "Skin of the Hellbound",
       "target": "Cernonous",
-      "priority": 75,
+      "priority": 76,
       "desc": "Skin of the Hellbound — Imune a dano Rg≥6."
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Modi Votishal",
+      "priority": 80,
+      "desc": "Bivouac — +1 cura por Regeneration. Mantém Modi saudável."
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Cernonous",
+      "priority": 74,
+      "desc": "Bivouac — Cura extra para Cernonous."
     },
     {
       "card_name": "War Knife of Benning Simon",
@@ -139,7 +166,7 @@
     "save_for_combat": ["Modi Votishal"],
     "always_enter_if_opponent_cannot": true,
     "enter_with_high_gnosis": true,
-    "desc": "Cernonous (Gn:7) entra na Umbra para explorar. Modi (Gn:8, Hl:10+2) fica no HG como tanque. Sky River Caern protege Cernonous enquanto está fora."
+    "desc": "Cernonous (Gn:7) entra na Umbra para explorar. Modi (Gn:8, Hl:10+2) fica no HG como tanque. Sky River Caern protege Modi quando Cernonous está na Umbra."
   },
 
   "target_priority": {
@@ -164,7 +191,8 @@
       "Resist Pain",
       "Flak Jacket",
       "Block and Strike",
-      "Sky River Caern"
+      "Sky River Caern",
+      "Shroud"
     ],
     "always_discard_if_duplicate": [
       "Run Like Hell",

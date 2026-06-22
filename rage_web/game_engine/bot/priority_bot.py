@@ -1263,6 +1263,15 @@ class PriorityBot:
                          [str(alvo_hg.card_id)])
             return f'alpha_attack_hg_{meu_alpha_id}'
 
+        # 🛑 REGRA: never_initiate_alpha_combat — nao atacar personagens
+        if self._has_strategy:
+            target_priority = self.strategy.get('target_priority', {})
+            if target_priority.get('never_initiate_alpha_combat', False):
+                self.game.add_log(
+                    f'[BOT] Alpha {alpha_card.name} passou '
+                    f'(never_initiate_alpha_combat — defesa pura)')
+                return None
+
         # 1. Tenta desafiar nao-alfa de alto valor (6.5.2)
         # P1: Antes de desafiar, calcula chance de aceitacao
         # (so desafia se prob >= 50% e threat alto)
@@ -2415,6 +2424,12 @@ class PriorityBot:
         Com N jogadores, avia ameacas de TODOS os oponentes,
         priorizando criaturas do lider em VP.
         """
+        # 🛑 REGRA: never_initiate_alpha_combat — nao atacar personagens
+        if self._has_strategy:
+            target_priority = self.strategy.get('target_priority', {})
+            if target_priority.get('never_initiate_alpha_combat', False):
+                return None
+
         me = self.player
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
@@ -2737,6 +2752,12 @@ class PriorityBot:
         - control: so ataca se pode eliminar
         - vp_race: evita combate arriscado
         """
+        # 🛑 REGRA: never_initiate_alpha_combat — nao atacar personagens
+        if self._has_strategy:
+            target_priority = self.strategy.get('target_priority', {})
+            if target_priority.get('never_initiate_alpha_combat', False):
+                return None
+
         me = self.player
         opponents = self._get_opponents()
         lento = self._is_slow_deck()
