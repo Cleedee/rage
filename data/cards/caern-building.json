@@ -1,0 +1,26 @@
+{
+  "id": "caern-building",
+  "nome": "Caern Building",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Dono ganha 4 VP. Todos personagens Gaia ganham +2 Health permanente.",
+      "efeitos": [
+        {
+          "tipo": "moot_ganhar_vp",
+          "vp": 4
+        },
+        {
+          "tipo": "moot_construir_caern",
+          "gnosis": 6
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 1198,
+    "texto_original": "This Rite takes the form of a moot, as caern building requires cooperation. Select a player to own the caern. If the vote passes, the player gains 4 victory points. For the remainder of the game, all Gaia characters in play get +2 Health.",
+    "slug": "caern-building"
+  }
+}

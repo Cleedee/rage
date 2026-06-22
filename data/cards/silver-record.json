@@ -1,0 +1,22 @@
+{
+  "id": "silver-record",
+  "nome": "Silver Record",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Se aprovado, vale 2 VP para o pack escolhido.",
+      "efeitos": [
+        {
+          "tipo": "moot_ganhar_vp",
+          "vp": 2
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 1237,
+    "texto_original": "Select 1 pack in play. A successful vote includes 1 of this pack's exploits in the legendary Silver Record. If the vote passes, this card is worth 2 victory points to the chosen pack. A pack may not benefit from more than 1 Silver Record per game.",
+    "slug": "silver-record"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "the-litany-s-guidance",
+  "nome": "The Litany's Guidance",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Pelo resto do jogo, packs Gaia nao ganham VP por matar personagens Gaia.",
+      "efeitos": [
+        {
+          "tipo": "moot_restricao_global",
+          "restricao": "litany_no_vp_gaia_killing_gaia",
+          "descricao": "The Litany's Guidance: Gaia packs nao ganham VP matando Gaia"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 1242,
+    "texto_original": "The character who calls this vote declares war on the Wyrm and its followers. If The Litany's Guidance passes, for the remainder of the game Gaia packs will not gain any victory points for killing Gaia characters. Additionally, for the rest of the game all Gaia characters gain +1 Health in the Hunting Grounds.",
+    "slug": "the-litany-s-guidance"
+  }
+}

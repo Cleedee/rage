@@ -1,0 +1,22 @@
+{
+  "id": "the-stolen-wolf",
+  "nome": "The Stolen Wolf",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Vitima reverte a forma breed e nao pode mudar de forma ate enlouquecer.",
+      "efeitos": [
+        {
+          "tipo": "moot_rebaixar_forma",
+          "forma": "breed"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 1243,
+    "texto_original": "Select a Garou. Only members of that Garou's auspice may vote. If passed, the victim reverts to his breed form. He cannot change form until he frenzies. If the vote fails, the victim frenzies and immediately attacks whoever angered him (maximum one combat round).",
+    "slug": "the-stolen-wolf"
+  }
+}

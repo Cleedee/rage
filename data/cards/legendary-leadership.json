@@ -1,14 +1,15 @@
 {
   "id": "legendary-leadership",
   "nome": "Legendary Leadership",
-  "tipo": "Quest",
+  "tipo": "Event",
   "modos": [
     {
-      "descricao": "Apos Moot bem-sucedido. Ganha 3 VP.",
+      "descricao": "Apos um Moot bem-sucedido, ganha VP igual ao Renome da proposta.",
+      "condicao_uso": "after_winning_moot",
       "efeitos": [
         {
           "tipo": "moot_ganhar_vp",
-          "vp": 3
+          "vp_from_moot_renown": true
         }
       ]
     }

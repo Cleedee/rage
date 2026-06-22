@@ -1,0 +1,24 @@
+{
+  "id": "winter-wolf",
+  "nome": "Winter Wolf",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Remove 1 Garou de Renome 6+ do jogo. Dono ganha VP igual ao Renome do alvo.",
+      "efeitos": [
+        {
+          "tipo": "moot_remover_personagem",
+          "renown_min": 6,
+          "renown_max": 99,
+          "vp_por_renown": true
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 1247,
+    "texto_original": "A successful vote removes any 1 Garou of Renown 6 or higher from play. This Garou is placed in its owner's victory pile and is worth its Renown in victory points.",
+    "slug": "winter-wolf"
+  }
+}

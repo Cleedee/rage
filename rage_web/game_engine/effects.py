@@ -223,7 +223,12 @@ class ResolvedorEfeitos:
         if alvo is None and efeito.tipo not in (EfeitoTipo.DESCARTE,
                                                   EfeitoTipo.COMPRAR,
                                                   EfeitoTipo.GANHAR_VP,
-                                                  EfeitoTipo.PERDER_VP):
+                                                  EfeitoTipo.PERDER_VP,
+                                                  EfeitoTipo.MOOT_GANHAR_VP,
+                                                  EfeitoTipo.MOOT_REMOVER_PERSONAGEM,
+                                                  EfeitoTipo.MOOT_RESTRICAO_GLOBAL,
+                                                  EfeitoTipo.MOOT_REBAIXAR_FORMA,
+                                                  EfeitoTipo.MOOT_CONSTRUIR_CAERN):
             self.log.append(f'Sem alvo valido para {efeito.tipo.value}')
             return False
 
@@ -3552,6 +3557,36 @@ class ResolvedorEfeitos:
 
         return True
 
+    def _auto_target_moot_personagem(
+            self, jogador: PlayerState,
+            renown_min: int = 0, renown_max: int = 99,
+            origem: Optional[CardInstance] = None) -> Optional[CardInstance]:
+        """Auto-target: encontra o melhor personagem inimigo para efeitos
+        de Moot (Winter Wolf, Skindancer, The Stolen Wolf).
+
+        Prioriza:
+        1. Maior Renome dentro do range
+        2. Personagens em Pack Home (nao em Umbra/HG)
+        3. Personagens vivos (health_current > 0)
+        """
+        melhores = []
+        for p in self.game.players:
+            if p.id == jogador.id:
+                continue
+            for c in p.pack_home:
+                ct = (c.card_type or '').lower()
+                if 'character' not in ct and 'ally' not in ct:
+                    continue
+                if c.health_current <= 0:
+                    continue
+                if renown_min <= c.renown <= renown_max:
+                    melhores.append(c)
+        if not melhores:
+            return None
+        # Ordena por Renome decrescente, depois por Health (mais viavel)
+        melhores.sort(key=lambda x: (-x.renown, -x.health_current))
+        return melhores[0]
+
     # -------------------------------------------------------------------
     # Resolvedores de Efeitos de Moot (Juntas)
     # -------------------------------------------------------------------
@@ -3560,11 +3595,23 @@ class ResolvedorEfeitos:
                                             origem: CardInstance,
                                             jogador: PlayerState,
                                             alvo) -> bool:
-        """Remove um personagem do jogo (Skindancer, Winter Wolf)."""
-        if not isinstance(alvo, CardInstance):
-            return False
+        """Remove um personagem do jogo (Skindancer, Winter Wolf).
+
+        Se alvo nao for fornecido, encontra automaticamente o melhor
+        personagem inimigo com Renome dentro do range especificado.
+        """
         renown_min = efeito.params.get('renown_min', 0)
         renown_max = efeito.params.get('renown_max', 99)
+        if not isinstance(alvo, CardInstance):
+            # Auto-target: encontra o personagem inimigo com maior
+            # Renome dentro do range
+            alvo = self._auto_target_moot_personagem(
+                jogador, renown_min, renown_max, origem)
+            if not alvo:
+                self.game.add_log(
+                    f'[Moot] Nenhum alvo viavel (Ren {renown_min}-{renown_max})'
+                )
+                return False
         if not (renown_min <= alvo.renown <= renown_max):
             self.game.add_log(
                 f'{alvo.name} (Ren {alvo.renown}) nao atende ao '
@@ -3579,11 +3626,25 @@ class ResolvedorEfeitos:
                 if alvo in zone_list:
                     zone_list.remove(alvo)
                     break
-            dono_alvo.discard_sept.append(alvo)
-            alvo.zone = Zone.DISCARD_SEPT
-            self.game.add_log(
-                f'[Moot] {alvo.name} foi removido do jogo!'
-            )
+            # Skindancer: coloca no Hunting Grounds como Enemy
+            colocar_hg = efeito.params.get('colocar_hg', False)
+            if colocar_hg:
+                alvo.card_type = 'Enemy'
+                alvo.zone = Zone.HUNTING_GROUNDS
+                if alvo.owner_id == jogador.id:
+                    self.game.hunting_grounds_cards.append(alvo)
+                else:
+                    dono_alvo.hunting_grounds.append(alvo)
+                self.game.add_log(
+                    f'[Moot] {alvo.name} foi revelado Skindancer '
+                    f'e colocado no HG!'
+                )
+            else:
+                dono_alvo.discard_sept.append(alvo)
+                alvo.zone = Zone.DISCARD_SEPT
+                self.game.add_log(
+                    f'[Moot] {alvo.name} foi removido do jogo!'
+                )
             vp = efeito.params.get('vp', 0)
             if efeito.params.get('vp_por_renown', False):
                 vp += alvo.renown
@@ -3597,8 +3658,21 @@ class ResolvedorEfeitos:
 
     def _resolver_moot_ganhar_vp(self, efeito: Efeito, origem: CardInstance,
                                   jogador: PlayerState, alvo) -> bool:
-        """Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)."""
+        """Ganha VP por Moot aprovado (Silver Record, Legendary Leadership).
+
+        params:
+        - vp: int (valor fixo de VP)
+        - vp_por_personagem: int (VP adicional por personagem vivo)
+        - vp_from_moot_renown: bool (se True, usa renown_min do moot atual
+          como VP, em vez de vp fixo)
+        """
         vp = efeito.params.get('vp', 1)
+        if efeito.params.get('vp_from_moot_renown', False):
+            game_moot = getattr(self.game, 'moot_atual', None)
+            if game_moot and game_moot.resolvido and game_moot.aprovado:
+                vp = game_moot.renown_min
+            else:
+                vp = 0
         vp_por_char = efeito.params.get('vp_por_personagem', 0)
         if vp_por_char > 0:
             num_chars = len([c for c in jogador.pack_home if c.health_current > 0])
@@ -3629,9 +3703,19 @@ class ResolvedorEfeitos:
                                        origem: CardInstance,
                                        jogador: PlayerState,
                                        alvo) -> bool:
-        """Reverte personagem a forma breed (The Stolen Wolf)."""
+        """Reverte personagem a forma breed (The Stolen Wolf).
+
+        Se alvo nao for fornecido, encontra automaticamente o inimigo
+        com maior Renome (personagem em Crinos).
+        """
         if not isinstance(alvo, CardInstance):
-            return False
+            alvo = self._auto_target_moot_personagem(
+                jogador, renown_min=0, renown_max=99, origem=origem)
+            if not alvo:
+                self.game.add_log(
+                    '[Moot] Nenhum personagem inimigo viavel para rebaixar'
+                )
+                return False
         forma = efeito.params.get('forma', 'breed')
         forma_nome = {'breed': 'Breed', 'lupus': 'Lupus', 'homid': 'Homid'}.get(forma, forma)
         restricao = f'forma_forcada_{forma}'
@@ -3644,8 +3728,17 @@ class ResolvedorEfeitos:
                                         origem: CardInstance,
                                         jogador: PlayerState,
                                         alvo) -> bool:
-        """Constroi um Caern (Caern Building)."""
+        """Constroi um Caern (Caern Building).
+
+        params:
+        - gnosis: int (Gnosis do Caern criado)
+        - buff_gaia_health: int (Health extra para personagens Gaia,
+          default 2)
+        """
         gnosis = efeito.params.get('gnosis', 1)
+        buff_health = efeito.params.get('buff_gaia_health', 2)
+
+        # Cria o Caern
         caern = CardInstance(
             card_id=0, name='Caern (Moot)', card_type='Caern',
             owner_id=jogador.id, controller_id=jogador.id,
@@ -3654,6 +3747,21 @@ class ResolvedorEfeitos:
             health_current=gnosis, renown=0,
         )
         jogador.pack_home.append(caern)
+
+        # +2 Health para personagens Gaia (se buff_gaia_health > 0)
+        if buff_health > 0:
+            for p in self.game.players:
+                from rage_web.game_engine.combat_queue import _eh_pack_gaia
+                if _eh_pack_gaia(p):
+                    for c in p.pack_home:
+                        ct = (c.card_type or '').lower()
+                        if 'character' in ct or 'ally' in ct:
+                            c.health += buff_health
+                            c.health_current += buff_health
+                            self.game.add_log(
+                                f'[Moot] {c.name} ganhou +{buff_health} '
+                                f'Health (Caern Building)')
+
         self.game.add_log(f'[Moot] Caern construido! (Gn {gnosis})')
         return True
 

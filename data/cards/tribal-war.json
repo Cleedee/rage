@@ -1,0 +1,23 @@
+{
+  "id": "tribal-war",
+  "nome": "Tribal War",
+  "tipo": "Moot",
+  "modos": [
+    {
+      "descricao": "Forca personagens de 2 tribos a se atacarem antes de outros oponentes.",
+      "efeitos": [
+        {
+          "tipo": "moot_restricao_global",
+          "restricao": "tribal_war_active",
+          "descricao": "Tribal War: tribos devem se atacar primeiro"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "fonte": "manual",
+    "card_id": 1245,
+    "texto_original": "Choose 2 tribes. Characters from these tribes must attack each other before they attack any other opponents in the game. If members of both tribes are in 1 pack, then 1 must be discarded (no victory points).",
+    "slug": "tribal-war"
+  }
+}
