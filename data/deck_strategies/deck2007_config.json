@@ -1,192 +1,154 @@
 {
   "deck_id": 2007,
   "name": "Classic: Gaia Weenie",
-  "style": "balanced",
+  "style": "swarm",
+  "desc": "Enxame de 8 chars + 9 allies (17 bodies). VP primario: Pentex Refinery (Rn:14, Hl:15) no HG — Gaia mata Enemy por 14VP. Card draw via Friends in High Places. Entrail Rend (Rg:10)+Chainsaw = dano massivo. Sticky Paws rouba equipamentos. Personagens frágeis (Hl:1-2), compensa por numero. 63 cartas.",
+
   "gift_priorities": [
     {
       "slug": "sticky-paws",
-      "priority": 90,
-      "condition": "always",
-      "desc": "Sticky Paws (Gn:3)"
+      "priority": 85,
+      "condition": "opponent_has_equipment",
+      "desc": "Sticky Paws (Gn:3) — Rouba melhor equipamento do oponente. Excelente resposta a Flak Jacket/War Knife."
     }
   ],
-  "event_priorities": [
-    {
-      "slug": "wyldstorm",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Wyldstorm"
-    },
-    {
-      "slug": "new-moon",
-      "priority": 75,
-      "condition": "always",
-      "desc": "New Moon"
-    }
-  ],
-  "resource_play_order": [
-    "character",
-    "caern",
-    "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
-    "ally",
-    "victim",
-    "enemy"
-  ],
+
   "combat_action_preferences": {
-    "carleson-ruah": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "cesare-sodalis": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "dharma-bum": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "banana-split": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "frenar": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "jubati": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "passer": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "susan-anthony": [
-      "entrail-rend",
-      "overextended-attack",
-      "bitch-slap",
-      "bite",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "run-like-hell",
-      "surprise-attack"
-    ]
+    "banana-split": {
+      "priorities": [
+        {"slug": "entrail-rend", "priority": 95},
+        {"slug": "bite", "priority": 80},
+        {"slug": "dodge", "priority": 70}
+      ]
+    },
+    "default": {
+      "priorities": [
+        {"slug": "reckless-swing", "priority": 85},
+        {"slug": "stinging-wound", "priority": 80},
+        {"slug": "lucky-blow", "priority": 75},
+        {"slug": "off-balanced-attack", "priority": 70},
+        {"slug": "overextended-attack", "priority": 65},
+        {"slug": "bitch-slap", "priority": 60},
+        {"slug": "dodge", "priority": 50},
+        {"slug": "run-like-hell", "priority": 45}
+      ]
+    }
   },
+
   "equipment_assignments": [
     {
       "card_name": "Chainsaw",
-      "target": "Carleson Ruah",
-      "priority": 80,
-      "desc": "Chainsaw — Carleson Ruah"
-    },
-    {
-      "card_name": "Chainsaw",
-      "target": "Cesare Sodalis",
-      "priority": 80,
-      "desc": "Chainsaw — Cesare Sodalis"
+      "target": "Banana Split",
+      "priority": 90,
+      "desc": "Chainsaw em Banana Split (Rg:3 -> permite Combat Actions ate Rg:10). Entrail Rend + Chainsaw = combo letal."
     }
   ],
-  "caern_preferences": [
-    "Sky River Caern"
+
+  "resource_play_order": [
+    "character",
+    "ally",
+    "action",
+    "equipment",
+    "gift",
+    "caern",
+    "event",
+    "enemy"
   ],
-  "umbra_strategy": {
-    "enter_characters": [
-      "Susan Anthony"
-    ],
-    "save_for_combat": [
-      "Carleson Ruah"
-    ],
-    "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
+
+  "hunting_grounds_strategy": {
+    "priority_cards": ["Pentex Refinery"],
+    "always_play_if_available": ["Pentex Refinery"],
+    "desc": "Pentex Refinery (Rn:14, Hl:15) e a prioridade #1. Colocar no HG o mais cedo possivel. Matar por VP (Gaia kills Enemy = VP)."
   },
+
   "target_priority": {
-    "prefer_low_health": true,
+    "prefer_hg_over_characters": true,
+    "hunting_grounds_kill_order": ["Pentex Refinery", "Pentex First Team 43"],
     "character_kill_order": "lowest_health",
-    "hunting_grounds": {
-      "prefer_prey_over_enemy": true,
-      "priority_types": [
-        "Victim",
-        "Enemy"
-      ]
-    },
-    "ffa_diplomacy": "weaken_largest"
+    "prefer_weakest": true,
+    "threat_response": {
+      "flak-jacket": "sticky_paws",
+      "flak-jacket_r1": "sticky_paws",
+      "war-knife-of-benning-simon": "sticky_paws",
+      "skin-of-the-hellbound": "avoid_high_rage"
+    }
   },
+
+  "umbra_strategy": {
+    "enter_characters": ["Shadow Walker"],
+    "save_for_combat": ["Carleson Ruah", "Susan Anthony", "Banana Split"],
+    "desc": "Shadow Walker (Gn:5) entra na Umbra. Personagens principais ficam para combate."
+  },
+
+  "action_priorities": [
+    {
+      "slug": "friends-in-high-places",
+      "priority": 95,
+      "condition": "needs_cards",
+      "desc": "Friends in High Places — compra cartas OU encerra combate. Prioridade maxima."
+    },
+    {
+      "slug": "sneak-attack",
+      "priority": 90,
+      "condition": "has_alpha_advantage",
+      "desc": "Sneak Attack — ataque surpresa bypassando protocolo de combate."
+    },
+    {
+      "slug": "stand-like-a-fool",
+      "priority": 80,
+      "condition": "in_combat_with_strong_opponent",
+      "desc": "Stand like a Fool — trava Combat Cards do oponente por 1 round."
+    }
+  ],
+
+  "event_priorities": [
+    {
+      "slug": "new-moon",
+      "priority": 85,
+      "condition": "no_lunar_phase",
+      "desc": "New Moon — impede frenesi, Ragabash +1 Gnosis."
+    },
+    {
+      "slug": "wyldstorm",
+      "priority": 70,
+      "condition": "losing_board_position",
+      "desc": "Wyldstorm — reset: chars mais fortes duelam. Emergencia."
+    }
+  ],
+
+  "combat_event_priorities": [
+    {
+      "slug": "hunting-party",
+      "priority": 90,
+      "condition": "multiple_attackers_available",
+      "desc": "Hunting Party — pack attack, varios chars atacam o mesmo alvo."
+    },
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 85,
+      "condition": "character_receives_mortal_wound",
+      "desc": "Taking the Death Blow — redireciona ferimento para ally/char descartavel."
+    },
+    {
+      "slug": "attacking-the-wyrm",
+      "priority": 70,
+      "condition": "in_combat_with_wyrm",
+      "desc": "Attacking the Wyrm — bonus contra Wyrm."
+    }
+  ],
+
   "redraw_rules": {
     "never_discard": [
-      "Carleson Ruah",
-      "Cesare Sodalis"
+      "Pentex Refinery",
+      "Friends in High Places",
+      "Sneak Attack",
+      "Entrail Rend",
+      "Chainsaw"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
+    "always_discard_if_duplicate": [
+      "Ka Spirit",
+      "Kinfolk Small Town Cop"
+    ],
+    "prefer_keep_types": ["character", "ally", "action"]
   }
 }
