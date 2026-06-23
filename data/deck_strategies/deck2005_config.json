@@ -1,152 +1,202 @@
 {
   "deck_id": 2005,
   "name": "Classic: Wailer special",
-  "style": "balanced",
+  "style": "aggro",
+  "desc": "Wyrm aggro-control. VP matando Victims proprios no HG (Greenpeace Assault Team Hl:10, Bus Full of People Hl:10) + Ass Whuppin Lynch Mob (pack attack). Defesa: Stench of Death (so espiritos/Banes/Metis atacam) + Roar of the Wyrm (trava Combat Action) + Infectious Touch (-1Rg/-1Gn permanente). 11 allies com 9+ votos na Junta. 4 chars (Barnaby Rn:9, Blossom Rn:4, Wailer Rn:4, Fangs Rn:3). 63 cartas.",
+
   "gift_priorities": [
     {
-      "slug": "roar-of-the-wyrm",
-      "priority": 90,
+      "slug": "stench-of-death",
+      "priority": 95,
       "condition": "always",
-      "desc": "Roar of the Wyrm (Gn:4)"
+      "desc": "Stench of Death (Gn:2) — PERMANENTE. So espiritos/Banes/Metis podem atacar. Prioridade maxima."
     },
     {
       "slug": "infectious-touch",
-      "priority": 82,
-      "condition": "always",
-      "desc": "Infectious Touch (Gn:3)"
+      "priority": 85,
+      "condition": "opponent_character_exists",
+      "desc": "Infectious Touch (Gn:3) — -1Rg/-1Gn permanente no alvo. Acumulavel ate 2x."
     },
     {
-      "slug": "stench-of-death",
-      "priority": 74,
-      "condition": "always",
-      "desc": "Stench of Death (Gn:2)"
+      "slug": "roar-of-the-wyrm",
+      "priority": 80,
+      "condition": "in_combat_with_strong_opponent",
+      "desc": "Roar of the Wyrm (Gn:4) — Trava Combat Action do oponente no proximo round. Descartavel."
     }
   ],
-  "event_priorities": [
-    {
-      "slug": "beast-of-war",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Beast-of-War"
-    },
-    {
-      "slug": "mass-pollution",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Mass Pollution"
-    }
-  ],
-  "resource_play_order": [
-    "character",
-    "caern",
-    "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
-    "ally",
-    "victim",
-    "enemy"
-  ],
-  "combat_action_preferences": {
-    "barnaby-shadrack": [
-      "overextended-attack",
-      "beat-unmerciful",
-      "head-or-gut",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "blossom": [
-      "overextended-attack",
-      "beat-unmerciful",
-      "head-or-gut",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "fangs-through-eye": [
-      "overextended-attack",
-      "beat-unmerciful",
-      "head-or-gut",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "wailer": [
-      "overextended-attack",
-      "beat-unmerciful",
-      "head-or-gut",
-      "lucky-blow",
-      "off-balanced-attack",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ]
-  },
+
   "equipment_assignments": [
     {
       "card_name": "Gooshy Gooze",
       "target": "Barnaby Shadrack",
-      "priority": 65,
-      "desc": "Gooshy Gooze — Barnaby Shadrack"
+      "priority": 85,
+      "desc": "Gooshy Gooze — Oponente perde 1Rg/1Gn no combate. Barnaby e o alpha principal."
     },
     {
       "card_name": "Gooshy Gooze",
-      "target": "Blossom",
+      "target": "Fangs-Through-Eye",
+      "priority": 75,
+      "desc": "Gooshy Gooze — Fangs (Rg:4) como segundo atacante."
+    },
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Wailer",
       "priority": 65,
-      "desc": "Gooshy Gooze — Blossom"
+      "desc": "Gooshy Gooze — Wailer como atacante de reserva."
     }
   ],
-  "caern_preferences": [
-    "Caern of the Unwashed Child"
+
+  "resource_play_order": [
+    "event",
+    "caern",
+    "victim",
+    "gift",
+    "equipment",
+    "ally",
+    "character",
+    "action"
   ],
-  "umbra_strategy": {
-    "enter_characters": [
-      "Blossom"
-    ],
-    "save_for_combat": [
-      "Barnaby Shadrack"
-    ],
-    "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
-  },
-  "target_priority": {
-    "prefer_low_health": true,
-    "character_kill_order": "lowest_health",
-    "hunting_grounds": {
-      "prefer_prey_over_enemy": true,
-      "priority_types": [
-        "Victim",
-        "Enemy"
+
+  "combat_action_preferences": {
+    "barnaby-shadrack": {
+      "priorities": [
+        {"slug": "head-or-gut", "priority": 95},
+        {"slug": "beat-unmerciful", "priority": 85},
+        {"slug": "surprise-attack", "priority": 82},
+        {"slug": "lucky-blow", "priority": 78},
+        {"slug": "reckless-swing", "priority": 75},
+        {"slug": "overextended-attack", "priority": 72},
+        {"slug": "off-balanced-attack", "priority": 68},
+        {"slug": "stinging-wound", "priority": 65},
+        {"slug": "fancy-footwork", "priority": 60},
+        {"slug": "dodge", "priority": 55},
+        {"slug": "run-like-hell", "priority": 50}
       ]
     },
-    "ffa_diplomacy": "weaken_largest"
+    "default": {
+      "priorities": [
+        {"slug": "lucky-blow", "priority": 85},
+        {"slug": "reckless-swing", "priority": 82},
+        {"slug": "overextended-attack", "priority": 78},
+        {"slug": "off-balanced-attack", "priority": 75},
+        {"slug": "stinging-wound", "priority": 72},
+        {"slug": "fancy-footwork", "priority": 65},
+        {"slug": "dodge", "priority": 60},
+        {"slug": "run-like-hell", "priority": 55}
+      ]
+    }
   },
+
+  "event_priorities": [
+    {
+      "slug": "mass-pollution",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Mass Pollution — Wyrm +1 Gn, oponentes -1 Gn. Empilhavel com Infectious Touch."
+    },
+    {
+      "slug": "beast-of-war",
+      "priority": 80,
+      "condition": "about_to_attack",
+      "desc": "Beast-of-War — Todos os membros +3 Rage, -1 Gn. Usar antes de atacar Victim."
+    }
+  ],
+
+  "combat_event_priorities": [
+    {
+      "slug": "ass-whuppin-lynch-mob",
+      "priority": 95,
+      "condition": "attacking_victim_in_hg",
+      "desc": "Ass Whuppin Lynch Mob — Pack attack no Victim do HG. ESSENCIAL para matar Victim Hl:10."
+    },
+    {
+      "slug": "hunting-party",
+      "priority": 85,
+      "condition": "multiple_attackers_available",
+      "desc": "Hunting Party — Pack attack contra personagem nao-alfa."
+    },
+    {
+      "slug": "shieldmate",
+      "priority": 80,
+      "condition": "character_receives_attack",
+      "desc": "Shieldmate — Divide dano entre chars."
+    },
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 75,
+      "condition": "character_receives_mortal_wound",
+      "desc": "Taking the Death Blow — Redireciona ferimento mortal para ally/char descartavel."
+    }
+  ],
+
+  "action_priorities": [
+    {
+      "slug": "shapeshift",
+      "priority": 85,
+      "condition": "before_combat",
+      "desc": "Shapeshift — Mudar para Crinos antes do combate (+Rage)."
+    },
+    {
+      "slug": "sneak-attack",
+      "priority": 90,
+      "condition": "has_alpha_advantage",
+      "desc": "Sneak Attack — Ataque surpresa bypassando protocolo de combate."
+    }
+  ],
+
+  "caern_preferences": [
+    {
+      "card_name": "Caern of the Unwashed Child",
+      "priority": 90,
+      "desc": "Caern of the Unwashed Child (Gn:4) — Oponente perde 2 Gn ou 2 Rg no combate."
+    }
+  ],
+
+  "hunting_grounds_strategy": {
+    "priority_cards": ["Greenpeace Assault Team", "A Bus Full of People"],
+    "always_play_if_available": ["Greenpeace Assault Team"],
+    "victim_kill_priority": true,
+    "desc": "Jogar Victims no HG (global) para matar depois com alpha + Ass Whuppin Lynch Mob. Greenpeace primeiro (Hl:10, mas destroi caerns!). Depois Bus Full of People."
+  },
+
+  "target_priority": {
+    "character_kill_order": "lowest_health",
+    "prefer_weakest": true,
+    "hunting_grounds_kill_order": ["Victim"],
+    "threat_response": {
+      "luna-s-armor": "attack_with_debuff",
+      "resist-pain": "attack",
+      "stench-of-death": "attack_with_high_gnosis",
+      "flak-jacket": "attack_victim_instead",
+      "heightened-senses": "attack_first"
+    }
+  },
+
+  "moot_strategy": {
+    "vote_with_executives": true,
+    "desc": "Pentex Executives (3 votos cada) dao poder de voto na Junta. Usar para passar propostas favoraveis ou bloquear propostas inimigas."
+  },
+
+  "umbra_strategy": {
+    "enter_characters": [],
+    "desc": "Nao entrar na Umbra. Personagens ficam no pack para defesa e ataque ao Victim no HG."
+  },
+
   "redraw_rules": {
     "never_discard": [
       "Barnaby Shadrack",
-      "Blossom"
+      "Blossom",
+      "Wailer",
+      "Fangs-Through-Eye",
+      "Stench of Death",
+      "Mass Pollution",
+      "Greenpeace Assault Team",
+      "Ass Whuppin' Lynch Mob"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
+    "always_discard_if_duplicate": [
+      "Gooshy Gooze",
+      "Sneak Attack"
+    ],
+    "prefer_keep_types": ["victim", "character", "gift", "event"]
   }
 }
