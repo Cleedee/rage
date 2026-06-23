@@ -303,7 +303,7 @@ def _eval_condition(cond: str, game: GameState,
             if opp.id == player.id or opp.eliminado:
                 continue
             for c in opp.pack_home:
-                if 'Bane' in (c.card_type or '') or 'bane' in (c.keyword or '').lower():
+                if 'Bane' in (c.card_type or '') or 'bane' in (c.keywords or '').lower():
                     return True
         return False
 
@@ -322,7 +322,7 @@ def _eval_condition(cond: str, game: GameState,
             if opp.id == player.id or opp.eliminado:
                 continue
             for c in opp.pack_home:
-                if 'Equipment' in (c.card_type or '') and 'fetish' in (c.keyword or '').lower():
+                if 'Equipment' in (c.card_type or '') and 'fetish' in (c.keywords or '').lower():
                     return True
         return False
 
@@ -352,6 +352,19 @@ def _eval_condition(cond: str, game: GameState,
     if cond == 'entering_umbra':
         # Jogador esta entrando na Umbra
         return game.phase == 'umbra'
+
+    if cond == 'opponent_dominates_umbra':
+        # Oponente domina a Umbra (tem mais personagens la)
+        my_umbra = sum(1 for c in player.umbra
+                       if 'Character' in (c.card_type or ''))
+        max_opp_umbra = 0
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            opp_umbra = sum(1 for c in opp.umbra
+                           if 'Character' in (c.card_type or ''))
+            max_opp_umbra = max(max_opp_umbra, opp_umbra)
+        return max_opp_umbra > my_umbra
 
     if cond == 'after_winning_moot':
         """Verifica se o jogador acabou de vencer uma junta que chamou."""
