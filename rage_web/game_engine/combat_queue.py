@@ -1692,6 +1692,12 @@ def _jogar_ce_face_down(game: GameState, criatura_id: str,
     Combat Action. O CE sera revelado no Reveal Step e
     descartado como ilegal no Bluff Step (6.9.1).
 
+    Regras implementadas:
+    - Quickstart: "You can only play one COPY of a Combat Event
+      per combat." (so 1 copia do mesmo CE por combate)
+    - Quickstart: "Characters and Allies may use Combat Events.
+      Enemies and Victims may not use any Combat Events."
+
     Args:
         game: Estado da partida.
         criatura_id: ID da criatura jogando o CE.
@@ -1702,7 +1708,9 @@ def _jogar_ce_face_down(game: GameState, criatura_id: str,
     """
     if not game.combat.is_active:
         return False
-    if game.combat.step not in ('play_card',):
+    # Regra: CE podem ser jogados no declaration (pack actions como
+    # Hunting Party) ou play_card (entre rodadas ou durante rodada)
+    if game.combat.step not in ('play_card', 'declaration', 'between_rounds'):
         return False
     if criatura_id not in get_combatants(game):
         return False
@@ -1714,6 +1722,30 @@ def _jogar_ce_face_down(game: GameState, criatura_id: str,
     ct = (ce_card.card_type or '').lower()
     if 'combat event' not in ct and ct != 'combat_event':
         return False  # So CE pode ser jogado face-down
+
+    # ── Regra: Enemies/Victims nao podem usar CE ──
+    # Quickstart: "Characters and Allies may use Combat Events.
+    # Enemies and Victims may not use any Combat Events."
+    criatura = _find_card(game, criatura_id)
+    if criatura:
+        criatura_ct = (criatura.card_type or '').lower()
+        if 'enemy' in criatura_ct or 'victim' in criatura_ct:
+            game.add_log(
+                f'  [CE] {criatura.name} e Prey (Enemy/Victim) '
+                f'— nao pode usar Combat Events')
+            return False
+
+    # ── Regra: So 1 copia do mesmo CE por combate ──
+    # Quickstart: "You can only play one COPY of a Combat Event
+    # per combat. You can multiple different ones, but only one
+    # with same name."
+    for existing_cid, existing_ce_id in game.combat.ce_face_down.items():
+        existing_ce = _find_card(game, existing_ce_id)
+        if existing_ce and existing_ce.name == ce_card.name:
+            game.add_log(
+                f'  [CE] {ce_card.name} ja foi jogado neste combate '
+                f'— so 1 copia permitida')
+            return False
 
     # Remove CE da mao e move para descarte (ilegal no Bluff Step)
     dono = _find_owner(game, ce_card)
