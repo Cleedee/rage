@@ -2,107 +2,87 @@
   "deck_id": 2032,
   "name": "Spirit Wardens — Gaia de Espiritos",
   "style": "spirit_control",
-  "desc": "Gaia spirit control v2. Guides-to-Truth + Shakey Mac + Zari. 9 allies espiritos. Command Spirit/Exorcism controle. Sap Spirit+Umbral Flurry Umbra. +Hogling+Anaconda Gafflings (Enemies p/ VP). +Massive Wound+Vital Blow (dano ofensivo). 59 cartas.",
+  "deck_version": 3,
+  "desc": "Gaia spirit aggro v3. Walks-with-Might (Rn:9 Rg:5) + Cernonous (Rn:6 Hl:7 Rg:5 Theurge). War lodge combo: sacrifice Ka Spirit → +2 Rg → Massive Wound/Maim (Rg:7). Sap Spirit+Umbral Flurry na Umbra. Command Spirit/Exorcism controle. Enemies no HG p/ VP. 55 cards, 5 chars, 20 Rn.",
 
   "gift_priorities": [
     {
       "slug": "command-spirit",
       "priority": 95,
       "condition": "opponent_has_spirit",
-      "desc": "Command Spirit (Gn:3) — Controla 1 espirito inimigo por 1 turno. Shakey/Guides Gn:10 superam qualquer espirito."
+      "desc": "Command Spirit (Gn:3) — Controla 1 espirito inimigo. Walks (Gn:7) + Cernonous (Gn:7) superam a maioria."
     },
     {
       "slug": "exorcism",
       "priority": 90,
       "condition": "opponent_has_spirit",
-      "desc": "Exorcism (Gn:3) — Remove do jogo qualquer espirito com Gn < 10."
-    },
-    {
-      "slug": "spirit-of-the-fray",
-      "priority": 80,
-      "condition": "always",
-      "desc": "Spirit of the Fray (Gn:3) — Ataca primeiro no combate. Permanente."
+      "desc": "Exorcism (Gn:3) — Remove espirito com Gn < 7 do jogo."
     }
   ],
 
   "equipment_assignments": [
     {
-      "card_name": "Feather of the Phoenix",
-      "target": "Guides-to-Truth",
-      "priority": 95,
-      "desc": "Feather — espiritos nao atacam Guides. Protecao essencial."
-    },
-    {
       "card_name": "Eye of Luna",
-      "target": "Guides-to-Truth",
+      "target": "Walks-with-Might",
       "priority": 90,
-      "desc": "Eye of Luna — +1 Gn (Guides: 10->11). Passa Gauntlet facil."
-    },
-    {
-      "card_name": "Feather of the Phoenix",
-      "target": "Shakey Mac",
-      "priority": 85,
-      "desc": "Feather — Shakey (Hl:2) precisa de protecao contra espiritos."
-    },
-    {
-      "card_name": "Assegai",
-      "target": "Guides-to-Truth",
-      "priority": 80,
-      "desc": "Assegai — bloqueia 1 dano de Combat Actions."
+      "desc": "Eye — +1 Gn (7→8). Passa Gauntlet mais facil."
     },
     {
       "card_name": "War lodge",
-      "target": "Shakey Mac",
-      "priority": 70,
-      "desc": "War lodge — descarta ally espirito por +2 Rage no combate."
+      "target": "Walks-with-Might",
+      "priority": 85,
+      "desc": "War lodge — Sacrifica Ka Spirit → +2 Rg (5→7). Habilita Massive Wound e Maim!"
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Walks-with-Might",
+      "priority": 80,
+      "desc": "Assegai — bloqueia 1 dano."
+    },
+    {
+      "card_name": "Eye of Luna",
+      "target": "Cernonous",
+      "priority": 80,
+      "desc": "Eye — +1 Gn (7→8)."
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Cernonous",
+      "priority": 75,
+      "desc": "Assegai — +1 bloqueio."
     },
     {
       "card_name": "Bivouac",
-      "target": "Guides-to-Truth",
-      "priority": 65,
-      "desc": "Bivouac — +1 cura na Regeneration."
-    },
-    {
-      "card_name": "Spirit Drum of Calm-Thunder",
-      "target": "Guides-to-Truth",
-      "priority": 60,
-      "desc": "Spirit Drum — cancela frenesi, encerra combate. Emergencia."
+      "target": "Cernonous",
+      "priority": 70,
+      "desc": "Bivouac — +1 cura."
     }
   ],
 
-  "resource_play_order": [
-    "caern",
-    "character",
-    "equipment",
-    "gift",
-    "ally",
-    "event",
-    "action",
-    "combat action"
-  ],
-
   "combat_action_preferences": {
-    "guides-to-truth": {
+    "walks-with-might": {
       "priorities": [
         {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
-        {"slug": "maim", "priority": 92},
-        {"slug": "umbral-flurry", "priority": 88, "umbra_only": true},
-        {"slug": "spirited-strike", "priority": 85},
+        {"slug": "massive-wound", "priority": 93, "condition": "war_lodge_active"},
+        {"slug": "maim", "priority": 90, "condition": "war_lodge_active"},
+        {"slug": "umbral-flurry", "priority": 85, "umbra_only": true},
         {"slug": "head-butt", "priority": 80},
         {"slug": "block-and-strike", "priority": 75},
+        {"slug": "spirited-strike", "priority": 72},
         {"slug": "evasion", "priority": 70},
         {"slug": "lucky-blow", "priority": 65},
         {"slug": "dodge", "priority": 60}
       ]
     },
-    "shakey-mac": {
+    "cernonous": {
       "priorities": [
         {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
-        {"slug": "maim", "priority": 90},
+        {"slug": "massive-wound", "priority": 93, "condition": "war_lodge_active"},
+        {"slug": "maim", "priority": 90, "condition": "war_lodge_active"},
         {"slug": "umbral-flurry", "priority": 85, "umbra_only": true},
         {"slug": "head-butt", "priority": 80},
-        {"slug": "evasion", "priority": 75},
-        {"slug": "block-and-strike", "priority": 72},
+        {"slug": "block-and-strike", "priority": 75},
+        {"slug": "evasion", "priority": 70},
         {"slug": "lucky-blow", "priority": 65},
         {"slug": "dodge", "priority": 60}
       ]
@@ -111,9 +91,7 @@
       "priorities": [
         {"slug": "dodge", "priority": 85},
         {"slug": "evasion", "priority": 80},
-        {"slug": "lucky-blow", "priority": 65},
-        {"slug": "sap-spirit", "priority": 55},
-        {"slug": "umbral-flurry", "priority": 50}
+        {"slug": "lucky-blow", "priority": 65}
       ]
     }
   },
@@ -123,13 +101,19 @@
       "slug": "pack-defense",
       "priority": 85,
       "condition": "defending",
-      "desc": "Pack Defense — Ate 15 Rn de chars entram na defensiva."
+      "desc": "Pack Defense — ate 15 Rn entram na defensiva."
+    },
+    {
+      "slug": "shieldmate",
+      "priority": 80,
+      "condition": "teammate_attacked",
+      "desc": "Shieldmate — +1 card + troca alvo."
     },
     {
       "slug": "taking-the-death-blow",
-      "priority": 80,
+      "priority": 75,
       "condition": "character_receives_mortal_wound",
-      "desc": "Taking the Death Blow — Redireciona ferimento para ally espirito (Ka Spirit volta ao deck!)"
+      "desc": "Taking the Death Blow — redireciona p/ Ka Spirit (volta ao deck!)."
     }
   ],
 
@@ -138,37 +122,25 @@
       "slug": "uktena",
       "priority": 90,
       "condition": "opponent_has_spirit",
-      "desc": "Uktena — Nenhum espirito pode atacar membros da pack. Pack totem."
+      "desc": "Uktena — espiritos nao atacam pack."
     },
     {
       "slug": "crescent-moon",
       "priority": 85,
       "condition": "has_spirit_allies",
-      "desc": "Crescent Moon — Todos os espiritos +1 Rage. Seus aliados espiritos tambem!"
+      "desc": "Crescent Moon — todos espiritos +1 Rage."
     },
     {
       "slug": "hyperion",
       "priority": 80,
       "condition": "has_aggravated_damage",
-      "desc": "Hyperion — Regenera dano agravado. Flame Spirits nao atacam pack."
-    },
-    {
-      "slug": "spiritual-revelation",
-      "priority": 75,
-      "condition": "opponent_has_banes",
-      "desc": "Spiritual Revelation — Banes vao para a Umbra (onde voce domina)."
-    },
-    {
-      "slug": "spirit-backlash",
-      "priority": 70,
-      "condition": "opponent_has_fetish",
-      "desc": "Spirit Backlash — Destroi equipamento fetish Gn>=5."
+      "desc": "Hyperion — regenera dano agravado."
     },
     {
       "slug": "close-gauntlet",
-      "priority": 60,
+      "priority": 65,
       "condition": "defensive",
-      "desc": "Close Gauntlet — Fecha Gauntlet por 1 turno."
+      "desc": "Close Gauntlet — fecha Gauntlet por 1 turno."
     }
   ],
 
@@ -177,73 +149,68 @@
       "slug": "step-sideways",
       "priority": 95,
       "condition": "before_combat",
-      "desc": "Step Sideways — Entrar na Umbra. Guides (Gn:10+1) passa Gauntlet facil."
+      "desc": "Step Sideways — entrar na Umbra. Sap Spirit so funciona na Umbra!"
     },
     {
       "slug": "friends-in-high-places",
       "priority": 85,
       "condition": "needs_cards",
-      "desc": "Friends in High Places — Compra cartas ou encerra combate."
+      "desc": "Friends in High Places — compra cartas ou encerra combate."
+    },
+    {
+      "slug": "deep-journey",
+      "priority": 75,
+      "condition": "in_umbra",
+      "desc": "Deep Journey — busca qualquer carta do sept deck na Umbra."
     },
     {
       "slug": "sneak-attack",
       "priority": 70,
       "condition": "has_good_target",
-      "desc": "Sneak Attack — Ataque surpresa."
-    }
-  ],
-
-  "caern_preferences": [
-    {
-      "card_name": "Caern of the Waking Dream",
-      "priority": 90,
-      "desc": "Caern of the Waking Dream (Gn:2) — VP completo por bind de espiritos."
+      "desc": "Sneak Attack — ataque surpresa."
     }
   ],
 
   "hunting_grounds_strategy": {
     "priority_cards": ["Hogling", "Anaconda Gafflings"],
-    "desc": "Enemies no HG para VP (Gaia kills Enemy = VP). Hogling Hl:5, Anaconda Gafflings Hl:2."
+    "desc": "Enemies no HG. Gaia kills Enemy = VP. Hogling (Hl:5) + Gafflings (Hl:2). Atacar HG quando seguro."
+  },
+
+  "caern_preferences": [
+    {
+      "card_name": "Caern of the Waking Dream",
+      "priority": 90,
+      "desc": "Caern of the Waking Dream (Gn:2) — VP completo por bind de espiritos (fetish equipment)."
+    }
+  ],
+
+  "umbra_strategy": {
+    "enter_characters": ["Walks-with-Might", "Cernonous"],
+    "save_for_combat": ["Walks-with-Might"],
+    "always_enter_if_possible": true,
+    "desc": "Entrar na Umbra sempre. Sap Spirit + Umbral Flurry inbloqueaveis. War lodge habilita Massive Wound/Maim."
   },
 
   "target_priority": {
-    "character_kill_order": "lowest_health",
+    "character_kill_order": "lowest_health_first",
     "prefer_weakest": true,
     "threat_response": {
-      "command-spirit": "cancel_with_exorcism",
+      "command-spirit": "counter_with_exorcism_or_kill",
       "exorcism": "kill_caster",
-      "born-to-nature": "ignore",
-      "ghost-lance": "dodge",
-      "spirit-of-the-fray": "attack_first",
-      "feather-of-the-phoenix": "attack_with_sap",
-      "spirit-drum-of-calm-thunder": "kill_carrier"
+      "sap-spirit": "avoid_damage",
+      "massive-wound": "dodge_or_block",
+      "maim": "dodge_or_block"
     }
-  },
-
-  "umbra_strategy": {
-    "enter_characters": ["Guides-to-Truth", "Shakey Mac"],
-    "save_for_combat": ["Guides-to-Truth"],
-    "always_enter_if_possible": true,
-    "desc": "Entrar na Umbra sempre que possivel. Sap Spirit e Umbral Flurry so funcionam na Umbra. Guides (Gn:10+1) e Shakey (Gn:10) passam Gauntlet 3 facil."
   },
 
   "redraw_rules": {
     "never_discard": [
-      "Guides-to-Truth",
-      "Shakey Mac",
-      "Zari",
-      "Feather of the Phoenix",
-      "Eye of Luna",
-      "Sap Spirit",
-      "Step Sideways",
-      "Command Spirit"
+      "Walks-with-Might", "Cernonous", "Zari", "Frenar", "Stanislav Prochnow",
+      "War lodge", "Step Sideways", "Command Spirit", "Sap Spirit", "Eye of Luna"
     ],
     "always_discard_if_duplicate": [
-      "Ka Spirit",
-      "Stormcrow",
-      "Lucky Blow",
-      "Dodge"
+      "Ka Spirit", "Stormcrow", "Lucky Blow", "Dodge"
     ],
-    "prefer_keep_types": ["character", "ally", "equipment", "gift", "combat action"]
+    "prefer_keep_types": ["character", "ally", "equipment", "combat action"]
   }
 }
