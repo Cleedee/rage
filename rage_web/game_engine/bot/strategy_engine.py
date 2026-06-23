@@ -196,6 +196,163 @@ def _eval_condition(cond: str, game: GameState,
         return any('Character' in (c.card_type or '')
                    for c in player.umbra)
 
+    if cond == 'opponent_character_exists':
+        # Oponente tem pelo menos 1 Character vivo
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            if any('Character' in (c.card_type or '') and c.health_current > 0
+                   for c in opp.pack_home):
+                return True
+        return False
+
+    if cond == 'in_combat_with_strong_opponent':
+        # Em combate com oponente forte (Rage > 3 ou HP > 4)
+        if not game.combat.is_active:
+            return False
+        for cid in game.combat.combatants:
+            card = game.get_card(cid)
+            if card and card.owner_id != player.id:
+                if card.effective_rage > 3 or card.health_current > 4:
+                    return True
+        return False
+
+    if cond == 'losing_board_position':
+        # Jogador esta perdendo posicao no tabuleiro
+        my_chars = sum(1 for c in player.pack_home
+                       if 'Character' in (c.card_type or '') and c.health_current > 0)
+        max_opp_chars = 0
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            opp_chars = sum(1 for c in opp.pack_home
+                           if 'Character' in (c.card_type or '') and c.health_current > 0)
+            max_opp_chars = max(max_opp_chars, opp_chars)
+        return my_chars < max_opp_chars
+
+    if cond == 'opponent_has_equipment':
+        # Oponente tem algum equipamento
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            if any('Equipment' in (c.card_type or '') for c in opp.pack_home):
+                return True
+        return False
+
+    if cond == 'no_lunar_phase':
+        # Nao esta na fase lunar (nao ha Lua cheia)
+        # Simplificacao: retorna True se nao esta em combate
+        return not game.combat.is_active
+
+    if cond == 'opponent_has_active_gift':
+        # Oponente tem gift ativo
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            if any('Gift' in (c.card_type or '') for c in opp.pack_home):
+                return True
+        return False
+
+    if cond == 'moot_phase':
+        # Fase de moot (Junta)
+        return game.phase == 'moot' or game.moot_atual is not None
+
+    if cond == 'opponent_has_ally_or_prey':
+        # Oponente tem ally ou presa (Victim/Enemy)
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                ct = (c.card_type or '').lower()
+                if 'ally' in ct or 'victim' in ct or 'enemy' in ct:
+                    return True
+        return False
+
+    if cond == 'enemy_spirit_in_play':
+        # Ha espirito inimigo em jogo
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                if 'Spirit' in (c.card_type or ''):
+                    return True
+        return False
+
+    if cond == 'opponent_can_frenzy':
+        # Oponente pode frenzar (tem personagem com Rage > 0)
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                if 'Character' in (c.card_type or '') and c.effective_rage > 0:
+                    return True
+        return False
+
+    if cond == 'threat_from_umbra':
+        # Ha ameaca vindo da Umbra
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            if any('Character' in (c.card_type or '') for c in opp.umbra):
+                return True
+        return False
+
+    if cond == 'opponent_has_banes':
+        # Oponente tem Banes
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                if 'Bane' in (c.card_type or '') or 'bane' in (c.keyword or '').lower():
+                    return True
+        return False
+
+    if cond == 'opponent_stepping_sideways':
+        # Oponente esta entrando na Umbra
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            if any('Character' in (c.card_type or '') for c in opp.umbra):
+                return True
+        return False
+
+    if cond == 'opponent_has_fetish_equipment':
+        # Oponente tem equipamento Fetish
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                if 'Equipment' in (c.card_type or '') and 'fetish' in (c.keyword or '').lower():
+                    return True
+        return False
+
+    if cond == 'no_pack_totem':
+        # Nao tem Pack Totem
+        return not any('Pack Totem' in (c.card_type or '') for c in player.pack_home)
+
+    if cond == 'opponent_has_spirit':
+        # Oponente tem Spirit
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                if 'Spirit' in (c.card_type or ''):
+                    return True
+        return False
+
+    if cond == 'both_decks_nearly_empty':
+        # Ambos os decks estao quase vazios
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            if len(player.deck_combat) <= 3 and len(opp.deck_combat) <= 3:
+                return True
+        return False
+
+    if cond == 'entering_umbra':
+        # Jogador esta entrando na Umbra
+        return game.phase == 'umbra'
+
     if cond == 'after_winning_moot':
         """Verifica se o jogador acabou de vencer uma junta que chamou."""
         if not game.moot_atual:
