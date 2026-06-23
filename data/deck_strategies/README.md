@@ -22,11 +22,12 @@ data/deck_strategies/
 
 Exemplos existentes:
 
-| Arquivo | Deck |
-|---|---|
-| `data/deck_strategies/deck1055_config.json` | O Julgamento (Philodox) |
-| `data/deck_strategies/deck1044_config.json` | Ajaba — Hienas da Savana |
-| `data/deck_strategies/deck465_config.json` | Apocalypse — Primeiro Esquadrão #21 |
+| Arquivo | Deck | Estilo |
+|---|---|---|
+| `data/deck_strategies/deck1055_config.json` | O Julgamento (Philodox) | control |
+| `data/deck_strategies/deck1044_config.json` | Ajaba — Hienas da Savana | combo |
+| `data/deck_strategies/deck465_config.json` | Apocalypse — Primeiro Esquadrão #21 | aggro |
+| `data/deck_strategies/deck2004_config.json` | Classic: Questor Defence | defensive_pacing |
 
 ---
 
@@ -36,17 +37,20 @@ Exemplos existentes:
 {
   "deck_id": 1055,
   "name": "O Julgamento (Philodox)",
-  "style": "control | combo | aggro | midrange | ffa",
+  "style": "control | combo | aggro | midrange | defensive_pacing | ffa",
 
   "gift_priorities": [ ... ],
   "resource_play_order": [ ... ],
   "combat_action_preferences": { ... },
+  "combat_event_priorities": [ ... ],
+  "action_priorities": [ ... ],
   "equipment_assignments": [ ... ],
   "caern_preferences": [ ... ],
   "target_priority": { ... },
   "umbra_strategy": { ... },
   "redraw_rules": { ... },
   "moot_strategy": { ... },
+  "combat_notes": { ... },
   "notes": { ... }
 }
 ```
@@ -134,7 +138,42 @@ Funciona de forma idêntica a `gift_priorities` mas para cartas do tipo Event.
 
 Mesmo formato, mesmas condições.
 
-### 4. `combat_event_priorities` — Prioridade de Combat Events (Pack Actions)
+### 4. `action_priorities` — Prioridade de Action Cards
+
+Controla **quais Action cards** (Friends in High Places, Sneak Attack, etc.)
+o bot tenta jogar na Resource Phase, ANTES de outros tipos.
+
+```json
+"action_priorities": [
+  {
+    "slug": "friends-in-high-places",
+    "priority": 92,
+    "condition": "combat_active",
+    "desc": "Friends in High Places — encerra combate sem frenzy"
+  },
+  {
+    "slug": "sneak-attack",
+    "priority": 65,
+    "condition": "has_good_target",
+    "desc": "Sneak Attack — bypass alpha cycle"
+  }
+]
+```
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `slug` | string | Slug da carta no banco |
+| `priority` | int | Prioridade (0-100). Mais alto = jogado primeiro |
+| `condition` | string | Condição para ativar |
+| `desc` | string | (opcional) Descrição humana |
+
+**Como funciona:**
+1. Durante a Resource Phase, o bot verifica `action_priorities`.
+2. Para cada Action card na mão, verifica se o slug está na lista.
+3. Se a `condition` não é satisfeita, prioridade é reduzida em 100.
+4. O bot usa `sorted_actions()` para ordenar e jogar o mais prioritário.
+
+### 5. `combat_event_priorities` — Prioridade de Combat Events (Pack Actions)
 
 Controla **quais Combat Events** o bot tenta jogar face-down no `play_card`
 step durante o combate, ANTES de declarar ações individuais.
@@ -186,7 +225,7 @@ suportado para retrocompatibilidade:
 **Dica:** Coloque `bum-rush` com priority 95 para que o bot sempre
 tente trazer o pack inteiro antes de declarar ataques individuais.
 
-### 5. `combat_action_preferences` — Preferências de Ação de Combate
+### 6. `combat_action_preferences` — Preferências de Ação de Combate
 
 Define **quais Combat Actions** cada personagem prefere usar.
 
@@ -225,7 +264,7 @@ Define **quais Combat Actions** cada personagem prefere usar.
 `aggressive_bite`, `lobotomy`, `dismember`, `whirlwind_defense`,
 `iron_skin`.
 
-### 6. `equipment_assignments` — Designação de Equipamentos
+### 7. `equipment_assignments` — Designação de Equipamentos
 
 Define **quem deve receber** cada equipamento.
 
@@ -258,7 +297,7 @@ Define **quem deve receber** cada equipamento.
 - `target: ""` com priority alta pode ser usado para equipamentos
   que *não* devem ser equipados em personagens (ex: Concertina Wire).
 
-### 7. `caern_preferences` — Preferência de Caern
+### 8. `caern_preferences` — Preferência de Caern
 
 Define qual Caern jogar primeiro.
 
@@ -270,7 +309,7 @@ Define qual Caern jogar primeiro.
 
 O bot tenta jogar o Caern da lista primeiro (comparação `in` no nome).
 
-### 8. `target_priority` — Prioridade de Alvos
+### 9. `target_priority` — Prioridade de Alvos
 
 Controla **quem atacar** no combate.
 
@@ -283,6 +322,11 @@ Controla **quem atacar** no combate.
   "hunting_grounds": {
     "prefer_prey_over_enemy": true,
     "priority_types": ["Victim", "Enemy"]
+  },
+  "threat_response": {
+    "luna-s-armor": "ignore",
+    "flak-jacket": "vital_blow",
+    "stench-of-death": "use_spirit_attack"
   }
 }
 ```
@@ -293,13 +337,18 @@ Controla **quem atacar** no combate.
 | `character_kill_order` | string | `"lowest_health"`, `"highest_renown"`, `"lowest_rage"` | Ordem de eliminação |
 | `ffa_diplomacy` | string | `"weaken_largest"`, `"attack_weakest"`, `"balanced"` | Estratégia FFA |
 | `avoid_overextend` | bool | true/false | Evita ataques que deixariam o pack vulnerável |
+| `threat_response` | dict | slug → resposta | Respostas customizadas para ameaças do ThreatAnalyzer |
 
 **FFA Diplomacy:**
 - `weaken_largest`: Ataca o líder em VP (default)
 - `attack_weakest`: Ataca o jogador com menos personagens
 - `balanced`: Ataca quem tem mais personagens (maior ameaça imediata)
 
-### 9. `umbra_strategy` — Estratégia da Umbra
+**Threat Response:**
+- Sobrescreve respostas padrão do ThreatAnalyzer por slug
+- Respostas válidas: `attack`, `flee`, `cancel`, `ignore`, `vital_blow`, etc.
+
+### 10. `umbra_strategy` — Estratégia da Umbra
 
 Controla **quem entra na Umbra** e quando.
 
@@ -325,7 +374,7 @@ Controla **quem entra na Umbra** e quando.
 | `enter_with_high_gnosis` | bool | Prefere entrar com quem tem Gnosis alto |
 | `save_umbra_actions` | bool | Preserva ações de Umbra (não gasta desnecessariamente) |
 
-### 10. `redraw_rules` — Regras de Redraw
+### 11. `redraw_rules` — Regras de Redraw
 
 Controla **o que descartar** na fase de redraw.
 
@@ -348,7 +397,7 @@ Controla **o que descartar** na fase de redraw.
 | `always_discard_if_duplicate` | string[] | **Slugs** de cartas que são descartados se há cópia duplicada |
 | `prefer_discard_types` | string[] | Tipos preferenciais para descarte |
 
-### 11. `moot_strategy` — Estratégia de Juntas
+### 12. `moot_strategy` — Estratégia de Juntas
 
 Controla **como votar** nas Juntas (Board Meetings).
 
@@ -368,7 +417,19 @@ Controla **como votar** nas Juntas (Board Meetings).
 | `vote_no_against` | string[] | `"Leader"` = vota não contra o líder; ou nomes de cartas |
 | `strategic_vote` | bool | Vota com base na situação do jogo (não aleatório) |
 
-### 12. `notes` (documentação humana)
+### 13. `combat_notes` (notas táticas)
+
+Notas táticas para o bot, usadas como referência.
+
+```json
+"combat_notes": {
+  "vital_blow_contingency": "Se oponente usa Vital Blow, ter CAs Rage 1 na mão",
+  "friends_in_high_places": "Usar para encerrar combates desfavoráveis",
+  "frenzy_timing": "Usar ANTES de atacar para garantir kill"
+}
+```
+
+### 14. `notes` (documentação humana)
 
 Comentários sobre a estratégia do deck, não usado pelo motor.
 
@@ -395,9 +456,16 @@ Comentários sobre a estratégia do deck, não usado pelo motor.
 | `combat_likely` | Fase é Combat OU há oponentes com personagens |
 | `combat_active` | Combate ativo no momento |
 | `is_combat_phase` | Fase atual é Combat |
+| `has_good_target` | Há Victim/Enemy no HG ou personagem fraco (HP ≤ 4) |
+| `in_combat_with_victim` | Jogador está em combate com um Victim |
+| `about_to_attack` | Fase de declaração de combate (declaration/alpha_action) |
+| `character_under_attack` | Personagem do jogador está sendo atacado |
+| `character_receives_mortal_wound` | Personagem do jogador prestes a morrer (HP ≤ 0) |
+| `defensive_emergency` | Personagem do jogador com HP ≤ 2 |
 | `ffa_mode` | 3+ jogadores ativos |
 | `card_in_hand:<nome>` | Carta com nome contendo `<nome>` está na mão |
 | `character_in_umbra` | Algum Character está na Umbra |
+| `after_winning_moot` | Jogador acabou de vencer uma Junta que chamou |
 
 ---
 
@@ -408,15 +476,17 @@ O `PriorityBot` verifica a estratégia nos seguintes métodos:
 | Método do Bot | O que usa da estratégia |
 |---|---|
 | `_agir_recurso()` | `resource_play_order` para ordenar cartas |
+| `_agir_recurso()` | `action_priorities` para Action cards (Friends in High Places) |
 | `_escolher_carta_combate_como_acao()` | `combat_action_preferences` (+20 bônus) |
 | `_try_attack()` | `combat_action_preferences` |
 | `_equip_card_to_pack()` | `equipment_assignments` |
-| `_agir_umbra()` | `umbra_strategy` (\(enter/save/keep\)) |
+| `_agir_umbra()` | `umbra_strategy` (enter/save/keep) |
 | `_agir_redraw()` | `redraw_rules` (never_discard, prefer types) |
 | `_agir_moot()` | `moot_strategy` (vote yes/no) |
-| `_try_eliminate_threat()` | `target_priority` (ffa_diplomacy) |
+| `_try_eliminate_threat()` | `target_priority` (ffa_diplomacy, threat_response) |
 | `_escolher_gift()` | `gift_priorities` (ordenar por prioridade) |
 | `_decide_combat()` / `play_card` step | `combat_event_priorities` (jogar CE face-down estratégico) |
+| `strategy.sorted_actions()` | `action_priorities` (ordenar Action cards por prioridade) |
 
 **Fallback:** Se o `deck_id` do jogador não tem config (`deck<id>_config.json`
 não existe), o bot usa a heurística original — nenhuma modificação no
@@ -503,11 +573,16 @@ done
 }
 ```
 
-### Config Completa
+### Config Completa (Defensive)
+
+Veja `data/deck_strategies/deck2004_config.json` (Questor Defence) para
+exemplo de config com `defensive_pacing`, `action_priorities` e `combat_notes`.
+
+### Outros Exemplos
 
 Veja `data/deck_strategies/deck1055_config.json` (Philodox) ou
 `data/deck_strategies/deck1044_config.json` (Ajaba) para exemplos
-de config completas com todas as seções.
+de config com outras estratégias.
 
 ---
 
