@@ -1,4 +1,4 @@
-# Análise: Classic: Wailer Special — Wyrm Aggro-Control (deck #2005)
+# Análise: Classic: Wailer Special — Wyrm Pack Combat Control (deck #2005)
 
 ## 📋 Visão Geral
 
@@ -6,12 +6,13 @@
 |---|---|
 | **ID** | 2005 |
 | **Nome** | Classic: Wailer special |
-| **Estilo** | `aggro+control` — Wyrm com VP via Victims no HG |
+| **Estilo** | `control` — Wyrm pack combat com controle via Wailer |
 | **Renome** | 20/20 (4 chars = 9+4+4+3) |
-| **Cartas** | 63 |
-| **Torneios** | Consistentemente top 5 |
-| **Força** | VP engine próprio (Victims no HG), Stench of Death, Roar of Wyrm |
-| **Fraqueza** | Victims Hl:10 difíceis de matar; Greenpeace destrói caerns Wyrm |
+| **Sept** | 38 cartas |
+| **Combat** | 21 cartas |
+| **Total** | 59 cartas |
+| **Força** | Wailer flip → oponentes sem CAs; deploy -5Rg/-6Gn |
+| **Fraqueza** | Personagens frágeis (Blossom Hl:2, Wailer Hl:2) |
 
 ---
 
@@ -19,130 +20,109 @@
 
 | Personagem | Rn | Hl | Rg | Gn | Função |
 |---|---|---|---|---|---|
-| **Barnaby Shadrack** | 9 | 5 | 3 | 4 | Alpha, começa com SMG (dano agravado), pode ignorar... |
-| **Blossom** | 4 | 2 | 1 | 6 | Remove self + 1 char do jogo antes do alpha (tática) |
-| **Wailer** | 4 | 2 | 1 | 3 | Special: oponentes com menos Gn não jogam Combat Actions |
-| **Fangs-Through-Eye** | 3 | 4 | 4 | 2 | Brawler, não defende Fomori no HG |
+| **Barnaby Shadrack** | 9 | 5 | 3 | 4 | Alpha, SMG (aggravated), ignora gifts, +2 sept hand |
+| **Blossom** | 4 | 2 | 1 | 6 | Controle — remove self + 1 char antes do alpha |
+| **Wailer** | 4 | 2 | 1 | 3 | **CORE** — flip → Battle form, oponentes com Gn < Wailer sem CAs |
+| **Fangs-Through-Eye** | 4 | 4 | 4 | 2 | Corpo forte, pode dar Beast-of-War ao pack |
+
+### Por que Wailer é o core
+
+Wailer é "a simple 4 cost character who can stymie any number of opponents merely by flipping." Quando entra em Battle form, **todos os oponentes com Gnosis menor que Wailer (3) não podem jogar Combat Actions no próximo round**.
+
+**Limitação crucial:** "only Wailer can use" Roar of the Wyrm.
 
 ---
 
-## 🦾 Aliados (11 — Moot Power!)
+## 🦾 Aliados (10 — Pack Attack Engine)
 
 | Ally | Qtd | Rn | Hl | Função |
 |---|---|---|---|---|
-| **Pentex Executive and Limousine** | 3 | 8 | 7 | **3 votos cada na Junta!** Pode destruir 1 caern/turno |
-| **Unseelie Troll** | 2 | 7 | 6 | Pode usar Beast-of-War e Eater-of-Souls gifts |
-| **Enticer** | 3 | 4 | 3 | Oponentes com menos Gn não jogam Combat Cards no 1º round |
+| **Pentex Executive and Limousine** | 3 | 8 | 7 | 3 votos na Junta + destrói caerns. **RISCO: kills fáceis.** |
+| **Unseelie Troll** | 2 | 7 | 6 | Usa Beast-of-War e Eater-of-Souls gifts |
+| **Enticer** | 3 | 4 | 3 | Oponentes com menos Gn sem CAs no 1º round |
 | **Kinfolk Small Town Cop** | 2 | 1 | 2 | Prende 1 Homid antes do alpha |
 
-**Poder de Voto na Junta:** 3 Executives × 3 votos = **9 votos** + Trolls + Enticers + Kinfolk
+### Aliados no Pack Attack
+
+O deck usa **Ass Whuppin' Lynch Mob** para trazer todos os allies para o combate:
+- 3 Pentex Executives (Rn:8, Hl:7) — tanques
+- 2 Unseelie Trolls (Rn:7, Hl:6) — ofensivos
+- 3 Enticers (Rn:4, Hl:3) — suporte
+- 2 Kinfolk Small Town Cops (Rn:1, Hl:2) — blockers
+
+**Total:** 10 allies no pack para pack attack.
 
 ---
 
-## ⚙️ Mecânica Central — VP via Auto-Victims
+## ⚔️ Mecânica Central — Pack Combat com Controle
 
-### Fonte Primária de VP
-
-```
-Greenpeace Assault Team (Rn:9, Hl:10) — Victim no HG
-A Bus Full of People (Rn:6, Hl:10) — Victim no HG
-```
-
-**Wyrm ganha VP matando Victims.** A Wailer coloca Victims no HG GLOBAL e depois mata eles com o alpha.
-
-### Como Funciona
+### O combo principal
 
 ```
-Turno 1: Jogar Greenpeace Assault Team no HG (global)
-         ⚠️ Greenpeace destrói 1 caern Wyrm no fim do Combat Phase!
-Turno 2: Alpha ataca Victim no HG
-         Ass Whuppin' Lynch Mob → pack inteiro ataca junto! 🎯
-         Matar Victim Hl:10 → VP para Wyrm
+1. Jogar Stench of Death → só espíritos/Banes/Metis atacam
+2. Jogar Caern of the Unwashed Child → oponente -2 Gn ou -2 Rg
+3. Jogar Mass Pollution → oponentes -1 Gn
+4. Equipar Gooshy Gooze → oponente -1 Gn/-1 Rg no combate
+5. Wailer flip para Battle form → oponentes com Gn < 3 sem CAs
+6. Sneak Attack + Ass Whuppin Lynch Mob → pack attack em qualquer alvo
 ```
 
-### Ass Whuppin' Lynch Mob (Combat Event)
-```
-Play when your alpha declares an attack on a victim in the Hunting Grounds.
-Choose any or all members of your pack to join the attack. Draw 1 additional card.
-```
+### Deploy completo: -5 Rage, -6 Gnosis
 
-**Pack Attack no Victim:** Todos os 4 chars + aliados atacam o Victim no HG ao mesmo tempo.
+| Fonte | Rage | Gnosis |
+|---|---|---|
+| Caern of Unwashed Child | -2 | -2 |
+| Gooshy Gooze (1x) | -1 | -1 |
+| Mass Pollution | 0 | -1 |
+| Infectious Touch (2x) | -2 | -2 |
+| **Total** | **-5** | **-6** |
 
-### Problema: Greenpeace destrói caerns Wyrm!
-```
-The Greenpeace Assault Team will destroy 1 Wyrm caern at the end of each Combat Phase.
-```
-
-A Wailer tem **Caern of the Unwashed Child x3**. Cada turno que o Greenpeace fica vivo, 1 caern é destruído. **Precisa matar o Greenpeace rápido!**
+> "Most decks aren't prepared for that and will have to escape or go home."
 
 ---
 
-## 🛡️ Defesa e Controle
+## 🛡️ Defesa
 
 ### Stench of Death (x2, Gn:2)
+> "Only spirits, Banes, and Metis can attack the user of this Gift."
 
-```
-Só espíritos/Banes/Metis podem atacar seu pack.
-```
+**Permanente.** Bloqueia a maioria dos ataques inimigos.
 
-**Permanente.** Bloqueia a maioria dos ataques inimigos. Metis são raros.
+### Roar of the Wyrm (x3, Gn:4) — BACKUP
+> "1 opponent facing the Gift user in combat cannot play a Combat Action in the upcoming round."
 
-### Roar of the Wyrm (x3, Gn:4)
+**Descartável.** Só Wailer pode usar. Opção de backup, não primária.
 
-```
-1 oponente não pode jogar Combat Action no próximo round.
-```
+### Infectious Touch (x3, Gn:3) — Fraca na prática
+> "The target of this Gift loses 1 Rage and 1 Gnosis."
 
-**Descartável.** Trava 1 personagem inimigo por turno.
+> "Infectious Touch is rarely as useful as it seems it should be."
 
-### Infectious Touch (x3, Gn:3)
+### Beat Unmerciful (x1, Rg:4)
+> "If your opponent's Combat Action is Rage 1, it does not take effect."
 
-```
-Alvo perde 1 Rage e 1 Gnosis. Máximo 2 aplicações por alvo. Permanente.
-```
-
-**Permanente.** Reduz permanentemente Rage e Gnosis do alvo. Acumulável (2x = -2 Rg, -2 Gn).
-
-### Mass Pollution (x3)
-
-```
-Wyrm +1 Gn, não-Wyrm -1 Gn.
-```
-
-**Empilhável com Infectious Touch!** Oponente perde até -3 Gn (Mass Pollution + 2 Infectious Touch).
-
-### Caern of the Unwashed Child (x3, Gn:4)
-
-```
-Oponente perde 2 Gnosis OU 2 Rage durante o combate.
-```
-
-### Gooshy Gooze (x3, Gn:2)
-
-```
-Oponente perde 1 Rage e 1 Gnosis no combate.
-```
-
-**Empilhável:** 3 Gooshy + Infectious Touch + Mass Pollution + Caern = oponente perde até -6 Gn num turno!
+**Impede fugas:** Run Like Hell e Fox Frenzy são Rg:1.
 
 ---
 
 ## 🎁 Gifts
 
-| Gift | Qtd | Gn | Função |
-|---|---|---|---|
-| **Stench of Death** | 2 | 2 | Só espíritos/Banes/Metis atacam (permanente) |
-| **Infectious Touch** | 3 | 3 | -1 Rg/-1 Gn permanente no alvo (máx 2x) |
-| **Roar of the Wyrm** | 3 | 4 | Trava Combat Action do oponente por 1 round |
+| Gift | Qtd | Gn | Função | Avaliação |
+|---|---|---|---|---|
+| **Stench of Death** | 2 | 2 | Só espíritos/Banes/Metis atacam | ⭐ Essencial |
+| **Roar of the Wyrm** | 3 | 4 | Trava CA do oponente | ⚠️ Backup, só Wailer usa |
+| **Infectious Touch** | 3 | 3 | -1Rg/-1Gn permanente | ❌ Raramente útil |
 
 ---
 
-## ⚔️ Combat Actions (18 cartas)
+## ⚔️ Combat Deck (21 cartas)
+
+### Combat Actions (17)
 
 | Carta | Qtd | Rg | Função |
 |---|---|---|---|
-| **Head or Gut?** | 1 | 5 | Dano alto. Se matar, coloca no VP (+1 VP extra!) |
-| **Beat Unmerciful** | 1 | 4 | Anula Combat Action Rg:1 do oponente |
+| **Head or Gut?** | 1 | 5 | Dano alto +1 VP se matar |
+| **Beat Unmerciful** | 1 | 4 | Impede CA Rg:1 (fugas) |
 | **Surprise Attack** | 1 | 2 | Surpresa no 1º round |
 | **Lucky Blow** | 2 | 2 | Dano variável |
 | **Reckless Swing** | 2 | 2 | Ataque ousado |
@@ -153,93 +133,101 @@ Oponente perde 1 Rage e 1 Gnosis no combate.
 | **Dodge** | 1 | 1 | Esquiva |
 | **Run Like Hell** | 2 | 1 | Fuga |
 
+### Combat Events (4)
+
+| Carta | Qtd | Função | Prioridade |
+|---|---|---|---|
+| **Ass Whuppin' Lynch Mob** | 1 | Pack attack no alpha | ⭐⭐⭐ |
+| **Hunting Party** | 1 | Pack attack em não-alfa | ⭐⭐ |
+| **Shieldmate** | 1 | Wailer entra como defensor | ⭐⭐⭐ |
+| **Taking the Death Blow** | 1 | Redireciona ferimento mortal | ⭐ |
+
+### Shieldmate é crucial
+> "Instead it has a shieldmate, so you can bring in Wailer whoever they attack."
+
+Shieldmate permite que **Wailer entre no combate** como defensor, garantindo que sua habilidade seja ativada.
+
 ---
 
 ## 🃏 Ações
 
-| Carta | Qtd | Função |
-|---|---|---|
-| **Shapeshift** | 3 | Muda de forma a qualquer momento (Crinos → mais Rage!) |
-| **Sneak Attack** | 3 | Ataque surpresa bypassando protocolo |
+| Carta | Qtd | Função | Prioridade |
+|---|---|---|---|
+| **Sneak Attack** | 3 | Ativar Lynch Mob sem alpha | ⭐⭐⭐ |
+| **Shapeshift** | 3 | Mudar forma | ⭐ Diversão |
 
-### Combos
+### Sneak Attack + Lynch Mob
+> "Sneak Attacks, in this deck, might be best once you have an alpha so you can use Ass Whuppin' Lynch Mob."
 
-**Infectious Touch + Mass Pollution + Gooshy Gooze**
-- -1 Rg/-1 Gn (Infectious) + -1 Gn (Mass Pollution) + -1 Rg/-1 Gn (Gooshy) = -2 Rg, -3 Gn por combate
-- Com 2 Infectious Touch em 2 turnos: -3 Rg, -4 Gn
-- Oponente perde capacidade de jogar gifts e atacar
+Sneak Attack não é para surpresa — é para **ativar Lynch Mob**.
 
-**Stench of Death + Caern of the Unwashed Child**
-- Stench: só espíritos/Banes/Metis atacam
-- Caern: oponente perde 2 Gn ou 2 Rg no combate
-- Se oponente não tem espíritos, não pode atacar!
+### Shapeshift é fraca
+> "Shapeshift is rarely useful as a card, but I thought it was fun to try here to allow your to put Wailer back into Homid form, ready to frenzy again."
 
-**Shapeshift + Beast-of-War**
-- Beast-of-War: +3 Rage para todos os membros
-- Shapeshift: muda para Crinos (mais dano)
-- Barnaby com SMG + Beast-of-War = Rg:3+3 = 6 + SMG = dano agravado!
-
-**Ass Whuppin' Lynch Mob + Hunting Party**
-- Pack attack no Victim: todos os chars + aliados atacam junto
-- Hunting Party: ataque em massa contra não-alfa
-- Pode matar Victim Hl:10 em 1 round
+Propósito real: colocar Wailer de volta em Homid para frenzar novamente.
 
 ---
 
-## 📈 Fluxo de Jogo Ideal
+## ⚠️ Riscos e Cuidados
 
-### Turno 1 (Setup)
-1. **Resource:** Mass Pollution. Caern of the Unwashed Child. Gooshy Gooze.
-2. **Moot:** Pentex Executives votam (3 votos cada)
-3. **Combat:** Defender. Stench of Death se disponível.
+### Beast-of-War pode undermine Wailer
+> "careful with Beast-of-War that you don't undermine your Wailer. However the combat resilience of the extra Rage is worth including it for."
 
-### Turno 2 (VP Engine)
-1. **Resource:** Greenpeace Assault Team no HG. Stench of Death.
-2. **Combat:** Alpha ataca Victim no HG. Ass Whuppin' Lynch Mob! Pack ataca junto.
+Beast-of-War dá +3 Rage mas **-1 Gnosis**. Se oponente ganhar Gnosis > Wailer (3), a habilidade dele falha.
 
-### Turno 3-4 (Controle)
-1. **Resource:** Infectious Touch nos personagens inimigos (-Rg/-Gn).
-2. **Combat:** Roar of the Wyrm trava Combat Actions do oponente.
-3. Matar Victim = VP. Repetir com Bus Full of People.
+### Pentex Executive são kills fáceis
+> "Pentex Executives and Limousines are a risk since they are juicy kills to make; but their ability to wreck havoc with caerns make they hard to pass up."
 
-### Turno 5+ (Snowball)
-- Se Greenpeace morreu, jogar Bus Full of People
-- Se morreram os 2 Victims, matar personagens inimigos
-- Pentex Executive destrói caerns inimigos
-- Votos na Junta passam propostas
+### Greenpeace destrói caerns Wyrm
+> "The Greenpeace Assault Team will destroy 1 Wyrm caern at the end of each Combat Phase."
+
+Caern of Unwashed Child x3, mas Greenpeace pode destruí-los.
+
+### Deck é grande
+> "The deck is also, at 38 cards, on the large side; but that's because Barnaby gives you a chance of drawing all those cards."
+
+Barnaby dá +2 sept hand, compensando o tamanho.
 
 ---
 
-## ⚠️ Fraquezas
+## 📈 Fluxo de Jogo
 
-1. **Greenpeace destrói caerns Wyrm** — Precisa matar rápido ou perde Caern of the Unwashed Child
-2. **Victims Hl:10** — Muita vida para matar. Precisa de pack attack (Lynch Mob) para matar em 1 turno
-3. **Personagens frágeis** — Blossom (Hl:2), Wailer (Hl:2). Um ataque bom mata
-4. **Pouco dano por ataque** — Barnaby Rg:3, personagens com Rg:1-4. Sem Entrail Rend ou Dry Gulch
-5. **Stench of Death afeta ambos** — Só espíritos/Banes/Metis atacam. Se o oponente não tem, não ataca. Mas seus chars também podem ser impedidos
-6. **Sem cura** — Exceto regeneração padrão, sem Vampire Blood ou Bivouac
+### Setup
+1. **Resource:** Caern of Unwashed Child (优先), Allies (Pentex, Enticers)
+2. **Gift:** Stench of Death
+3. **Moot:** Pentex Executives votam
+
+### Controle
+1. **Resource:** Mass Pollution, Gooshy Gooze
+2. **Wailer flip** para Battle form
+3. **Pack attack** via Sneak Attack + Lynch Mob
+
+### Finish
+1. **Deploy completo:** -5Rg, -6Gn
+2. Oponente sem CAs, sem gifts, sem defesa
+3. Pack attack para matar
 
 ---
 
-## 🔧 ThreatAnalyzer — Como Este Deck se Beneficia
+## 🔧 ThreatAnalyzer
 
 | Ameaça | Severidade | Resposta |
 |---|---|---|
-| **Flak Jacket** | 0.50 | Infectious Touch reduz Rage do portador → menos dano |
-| **Luna's Armor** | 0.60 | Roar of the Wyrm trava Combat Actions do portador |
-| **Stench of Death** (inimigo) | 0.70 | Gooshy Gooze + Caern reduzem Gn → talvez desative |
-| **Heightened Senses** | 0.55 | Infectious Touch reduz Gn → challenge ainda possível |
-| **War Knife** | 0.55 | Foca ataque no portador |
-| **Caern (oponente)** | 0.50 | Pentex Executive destrói 1 caern por jogo |
+| **Flak Jacket** | 0.50 | Ignorar (não afeta controle) |
+| **Luna's Armor** | 0.60 | Ignorar (controle via Gn, não dano) |
+| **Stench of Death** (inimigo) | 0.70 | Attack with high Gnosis character |
+| **Heightened Senses** | 0.55 | Attack first |
 
-**Resposta a ameaças:**
-1. `attack` — Ataque direto ao portador
-2. `attack_victim` — Mata Victim no HG por VP
-3. `destroy_caern` — Pentex Executive destrói caern problemático
-4. `debuff_with_infectious` — Infectious Touch reduz stats permanentemente
+---
 
-### Prioridade de Alvos
-1. **Victims no HG** (VP engine) — matar antes que destruam seus caerns
-2. Personagens com gifts perigosos (Stench of Death, Luna's Armor)
-3. Personagens de baixo HP
-4. Caerns inimigos (Pentex Executive destrói)
+## 📊 Resumo
+
+| Aspecto | Valor |
+|---|---|
+| **Estratégia** | Pack combat control via Wailer flip |
+| **Core** | Wailer + Sneak Attack + Lynch Mob |
+| **Defesa** | Stench of Death + Caern + deploy negativo |
+| **Fraqueza** | Personagens frágeis, Beast-of-War risk |
+| **Deploy** | -5 Rage, -6 Gnosis |
+| **Sept** | 38 cartas (grande, mas Barnaby compensa) |
+| **Combat** | 21 cartas (low-Rage + Shieldmate) |

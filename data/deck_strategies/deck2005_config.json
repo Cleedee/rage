@@ -1,8 +1,8 @@
 {
   "deck_id": 2005,
   "name": "Classic: Wailer special",
-  "style": "aggro",
-  "desc": "Wyrm aggro-control. VP matando Victims proprios no HG (Greenpeace Assault Team Hl:10, Bus Full of People Hl:10) + Ass Whuppin Lynch Mob (pack attack). Defesa: Stench of Death (so espiritos/Banes/Metis atacam) + Roar of the Wyrm (trava Combat Action) + Infectious Touch (-1Rg/-1Gn permanente). 11 allies com 9+ votos na Junta. 4 chars (Barnaby Rn:9, Blossom Rn:4, Wailer Rn:4, Fangs Rn:3). 63 cartas.",
+  "style": "control",
+  "desc": "Wyrm pack combat control. Core: Wailer — flip para Battle form, oponentes com menos Gn nao jogam CAs. Aliados + Ass Whuppin Lynch Mob para pack attack. Stench of Death bloqueia ataques. Caern of Unwashed Child + Mass Pollution + Gooshy Gooze destroem stats (-5Rg/-6Gn no deploy). Barnaby: alpha com SMG + draw. Blossom: controle. Fangs: corpo forte + Beast-of-War. 38 sept, 21 combat.",
 
   "gift_priorities": [
     {
@@ -12,16 +12,16 @@
       "desc": "Stench of Death (Gn:2) — PERMANENTE. So espiritos/Banes/Metis podem atacar. Prioridade maxima."
     },
     {
-      "slug": "infectious-touch",
-      "priority": 85,
-      "condition": "opponent_character_exists",
-      "desc": "Infectious Touch (Gn:3) — -1Rg/-1Gn permanente no alvo. Acumulavel ate 2x."
-    },
-    {
       "slug": "roar-of-the-wyrm",
       "priority": 80,
       "condition": "in_combat_with_strong_opponent",
-      "desc": "Roar of the Wyrm (Gn:4) — Trava Combat Action do oponente no proximo round. Descartavel."
+      "desc": "Roar of the Wyrm (Gn:4) — BACKUP. SO WAILER PODE USAR. Trava Combat Action do oponente no proximo round."
+    },
+    {
+      "slug": "infectious-touch",
+      "priority": 50,
+      "condition": "opponent_character_exists",
+      "desc": "Infectious Touch (Gn:3) — -1Rg/-1Gn permanente. RARELY USEFUL na pratica — so usar se nao houver better play."
     }
   ],
 
@@ -42,18 +42,18 @@
       "card_name": "Gooshy Gooze",
       "target": "Wailer",
       "priority": 65,
-      "desc": "Gooshy Gooze — Wailer como atacante de reserva."
+      "desc": "Gooshy Gooze — Wailer como atacante de reserva. Cuidado: Gn:3, pode ser afetado por debuffs."
     }
   ],
 
   "resource_play_order": [
-    "event",
+    "ally",
     "caern",
-    "victim",
+    "character",
+    "event",
     "gift",
     "equipment",
-    "ally",
-    "character",
+    "victim",
     "action"
   ],
 
@@ -61,7 +61,7 @@
     "barnaby-shadrack": {
       "priorities": [
         {"slug": "head-or-gut", "priority": 95},
-        {"slug": "beat-unmerciful", "priority": 85},
+        {"slug": "beat-unmerciful", "priority": 90, "desc": "Impede fugas (Run Like Hell, Fox Frenzy — ambos Rg:1)"},
         {"slug": "surprise-attack", "priority": 82},
         {"slug": "lucky-blow", "priority": 78},
         {"slug": "reckless-swing", "priority": 75},
@@ -92,13 +92,13 @@
       "slug": "mass-pollution",
       "priority": 95,
       "condition": "always",
-      "desc": "Mass Pollution — Wyrm +1 Gn, oponentes -1 Gn. Empilhavel com Infectious Touch."
+      "desc": "Mass Pollution — Wyrm +1 Gn, oponentes -1 Gn. Empilhavel com Caern + Gooshy."
     },
     {
       "slug": "beast-of-war",
-      "priority": 80,
+      "priority": 60,
       "condition": "about_to_attack",
-      "desc": "Beast-of-War — Todos os membros +3 Rage, -1 Gn. Usar antes de atacar Victim."
+      "desc": "Beast-of-War — +3 Rage, -1 Gn. CUIDADO: pode undermine Wailer se oponente ganhar Gn > Wailer!"
     }
   ],
 
@@ -106,97 +106,105 @@
     {
       "slug": "ass-whuppin-lynch-mob",
       "priority": 95,
-      "condition": "attacking_victim_in_hg",
-      "desc": "Ass Whuppin Lynch Mob — Pack attack no Victim do HG. ESSENCIAL para matar Victim Hl:10."
+      "condition": "attacking_any_target",
+      "desc": "Ass Whuppin Lynch Mob — Pack attack QUALQUER alvo (nao so Victims). Ativar com Sneak Attack."
     },
     {
       "slug": "hunting-party",
       "priority": 85,
       "condition": "multiple_attackers_available",
-      "desc": "Hunting Party — Pack attack contra personagem nao-alfa."
+      "desc": "Hunting Party — Pack attack contra personagem nao-alfa. 1 copia no deck."
     },
     {
       "slug": "shieldmate",
-      "priority": 80,
+      "priority": 88,
       "condition": "character_receives_attack",
-      "desc": "Shieldmate — Divide dano entre chars."
+      "desc": "Shieldmate — Permite que WAINER ENTRE NO COMBATE como defensor. ESSENCIAL para ativar habilidade do Wailer."
     },
     {
       "slug": "taking-the-death-blow",
       "priority": 75,
       "condition": "character_receives_mortal_wound",
-      "desc": "Taking the Death Blow — Redireciona ferimento mortal para ally/char descartavel."
+      "desc": "Taking the Death Blow — Redireciona ferimento mortal para ally descartavel."
     }
   ],
 
   "action_priorities": [
     {
-      "slug": "shapeshift",
-      "priority": 85,
-      "condition": "before_combat",
-      "desc": "Shapeshift — Mudar para Crinos antes do combate (+Rage)."
+      "slug": "sneak-attack",
+      "priority": 92,
+      "condition": "has_alpha",
+      "desc": "Sneak Attack — ATIVAR LYNCH MOB. Melhor depois de ter alpha para usar Ass Whuppin Lynch Mob."
     },
     {
-      "slug": "sneak-attack",
-      "priority": 90,
-      "condition": "has_alpha_advantage",
-      "desc": "Sneak Attack — Ataque surpresa bypassando protocolo de combate."
+      "slug": "shapeshift",
+      "priority": 40,
+      "condition": "wailer_needs_homid",
+      "desc": "Shapeshift — RARELY USEFUL. Colocar Wailer de volta em Homid para frenzar novamente. Diversao."
     }
   ],
 
   "caern_preferences": [
     {
       "card_name": "Caern of the Unwashed Child",
-      "priority": 90,
-      "desc": "Caern of the Unwashed Child (Gn:4) — Oponente perde 2 Gn ou 2 Rg no combate."
+      "priority": 95,
+      "desc": "Caern of the Unwashed Child (Gn:4) — ESSENCIAL. Oponente perde 2 Gn ou 2 Rg. Jogar 3 copias."
     }
   ],
 
   "hunting_grounds_strategy": {
     "priority_cards": ["Greenpeace Assault Team", "A Bus Full of People"],
     "always_play_if_available": ["Greenpeace Assault Team"],
-    "victim_kill_priority": true,
-    "desc": "Jogar Victims no HG (global) para matar depois com alpha + Ass Whuppin Lynch Mob. Greenpeace primeiro (Hl:10, mas destroi caerns!). Depois Bus Full of People."
+    "victim_kill_priority": false,
+    "desc": "Victims sao targets para Wailer FLIP, NAO para VP. Greenpeace destroi caerns — usar so se necessario. O objetivo e pack attack em QUALQUER alvo que Wailer possa flipar."
   },
 
   "target_priority": {
+    "prefer_wailer_flip_targets": true,
     "character_kill_order": "lowest_health",
-    "prefer_weakest": true,
-    "hunting_grounds_kill_order": ["Victim"],
+    "ffa_diplomacy": "weaken_largest",
     "threat_response": {
-      "luna-s-armor": "attack_with_debuff",
+      "luna-s-armor": "ignore",
+      "flak-jacket": "ignore",
       "resist-pain": "attack",
       "stench-of-death": "attack_with_high_gnosis",
-      "flak-jacket": "attack_victim_instead",
       "heightened-senses": "attack_first"
-    }
+    },
+    "desc": "Alvo principal: personagens que Wailer pode flipar (Gn < 3). Priorizar pack attack quando Wailer esta em Battle form."
   },
 
   "moot_strategy": {
     "vote_with_executives": true,
-    "desc": "Pentex Executives (3 votos cada) dao poder de voto na Junta. Usar para passar propostas favoraveis ou bloquear propostas inimigas."
+    "desc": "Pentex Executives (3 votos cada) dao poder de voto na Junta. RISCO: sao kills faceis para oponentes."
   },
 
   "umbra_strategy": {
     "enter_characters": [],
-    "desc": "Nao entrar na Umbra. Personagens ficam no pack para defesa e ataque ao Victim no HG."
+    "desc": "Nao entrar na Umbra. Personagens ficam no pack para defesa e ataque."
   },
 
   "redraw_rules": {
     "never_discard": [
       "Barnaby Shadrack",
-      "Blossom",
       "Wailer",
-      "Fangs-Through-Eye",
       "Stench of Death",
-      "Mass Pollution",
-      "Greenpeace Assault Team",
-      "Ass Whuppin' Lynch Mob"
+      "Caern of the Unwashed Child",
+      "Ass Whuppin' Lynch Mob",
+      "Sneak Attack"
     ],
     "always_discard_if_duplicate": [
       "Gooshy Gooze",
-      "Sneak Attack"
+      "Mass Pollution"
     ],
-    "prefer_keep_types": ["victim", "character", "gift", "event"]
+    "prefer_keep_types": ["ally", "character", "gift", "caern"]
+  },
+
+  "combat_notes": {
+    "wailer_flip": "Wailer em Battle form: oponentes com Gn < Wailer nao jogam CAs no proximo round. ESSENCIAL para controle.",
+    "beast_of_war_risk": "Beast-of-War da +3 Rage mas -1 Gn. Se oponente ganhar Gn > Wailer, habilidade falha. Usar so quando seguro.",
+    "sneak_attack_lynch_mob": "Sneak Attack + Ass Whuppin Lynch Mob = pack attack sem alpha. Combo principal.",
+    "shieldmate_for_wailer": "Shieldmate permite que Wailer entre no combate como defensor. Ativa habilidade dele.",
+    "beat_unmerciful_escapes": "Beat Unmerciful impede Run Like Hell e Fox Frenzy (ambos Rg:1). Impede fugas.",
+    "deploy_stats": "Deploy completo: -5 Rage, -6 Gnosis no oponente. A maioria dos decks nao aguenta."
   }
 }
