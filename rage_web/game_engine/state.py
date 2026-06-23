@@ -845,6 +845,10 @@ class CombatState:
     """Indice do alpha atual em alpha_order"""
     alpha_actions_taken: int = 0
     """Contador de acoes alfa tomadas"""
+    players_who_acted_alpha: set[str] = field(default_factory=set)
+    """IDs dos jogadores que ja tomaram sua acao alfa nesta fase.
+    Regra 2.2.6: cada jogador tem apenas UMA acao alfa por fase de
+    combate. Quando todos tiverem feito sua acao, a fase termina."""
 
     # ---- NOVOS CAMPOS (Cap. 6) ----
 

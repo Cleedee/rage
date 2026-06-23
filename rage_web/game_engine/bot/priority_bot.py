@@ -1067,12 +1067,19 @@ class PriorityBot:
         lento = self._is_slow_deck()
 
         # ── ACAO ALFA ──
+        # Regra 2.2.6: cada jogador tem apenas UMA acao alfa por
+        # fase de combate. Quando todos tiverem feito sua acao, a
+        # fase termina.
         alfa_atual = g.combat.current_alpha
         meu_alpha = g.combat.alphas.get(self.player_id)
 
         if alfa_atual and meu_alpha and alfa_atual == meu_alpha:
+            # 🛑 Regra 2.2.6: ja tomamos nossa acao alfa nesta fase
+            if self.player_id in g.combat.players_who_acted_alpha:
+                g.combat.current_alpha_index += 1
+                g.add_log(f'[BOT] {me.name}: alpha ja agiu nesta fase (regra 2.2.6)')
             # 🛑 Regra 6.3: se ja atacamos e combate encerrou, alpha nao ataca de novo
-            if not g.combat.is_active and self._ataques_feitos:
+            elif not g.combat.is_active and self._ataques_feitos:
                 g.combat.current_alpha_index += 1
                 g.add_log(f'[BOT] {me.name}: alpha passou (ja atacou - regra 6.3)')
             else:
@@ -1298,6 +1305,8 @@ class PriorityBot:
 
         # Marca que este alpha vai atacar (evita loop infinito)
         self._ataques_feitos.add(meu_alpha_id)
+        # Regra 2.2.6: marca que este jogador ja usou sua acao alfa
+        self.game.combat.players_who_acted_alpha.add(self.player_id)
 
         # Avalia se estrategicamente e melhor atacar Presa agora
         alvo_hg = self._melhor_alvo_hg()
@@ -3050,6 +3059,8 @@ class PriorityBot:
         Com N jogadores, ataca criaturas do lider em VP primeiro.
         Regra 6.5.1: apenas o Alpha pode iniciar ataque; ataque
         de nao-Alpha requer card ability.
+        Regra 2.2.6: cada jogador tem apenas UMA acao alfa por
+        fase de combate.
 
         Estrategia:
         - aggro: ataca mesmo com chance menor (50% do Rage)
@@ -3057,6 +3068,10 @@ class PriorityBot:
         - control: so ataca se pode eliminar
         - vp_race: evita combate arriscado
         """
+        # 🛑 Regra 2.2.6: ja usamos nossa acao alfa nesta fase
+        if self.player_id in self.game.combat.players_who_acted_alpha:
+            return None
+
         # 🛑 REGRA: never_initiate_alpha_combat — bloquear se HG tem alvos
         if self._has_strategy:
             target_priority = self.strategy.get('target_priority', {})
