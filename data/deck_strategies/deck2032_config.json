@@ -1,0 +1,268 @@
+{
+  "deck_id": 2032,
+  "name": "Spirit Wardens — Gaia de Espiritos",
+  "style": "spirit_control",
+  "desc": "Gaia spirit control. Guides-to-Truth (Rn:9 Gn:10) + Shakey Mac (Rn:8 Gn:10, espiritos -2Rg). 9 allies espiritos (Ka Spirit imortal, Flame Spirit, Water Spirit). Command Spirit rouba espiritos, Exorcism remove. Sap Spirit+Umbral Flurry na Umbra. Feather of Phoenix (espiritos nao atacam portador). Caern of Waking Dream (VP por bind espiritos). 59 cartas.",
+
+  "gift_priorities": [
+    {
+      "slug": "command-spirit",
+      "priority": 95,
+      "condition": "opponent_has_spirit",
+      "desc": "Command Spirit (Gn:3) — Controla 1 espirito inimigo por 1 turno. Descartavel. Shakey/Guides Gn:10 superam qualquer espirito."
+    },
+    {
+      "slug": "exorcism",
+      "priority": 90,
+      "condition": "opponent_has_spirit",
+      "desc": "Exorcism (Gn:3) — Remove do jogo qualquer espirito com Gn < 10. Descartavel."
+    },
+    {
+      "slug": "born-to-nature",
+      "priority": 80,
+      "condition": "opponent_spirit_in_combat",
+      "desc": "Born to Nature (Gn:4) — Espirito perde 1 round de combate. Descartavel."
+    },
+    {
+      "slug": "purity-of-spirit",
+      "priority": 75,
+      "condition": "in_umbra_combat",
+      "desc": "Purity of Spirit (Gn:5) — Imune a dano agravado na Umbra por 1 turno."
+    },
+    {
+      "slug": "ghost-lance",
+      "priority": 70,
+      "condition": "in_combat",
+      "desc": "Ghost Lance (Gn:4) — Dardo de espirito do vento. Dano a distancia."
+    },
+    {
+      "slug": "deep-journey",
+      "priority": 65,
+      "condition": "in_umbra",
+      "desc": "Deep Journey (Gn:5) — Busca qualquer carta do sept deck na Umbra."
+    },
+    {
+      "slug": "spirit-of-the-fray",
+      "priority": 60,
+      "condition": "always",
+      "desc": "Spirit of the Fray (Gn:3) — Ataca primeiro no combate. Permanente."
+    }
+  ],
+
+  "equipment_assignments": [
+    {
+      "card_name": "Feather of the Phoenix",
+      "target": "Guides-to-Truth",
+      "priority": 95,
+      "desc": "Feather — espiritos nao atacam Guides. Protecao essencial."
+    },
+    {
+      "card_name": "Eye of Luna",
+      "target": "Guides-to-Truth",
+      "priority": 90,
+      "desc": "Eye of Luna — +1 Gn (Guides: 10->11). Passa Gauntlet facil."
+    },
+    {
+      "card_name": "Feather of the Phoenix",
+      "target": "Shakey Mac",
+      "priority": 85,
+      "desc": "Feather — Shakey (Hl:2) precisa de protecao contra espiritos."
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Guides-to-Truth",
+      "priority": 80,
+      "desc": "Assegai — bloqueia 1 dano de Combat Actions."
+    },
+    {
+      "card_name": "War lodge",
+      "target": "Shakey Mac",
+      "priority": 70,
+      "desc": "War lodge — descarta ally espirito por +2 Rage no combate."
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Guides-to-Truth",
+      "priority": 65,
+      "desc": "Bivouac — +1 cura na Regeneration."
+    },
+    {
+      "card_name": "Spirit Drum of Calm-Thunder",
+      "target": "Guides-to-Truth",
+      "priority": 60,
+      "desc": "Spirit Drum — cancela frenesi, encerra combate. Emergencia."
+    }
+  ],
+
+  "resource_play_order": [
+    "caern",
+    "character",
+    "equipment",
+    "gift",
+    "ally",
+    "event",
+    "action",
+    "combat action"
+  ],
+
+  "combat_action_preferences": {
+    "guides-to-truth": {
+      "priorities": [
+        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
+        {"slug": "maim", "priority": 92},
+        {"slug": "umbral-flurry", "priority": 88, "umbra_only": true},
+        {"slug": "spirited-strike", "priority": 85},
+        {"slug": "head-butt", "priority": 80},
+        {"slug": "block-and-strike", "priority": 75},
+        {"slug": "evasion", "priority": 70},
+        {"slug": "lucky-blow", "priority": 65},
+        {"slug": "dodge", "priority": 60}
+      ]
+    },
+    "shakey-mac": {
+      "priorities": [
+        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
+        {"slug": "maim", "priority": 90},
+        {"slug": "umbral-flurry", "priority": 85, "umbra_only": true},
+        {"slug": "head-butt", "priority": 80},
+        {"slug": "evasion", "priority": 75},
+        {"slug": "block-and-strike", "priority": 72},
+        {"slug": "lucky-blow", "priority": 65},
+        {"slug": "dodge", "priority": 60}
+      ]
+    },
+    "default": {
+      "priorities": [
+        {"slug": "dodge", "priority": 85},
+        {"slug": "evasion", "priority": 80},
+        {"slug": "lucky-blow", "priority": 65},
+        {"slug": "sap-spirit", "priority": 55},
+        {"slug": "umbral-flurry", "priority": 50}
+      ]
+    }
+  },
+
+  "combat_event_priorities": [
+    {
+      "slug": "pack-defense",
+      "priority": 85,
+      "condition": "defending",
+      "desc": "Pack Defense — Ate 15 Rn de chars entram na defensiva."
+    },
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 80,
+      "condition": "character_receives_mortal_wound",
+      "desc": "Taking the Death Blow — Redireciona ferimento para ally espirito (Ka Spirit volta ao deck!)"
+    }
+  ],
+
+  "event_priorities": [
+    {
+      "slug": "uktena",
+      "priority": 90,
+      "condition": "opponent_has_spirit",
+      "desc": "Uktena — Nenhum espirito pode atacar membros da pack. Pack totem."
+    },
+    {
+      "slug": "crescent-moon",
+      "priority": 85,
+      "condition": "has_spirit_allies",
+      "desc": "Crescent Moon — Todos os espiritos +1 Rage. Seus aliados espiritos tambem!"
+    },
+    {
+      "slug": "hyperion",
+      "priority": 80,
+      "condition": "has_aggravated_damage",
+      "desc": "Hyperion — Regenera dano agravado. Flame Spirits nao atacam pack."
+    },
+    {
+      "slug": "spiritual-revelation",
+      "priority": 75,
+      "condition": "opponent_has_banes",
+      "desc": "Spiritual Revelation — Banes vao para a Umbra (onde voce domina)."
+    },
+    {
+      "slug": "spirit-backlash",
+      "priority": 70,
+      "condition": "opponent_has_fetish",
+      "desc": "Spirit Backlash — Destroi equipamento fetish Gn>=5."
+    },
+    {
+      "slug": "close-gauntlet",
+      "priority": 60,
+      "condition": "defensive",
+      "desc": "Close Gauntlet — Fecha Gauntlet por 1 turno."
+    }
+  ],
+
+  "action_priorities": [
+    {
+      "slug": "step-sideways",
+      "priority": 95,
+      "condition": "before_combat",
+      "desc": "Step Sideways — Entrar na Umbra. Guides (Gn:10+1) passa Gauntlet facil."
+    },
+    {
+      "slug": "friends-in-high-places",
+      "priority": 85,
+      "condition": "needs_cards",
+      "desc": "Friends in High Places — Compra cartas ou encerra combate."
+    },
+    {
+      "slug": "sneak-attack",
+      "priority": 70,
+      "condition": "has_good_target",
+      "desc": "Sneak Attack — Ataque surpresa."
+    }
+  ],
+
+  "caern_preferences": [
+    {
+      "card_name": "Caern of the Waking Dream",
+      "priority": 90,
+      "desc": "Caern of the Waking Dream (Gn:2) — VP completo por bind de espiritos (fetish equipment)."
+    }
+  ],
+
+  "target_priority": {
+    "character_kill_order": "lowest_health",
+    "prefer_weakest": true,
+    "threat_response": {
+      "command-spirit": "cancel_with_exorcism",
+      "exorcism": "kill_caster",
+      "born-to-nature": "ignore",
+      "ghost-lance": "dodge",
+      "spirit-of-the-fray": "attack_first",
+      "feather-of-the-phoenix": "attack_with_sap",
+      "spirit-drum-of-calm-thunder": "kill_carrier"
+    }
+  },
+
+  "umbra_strategy": {
+    "enter_characters": ["Guides-to-Truth", "Shakey Mac"],
+    "save_for_combat": ["Guides-to-Truth"],
+    "always_enter_if_possible": true,
+    "desc": "Entrar na Umbra sempre que possivel. Sap Spirit e Umbral Flurry so funcionam na Umbra. Guides (Gn:10+1) e Shakey (Gn:10) passam Gauntlet 3 facil."
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Guides-to-Truth",
+      "Shakey Mac",
+      "Zari",
+      "Feather of the Phoenix",
+      "Eye of Luna",
+      "Sap Spirit",
+      "Step Sideways",
+      "Command Spirit"
+    ],
+    "always_discard_if_duplicate": [
+      "Ka Spirit",
+      "Stormcrow",
+      "Lucky Blow",
+      "Dodge"
+    ],
+    "prefer_keep_types": ["character", "ally", "equipment", "gift", "combat action"]
+  }
+}
