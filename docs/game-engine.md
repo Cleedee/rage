@@ -291,6 +291,80 @@ Ordem de prioridade (configurável via `resource_play_order`):
 
 ---
 
+## ThreatAnalyzer (`bot/threat_analyzer.py`)
+
+Analisador de ameaças que detecta cartas permanentes do oponente que afetam negativamente o deck do bot.
+
+### Estrutura
+
+```python
+@dataclass
+class Threat:
+    card: CardInstance          # A carta ameaçadora
+    card_name: str              # Nome legível
+    card_slug: str              # Slug para matching
+    threat_type: str            # 'equipment', 'gift', 'caern', etc.
+    severity: float             # 0.0–1.0 (1.0 = crítica)
+    reason: str                 # Por que é ameaça
+    response: str               # Resposta sugerida
+```
+
+### Catálogo de Ameaças
+
+O `THREAT_CATALOG` contém ameaças conhecidas:
+
+| Tipo | Exemplos | Severidade |
+|---|---|
+| **Equipment** | Flak Jacket (0.50), Skin of Hellbound (0.40), Vampire Blood (0.35) |
+| **Gift** | Luna's Armor (0.60), Stench of Death (0.70), Shroud (0.65) |
+| **Caern** | Sky River (0.50), Rytthiku (0.55) |
+| **Territory** | Toxic Waste (0.50), Shadow Lord Territory (0.40) |
+| **Battlefield** | Battle of Screaming Mud (0.60), War of Attrition (0.55) |
+| **Combat Event** | Iron Will (0.50), Taking the Death Blow (0.40) |
+| **Ally** | Dreamspeaker Mage (0.50) |
+
+### Métodos Principais
+
+| Método | Descrição |
+|---|---|
+| `analyze()` | Escaneia tabuleiro, retorna Threats ordenados por severidade |
+| `top_threat()` | Retorna maior ameaça |
+| `threats_by_type(type)` | Filtra por tipo |
+| `threat_severity_for(slug)` | Severidade de um slug |
+| `get_threat_response(slug)` | Resposta recomendada |
+| `top_threat_target()` | CardInstance da maior ameaça |
+
+### Respostas Sugeridas
+
+| Resposta | Descrição |
+|---|---|
+| `attack` | Atacar portador/origem |
+| `attack_low_rage` | Atacar com Rage baixo |
+| `attack_from_umbra` | Atacar da Umbra |
+| `attack_multiple` | Atacar com múltiplos chars |
+| `remove` | Remover装备/gift |
+| `flee` | Fugir do combate |
+| `cancel` | Cancelar efeito |
+| `block` | Bloquear com CAs defensivos |
+| `kill_hg` | Matar no HG |
+| `ignore` | Ignorar (baixa prioridade) |
+
+### Integração com Config JSON
+
+```json
+{
+  "target_priority": {
+    "threat_response": {
+      "luna-s-armor": "ignore",
+      "flak-jacket": "vital_blow",
+      "stench-of-death": "use_spirit_attack"
+    }
+  }
+}
+```
+
+---
+
 ## Notas Táticas
 
 ### Vital Blow Contingency
