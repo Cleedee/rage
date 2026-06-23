@@ -28,6 +28,7 @@ Exemplos existentes:
 | `data/deck_strategies/deck1044_config.json` | Ajaba — Hienas da Savana | combo |
 | `data/deck_strategies/deck465_config.json` | Apocalypse — Primeiro Esquadrão #21 | aggro |
 | `data/deck_strategies/deck2004_config.json` | Classic: Questor Defence | defensive_pacing |
+| `data/deck_strategies/deck2008_config.json` | Classic: Grimfang Moot | control |
 
 ---
 
@@ -488,6 +489,7 @@ Comentários sobre a estratégia do deck, não usado pelo motor.
 | `opponent_can_frenzy` | Oponente pode frenzar (tem personagem com Rage > 0) |
 | `opponent_stepping_sideways` | Oponente está entrando na Umbra |
 | `enemy_spirit_in_play` | Espírito inimigo está em jogo |
+| `opponent_dominates_umbra` | Oponente controla a Umbra (mais Gnosis ou personagens na Umbra) |
 | `threat_from_umbra` | Há ameaça vindo da Umbra |
 
 ### Condições de Tabuleiro
@@ -624,6 +626,39 @@ exemplo de config com `defensive_pacing`, `action_priorities` e `combat_notes`.
 Veja `data/deck_strategies/deck1055_config.json` (Philodox) ou
 `data/deck_strategies/deck1044_config.json` (Ajaba) para exemplos
 de config com outras estratégias.
+
+### Config Moot — Grimfang (deck 2008)
+
+Exemplo de deck de **controle via Moot** com insights de jogador
+humano. Resultado: 64.3% → 82.6% WR após aplicar insights.
+
+```json
+{
+  "deck_id": 2008,
+  "style": "control",
+  "combat_notes": {
+    "philosophy": "ESCAPE ONLY. Combat deck = end combats, not win them.",
+    "who_fights": "Flame Spirits are good alphas. Never use voting chars.",
+    "run_like_hell": "Voting chars should NOT use Run Like Hell."
+  },
+  "combat_action_preferences": {
+    "_default": {
+      "escape_priority": "ALWAYS escape. Never attack unless forced."
+    },
+    "grimfang": {
+      "special": "NEVER fight. Voting lynchpin.",
+      "run_like_hell": "FORBIDDEN on Grimfang"
+    }
+  },
+  "target_priority": {
+    "never_initiate_alpha_combat": true,
+    "use_flame_spirit_for_alpha": true
+  }
+}
+```
+
+**Chave:** `never_initiate_alpha_combat: true` + escape priority.
+O bot para de atacar desnecessariamente e foca em Moots.
 
 ---
 
