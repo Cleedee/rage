@@ -232,10 +232,11 @@ def _run_match_impl(seed, max_turns, max_steps_override,
     stale_steps = 0
     last_turn = game.turn_number
     last_phase = game.phase
+    last_combat_step = ''
     _displayed_phase = game.phase  # para log de mudanca de fase
     _displayed_turn = game.turn_number
     last_log_len = 0
-    max_steps = max_steps_override if max_steps_override else max_turns * 50
+    max_steps = max_steps_override if max_steps_override else max_turns * 100
     if max_steps_override and _VERBOSE >= 2:
         vlog(2, f'  (max-steps: {max_steps})')
     if _VERBOSE >= 1:
@@ -248,7 +249,8 @@ def _run_match_impl(seed, max_turns, max_steps_override,
 
     # ── Loop principal ──
     while step < max_steps:
-        if game.phase == 'combat' and game.combat.alpha_order and not _alpha_order:
+        if game.phase == 'combat' and game.combat.alpha_order and (
+                not _alpha_order or _alpha_order != list(game.combat.alpha_order)):
             _alpha_order = list(game.combat.alpha_order)
             _alpha_index = 0
             _alpha_map = {cid: pid for pid, cid in game.combat.alphas.items()}
@@ -268,6 +270,7 @@ def _run_match_impl(seed, max_turns, max_steps_override,
             # Isto garante que ambos os jogadores tenham oportunidade
             # de agir com seus alfas, mesmo se o primeiro ja iniciou combate.
             cid_atual = _alpha_order[_alpha_index]
+            game.combat.current_alpha = cid_atual
             dono_id = _alpha_map.get(cid_atual)
             if dono_id:
                 cp = next(p for p in game.players if p.id == dono_id)
@@ -288,7 +291,15 @@ def _run_match_impl(seed, max_turns, max_steps_override,
         if _alpha_phase and action and not action.startswith('wait'):
             _alpha_index += 1
 
-        if game.turn_number != last_turn or game.phase != last_phase:
+        # Stale steps: reseta quando ha progresso real
+        # (acao que nao seja wait, pass ou combat_wait)
+        is_progress = (action and not action.startswith('wait') and
+                       not action.startswith('pass') and
+                       action != 'combat_wait')
+        if (game.turn_number != last_turn or game.phase != last_phase or
+                (game.phase == 'combat' and
+                 game.combat.step != last_combat_step) or
+                is_progress):
             stale_steps = 0
             if game.phase != 'combat':
                 _alpha_order.clear()
@@ -298,6 +309,7 @@ def _run_match_impl(seed, max_turns, max_steps_override,
         else:
             stale_steps += 1
         last_phase = game.phase
+        last_combat_step = game.combat.step if game.phase == 'combat' else ''
 
         if stale_steps > 200:
             vlog(0, f'  ⚠️  TRAVOU ({stale_steps} steps sem progresso)')

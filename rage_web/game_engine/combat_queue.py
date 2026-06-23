@@ -4186,7 +4186,9 @@ def end_combat(game: GameState) -> bool:
         if m.modifier != 'dodge_all_next_round'
     ]
 
-    game.combat = CombatState()
+    # Preserva alfas para o proximo combate na mesma fase
+    alfas_anteriores = dict(game.combat.alphas)
+    game.combat = CombatState(alphas=alfas_anteriores)
     # Reset has_passed para todos (jogadores podem ter passado
     # durante o combate como defensores, e precisam de nova chance
     # para agir na fase de combate apos o encerramento - regra 6.3)

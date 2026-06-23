@@ -1599,6 +1599,11 @@ class PriorityBot:
 
         # ---- NOVOS STEPS ----
 
+        if step in ('select_alpha', 'alpha_action'):
+            # Alpha steps: delega para _agir_alpha que decide
+            # se ataca ou passa. Se nao e nosso alpha, avanca.
+            return self._agir_alpha()
+
         if step == 'declaration':
             # Declaration Step: ja foi configurado em start_combat
             # Avanca para pre_combat
@@ -1806,17 +1811,38 @@ class PriorityBot:
 
             # Todos os combatentes do bot jogaram
             combatants = get_combatants(g)
-            if all(c in g.combat.played_cards for c in combatants):
+            pendentes = [c for c in combatants
+                         if c not in g.combat.played_cards]
+
+            # Todos os combatentes jogaram
+            if not pendentes:
                 # Avanca para targeting
                 g.combat.step = 'targeting'
                 return 'combat_targeting'
 
             # Verifica se so presas nao declaradas (auto-declare)
-            pendentes = [c for c in combatants
-                         if c not in g.combat.played_cards]
             if pendentes and all(_eh_prey_no_hg(g, c) for c in pendentes):
                 reveal_all(g)
                 return 'reveal'
+
+            # Regra 6.3: se nenhuma criatura pode jogar, avanca
+            # diretamente para between_rounds (que verificara se
+            # houve acao valida e encerrara o combate).
+            # Isso evita loop infinito de combat_wait.
+            nenhuma_pode_jogar = True
+            for cid in pendentes:
+                card = _find_card(g, cid)
+                if card and card.owner_id == self.player_id:
+                    if self.player.combat_hand:
+                        nenhuma_pode_jogar = False
+                        break
+            if nenhuma_pode_jogar:
+                # Marca todos como passou
+                for cid in pendentes:
+                    g.combat.played_cards[cid] = ''
+                # Avanca para between_rounds
+                g.combat.step = 'between_rounds'
+                return 'combat_to_between_rounds'
 
             self._pass_turn()
             return 'combat_wait'
@@ -2718,6 +2744,10 @@ class PriorityBot:
 
         Fallback: logica original (personagens com maior ameaca por stats).
         """
+        # 🛑 Regra 2.2.6: ja usamos nossa acao alfa nesta fase
+        if self.player_id in self.game.players_who_acted_alpha:
+            return None
+
         # 🛑 REGRA: never_initiate_alpha_combat — bloquear se HG tem alvos
         if self._has_strategy:
             target_priority = self.strategy.get('target_priority', {})
@@ -3938,9 +3968,16 @@ class PriorityBot:
                         dfd_name = c.name
         self.game.add_log(
             f'[BOT] {self.player.name} atacou {dfd_name} com {atk_name}')
+        self._start_combat_and_track(attacker_id, defender_id)
+
+    def _start_combat_and_track(self, attacker_id: str, defender_id: str):
+        """Wrapper para start_combat que sempre atualiza tracking.
+
+        Regra 2.2.6: toda vez que um jogador inicia combate,
+        deve ser marcado em players_who_acted_alpha.
+        """
         start_combat(self.game, [attacker_id], [defender_id])
         self._ataques_feitos.add(attacker_id)
-        # Regra 2.2.6: marca que este jogador ja usou sua acao alfa
         self.game.players_who_acted_alpha.add(self.player_id)
 
     def _encontrar_receptor_gift(self, gift: CardInstance) -> Optional[CardInstance]:
