@@ -75,9 +75,9 @@
     "character",
     "equipment",
     "gift",
+    "action",
     "event",
-    "victim",
-    "action"
+    "victim"
   ],
 
   "combat_action_preferences": {
@@ -154,9 +154,8 @@
 
   "hunting_grounds_strategy": {
     "priority_cards": ["Renegade Werewolf Hunter", "Wild Animals", "Vigilante"],
-    "always_play_if_available": ["Renegade Werewolf Hunter"],
     "victim_kill_priority": true,
-    "desc": "Play victims to HG. Priority: Werewolf Hunter (Hl:4, faceis de matar) -> Wild Animals (Hl:4) -> Vigilante (Hl:5). Matar com Longtooth + Gaia's Will Corrupted."
+    "desc": "Play victims to HG SOMENTE DEPOIS de Skin of Hellbound equipada em Longtooth. Priority: Werewolf Hunter (Hl:4) -> Wild Animals (Hl:4) -> Vigilante (Hl:5). Matar com Longtooth + Gaia's Will Corrupted."
   },
 
   "target_priority": {
