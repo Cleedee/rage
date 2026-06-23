@@ -1,159 +1,199 @@
-# Análise: Classic: Grimfang Moot (deck #2008)
+# Classic: Grimfang Moot (deck #2008)
 
-## 📋 Visão Geral
+> *"Seu objetivo é usar o deck de combate para ENCERRAR combates e o sept
+> para reunir votos suficientes para vencer Moots."*
+> — Jogador humano
+
+---
+
+## Visão Geral
 
 | Campo | Valor |
 |---|---|
 | **ID** | 2008 |
 | **Nome** | Classic: Grimfang Moot |
-| **Estilo** | `moot_voting` — vitória via proposals de Junta |
-| **Renome** | 20/20 (chars: 10+7+2+1) |
+| **Estilo** | `control` — vitória via Moot Phase, combate = escape |
+| **Renome** | 20/20 (10+7+2+1) |
 | **Cartas** | 57 |
-| **Torneio** | 🥇 5-0 (campeão invicto) |
-| **Força** | geração massiva de VP via Moot Phase |
-| **Fraqueza** | personagens frágeis (Hl:1-3), baixo poder de combate direto |
+| **Fraqueza** | Sem anti-Wyrm. Sem oponentes Gaia = provavelmente perde |
 
 ---
 
-## 🃏 Personagens (Rn:20)
+## Filosofia do Deck
+
+Esse deck **não quer lutar**. Seu deck de combate existe para
+**encerrar combates**, não para vencê-los. Seu deck de sept existe
+para reunir votos suficientes para vencer Moots.
+
+**Não há estratégia anti-Wyrm nesta versão.** Se você não tiver
+oponentes Gaia, provavelmente está perdido (que é uma das razões
+pelas quais Moots puros pararam de ser viáveis com o tempo).
+
+---
+
+## Personagens
 
 | Personagem | Rn | Hl | Rg | Gn | Função |
 |---|---|---|---|---|---|
-| **Grimfang** (alfa) | 10 | 3 | 2 | 10 | Votação (+3 Rn moot), Silver Crown bearer |
-| **Old Storm-Chaser** | 7 | 2 | 3 | 9 | +1 sept hand size |
-| **Ivan Korda** | 2 | 1 | 1 | 3 | Voto extra barato |
-| **Diem** | 1 | 1 | 1 | 2 | Voto extra barato |
+| **Grimfang** (alfa) | 10 | 3 | 2 | 10 | **Linchpin de votação.** Não pode morrer. |
+| **Old Storm-Chaser** | 7 | 2 | 3 | 9 | **Existe puramente para comprar cartas.** Convenientemente também é Theurge. |
+| **Ivan Korda** | 2 | 1 | 1 | 3 | Pode ser sacrificado ou enviado numa Quest sem impacto. |
+| **Diem** | 1 | 1 | 1 | 2 | Pode ser sacrificada ou enviada numa Quest sem impacto. |
 
-**Proteção:** todos são frágeis. Grimfang (Hl:3) morre com 1 ataque bom. Old Storm-Chaser (Hl:2) morre com quase qualquer coisa. Ivan e Diem (Hl:1) morrem com um sopro.
+**Grimfang é seu linchpin de votação.** Tudo gira em torno dele.
+Se ele morrer, você perde o jogo.
+
+**Old Storm-Chaser** está lá puramente para comprar cartas.
+Não use em combate se puder evitar.
+
+**Ivan e Diem** são descartáveis. Podem ser sacrificados para
+salvar Grimfang, ou enviados numa Umbral Quest.
 
 ---
 
-## ⚙️ Mecânica Central — Moot Phase
+## Todas as VP Vêm do Sept
 
-### Poder de Voto
+Suas fontes de VP são **exclusivamente** do sept:
+
+| Fonte | VP | Notas |
+|---|---|---|
+| **Silver Record** x3 | 2VP cada | 6VP total, mais 2VP do Legendary = 12VP |
+| **Winter Wolf** | 6VP | Com Legendary Leadership = 12VP |
+| **Legendary Leadership** | +VP igual ao Rn da proposta | Multiplicador de VP |
+| **Caern Building** | 4VP | Backup |
+| **Umbral Quest** | backup | Backup |
+
+**Combos de VP:**
+- **Silver Record** é a proposta mais confiável — custa Rn:2, passa
+  fácil, dá 2VP + 2VP do Legendary Leadership = 4VP cada. 3 cópias
+  = até 12VP no jogo.
+- **Winter Wolf** remove um Garou Rn≥6 + 6VP + 6VP do Legendary = 12VP.
+- **Legendary Leadership** é o multiplicador — jogar IMEDIATAMENTE
+  após vencer um Moot.
+
+---
+
+## Mecânica de Moot
+
+### Poder de Voto (máximo ~47 votos)
 
 | Fonte | Votos |
 |---|---|
-| Grimfang (Rn:10 +3 moot) + **Silver Crown** (+6) | 19 |
+| Grimfang (Rn:10 +3 moot) + Silver Crown (+6) | 19 |
 | Old Storm-Chaser (Rn:7) | 7 |
 | Ivan Korda (Rn:2) | 2 |
 | Diem (Rn:1) | 1 |
 | Kinfolk TV Reporter x3 | +6 |
-| **Falcon** | +4 (+1 por membro do pack) |
-| **Yuri Tvarivich** (Past Life) | +8 |
-| **Total máximo** | **47 votos** |
+| Falcon | +4 (+1 por membro do pack) |
+| Yuri Tvarivich (Past Life) | +8 |
+| **Total** | **47 votos** |
 
-Com 47 votos potenciais, QUALQUER proposta de Junta passa facilmente (a mais cara custa Rn:7).
+Com 47 votos, QUALQUER proposta passa facilmente.
 
-### Ciclo de VP por Moot
+### Ordem de Prioridade das Propostas
 
-1. **Resource Phase:** Jogar Falcon e The Silver Crown em Grimfang
-2. **Umbra Phase:** (opcional) Yuri Tvarivich retorna
-3. **Moot Phase:**
-   - Convocar Junta (Grimfang como dono)
-   - Jogar proposta de alto valor: **Winter Wolf** (Rn:6 → mata alguém)
-   - Votar a favor com 47 votos → passa automaticamente
-   - Jogar **Legendary Leadership** → +VP igual ao Rn da proposta
-4. **Resultado:** Winter Wolf (6VP + 6VP Legendary Leadership = 12VP) + elimina Garou inimigo
+1. **Tribal War** — Ótima proposta de abertura. Se o mesmo deck tem
+   ambas as tribos, uma ou outra tem que ir.
+2. **Winter Wolf** — Remove Garou problemático + 12VP com Legendary.
+3. **Skindancer** — Decimam decks Gaia. Transforma Garou em Enemy no HG.
+4. **The Stolen Wolf** — Pode decimar decks Gaia também.
+5. **Silver Record** — VP garantido, 3 cópias.
+6. **Caern Building** — Backup de VP.
+7. **The Litany's Guidance** — Nega VP de inimigos Gaia.
 
-### Propostas Prioritárias
+### Equipamentos de Votação
 
-| Proposta | Rn | VP Direto | VP c/ Legendary | Efeito |
-|---|---|---|---|---|
-| **Winter Wolf** | 6 | 6 | **12** | Remove Garou Rn≥6 + VP |
-| **Caern Building** | 6 | 4 | 10 | +VP, +Caern pro proprietário |
-| **Silver Record** (x3) | 2 | 2 | **4 cada** | VP garantido, 3 cópias = 12VP no jogo |
-| **Skindancer** (x3) | 6 | 0 | 6 | Remove Garou (Wyrm, vai pro HG) |
-| **The Litany's Guidance** | 7 | 0 | 7 | Nega VP de inimigos (Gaia) |
-
-**Combos:**
-- **Silver Record** é a proposta mais confiável — custa só Rn:2, passa facilmente, dá 2VP + 2VP do Legendary Leadership = 4VP cada. 3 cópias = até 12VP no jogo.
-- **Winter Wolf** é o removal mais forte — tira um Garou Rn≥6 do jogo DE UMA VEZ (vai pro Victory Pile do dono, não pra Dead Pile). Dá 6VP + 6VP do Legendary = 12VP.
-- **Caern Building** dá 4VP + Caern (proteção futura) + 6VP do Legendary = 10VP.
-- **The Litany's Guidance** nega VP de inimigos Gaia — situação específica.
-- **Skindancer** remove Garou problemático transformando em Enemy no HG.
+- **The Silver Crown** → Grimfang (prioridade ABSOLUTA)
+- **Elder Stone** → Grimfang (backup)
+- **Caern of the Crescent Moon** → fonte de votos
 
 ---
 
-## 🛡️ Comportamento em Combate
+## Aliados
 
-### Defesa (prioridade)
-O deck **NÃO quer combater**. A estratégia é:
-
-1. **Esquivar** — Evasion x2, Fancy Footwork, Umbral Escape x2, Run Like Hell x2
-2. **Redirecionar** — Taking the Death Blow (packmate toma o hit)
-3. **Remover do combate** — Fox Frenzy x2 (foge entre rodadas), Frenzy (enlouquece)
-4. **Bloquear** — Block and Strike (defesa básica)
-
-### Ataque (fallback)
-Se for forçado a combater:
-- **Head Butt** (Rg:4) — dano grave
-- **Beat Unmerciful** (Rg:4) — dano grave
-- **Feint** (Rg:4) — finta + ataque
-- **Lucky Blow** (Rg:2) — acerto crítico
-- **Surprise Attack** (Rg:2) — ataque surpresa
-- **Stinging Wound** (Rg:1) — dano leve
-- **Off-balanced Attack** (Rg:1) — dano leve
+- **Kinfolk TV Reporter** x3 — Melhores que gifts. Podem servir como
+  companheiros de pack sacrifícios.
+- **Flame Spirit** x2 — **Bons alfas.** Use como atacante alpha.
+  São descartáveis.
+- **Dreamspeaker Mage** — O único cancelador de gifts nesta versão.
+  Deve ser suficiente se você estiver evitando combate.
 
 ---
 
-## 📈 Fluxo de Jogo Ideal
+## Combate: Escape Total
+
+> *"Existem sete maneiras de tentar encerrar o combate aqui.
+> Seu trabalho é garantir que SEMPRE tenha uma fuga adequada
+> na mão para qualquer situação."*
+
+### Cartas de Fuga (7 rotas)
+
+| Carta | Tipo | Uso |
+|---|---|---|
+| Umbral Escape x2 | CA | Fuga para Umbra — opção mais segura |
+| Evasion x2 | CA | Esquiva — evita dano completamente |
+| Fancy Footwork | CA | Esquiva avançada |
+| Run Like Hell x2 | CA | Fuga do combate — **NÃO usar em personagens de votação** |
+| Fox Frenzy x2 | CE | Sai do combate entre rodadas |
+| Taking the Death Blow | CE | Redireciona ferimento mortal |
+| Frenzy | CE | Último recurso — enlouquece personagem |
+
+### Regra de Ouro: Run Like Hell
+
+> **Personagens de votação (Grimfang, Storm-Chaser) NÃO devem usar
+> Run Like Hell.** Presa e aliados podem usar à vontade.
+
+### Flame Spirits como Alphas
+
+> **Flame Spirits são bons alfas.** Use-os para atacar. São
+> descartáveis e não impactam a estratégia de votação.
+
+### Spirit Drain
+
+> **Spirit Drain está lá principalmente para NEGAR um kill**
+> (se jogado bem), não para ser agressivo.
+
+---
+
+## Fluxo de Jogo
 
 ### Turno 1 (Setup)
-1. **Redraw:** Manter Grimfang, Silver Crown, Falcon. Descartar Ivan/Diem se precisar
-2. **Resource:** Jogar **Falcon** (Pack Totem, +1 Rn por membro). Jogar **Silver Crown** em Grimfang
-3. **Umbra:** (opcional) Jogar Yuri Tvarivich da Past Life
-4. **Moot:** Convocar Junta. Propor **Silver Record** (mais seguro). Votar SIM. Passa. Legendary Leadership → 4VP
-5. **Combat:** Evitar combate. Usar Evasion/Umbral Escape se atacado
+1. **Redraw:** Manter Grimfang, Silver Crown, Falcon. Descartar Ivan/Diem.
+2. **Resource:** Jogar **Falcon** + **Silver Crown** em Grimfang.
+3. **Moot:** Convocar Junta. Propor **Silver Record** (seguro). Votar SIM.
+   Legendary Leadership → 4VP.
+4. **Combat:** Evitar. Usar Evasion/Umbral Escape se atacado.
 
 ### Turnos 2-3 (Aceleração)
-1. **Resource:** Jogar **Elder Stone** em Grimfang (+3 Gn para segurança), **Aegis** (Gn:6, +2 Hl em Grimfang)
-2. **Recruit:** Dreamspeaker Mage (se tiver Gn), Flame Spirit
-3. **Moot:** Propor **Winter Wolf** (remove maior ameaça + 12VP) ou **Caern Building** (10VP)
-4. **Combat:** Defense first. Fox Frenzy se necessário
+1. **Resource:** Jogar **Elder Stone** + **Aegis** em Grimfang.
+2. **Recruit:** Flame Spirits (alphas), Kinfolk TV Reporters.
+3. **Moot:** Propor **Winter Wolf** (12VP) ou **Tribal War** (abertura).
+4. **Combat:** Defense first. Fox Frenzy se necessário.
 
 ### Turnos 4+ (Vitória)
-- Continuar propondo Winter Wolf + Silver Records até 20VP
-- Spirit Drain para eliminar espíritos problemáticos
-- Aegis mantém Grimfang vivo (+2 Hl = 5 total)
-- Se tudo falhar, combate defensivo até o VP chegar
+- Continuar propondo Winter Wolf + Silver Records até 20VP.
+- Spirit Drain para eliminar espíritos problemáticos.
+- Flame Spirits como sacrifícios de combate.
+- Aegis mantém Grimfang vivo (+2 Hl = 5 total).
 
 ---
 
-## 🧩 Config de Estratégia
+## Fraquezas
 
-| Prioridade | Valor | Condição |
+1. **Morte de Grimfang** = fim do jogo. Aegis e Taking the Death
+   Blow mitigam, mas não eliminam o risco.
+2. **Sem anti-Wyrm** — contra decks Wyrm sem Gaia, o deck sofre.
+3. **Personagens frágeis** — Hl:1-3. Qualquer ataque forte mata.
+4. **Sem cura** — Exceto Spirit Drain situacional.
+
+---
+
+## Resultado no Motor
+
+| Métrica | Antes (config LLM) | Depois (insight humano) |
 |---|---|---|
-| **Moot: Winter Wolf** | 95 | Se oponente tem Garou Rn≥6 |
-| **Moot: Caern Building** | 90 | Se não tem caern |
-| **Moot: Silver Record** | 85 | Sempre (confiável) |
-| **Moot: Skindancer** | 80 | Se oponente tem Garou problemático |
-| **Moot: Tribal War** | 60 | Situacional (mexe com tribos) |
-| **Moot: The Litany's Guidance** | 50 | Se múltiplos oponentes Gaia |
-| **Equipment: Silver Crown** | 95 | Em Grimfang (prioridade máxima) |
-| **Equipment: Elder Stone** | 80 | Em Grimfang (backup) |
-| **Gift: Aegis** | 90 | Em Grimfang (+2 Hl +2 Rn moot) |
-| **Gift: Spirit Drain** | 70 | Se houver espírito inimigo |
-| **Combat: Head Butt** | 90 | Último recurso ofensivo |
-| **Combat: Beat Unmerciful** | 85 | Dano grave |
-| **Combat: Evasion** | 90 | Defesa |
+| Win Rate | 64.3% | **82.6%** |
+| Timeouts | 11 | 2 |
 
----
-
-## ⚠️ Fraquezas Conhecidas
-
-1. **Morte de Grimfang** — Sem o alfa, perde poder de voto. Aegis (+2 Hl) e Taking the Death Blow mitigam.
-2. **Sem Moot Phase** — Se o jogo não tiver Moot Phase implementada, o deck perde sua principal fonte de VP.
-3. **Old Storm-Chaser frágil** — Hl:2 morre fácil. Perde +1 sept hand size.
-4. **Combat Actions limitadas** — 19 cartas de combate pra 57 cartas totais. Poucas ofensivas.
-5. **Sem cura** — Exceto Spirit Drain (situacional), não tem cura como Vampire Blood ou Resist Pain.
-6. **Silver Crown único** — Se perdido/destruído, perde +6 Rn moot.
-
----
-
-## 🔧 Sugestões de Melhoria
-
-1. **Adicionar mais proteção** — Vampire Blood (cura), Flak Jacket (reduz dano), Resist Pain
-2. **Mais caerns** — Hollow Heart Caern (protege Gnosis), Sky River Caern (protege não-alfa)
-3. **Yuri Tvarivich** está na Past Life — confirmar se o motor carrega Past Life cards
-4. **Confirmar Legendary Leadership** — verificar se o JSON tem efeito estruturado para dar VP após moot
+**Mudança-chave:** `never_initiate_alpha_combat: true` — o bot
+para de atacar desnecessariamente e foca em Moots.
