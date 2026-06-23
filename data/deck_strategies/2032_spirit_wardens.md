@@ -10,7 +10,7 @@
 | **Renome** | 20/20 (3 chars = 9+8+3) |
 | **Cartas** | 59 |
 | **Força** | Controle de espíritos + aliados imortais + Umbra combat |
-| **Fraqueza** | Chars frágeis; sem VP engine direta; depende de sinergia espiritual |
+| **Fraqueza** | Chars frágeis; VP dos Enemies é limitado (Hogling + Gafflings) |
 
 ---
 
@@ -19,7 +19,7 @@
 | Personagem | Rn | Hl | Rg | Gn | Função |
 |---|---|---|---|---|---|
 | **Guides-to-Truth** | 9 | 5 | 3 | **10** | Alpha, Theurge Uktena. Olha mão do oponente 2x por jogo |
-| **Shakey Mac** | 8 | 2 | 2 | **10** | **Espíritos jogam a -2 Rage contra ele** |
+| **Shakey Mac** | 8 | 2 | 2 | **10** | **Espíritos jogam Combat Actions a -2 Rage** |
 | **Zari** | 3 | 1 | 1 | 3 | Bastet. Quests valem +1 VP |
 
 ### Shakey Mac — O Anti-Espírito
@@ -113,6 +113,15 @@ Step Sideways → Sap Spirit (inbloqueável) → Umbral Flurry (+cartas)
 ```
 
 ---
+
+## 👾 Enemies no HG — VP Engine
+
+| Enemy | Qtd | Rn | Hl | VP |
+|---|---|---|---|---|
+| **Hogling** | 1 | 5 | 5 | Gaia kills Enemy = VP |
+| **Anaconda Gafflings** | 1 | 3 | 2 | Gaia kills Enemy = VP |
+
+**Gaia ganha VP matando Enemies.** Hogling (Hl:5) + Anaconda Gafflings (Hl:2) = fonte extra de VP.
 
 ## 🦾 Equipamentos
 

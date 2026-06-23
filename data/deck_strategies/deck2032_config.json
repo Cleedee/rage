@@ -2,48 +2,24 @@
   "deck_id": 2032,
   "name": "Spirit Wardens — Gaia de Espiritos",
   "style": "spirit_control",
-  "desc": "Gaia spirit control. Guides-to-Truth (Rn:9 Gn:10) + Shakey Mac (Rn:8 Gn:10, espiritos -2Rg). 9 allies espiritos (Ka Spirit imortal, Flame Spirit, Water Spirit). Command Spirit rouba espiritos, Exorcism remove. Sap Spirit+Umbral Flurry na Umbra. Feather of Phoenix (espiritos nao atacam portador). Caern of Waking Dream (VP por bind espiritos). 59 cartas.",
+  "desc": "Gaia spirit control v2. Guides-to-Truth + Shakey Mac + Zari. 9 allies espiritos. Command Spirit/Exorcism controle. Sap Spirit+Umbral Flurry Umbra. +Hogling+Anaconda Gafflings (Enemies p/ VP). +Massive Wound+Vital Blow (dano ofensivo). 59 cartas.",
 
   "gift_priorities": [
     {
       "slug": "command-spirit",
       "priority": 95,
       "condition": "opponent_has_spirit",
-      "desc": "Command Spirit (Gn:3) — Controla 1 espirito inimigo por 1 turno. Descartavel. Shakey/Guides Gn:10 superam qualquer espirito."
+      "desc": "Command Spirit (Gn:3) — Controla 1 espirito inimigo por 1 turno. Shakey/Guides Gn:10 superam qualquer espirito."
     },
     {
       "slug": "exorcism",
       "priority": 90,
       "condition": "opponent_has_spirit",
-      "desc": "Exorcism (Gn:3) — Remove do jogo qualquer espirito com Gn < 10. Descartavel."
-    },
-    {
-      "slug": "born-to-nature",
-      "priority": 80,
-      "condition": "opponent_spirit_in_combat",
-      "desc": "Born to Nature (Gn:4) — Espirito perde 1 round de combate. Descartavel."
-    },
-    {
-      "slug": "purity-of-spirit",
-      "priority": 75,
-      "condition": "in_umbra_combat",
-      "desc": "Purity of Spirit (Gn:5) — Imune a dano agravado na Umbra por 1 turno."
-    },
-    {
-      "slug": "ghost-lance",
-      "priority": 70,
-      "condition": "in_combat",
-      "desc": "Ghost Lance (Gn:4) — Dardo de espirito do vento. Dano a distancia."
-    },
-    {
-      "slug": "deep-journey",
-      "priority": 65,
-      "condition": "in_umbra",
-      "desc": "Deep Journey (Gn:5) — Busca qualquer carta do sept deck na Umbra."
+      "desc": "Exorcism (Gn:3) — Remove do jogo qualquer espirito com Gn < 10."
     },
     {
       "slug": "spirit-of-the-fray",
-      "priority": 60,
+      "priority": 80,
       "condition": "always",
       "desc": "Spirit of the Fray (Gn:3) — Ataca primeiro no combate. Permanente."
     }
@@ -221,9 +197,14 @@
     {
       "card_name": "Caern of the Waking Dream",
       "priority": 90,
-      "desc": "Caern of the Waking Dream (Gn:2) — VP completo por bind de espiritos (fetish equipment)."
+      "desc": "Caern of the Waking Dream (Gn:2) — VP completo por bind de espiritos."
     }
   ],
+
+  "hunting_grounds_strategy": {
+    "priority_cards": ["Hogling", "Anaconda Gafflings"],
+    "desc": "Enemies no HG para VP (Gaia kills Enemy = VP). Hogling Hl:5, Anaconda Gafflings Hl:2."
+  },
 
   "target_priority": {
     "character_kill_order": "lowest_health",
