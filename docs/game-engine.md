@@ -8,12 +8,17 @@ rage_web/game_engine/
 ├── combat_queue.py    ← Fila de ações + "Último a Declarar"
 ├── actions.py         ← Ações válidas e validação
 ├── rules.py           ← Constantes, checagens de regra
+├── effects.py         ← Sistema de efeitos estruturados
+├── anunciador.py      ← Sistema de anúncio → resposta → resolução
+├── match.py           ← Simulador de partidas bot vs bot
 ├── cli.py             ← REPL de debug (PLAY, ATTACK, STATUS)
 ├── api.py             ← API REST thin (futuro)
+├── tournament.py      ← Motor de torneio Suíço
 └── bot/
     ├── base.py        ← Interface do bot
     ├── evaluator.py   ← Sistema de notas (ameaça, vantagem, etc.)
-    └── priority_bot.py← Árvore de decisão por prioridades
+    ├── priority_bot.py← Árvore de decisão por prioridades
+    └── strategy_engine.py ← Config de estratégia por deck (JSON)
 ```
 
 ## Plano de Implementação
@@ -86,3 +91,223 @@ O bot avalia o board com notas 0-10 para cada fator:
 4. ATACAR
    → Buscar VP, atacar vulnerável
 ```
+
+Estratégias suportadas via config JSON por deck:
+- `midrange` (padrão): sobreviver > desenvolver > eliminar > atacar
+- `aggro`: eliminar > atacar > desenvolver > sobreviver
+- `control`: sobreviver > eliminar > desenvolver > atacar
+- `vp_race`: desenvolver > sobreviver > eliminar > atacar
+- `swarm` / `lento`: eliminar > atacar > sobreviver > desenvolver
+- `defensive_pacing`: sobreviver > eliminar > desenvolver > atacar (novo)
+
+---
+
+## Strategy Engine (`strategy_engine.py`)
+
+Motor de estratégia que permite guiar o PriorityBot com configurações JSON por deck.
+
+### Arquivo de Configuração
+
+```
+data/deck_strategies/
+├── deck<id>_config.json    ← Config do bot (motor lê)
+└── deck<id>_<nome>.md      ← Documentação humana da estratégia
+```
+
+### Seções do Config
+
+| Seção | O que faz |
+|---|---|
+| `gift_priorities` | Ordena gifts por prioridade + condições |
+| `resource_play_order` | Ordem de tipos na Resource Phase |
+| `combat_action_preferences` | Ações de combate preferidas por personagem |
+| `combat_event_priorities` | Combat Events priorizados (Frenzy, Taking Death Blow, etc.) |
+| `action_priorities` | Action cards priorizados (Friends in High Places, Sneak Attack) |
+| `equipment_assignments` | Quem equipa o quê |
+| `target_priority` | Quem atacar (inclui estratégia FFA) |
+| `umbra_strategy` | Quem entra/sai da Umbra |
+| `redraw_rules` | O que nunca descartar no redraw |
+| `moot_strategy` | Como votar em Juntas |
+| `combat_notes` | Notas táticas para o bot |
+
+### Condições para `gift_priorities` e `combat_event_priorities`
+
+| Condição | Descrição |
+|---|---|
+| `always` | Sempre ativo |
+| `umbra_available` | Fase Umbra ou pode step sideways |
+| `has_characters` | Pelo menos 1 Character no pack |
+| `has_strong_target` | Oponente tem criatura com Renown >= 2 |
+| `has_injured_character` | Algum Character com HP < max |
+| `opponent_stronger` | Oponente tem mais chars ou rage total |
+| `has_character_named:<slug>` | Personagem com slug=<slug> está vivo |
+| `combat_likely` | Fase Combat ou tem oponentes no pack |
+| `combat_active` | Combate ativo no momento |
+| `has_good_target` | Há Victim/Enemy no HG ou personagem fraco |
+| `in_combat_with_victim` | Está em combate com Victim |
+| `about_to_attack` | Fase de declaração de combate |
+| `character_under_attack` | Personagem está sendo atacado |
+| `character_receives_mortal_wound` | Personagem prestes a morrer |
+| `defensive_emergency` | Personagem com HP <= 2 |
+| `ffa_mode` | 3+ jogadores ativos |
+| `card_in_hand:<nome>` | Carta com nome <nome> está na mão |
+| `character_in_umbra` | Algum Character está na Umbra |
+
+### Métodos Principais
+
+| Método | Descrição |
+|---|---|
+| `sorted_gifts()` | Ordena gifts na mão por prioridade |
+| `sorted_events()` | Ordena eventos na mão por prioridade |
+| `sorted_actions()` | Ordena Action cards (Friends in High Places, etc.) |
+| `sorted_combat_events()` | Ordena Combat Events na mão de combate |
+| `resource_play_order()` | Retorna ordem de tipos para Resource phase |
+| `equipment_assignment()` | Retorna quem deve receber um equipment |
+| `should_keep_in_redraw()` | Retorna se carta deve ser mantida no redraw |
+| `get_ffa_target()` | Retorna ID do jogador a atacar em FFA |
+
+---
+
+## Limitador de Victim Attacks
+
+### Problema
+
+Victims no Hunting Grounds atacam automaticamente personagens ao final de cada Combat Phase. Se o combate da vítima cria um novo combate, que por sua vez cria outro combate, o jogo entra em loop infinito.
+
+### Solução
+
+Adicionado em `state.py`:
+
+```python
+_victim_attacks_this_phase: int = 0
+_MAX_VICTIM_ATTACKS_PER_PHASE: int = 5
+```
+
+- Contador é incrementado quando um trigger de `victim_attack` é registrado
+- Contador é resetado ao entrar na Combat Phase
+- Quando atinge o limite, novos triggers não são registrados
+
+### Exemplo de Loop Corrigido
+
+```
+1. Combat Phase termina
+2. Vigilante (565) registra trigger para atacar Questor
+3. Combate Vigilante vs Questor inicia
+4. Combate termina → Vigilante ataca novamente
+5. Limite atingido (5) → trigger não registrado
+6. Jogo continua normalmente
+```
+
+---
+
+## Torneio (`tournament.py`)
+
+### Estrutura
+
+```
+Tournament
+├── TournamentPlayer (inscritos)
+└── TournamentMatch (empareamentos)
+```
+
+### Formatos
+
+- `swiss`: Suíço (padrão) — rounds baseados em número de jogadores
+- `single_elim`: Eliminação simples
+- `double_elim`: Eliminação dupla
+
+### Comandos
+
+```python
+from rage_web.game_engine.tournament import (
+    criar_torneio,
+    inscrever_jogador,
+    executar_rodada,
+    classificacao,
+)
+
+# Criar torneio
+t = criar_torneio('Teste Deck 2004', formato='swiss')
+
+# Inscrever jogadores (bots)
+inscrever_jogador(t.id, 'Bot 2004', deck_id=2004, difficulty='hard')
+inscrever_jogador(t.id, 'Bot 465', deck_id=465, difficulty='hard')
+
+# Executar rodadas
+executar_rodada(t.id)
+
+# Ver classificação
+ranking = classificacao(t.id)
+```
+
+### Script de Torneio
+
+```bash
+# Round-robin: 2004 vs todos os oponentes (3 partidas cada)
+cd /workspace && PYTHONPATH=. python3 scripts/torneio_questor_2004.py --matches 3
+
+# Partidas aleatórias
+cd /workspace && PYTHONPATH=. python3 scripts/torneio_questor_2004.py --random --matches 20
+
+# Com verbosidade
+cd /workspace && PYTHONPATH=. python3 scripts/torneio_questor_2004.py --matches 1 -v 1
+```
+
+### Resultados do Torneio (Deck 2004)
+
+| Métrica | Valor |
+|---|---|
+| Win Rate | 47.9% |
+| vs Wyrm | 58% WR |
+| vs Gaia | 33% WR |
+| Erros stuck | 12.5% |
+
+---
+
+## Ações por Fase
+
+### Combat Phase
+
+O bot executa ações nesta ordem:
+
+1. **Alpha Action**: Atacar, challenge, passar
+2. **Play Card Step**: Jogar Combat Actions face-down
+3. **Targeting Step**: Escolher alvos
+4. **Reveal Step**: Revelar ações + Feints
+5. **Bluff Step**: Processar ilegais + bluffs
+6. **Resolution Step**: Aplicar danos (Fast → Normal → Slow)
+7. **Withdrawal Step**: Atacante decide se retira
+8. **Between Rounds**: Nova rodada ou fim do combate
+
+### Resource Phase
+
+Ordem de prioridade (configurável via `resource_play_order`):
+
+1. Territory / Caern
+2. Character / Ally
+3. Equipment
+4. Gift / Event / Action
+5. Victim / Enemy / Battlefield
+
+---
+
+## Notas Táticas
+
+### Vital Blow Contingency
+
+Se oponente usa **Vital Blow** (Rg:6) no seu personagem, ele fica com **Rage 1** no próximo round. Ter CAs Rage 1 na mão garante que você ainda pode agir:
+
+- Off-balanced Attack (Rg:1)
+- Stinging Wound (Rg:1)
+- Dodge (Rg:1)
+
+### Friends in High Places
+
+Encerra **qualquer combate sem frenzy**. Usar para:
+1. Encerrar combate desfavorável
+2. Desacelerar oponentes em FFA
+3. Proteger personagens frágeis
+
+### Frenzy Timing
+
+Frenzy dá +Rage cards e +hack-apart level. Usar **ANTES** de atacar para garantir kill com Gaia's Will Corrupted na Withdrawal step.
