@@ -444,6 +444,8 @@ Comentários sobre a estratégia do deck, não usado pelo motor.
 
 ## Condições Suportadas
 
+### Condições Básicas
+
 | Condição | Quando é verdadeira |
 |---|---|
 | `always` | Sempre |
@@ -453,18 +455,57 @@ Comentários sobre a estratégia do deck, não usado pelo motor.
 | `has_injured_character` | Algum Character com HP atual < HP máximo |
 | `opponent_stronger` | Oponente tem Rage total maior que o jogador |
 | `has_character_named:<slug>` | Personagem com slug específico está vivo no pack |
+| `ffa_mode` | 3+ jogadores ativos |
+| `card_in_hand:<nome>` | Carta com nome contendo `<nome>` está na mão |
+| `character_in_umbra` | Algum Character está na Umbra |
+
+### Condições de Combate
+
+| Condição | Quando é verdadeira |
+|---|---|
 | `combat_likely` | Fase é Combat OU há oponentes com personagens |
 | `combat_active` | Combate ativo no momento |
 | `is_combat_phase` | Fase atual é Combat |
 | `has_good_target` | Há Victim/Enemy no HG ou personagem fraco (HP ≤ 4) |
 | `in_combat_with_victim` | Jogador está em combate com um Victim |
+| `in_combat_with_strong_opponent` | Em combate com oponente forte (Rage > 3 ou HP > 4) |
 | `about_to_attack` | Fase de declaração de combate (declaration/alpha_action) |
 | `character_under_attack` | Personagem do jogador está sendo atacado |
 | `character_receives_mortal_wound` | Personagem do jogador prestes a morrer (HP ≤ 0) |
 | `defensive_emergency` | Personagem do jogador com HP ≤ 2 |
-| `ffa_mode` | 3+ jogadores ativos |
-| `card_in_hand:<nome>` | Carta com nome contendo `<nome>` está na mão |
-| `character_in_umbra` | Algum Character está na Umbra |
+
+### Condições de Oponente
+
+| Condição | Quando é verdadeira |
+|---|---|
+| `opponent_character_exists` | Oponente tem pelo menos 1 Character vivo |
+| `opponent_has_equipment` | Oponente tem algum equipamento |
+| `opponent_has_active_gift` | Oponente tem gift ativo |
+| `opponent_has_ally_or_prey` | Oponente tem ally ou presa (Victim/Enemy) |
+| `opponent_has_banes` | Oponente tem Banes |
+| `opponent_has_spirit` | Oponente tem Spirit |
+| `opponent_has_fetish_equipment` | Oponente tem equipamento Fetish |
+| `opponent_can_frenzy` | Oponente pode frenzar (tem personagem com Rage > 0) |
+| `opponent_stepping_sideways` | Oponente está entrando na Umbra |
+| `enemy_spirit_in_play` | Espírito inimigo está em jogo |
+| `threat_from_umbra` | Há ameaça vindo da Umbra |
+
+### Condições de Tabuleiro
+
+| Condição | Quando é verdadeira |
+|---|---|
+| `losing_board_position` | Jogador tem menos personagens que o oponente |
+| `no_pack_totem` | Não tem Pack Totem no pack |
+| `no_pack_totem` | Não tem Pack Totem no pack |
+| `no_lunar_phase` | Não está na fase lunar (simplificação: fora de combate) |
+| `both_decks_nearly_empty` | Ambos os decks têm ≤ 3 cartas |
+
+### Condições de Fase
+
+| Condição | Quando é verdadeira |
+|---|---|
+| `moot_phase` | Fase de moot (Junta) ou Junta ativa |
+| `entering_umbra` | Jogador está entrando na Umbra |
 | `after_winning_moot` | Jogador acabou de vencer uma Junta que chamou |
 
 ---
