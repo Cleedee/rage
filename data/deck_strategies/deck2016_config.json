@@ -1,193 +1,241 @@
 {
   "deck_id": 2016,
   "name": "Umbral Wardens",
-  "style": "aggro",
+  "style": "umbra",
+  "desc": "Gaia Umbra Combat. Combate na Umbra com Sap Spirit (inbloqueavel) + Umbral Flurry (cartas extras). 3 chars: Modi (Rn:9 Hl:10 Rg:7 Gn:8), Cernonous (Rn:6 Hl:7 Gn:7), Fade-To-Black (Rn:5 +2Gn para Umbra=Gn:8). Grand Klaive (dano agravado). Enemies no HG para VP (Gaia kills Enemy=VP). Step Sideways+Fast Shift entram na Umbra. 53 cartas.",
+
   "gift_priorities": [
     {
-      "slug": "parting-the-velvet-curtain",
+      "slug": "power-of-the-ways",
       "priority": 90,
       "condition": "always",
-      "desc": "Parting the Velvet Curtain (Gn:4)"
-    },
-    {
-      "slug": "power-of-the-ways",
-      "priority": 82,
-      "condition": "always",
-      "desc": "Power of the Ways (Gn:4)"
+      "desc": "Power of the Ways (Gn:4) — +1 Health permanente. Prioridade maxima para proteger os chars."
     },
     {
       "slug": "command-spirit",
-      "priority": 74,
-      "condition": "always",
-      "desc": "Command Spirit (Gn:3)"
+      "priority": 80,
+      "condition": "opponent_has_spirit",
+      "desc": "Command Spirit (Gn:3) — Controla 1 espirito inimigo por 1 turno. Descartavel."
+    },
+    {
+      "slug": "parting-the-velvet-curtain",
+      "priority": 70,
+      "condition": "entering_umbra",
+      "desc": "Parting the Velvet Curtain (Gn:4) — Traz 1 nao-Garou para a Umbra. Situacional."
     }
   ],
+
+  "equipment_assignments": [
+    {
+      "card_name": "Grand Klaive",
+      "target": "Modi Votishal",
+      "priority": 95,
+      "desc": "Grand Klaive em Modi — dano agravado, +1 Rg Crinos (Rg:7->8). Essencial."
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Cernonous",
+      "priority": 80,
+      "desc": "Assegai — bloqueia 1 dano de Combat Actions. Protecao extra."
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Modi Votishal",
+      "priority": 75,
+      "desc": "Bivouac — +1 cura na Regeneration para Modi (Hl:10)."
+    },
+    {
+      "card_name": "Concertina Wire",
+      "target": "Fade-To-Black",
+      "priority": 60,
+      "desc": "Concertina Wire — protege Territories. Fade carrega."
+    }
+  ],
+
+  "resource_play_order": [
+    "caern",
+    "character",
+    "equipment",
+    "event",
+    "gift",
+    "enemy",
+    "action"
+  ],
+
+  "action_priorities": [
+    {
+      "slug": "step-sideways",
+      "priority": 95,
+      "condition": "before_combat",
+      "desc": "Step Sideways — Entrar na Umbra antes do combate. ESSENCIAL para o deck."
+    },
+    {
+      "slug": "friends-in-high-places",
+      "priority": 90,
+      "condition": "needs_cards_or_emergency",
+      "desc": "Friends in High Places — Compra cartas ou encerra combate."
+    },
+    {
+      "slug": "fast-shift",
+      "priority": 80,
+      "condition": "early_game",
+      "desc": "Fast Shift — Entrar na Umbra em qualquer fase. Depois deve ser alpha."
+    }
+  ],
+
   "event_priorities": [
     {
       "slug": "chimera",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Chimera"
-    },
-    {
-      "slug": "close-gauntlet",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Close Gauntlet"
+      "priority": 85,
+      "condition": "no_pack_totem",
+      "desc": "Chimera — +1 hand size sept. Pack totem (max 1)."
     },
     {
       "slug": "iron-will",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Iron Will"
-    },
-    {
-      "slug": "spirit-backlash",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Spirit Backlash"
+      "priority": 80,
+      "condition": "opponent_can_frenzy",
+      "desc": "Iron Will — Previne frenesi. Usar contra Ahroun ou oponente agressivo."
     },
     {
       "slug": "spiritual-revelation",
       "priority": 75,
-      "condition": "always",
-      "desc": "Spiritual Revelation"
+      "condition": "opponent_has_banes",
+      "desc": "Spiritual Revelation — Move Banes para a Umbra (onde voce domina)."
+    },
+    {
+      "slug": "spirit-backlash",
+      "priority": 70,
+      "condition": "opponent_has_fetish_equipment",
+      "desc": "Spirit Backlash — Destroi equipamento fetish Gn>=5."
+    },
+    {
+      "slug": "close-gauntlet",
+      "priority": 60,
+      "condition": "threat_from_umbra",
+      "desc": "Close Gauntlet — Fecha Gauntlet por 1 turno. Situacional."
+    },
+    {
+      "slug": "stuck-sideways",
+      "priority": 50,
+      "condition": "opponent_stepping_sideways",
+      "desc": "Stuck Sideways — Prende personagem inimigo no meio do step sideways."
+    },
+    {
+      "slug": "umbral-wave",
+      "priority": 40,
+      "condition": "opponent_dominates_umbra",
+      "desc": "Umbral Wave — Todos na Umbra revertem a breed forms. Emergencia."
+    },
+    {
+      "slug": "the-breaking-of-the-storm",
+      "priority": 30,
+      "condition": "both_decks_nearly_empty",
+      "desc": "The Breaking of the Storm — Embaralha descartes nos decks. Emergencia."
     }
   ],
-  "resource_play_order": [
-    "character",
-    "caern",
-    "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
-    "ally",
-    "victim",
-    "enemy"
-  ],
+
   "combat_action_preferences": {
-    "cernonous": [
-      "maim",
-      "massive-wound",
-      "vital-blow",
-      "disembowelment",
-      "lucky-blow",
-      "sap-spirit",
-      "umbral-flurry",
-      "block-and-strike",
-      "evasion",
-      "umbral-escape"
-    ],
-    "fade-to-black": [
-      "maim",
-      "massive-wound",
-      "vital-blow",
-      "disembowelment",
-      "lucky-blow",
-      "sap-spirit",
-      "umbral-flurry",
-      "block-and-strike",
-      "evasion",
-      "umbral-escape"
-    ],
-    "modi-votishal": [
-      "maim",
-      "massive-wound",
-      "vital-blow",
-      "disembowelment",
-      "lucky-blow",
-      "sap-spirit",
-      "umbral-flurry",
-      "block-and-strike",
-      "evasion",
-      "umbral-escape"
-    ]
-  },
-  "equipment_assignments": [
-    {
-      "card_name": "Grand Klaive",
-      "target": "Cernonous",
-      "priority": 80,
-      "desc": "Grand Klaive — Cernonous"
-    },
-    {
-      "card_name": "Grand Klaive",
-      "target": "Fade-To-Black",
-      "priority": 80,
-      "desc": "Grand Klaive — Fade-To-Black"
-    },
-    {
-      "card_name": "Bivouac",
-      "target": "Cernonous",
-      "priority": 65,
-      "desc": "Bivouac — Cernonous"
-    },
-    {
-      "card_name": "Bivouac",
-      "target": "Fade-To-Black",
-      "priority": 65,
-      "desc": "Bivouac — Fade-To-Black"
-    },
-    {
-      "card_name": "Concertina Wire",
-      "target": "Cernonous",
-      "priority": 65,
-      "desc": "Concertina Wire — Cernonous"
-    },
-    {
-      "card_name": "Concertina Wire",
-      "target": "Fade-To-Black",
-      "priority": 65,
-      "desc": "Concertina Wire — Fade-To-Black"
-    },
-    {
-      "card_name": "Assegai",
-      "target": "Cernonous",
-      "priority": 80,
-      "desc": "Assegai — Cernonous"
-    },
-    {
-      "card_name": "Assegai",
-      "target": "Fade-To-Black",
-      "priority": 80,
-      "desc": "Assegai — Fade-To-Black"
-    }
-  ],
-  "caern_preferences": [
-    "Caern of the Snow Leopard",
-    "Sky River Caern"
-  ],
-  "umbra_strategy": {
-    "enter_characters": [
-      "Cernonous",
-      "Fade-To-Black",
-      "Modi Votishal"
-    ],
-    "save_for_combat": [
-      "Cernonous"
-    ],
-    "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
-  },
-  "target_priority": {
-    "prefer_low_health": true,
-    "character_kill_order": "lowest_health",
-    "hunting_grounds": {
-      "prefer_prey_over_enemy": true,
-      "priority_types": [
-        "Victim",
-        "Enemy"
+    "modi-votishal": {
+      "priorities": [
+        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
+        {"slug": "massive-wound", "priority": 93},
+        {"slug": "maim", "priority": 92},
+        {"slug": "vital-blow", "priority": 88},
+        {"slug": "disembowelment", "priority": 85},
+        {"slug": "umbral-flurry", "priority": 90, "umbra_only": true},
+        {"slug": "block-and-strike", "priority": 75},
+        {"slug": "evasion", "priority": 65},
+        {"slug": "umbral-escape", "priority": 60},
+        {"slug": "lucky-blow", "priority": 55}
       ]
     },
-    "ffa_diplomacy": "weaken_largest"
+    "cernonous": {
+      "priorities": [
+        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
+        {"slug": "massive-wound", "priority": 90},
+        {"slug": "maim", "priority": 88},
+        {"slug": "vital-blow", "priority": 85},
+        {"slug": "disembowelment", "priority": 82},
+        {"slug": "umbral-flurry", "priority": 85, "umbra_only": true},
+        {"slug": "evasion", "priority": 70},
+        {"slug": "block-and-strike", "priority": 68},
+        {"slug": "umbral-escape", "priority": 55},
+        {"slug": "lucky-blow", "priority": 50}
+      ]
+    },
+    "fade-to-black": {
+      "priorities": [
+        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
+        {"slug": "umbral-flurry", "priority": 93, "umbra_only": true},
+        {"slug": "massive-wound", "priority": 90},
+        {"slug": "maim", "priority": 88},
+        {"slug": "vital-blow", "priority": 85},
+        {"slug": "disembowelment", "priority": 80},
+        {"slug": "evasion", "priority": 70},
+        {"slug": "umbral-escape", "priority": 65},
+        {"slug": "lucky-blow", "priority": 55}
+      ]
+    }
   },
+
+  "caern_preferences": [
+    {
+      "card_name": "Sky River Caern",
+      "priority": 90,
+      "desc": "Sky River Caern (Gn:3) — Nao-alfa imune a challenge/sneak attack. Protege Fade/Cernonous."
+    },
+    {
+      "card_name": "Caern of the Snow Leopard",
+      "priority": 85,
+      "desc": "Caern of the Snow Leopard (Gn:2) — Ressurreição na Umbra. Salva char morto na Umbra."
+    }
+  ],
+
+  "hunting_grounds_strategy": {
+    "priority_cards": ["Excitable Good Ol' Boy", "Fomori Cop", "Hogling"],
+    "always_play_if_available": ["Hogling"],
+    "desc": "Enemies no HG para VP (Gaia kills Enemy = VP). Hogling (Hl:5) e prioridade. Good Ol Boy atrapalha (ataca alpha fraco). Fomori Cop descarta equipamento."
+  },
+
+  "target_priority": {
+    "character_kill_order": "lowest_health",
+    "prefer_weakest": true,
+    "hunting_grounds_kill_order": ["Victim"],
+    "threat_response": {
+      "flak-jacket": "attack_from_umbra",
+      "luna-s-armor": "attack_from_umbra",
+      "stench-of-death": "ignore",
+      "heightened-senses": "attack_first",
+      "skin-of-the-hellbound": "attack_from_umbra"
+    }
+  },
+
+  "umbra_strategy": {
+    "enter_characters": ["Modi Votishal", "Cernonous", "Fade-To-Black"],
+    "save_for_combat": [],
+    "always_enter_if_possible": true,
+    "desc": "TODOS os personagens entram na Umbra. Modi (Gn:8), Cernonous (Gn:7), Fade (Gn:6+2=8) passam Gauntlet 3 com folga. Combat actions Umbra sao superiores (Sap Spirit inbloqueavel)."
+  },
+
   "redraw_rules": {
     "never_discard": [
+      "Modi Votishal",
       "Cernonous",
-      "Fade-To-Black"
+      "Fade-To-Black",
+      "Step Sideways",
+      "Grand Klaive",
+      "Sap Spirit",
+      "Massive Wound",
+      "Sky River Caern"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
+    "always_discard_if_duplicate": [
+      "Lucky Blow",
+      "Evasion",
+      "Umbral Escape",
+      "Excitable Good Ol' Boy",
+      "Fomori Cop",
+      "Hogling"
+    ],
+    "prefer_keep_types": ["character", "action", "combat action", "equipment"]
   }
 }
