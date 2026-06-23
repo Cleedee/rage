@@ -1,0 +1,253 @@
+{
+  "id": 2033,
+  "name": "Vampire Lords — Sangue Eterno",
+  "description": "Wyrm Vampire v1. Harold Zettler (Rn:10 Hl:7 Rg:5) + Allonzo Montoya (Rn:9 Hl:7 Rg:5) + Frenar. Stench of Death (so espiritos/Banes/Metis atacam). Beast-of-War (+3 Rg). Victims no HG p/ VP. Eater-of-Souls (habilita fetish). 55 cards.",
+  "renown_cap": 20,
+  "strategy": "wyrm_aggro",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 57,
+  "total_renown": 37,
+  "cards": [
+    {
+      "card_id": 29,
+      "slug": "allonzo-montoya",
+      "name": "Allonzo Montoya",
+      "quantity": 1
+    },
+    {
+      "card_id": 71,
+      "slug": "frenar",
+      "name": "Frenar",
+      "quantity": 1
+    },
+    {
+      "card_id": 102,
+      "slug": "corrupting-presence",
+      "name": "Corrupting Presence",
+      "quantity": 1
+    },
+    {
+      "card_id": 141,
+      "slug": "harold-zettler",
+      "name": "Harold Zettler",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 465,
+      "slug": "cultist",
+      "name": "Cultist",
+      "quantity": 1
+    },
+    {
+      "card_id": 493,
+      "slug": "hapless-villagers",
+      "name": "Hapless Villagers",
+      "quantity": 1
+    },
+    {
+      "card_id": 561,
+      "slug": "victim-1",
+      "name": "Victim 1",
+      "quantity": 2
+    },
+    {
+      "card_id": 562,
+      "slug": "victim-2",
+      "name": "Victim 2",
+      "quantity": 2
+    },
+    {
+      "card_id": 563,
+      "slug": "victim-3",
+      "name": "Victim 3",
+      "quantity": 2
+    },
+    {
+      "card_id": 608,
+      "slug": "hive-of-the-dark-mother",
+      "name": "Hive of the Dark Mother",
+      "quantity": 1
+    },
+    {
+      "card_id": 622,
+      "slug": "blood-dagger",
+      "name": "Blood Dagger",
+      "quantity": 1
+    },
+    {
+      "card_id": 623,
+      "slug": "blood-diamond",
+      "name": "Blood Diamond",
+      "quantity": 1
+    },
+    {
+      "card_id": 713,
+      "slug": "vampire-blood",
+      "name": "Vampire Blood",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 2
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 2
+    },
+    {
+      "card_id": 818,
+      "slug": "beast-of-war",
+      "name": "Beast-of-War",
+      "quantity": 1
+    },
+    {
+      "card_id": 840,
+      "slug": "eater-of-souls",
+      "name": "Eater-of-Souls",
+      "quantity": 1
+    },
+    {
+      "card_id": 872,
+      "slug": "hyperion",
+      "name": "Hyperion",
+      "quantity": 1
+    },
+    {
+      "card_id": 942,
+      "slug": "call-of-the-wyrm",
+      "name": "Call of the Wyrm",
+      "quantity": 1
+    },
+    {
+      "card_id": 993,
+      "slug": "kiss-of-the-wyrm",
+      "name": "Kiss of the Wyrm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1010,
+      "slug": "night-terror",
+      "name": "Night terror",
+      "quantity": 1
+    },
+    {
+      "card_id": 1032,
+      "slug": "roar-of-the-wyrm",
+      "name": "Roar of the Wyrm",
+      "quantity": 2
+    },
+    {
+      "card_id": 1060,
+      "slug": "stench-of-death",
+      "name": "Stench of Death",
+      "quantity": 2
+    },
+    {
+      "card_id": 1079,
+      "slug": "true-fear",
+      "name": "True Fear",
+      "quantity": 1
+    },
+    {
+      "card_id": 1090,
+      "slug": "wyrm-hide",
+      "name": "Wyrm Hide",
+      "quantity": 3
+    },
+    {
+      "card_id": 1094,
+      "slug": "laughter-of-the-soul",
+      "name": "Laughter of the Soul",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 1
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 1
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 2
+    },
+    {
+      "card_id": 1309,
+      "slug": "shieldmate",
+      "name": "Shieldmate",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1422,
+      "slug": "knight-entropy",
+      "name": "Knight Entropy",
+      "quantity": 1
+    },
+    {
+      "card_id": 1517,
+      "slug": "blood-lust",
+      "name": "Blood Lust",
+      "quantity": 2
+    },
+    {
+      "card_id": 1721,
+      "slug": "bonded-in-blood",
+      "name": "Bonded in Blood",
+      "quantity": 1
+    }
+  ]
+}

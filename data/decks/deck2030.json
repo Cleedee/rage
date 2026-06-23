@@ -1,0 +1,325 @@
+{
+  "id": 2030,
+  "name": "Pack Attack — Fianna v4",
+  "description": "Pack Fianna com 4 personagens fortes + 4 Allies. Bum Rush x3 como core. Water Spirit para cura, Shadow Walker para ataque, Dreamspeaker Mage para Umbra, Kinfolk Folk Singer para draw. Cellular Phone x2 para pack attack/defend. Toss x2 como combat action Fianna com bonus damage. Rilkean Heart + Spirit of the Fray + Phantasm para suporte de combate. Mantle of El Dorado + Stag para consistencia. Vampire Blood para cura. Sky River Caern para recursos. 68 cartas (30 combat + 38 sept).",
+  "renown_cap": 20,
+  "strategy": "midrange",
+  "is_public": true,
+  "telegram_owner_id": null,
+  "total_cards": 68,
+  "total_renown": 60,
+  "cards": [
+    {
+      "card_id": 49,
+      "slug": "bron-mac-fionn",
+      "name": "Bron Mac Fionn",
+      "quantity": 1
+    },
+    {
+      "card_id": 55,
+      "slug": "duncan-macivor",
+      "name": "Duncan MacIvor",
+      "quantity": 1
+    },
+    {
+      "card_id": 92,
+      "slug": "water-spirit",
+      "name": "Water Spirit",
+      "quantity": 1
+    },
+    {
+      "card_id": 122,
+      "slug": "hunting-party",
+      "name": "Hunting Party",
+      "quantity": 1
+    },
+    {
+      "card_id": 127,
+      "slug": "gloom-at-midnight",
+      "name": "Gloom At Midnight",
+      "quantity": 1
+    },
+    {
+      "card_id": 282,
+      "slug": "attacking-the-wyrm",
+      "name": "Attacking the Wyrm",
+      "quantity": 1
+    },
+    {
+      "card_id": 287,
+      "slug": "block",
+      "name": "Block",
+      "quantity": 3
+    },
+    {
+      "card_id": 288,
+      "slug": "block-and-roll",
+      "name": "Block and Roll",
+      "quantity": 2
+    },
+    {
+      "card_id": 291,
+      "slug": "body-slam",
+      "name": "Body Slam",
+      "quantity": 2
+    },
+    {
+      "card_id": 294,
+      "slug": "bum-rush",
+      "name": "Bum Rush",
+      "quantity": 3
+    },
+    {
+      "card_id": 295,
+      "slug": "careful-strike",
+      "name": "Careful Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 3
+    },
+    {
+      "card_id": 319,
+      "slug": "fancy-footwork",
+      "name": "Fancy Footwork",
+      "quantity": 1
+    },
+    {
+      "card_id": 395,
+      "slug": "dreamspeaker-mage",
+      "name": "Dreamspeaker Mage",
+      "quantity": 1
+    },
+    {
+      "card_id": 415,
+      "slug": "kinfolk-folk-singer",
+      "name": "Kinfolk Folk Singer",
+      "quantity": 1
+    },
+    {
+      "card_id": 440,
+      "slug": "shadow-walker",
+      "name": "Shadow Walker",
+      "quantity": 1
+    },
+    {
+      "card_id": 597,
+      "slug": "sky-river-caern",
+      "name": "Sky River Caern",
+      "quantity": 1
+    },
+    {
+      "card_id": 612,
+      "slug": "anubis-stone",
+      "name": "Anubis Stone",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 627,
+      "slug": "cellular-phone",
+      "name": "Cellular Phone",
+      "quantity": 2
+    },
+    {
+      "card_id": 632,
+      "slug": "concertina-wire",
+      "name": "Concertina Wire",
+      "quantity": 1
+    },
+    {
+      "card_id": 665,
+      "slug": "mantle-of-el-dorado",
+      "name": "Mantle of El Dorado",
+      "quantity": 1
+    },
+    {
+      "card_id": 704,
+      "slug": "suit-of-mirrors",
+      "name": "Suit of Mirrors",
+      "quantity": 1
+    },
+    {
+      "card_id": 713,
+      "slug": "vampire-blood",
+      "name": "Vampire Blood",
+      "quantity": 1
+    },
+    {
+      "card_id": 721,
+      "slug": "william-wallace-s-bones",
+      "name": "William Wallace's Bones",
+      "quantity": 1
+    },
+    {
+      "card_id": 832,
+      "slug": "connections",
+      "name": "Connections",
+      "quantity": 1
+    },
+    {
+      "card_id": 850,
+      "slug": "falcon",
+      "name": "Falcon",
+      "quantity": 1
+    },
+    {
+      "card_id": 852,
+      "slug": "fenris",
+      "name": "Fenris",
+      "quantity": 1
+    },
+    {
+      "card_id": 867,
+      "slug": "grandfather-thunder",
+      "name": "Grandfather Thunder",
+      "quantity": 1
+    },
+    {
+      "card_id": 871,
+      "slug": "hidden-supplies",
+      "name": "Hidden Supplies",
+      "quantity": 1
+    },
+    {
+      "card_id": 905,
+      "slug": "saving-face",
+      "name": "Saving Face",
+      "quantity": 1
+    },
+    {
+      "card_id": 906,
+      "slug": "scouting-mission",
+      "name": "Scouting Mission",
+      "quantity": 1
+    },
+    {
+      "card_id": 909,
+      "slug": "stag",
+      "name": "Stag",
+      "quantity": 1
+    },
+    {
+      "card_id": 917,
+      "slug": "town-meeting",
+      "name": "Town Meeting",
+      "quantity": 1
+    },
+    {
+      "card_id": 932,
+      "slug": "battle-song",
+      "name": "Battle Song",
+      "quantity": 1
+    },
+    {
+      "card_id": 988,
+      "slug": "inspiration",
+      "name": "Inspiration",
+      "quantity": 1
+    },
+    {
+      "card_id": 1001,
+      "slug": "master-of-the-pack",
+      "name": "Master of the Pack",
+      "quantity": 1
+    },
+    {
+      "card_id": 1005,
+      "slug": "mindspeak",
+      "name": "Mindspeak",
+      "quantity": 1
+    },
+    {
+      "card_id": 1006,
+      "slug": "mists-of-vengeance",
+      "name": "Mists of Vengeance",
+      "quantity": 1
+    },
+    {
+      "card_id": 1008,
+      "slug": "moon-bridge-escape",
+      "name": "Moon Bridge Escape",
+      "quantity": 1
+    },
+    {
+      "card_id": 1018,
+      "slug": "phantasm",
+      "name": "Phantasm",
+      "quantity": 1
+    },
+    {
+      "card_id": 1031,
+      "slug": "rilkean-heart",
+      "name": "Rilkean Heart",
+      "quantity": 1
+    },
+    {
+      "card_id": 1033,
+      "slug": "roll-over",
+      "name": "Roll Over",
+      "quantity": 1
+    },
+    {
+      "card_id": 1056,
+      "slug": "spirit-of-the-fray",
+      "name": "Spirit of the Fray",
+      "quantity": 1
+    },
+    {
+      "card_id": 1087,
+      "slug": "whispering-campaign",
+      "name": "Whispering Campaign",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 1
+    },
+    {
+      "card_id": 1298,
+      "slug": "reinforcements",
+      "name": "Reinforcements",
+      "quantity": 1
+    },
+    {
+      "card_id": 1306,
+      "slug": "savage-beatdown",
+      "name": "Savage Beatdown",
+      "quantity": 2
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 4
+    },
+    {
+      "card_id": 1616,
+      "slug": "laora-d-avennes",
+      "name": "Laora d'Avennes",
+      "quantity": 1
+    },
+    {
+      "card_id": 1628,
+      "slug": "toss",
+      "name": "Toss",
+      "quantity": 2
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "id": 2032,
+  "name": "Spirit Wardens — Gaia de Espiritos",
+  "description": "Gaia spirit aggro v3. Walks-with-Might (Rg:5) + Cernonous (Rg:5 Theurge). War lodge combo (+2 Rg, sacrifice ally). Sap Spirit+Umbral Flurry na Umbra. Enemies VP.",
+  "renown_cap": 20,
+  "strategy": "spirit_control",
+  "is_public": false,
+  "telegram_owner_id": null,
+  "total_cards": 55,
+  "total_renown": 44,
+  "cards": [
+    {
+      "card_id": 7,
+      "slug": "cernonous",
+      "name": "Cernonous",
+      "quantity": 1
+    },
+    {
+      "card_id": 71,
+      "slug": "frenar",
+      "name": "Frenar",
+      "quantity": 1
+    },
+    {
+      "card_id": 99,
+      "slug": "command-spirit",
+      "name": "Command Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 107,
+      "slug": "deep-journey",
+      "name": "Deep Journey",
+      "quantity": 1
+    },
+    {
+      "card_id": 266,
+      "slug": "stanislav-prochnow",
+      "name": "Stanislav Prochnow",
+      "quantity": 1
+    },
+    {
+      "card_id": 289,
+      "slug": "block-and-strike",
+      "name": "Block and Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": 312,
+      "slug": "dodge",
+      "name": "Dodge",
+      "quantity": 2
+    },
+    {
+      "card_id": 317,
+      "slug": "evasion",
+      "name": "Evasion",
+      "quantity": 2
+    },
+    {
+      "card_id": 348,
+      "slug": "walks-with-might",
+      "name": "Walks-with-Might",
+      "quantity": 1
+    },
+    {
+      "card_id": 402,
+      "slug": "flame-spirit",
+      "name": "Flame Spirit",
+      "quantity": 1
+    },
+    {
+      "card_id": 413,
+      "slug": "ka-spirit",
+      "name": "Ka Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 445,
+      "slug": "stormcrow",
+      "name": "Stormcrow",
+      "quantity": 2
+    },
+    {
+      "card_id": 450,
+      "slug": "anaconda-gafflings",
+      "name": "Anaconda Gafflings",
+      "quantity": 1
+    },
+    {
+      "card_id": 496,
+      "slug": "hogling",
+      "name": "Hogling",
+      "quantity": 1
+    },
+    {
+      "card_id": 587,
+      "slug": "caern-of-the-waking-dream",
+      "name": "Caern of the Waking Dream",
+      "quantity": 1
+    },
+    {
+      "card_id": 621,
+      "slug": "bivouac",
+      "name": "Bivouac",
+      "quantity": 1
+    },
+    {
+      "card_id": 645,
+      "slug": "eye-of-luna",
+      "name": "Eye of Luna",
+      "quantity": 2
+    },
+    {
+      "card_id": 717,
+      "slug": "war-lodge",
+      "name": "War lodge",
+      "quantity": 1
+    },
+    {
+      "card_id": 726,
+      "slug": "assegai",
+      "name": "Assegai",
+      "quantity": 2
+    },
+    {
+      "card_id": 790,
+      "slug": "friends-in-high-places",
+      "name": "Friends in High Places",
+      "quantity": 2
+    },
+    {
+      "card_id": 807,
+      "slug": "sneak-attack",
+      "name": "Sneak Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": 809,
+      "slug": "step-sideways",
+      "name": "Step Sideways",
+      "quantity": 2
+    },
+    {
+      "card_id": 829,
+      "slug": "close-gauntlet",
+      "name": "Close Gauntlet",
+      "quantity": 1
+    },
+    {
+      "card_id": 834,
+      "slug": "crescent-moon",
+      "name": "Crescent Moon",
+      "quantity": 1
+    },
+    {
+      "card_id": 872,
+      "slug": "hyperion",
+      "name": "Hyperion",
+      "quantity": 1
+    },
+    {
+      "card_id": 918,
+      "slug": "uktena",
+      "name": "Uktena",
+      "quantity": 1
+    },
+    {
+      "card_id": 952,
+      "slug": "exorcism",
+      "name": "Exorcism",
+      "quantity": 2
+    },
+    {
+      "card_id": 967,
+      "slug": "ghost-lance",
+      "name": "Ghost Lance",
+      "quantity": 1
+    },
+    {
+      "card_id": 1279,
+      "slug": "lucky-blow",
+      "name": "Lucky Blow",
+      "quantity": 2
+    },
+    {
+      "card_id": 1280,
+      "slug": "maim",
+      "name": "Maim",
+      "quantity": 1
+    },
+    {
+      "card_id": 1283,
+      "slug": "massive-wound",
+      "name": "Massive Wound",
+      "quantity": 1
+    },
+    {
+      "card_id": 1290,
+      "slug": "pack-defense",
+      "name": "Pack Defense",
+      "quantity": 1
+    },
+    {
+      "card_id": 1305,
+      "slug": "sap-spirit",
+      "name": "Sap Spirit",
+      "quantity": 2
+    },
+    {
+      "card_id": 1309,
+      "slug": "shieldmate",
+      "name": "Shieldmate",
+      "quantity": 1
+    },
+    {
+      "card_id": 1322,
+      "slug": "taking-the-death-blow",
+      "name": "Taking the Death Blow",
+      "quantity": 1
+    },
+    {
+      "card_id": 1325,
+      "slug": "umbral-flurry",
+      "name": "Umbral Flurry",
+      "quantity": 2
+    },
+    {
+      "card_id": 1328,
+      "slug": "head-butt",
+      "name": "Head Butt",
+      "quantity": 2
+    },
+    {
+      "card_id": 1357,
+      "slug": "scavenger",
+      "name": "Scavenger",
+      "quantity": 1
+    },
+    {
+      "card_id": 1396,
+      "slug": "zari",
+      "name": "Zari",
+      "quantity": 1
+    },
+    {
+      "card_id": 1737,
+      "slug": "spirited-strike",
+      "name": "Spirited Strike",
+      "quantity": 1
+    }
+  ]
+}

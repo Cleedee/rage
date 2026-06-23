@@ -2,7 +2,7 @@
   "id": 1055,
   "name": "O Julgamento — Philodox (controle, cura+defesa)",
   "description": "Philodox pack. Justica, equilibrio e defesa.",
-  "renown_cap": 25,
+  "renown_cap": 20,
   "strategy": "midrange",
   "is_public": false,
   "telegram_owner_id": null,

@@ -11,6 +11,9 @@
     {"priority": 65, "condition": "always", "slug": "whispering-campaign", "desc": "Whispering Campaign — disrupção"},
     {"priority": 55, "condition": "has_injured_character", "slug": "mists-of-vengeance", "desc": "Mists of Vengeance — defesa"},
     {"priority": 50, "condition": "always", "slug": "moon-bridge-escape", "desc": "Moon Bridge Escape — fuga tática"},
+    {"priority": 75, "condition": "combat_likely", "slug": "rilkean-heart", "desc": "Rilkean Heart — protege Combat Actions do alpha"},
+    {"priority": 70, "condition": "combat_likely", "slug": "spirit-of-the-fray", "desc": "Spirit of the Fray — fast striking para Laora"},
+    {"priority": 60, "condition": "combat_attacked", "slug": "phantasm", "desc": "Phantasm — cura total por rodada em Bron"},
     {"priority": 40, "condition": "always", "slug": "roll-over", "desc": "Roll Over — remoção de equipamento"}
   ],
   "event_priorities": [
@@ -22,6 +25,7 @@
     {"priority": 60, "condition": "always", "slug": "hidden-supplies", "desc": "Hidden Supplies — recursos"},
     {"priority": 55, "condition": "always", "slug": "saving-face", "desc": "Saving Face — defesa social"},
     {"priority": 50, "condition": "always", "slug": "town-meeting", "desc": "Town Meeting — junta"},
+    {"priority": 80, "condition": "always", "slug": "stag", "desc": "Stag — pack totem Fianna, draw em ataques HG"},
     {"priority": 40, "condition": "always", "slug": "falcon", "desc": "Falcon — totem escoteiro"}
   ],
   "combat_event_priorities": [
@@ -41,13 +45,17 @@
     "action"
   ],
   "combat_action_preferences": {
-    "Gloom At Midnight": ["head_butt", "body_slam", "careful_strike", "savage_beatdown", "block_and_roll", "block"],
-    "Laora d'Avennes": ["head_butt", "careful_strike", "savage_beatdown", "block", "block_and_roll", "fancy_footwork"],
+    "Gloom At Midnight": ["head_butt", "body_slam", "careful_strike", "toss", "savage_beatdown", "block_and_roll", "block"],
+    "Laora d'Avennes": ["head_butt", "careful_strike", "savage_beatdown", "toss", "block", "block_and_roll", "fancy_footwork"],
     "Duncan MacIvor": ["head_butt", "careful_strike", "savage_beatdown", "block_and_roll", "dodge"],
     "Bron Mac Fionn": ["block", "block_and_roll", "head_butt", "dodge", "lucky_blow"]
   },
   "equipment_assignments": [
     {"card_name": "William Wallace's Bones", "target": "Bron Mac Fionn", "priority": 90, "desc": "Bron ganha +2 Rage efetiva"},
+    {"card_name": "Mantle of El Dorado", "target": "Gloom At Midnight", "priority": 85, "desc": "+3 sept cards no Equip/Ally Phase"},
+    {"card_name": "Vampire Blood", "target": "Gloom At Midnight", "priority": 75, "desc": "Cura emergencial para o alpha"},
+    {"card_name": "Cellular Phone", "target": "Gloom At Midnight", "priority": 90, "desc": "Pack attack/defend com Duncan"},
+    {"card_name": "Cellular Phone", "target": "Duncan MacIvor", "priority": 80, "desc": "Pack attack/defend com Gloom"},
     {"card_name": "Bivouac", "target": "Gloom At Midnight", "priority": 95, "desc": "Regeneracao extra para o alpha"},
     {"card_name": "Suit of Mirrors", "target": "Laora d'Avennes", "priority": 85, "desc": "Defesa para a lutadora"},
     {"card_name": "Anubis Stone", "target": "Duncan MacIvor", "priority": 80, "desc": "Draw de cartas"},
@@ -71,7 +79,7 @@
     "prefer_discard_types": ["Event", "Moot"]
   },
   "notes": {
-    "estrategia": "Pack attack Fianna v4. 4 chars + 4 allies. Bum Rush traz o pack. Water Spirit cura, Shadow Walker (Rg=5) ataca forte. Kinfolk Folk Singer gera card draw (descarta sept card, compra 2). Sky River Caern para recursos. 58 cartas (28 combat + 30 sept).",
+    "estrategia": "Pack attack Fianna v4. 4 chars + 4 allies. Bum Rush traz o pack. Cellular Phone x2 enable pack attack/defend entre Gloom e Duncan. Toss (Rg:4, Fianna bonus 6 dmg) como combat action chave. Rilkean Heart protege Combat Actions do alpha. Spirit of the Fray da fast striking para Laora. Phantasm em Bron regenera tudo por rodada (vs Ratkin/plague). Mantle of El Dorado + Stag para consistencia de draw. Vampire Blood para cura emergencial. Water Spirit cura, Shadow Walker (Rg=5) ataca forte. Kinfolk Folk Singer gera card draw (descarta sept card, compra 2). Sky River Caern para recursos. 68 cartas (30 combat + 38 sept).",
     "fraca_contra": "Decks com muito block/dodge (Ajaba), controle de mao (Gaia Weenie) ou remocao em massa.",
     "renown_characters": "Gloom 10 + Laora 9 + Duncan 8 + Bron 10 = 37"
   }

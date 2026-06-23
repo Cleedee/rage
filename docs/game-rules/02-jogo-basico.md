@@ -160,85 +160,39 @@ Characters have a number of votes equal to their Renown and can use those votes 
 are voted on in order of Renown and, if they pass, resolve immediately. See Juntas for detailed timing.
 
 2.2.6 COMBAT PHASE
-Closed Play. At the beginning of the Combat phase, players may discard any cards from their combat hand that they wish to (up to
-their whole hand) and then draw enough cards to ﬁll their hands to their
-combat hand size. If a player runs out of combat cards, simply reshuﬄe
+
+**Closed Play.** At the beginning of the Combat phase, players may discard any cards from their combat hand that they wish to (up to
+their whole hand) and then draw enough cards to fill their hands to their
+combat hand size. If a player runs out of combat cards, simply reshuffle
 the discarded ones and proceed as normal.
 
-Sidebar: Quick combat summary
-For full details see Combat
-
-●
-●
-
-Announce target of attack
-Players may play Open Play cards
-
-and use special abilities
-
-●
-
-There follow a series of combat rounds:
-
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-
-Play-card step
-Targeting step
-Reveal step
-Establish- bluﬀ step
-Resolution step
-Withdrawal step
-Between-rounds step
-
-Combat ends when the attacker withdraws,
-a round passes in which no combat cards are
-played or a card ability ends it.
-
-Open Play. Each player then selects a Character or Ally from their pack to
+**Open Play.** Each player then selects a Character or Ally from their pack to
 be their alpha, the pack member who will represent its pack during the
 current Combat phase (players must pick an alpha if possible). The player
 then pushes the alpha to the forefront of the pack. If, during the course
 of the Combat phase, that alpha is killed or otherwise lost, the player
 may not select another until the next Combat phase. A player may select
-a diﬀerent alpha every combat phase, or use the same one repeatedly.
+a different alpha every combat phase, or use the same one repeatedly.
 
 Werewolves - in fact most of Gaia’s shapeshifters - defer to their elders,
 while the Wyrm’s minions cower before those more powerful than them.
-As such, the alpha with the highest Renown takes his alpha action ﬁrst
+As such, the alpha with the highest Renown takes his alpha action first
 (ties are decided randomly as soon as all alphas have been selected).
-Once the ﬁrst alpha has ﬁnished their alpha action, the alpha with the
+Once the first alpha has finished their alpha action, the alpha with the
 next highest Renown takes his action, and so on.
 
-●
-●
-●
-
 As its alpha action, an alpha may do one of the following:
-Attack any other alpha in play.
-Attack any Enemy or Victim in the Hunting Grounds.
-Attack a Spirit in the Hunting Grounds AND in the umbra to
+
+- Attack any other alpha in play.
+- Attack any Enemy or Victim in the Hunting Grounds.
+- Attack a Spirit in the Hunting Grounds AND in the umbra to
 bind it.
-Issue a challenge to a non-alpha pack member in play. That
+- Issue a challenge to a non-alpha pack member in play. That
 pack member may refuse at his option.
-Engage a Battleﬁeld
-Attack another player’s Territory
-Use a card or special ability that says it is done as an Alpha action
-Pass and do nothing.
-
-●
-●
-●
-●
-
-●
-
-See Combat for details of how attacks work.
+- Engage a Battlefield
+- Attack another player’s Territory
+- Use a card or special ability that says it is done as an Alpha action
+- Pass and do nothing.
 
 2.3 WINNING THE GAME
 At the end of any Combat phase, if a single player has accumulated Victory Points (VP) equal to or exceeding the Renown level of the

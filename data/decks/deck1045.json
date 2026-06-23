@@ -1,7 +1,7 @@
 {
   "id": 1045,
-  "name": "Kitsune — Raposas da Fortuna (controle, Gnosis+moot)",
-  "description": "Kitsune Hengeyokai. Misticos, ilusionistas, foco em Gnosis e votacao.",
+  "name": "Kitsune — Raposas da Fortuna",
+  "description": "Kitsune Hengeyokai. Misticos, ilusionistas, foco em Gnosis e votacão.",
   "renown_cap": 20,
   "strategy": "midrange",
   "is_public": false,
