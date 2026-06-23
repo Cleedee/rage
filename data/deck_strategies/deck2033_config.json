@@ -179,6 +179,12 @@
 
   "action_priorities": [
     {
+      "slug": "step-sideways",
+      "priority": 90,
+      "condition": "before_combat_or_umbra_defense",
+      "desc": "Step Sideways — entrar na Umbra. Harold Gn:10 passa Gauntlet facil."
+    },
+    {
       "slug": "friends-in-high-places",
       "priority": 85,
       "condition": "needs_cards_or_end_combat",
