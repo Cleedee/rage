@@ -1,8 +1,15 @@
 {
   "deck_id": 2008,
   "name": "Classic: Grimfang Moot",
-  "style": "moot_voting",
-  "desc": "Deck focado em gerar VP via Moot Phase. Grimfang (Rn:10+3 moot) + Silver Crown (+6) + Falcon (+4) + TV Reporter x3 (+6) + Yuri Tvarivich (+8) = ~47 votos para passar qualquer proposta. Winter Wolf (12VP c/ Legendary Leadership), Caern Building (10VP), Silver Record x3 (4VP cada). Combate defensivo. 57 cartas.",
+  "style": "control",
+  "desc": "Moot deck. VP via sept: Silver Record, Winter Wolf, Legendary Leadership, Caern Building, Umbral Quest. Combat deck = escape only. Grimfang = voting lynchpin. No anti-Wyrm.",
+
+  "combat_notes": {
+    "philosophy": "ESCAPE ONLY. Your combat deck exists to END combats, not to win them. You have 7 escape routes. Always have a suitable escape in hand.",
+    "who_fights": "Flame Spirits are good alphas. Never use voting characters in combat if avoidable.",
+    "run_like_hell": "Voting characters (Grimfang, Storm-Chaser) should NOT use Run Like Hell. Prey and allies can.",
+    "spirit_drain": "Spirit Drain is there primarily to DENY a kill, not to be aggressive."
+  },
 
   "moot_strategy": {
     "always_call_moot": true,
@@ -12,43 +19,43 @@
         "slug": "winter-wolf",
         "priority": 95,
         "condition": "has_opponent_garou_renown_6plus",
-        "desc": "Winter Wolf (Rn:6) — Remove Garou Rn≥6 + 6VP. Com Legendary Leadership = 12VP total."
+        "desc": "Winter Wolf (Rn:6) — Remove Garou Rn≥6 + 6VP. With Legendary Leadership = 12VP."
       },
       {
         "slug": "silver-record",
         "priority": 90,
         "condition": "always",
-        "desc": "Silver Record (Rn:2) — 2VP garantido + 2VP do Legendary = 4VP. 3 copias = 12VP total."
+        "desc": "Silver Record (Rn:2) — 2VP guaranteed + 2VP Legendary = 4VP. 3 copies = 12VP."
       },
       {
         "slug": "caern-building",
         "priority": 85,
         "condition": "no_caern_or_second_caern_useful",
-        "desc": "Caern Building (Rn:6) — 4VP + Caern + 6VP do Legendary = 10VP."
+        "desc": "Caern Building (Rn:6) — 4VP + Caern + 6VP Legendary = 10VP."
       },
       {
         "slug": "skindancer",
         "priority": 75,
-        "condition": "has_opponent_troublesome_garou",
-        "desc": "Skindancer (Rn:6) — Remove Garou transformando em Enemy no HG. 6VP do Legendary."
-      },
-      {
-        "slug": "the-litany-s-guidance",
-        "priority": 50,
-        "condition": "multiple_gaia_opponents",
-        "desc": "The Litany's Guidance (Rn:7) — Nega VP de inimigos Gaia pelo jogo."
+        "condition": "has_opponent_gaia_garou",
+        "desc": "Skindancer (Rn:6) — Devastates Gaia decks. Transform Garou into Enemy."
       },
       {
         "slug": "tribal-war",
-        "priority": 40,
-        "condition": "situational",
-        "desc": "Tribal War (Rn:6) — Forca tribos a se atacarem. Situacional."
+        "priority": 70,
+        "condition": "has_opponent_gaia_with_multiple_tribes",
+        "desc": "Tribal War (Rn:6) — GREAT opening moot. Forces same-tribe opponents to fight."
       },
       {
         "slug": "the-stolen-wolf",
-        "priority": 35,
+        "priority": 50,
         "condition": "has_strong_crinos_opponent",
-        "desc": "The Stolen Wolf (Rn:6) — Reverte forma de Garou. Situacional."
+        "desc": "The Stolen Wolf (Rn:6) — Reverts Garou form. Situational."
+      },
+      {
+        "slug": "the-litany-s-guidance",
+        "priority": 40,
+        "condition": "multiple_gaia_opponents",
+        "desc": "The Litany's Guidance (Rn:7) — Denies VP from Gaia enemies."
       }
     ],
     "equipment_for_voting": ["The Silver Crown", "Elder Stone"],
@@ -57,22 +64,22 @@
 
   "gift_priorities": [
     {
+      "slug": "falcon",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Falcon (Pack Totem) — +1 Renown per pack member for moot votes. CRITICAL."
+    },
+    {
       "slug": "aegis",
       "priority": 90,
       "condition": "always",
-      "desc": "Aegis (Gn:6) — +2 Health em Grimfang (Hl:3→5) +2 Renown moot. Vital para sobrevivencia do alfa."
-    },
-    {
-      "slug": "falcon",
-      "priority": 85,
-      "condition": "no_pack_totem",
-      "desc": "Falcon (Pack Totem) — +1 Renown por membro do pack para votos moot. Essencial."
+      "desc": "Aegis (Gn:6) — +2 Health on Grimfang (Hl:3→5) +2 Renown moot. Vital for survival."
     },
     {
       "slug": "spirit-drain",
-      "priority": 60,
-      "condition": "enemy_spirit_in_play",
-      "desc": "Spirit Drain (Gn:8) — Elimina espirito inimigo + cura total. Situacional."
+      "priority": 40,
+      "condition": "always",
+      "desc": "Spirit Drain (Gn:8) — PRIMARY use: deny opponent a kill. Secondary: remove spirit."
     }
   ],
 
@@ -81,103 +88,84 @@
       "slug": "the-silver-crown",
       "priority": 95,
       "assign_to": "grimfang",
-      "desc": "The Silver Crown (+6 Renown moot, +6 Gn). Prioridade absoluta em Grimfang."
+      "desc": "The Silver Crown (+6 Renown moot, +6 Gn). Absolute priority on Grimfang."
     },
     {
       "slug": "elder-stone",
       "priority": 80,
       "assign_to": "grimfang",
-      "desc": "Elder Stone (+3 Gn). Backup para Grimfang."
+      "desc": "Elder Stone (+3 Gn). Backup for Grimfang or second copy."
     }
   ],
 
   "combat_action_preferences": {
-    "grimfang": {
-      "Rage": 2,
+    "_default": {
       "defense_first": true,
-      "priorities": [
-        {"slug": "evasion", "priority": 95, "desc": "Esquiva — prioridade maxima para proteger Grimfang"},
-        {"slug": "fancy-footwork", "priority": 90, "desc": "Esquiva avancada"},
-        {"slug": "umbral-escape", "priority": 88, "desc": "Fuga para Umbra"},
-        {"slug": "run-like-hell", "priority": 85, "desc": "Fuga do combate"},
-        {"slug": "lucky-blow", "priority": 50, "desc": "Ataque quando forcado"},
-        {"slug": "surprise-attack", "priority": 45, "desc": "Ataque surpresa"},
-        {"slug": "stinging-wound", "priority": 40, "desc": "Dano leve"}
+      "escape_priority": "ALWAYS escape. Never attack unless forced and no escape available.",
+      "escape_order": [
+        {"slug": "umbral-escape", "priority": 95, "desc": "Escape to Umbra — safest option"},
+        {"slug": "evasion", "priority": 93, "desc": "Dodge — avoids damage entirely"},
+        {"slug": "fancy-footwork", "priority": 91, "desc": "Advanced dodge"},
+        {"slug": "run-like-hell", "priority": 88, "desc": "Flee combat — USE ONLY for prey/allies, NOT voting chars"},
+        {"slug": "fox-frenzy", "priority": 85, "desc": "Leave combat between rounds — escape route"},
+        {"slug": "taking-the-death-blow", "priority": 80, "desc": "Redirect mortal wound — save key character"},
+        {"slug": "frenzy", "priority": 60, "desc": "Last resort — frenzy to survive"}
+      ],
+      "attack_only_if_no_escape": [
+        {"slug": "lucky-blow", "priority": 30},
+        {"slug": "off-balanced-attack", "priority": 25},
+        {"slug": "stinging-wound", "priority": 20},
+        {"slug": "beat-unmerciful", "priority": 15},
+        {"slug": "surprise-attack", "priority": 10}
       ]
     },
+    "grimfang": {
+      "special": "NEVER fight. Always escape. Grimfang is the voting lynchpin — losing him = losing the game.",
+      "run_like_hell": "FORBIDDEN on Grimfang"
+    },
     "old_storm-chaser": {
-      "Rage": 3,
-      "defense_first": false,
-      "priorities": [
-        {"slug": "head-butt", "priority": 90, "desc": "Dano Rg:4 — principal ataque"},
-        {"slug": "beat-unmerciful", "priority": 88, "desc": "Dano Rg:4 — ataque pesado"},
-        {"slug": "feint", "priority": 85, "desc": "Finta + ataque"},
-        {"slug": "evasion", "priority": 60, "desc": "Defesa quando necessario"},
-        {"slug": "off-balanced-attack", "priority": 50, "desc": "Dano leve"}
-      ]
+      "special": "Card drawer. Escape always. Storm-Chaser exists to draw cards, not fight.",
+      "run_like_hell": "FORBIDDEN on Storm-Chaser"
+    },
+    "ivan_korda": {
+      "special": "Sacrificial. Can be sent on Umbral Quest or sacrificed to save others."
+    },
+    "diem": {
+      "special": "Sacrificial. Can be sacrificed without much impact."
+    },
+    "flame_spirit": {
+      "special": "ALPHA STRIKER. Use Flame Spirits as alpha attack. They are expendable."
     }
   },
 
-  "event_priorities": [
-    {
-      "slug": "legendary-leadership",
-      "priority": 95,
-      "condition": "after_winning_moot",
-      "desc": "Legendary Leadership — Jogar IMEDIATAMENTE apos moot bem-sucedido. Gera VP igual ao Rn da proposta."
-    }
-  ],
-
-  "combat_event_priorities": [
-    {
-      "slug": "taking-the-death-blow",
-      "priority": 90,
-      "condition": "character_receives_mortal_wound",
-      "desc": "Taking the Death Blow — Redireciona ferimento mortal para outro packmate."
-    },
-    {
-      "slug": "fox-frenzy",
-      "priority": 85,
-      "condition": "between_rounds",
-      "desc": "Fox Frenzy — Remove personagem do combate entre rodadas."
-    },
-    {
-      "slug": "frenzy",
-      "priority": 70,
-      "condition": "character_about_to_die",
-      "desc": "Frenzy — Enlouquece personagem como ultimo recurso."
-    }
-  ],
-
   "card_play_priority": {
     "resource_play_order": [
-      "pack_totem", "equipment", "gift", "caern", "ally", "past_life"
+      "equipment", "caern", "ally", "gift", "past_life"
     ],
+    "desc": "Equipment FIRST (voting power), then Caerns, then Allies (TV Reporters, Flame Spirits).",
     "gift_order": ["Falcon", "Aegis", "Spirit Drain"],
     "equipment_order": ["The Silver Crown", "Elder Stone"]
   },
 
   "umbra_strategy": {
     "enter_characters": ["Yuri Tvarivich"],
-    "save_for_combat": ["Grimfang", "Old Storm-Chaser"],
-    "desc": "Yuri Tvarivich entra na Umbra (Past Life nao conta pro Renown). NUNCA colocar Grimfang ou Storm-Chaser em risco na Umbra."
+    "save_for_moot": ["Grimfang", "Old Storm-Chaser"],
+    "desc": "Yuri Tvarivich enters Umbra via Past Life. NEVER put Grimfang or Storm-Chaser at risk."
   },
 
   "target_priority": {
-    "never_initiate_alpha_combat": false,
-    "prefer_weakest": true,
-    "avoid_strong_opponents": true,
+    "never_initiate_alpha_combat": true,
+    "desc": "DO NOT initiate combat. Let opponents come to you. Your combat deck is escape-only.",
+    "use_flame_spirit_for_alpha": true,
+    "prefer_weakest": false,
+    "avoid_all_combat": true,
     "challenge_preference": "never",
-    "hunting_grounds": {
-      "prefer_prey_over_enemy": false,
-      "priority_types": ["Enemy", "Victim"],
-      "enemy_kill_order": ["Drunken Vandals", "A Bus Full of People"],
-      "desc": "Atacar HG apenas se absolutamente necessario — prefere sempre Moot Phase a combate."
-    },
     "redraw_rules": {
-      "never_discard": ["Grimfang", "Old Storm-Chaser", "Silver Crown", "Falcon"],
+      "never_discard": ["Grimfang", "Old Storm-Chaser", "Silver Crown", "Falcon", "Aegis"],
       "always_discard_if_duplicate": ["Ivan Korda", "Diem"],
-      "prefer_discard_types": ["combat_action"],
-      "prefer_keep_types": ["moot", "equipment", "gift"]
+      "prefer_keep_types": ["moot", "equipment", "ally", "gift"],
+      "prefer_discard_types": ["combat_action", "combat_event"],
+      "desc": "Keep voting pieces. Discard combat cards — you only need enough escapes."
     }
   }
 }
