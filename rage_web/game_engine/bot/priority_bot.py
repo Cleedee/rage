@@ -3940,6 +3940,8 @@ class PriorityBot:
             f'[BOT] {self.player.name} atacou {dfd_name} com {atk_name}')
         start_combat(self.game, [attacker_id], [defender_id])
         self._ataques_feitos.add(attacker_id)
+        # Regra 2.2.6: marca que este jogador ja usou sua acao alfa
+        self.game.players_who_acted_alpha.add(self.player_id)
 
     def _encontrar_receptor_gift(self, gift: CardInstance) -> Optional[CardInstance]:
         """Encontra o melhor personagem no pack para receber um Gift.
