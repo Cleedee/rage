@@ -1075,7 +1075,7 @@ class PriorityBot:
 
         if alfa_atual and meu_alpha and alfa_atual == meu_alpha:
             # 🛑 Regra 2.2.6: ja tomamos nossa acao alfa nesta fase
-            if self.player_id in g.combat.players_who_acted_alpha:
+            if self.player_id in g.players_who_acted_alpha:
                 g.combat.current_alpha_index += 1
                 g.add_log(f'[BOT] {me.name}: alpha ja agiu nesta fase (regra 2.2.6)')
             # 🛑 Regra 6.3: se ja atacamos e combate encerrou, alpha nao ataca de novo
@@ -1103,6 +1103,12 @@ class PriorityBot:
         # selecionar um novo alpha e declarar ataque — nao o mesmo
         # atacante. Se este bot ja atacou nesta fase, passa a vez.
         if self._ataques_feitos:
+            self._pass_turn()
+            return 'pass_pos_combate'
+
+        # 🛑 Regra 2.2.6: ja usamos nossa acao alfa nesta fase,
+        # nao podemos atacar novamente (包括 _try_attack).
+        if self.player_id in g.players_who_acted_alpha:
             self._pass_turn()
             return 'pass_pos_combate'
 
@@ -1238,6 +1244,10 @@ class PriorityBot:
         if self._ataques_feitos:
             self._pass_turn()
             return 'pass_pos_combate'
+        # 🛑 Regra 2.2.6: ja usamos nossa acao alfa nesta fase
+        if self.player_id in self.game.players_who_acted_alpha:
+            self._pass_turn()
+            return 'pass_pos_combate'
         action = self._try_eliminate_threat()
         if action:
             return action
@@ -1306,7 +1316,7 @@ class PriorityBot:
         # Marca que este alpha vai atacar (evita loop infinito)
         self._ataques_feitos.add(meu_alpha_id)
         # Regra 2.2.6: marca que este jogador ja usou sua acao alfa
-        self.game.combat.players_who_acted_alpha.add(self.player_id)
+        self.game.players_who_acted_alpha.add(self.player_id)
 
         # Avalia se estrategicamente e melhor atacar Presa agora
         alvo_hg = self._melhor_alvo_hg()
@@ -3069,7 +3079,15 @@ class PriorityBot:
         - vp_race: evita combate arriscado
         """
         # 🛑 Regra 2.2.6: ja usamos nossa acao alfa nesta fase
-        if self.player_id in self.game.combat.players_who_acted_alpha:
+        if self.player_id in self.game.players_who_acted_alpha:
+            return None
+
+        # 🛑 Regra 2.2.6: se ja atacamos com algum personagem
+        # nesta fase de combate, nao podemos atacar de novo.
+        # (CombatState e resetado apos cada combate, entao
+        # players_who_acted_alpha pode ser perdido; _ataques_feitos
+        # persiste dentro do mesmo turno.)
+        if self._ataques_feitos:
             return None
 
         # 🛑 REGRA: never_initiate_alpha_combat — bloquear se HG tem alvos

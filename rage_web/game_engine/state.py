@@ -845,10 +845,6 @@ class CombatState:
     """Indice do alpha atual em alpha_order"""
     alpha_actions_taken: int = 0
     """Contador de acoes alfa tomadas"""
-    players_who_acted_alpha: set[str] = field(default_factory=set)
-    """IDs dos jogadores que ja tomaram sua acao alfa nesta fase.
-    Regra 2.2.6: cada jogador tem apenas UMA acao alfa por fase de
-    combate. Quando todos tiverem feito sua acao, a fase termina."""
 
     # ---- NOVOS CAMPOS (Cap. 6) ----
 
@@ -1256,6 +1252,11 @@ class GameState:
     # Rastreio de alpha por turno (ex: Allonzo Montoya nao pode 2x seguido)
     last_alpha_per_player: dict = field(default_factory=dict)
 
+    # Regra 2.2.6: jogadores que ja usaram sua acao alfa nesta
+    # fase de combate. Persiste entre combates no mesmo turno
+    # (CombatState e resetado apos cada combate).
+    players_who_acted_alpha: set[str] = field(default_factory=set)
+
     # Alvos pre-selecionados para efeitos (ex: Allies Below - escolha do jogador)
     pending_targets: dict = field(default_factory=dict)
     """player_id -> card_id do alpha do ultimo combate."""
@@ -1405,6 +1406,9 @@ class GameState:
 
                 # Reseta contador de ataques de Victims para a nova fase
                 self._victim_attacks_this_phase = 0
+
+                # Regra 2.2.6: limpa tracking de acoes alfa da fase anterior
+                self.players_who_acted_alpha.clear()
 
                 # Redraw de combate ao entrar no Combat phase
                 for p in self.players:
