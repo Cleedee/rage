@@ -1,168 +1,191 @@
 {
   "deck_id": 2014,
-  "name": "Drain Team v1 (Ren20)",
+  "name": "Drain Team v1 — Wyrm Pentex Control",
   "style": "control",
+  "desc": "Wyrm Pentex control. VP via Chronicle of the Black Labyrinth (Victims valem 2 VP) + Beckons (1 VP/turno Moot). Defesa: Skin of Hellbound (imune Rg>=6) + Mass Pollution (-1 Gn oponentes) + Gooshy Gooze (-1 Rg/-1 Gn). Arms of the Abyss permanente = 2 combat cards no 1o round. Consumption of Gaia cancela gifts Gn<=6. 3 chars (Vladimir Rn:10, Allonzo Rn:9, Juicy Rn:1). 53 cartas.",
+
   "gift_priorities": [
     {
-      "slug": "world-of-human",
-      "priority": 90,
+      "slug": "arms-of-the-abyss",
+      "priority": 95,
       "condition": "always",
-      "desc": "World of Human (Gn:6)"
-    },
-    {
-      "slug": "beckons",
-      "priority": 82,
-      "condition": "always",
-      "desc": "Beckons (Gn:5)"
-    },
-    {
-      "slug": "disquiet",
-      "priority": 74,
-      "condition": "always",
-      "desc": "Disquiet (Gn:5)"
+      "desc": "Arms of the Abyss (Gn:3) — PERMANENTE. 1 combat card extra no 1o round. Prioridade maxima."
     },
     {
       "slug": "consumption-of-gaia",
-      "priority": 66,
-      "condition": "always",
-      "desc": "Consumption of Gaia (Gn:4)"
+      "priority": 90,
+      "condition": "opponent_has_active_gift",
+      "desc": "Consumption of Gaia (Gn:4) — Cancela gift Gn<=6 do oponente. Descartavel."
     },
     {
-      "slug": "arms-of-the-abyss",
-      "priority": 58,
-      "condition": "always",
-      "desc": "Arms of the Abyss (Gn:3)"
-    }
-  ],
-  "event_priorities": [
-    {
-      "slug": "eater-of-souls",
-      "priority": 75,
-      "condition": "always",
-      "desc": "Eater-of-Souls"
+      "slug": "beckons",
+      "priority": 85,
+      "condition": "moot_phase",
+      "desc": "Beckons (Gn:5) — 1 VP na Moot. So na fase de Junta."
     },
     {
-      "slug": "mass-pollution",
+      "slug": "disquiet",
       "priority": 75,
-      "condition": "always",
-      "desc": "Mass Pollution"
+      "condition": "opponent_has_ally_or_prey",
+      "desc": "Disquiet (Gn:5) — Remove Ally/Prey Homid por 1 turno. Se Gn<=3, permanente na Umbra."
+    },
+    {
+      "slug": "world-of-human",
+      "priority": 60,
+      "condition": "opponent_has_caern",
+      "desc": "World of Human (Gn:6) — Aumenta Gauntlet de caern em +1. Situacional."
     }
   ],
-  "resource_play_order": [
-    "character",
-    "caern",
-    "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
-    "ally",
-    "victim",
-    "enemy"
-  ],
-  "combat_action_preferences": {
-    "count-vladimir-rustovitch": [
-      "dry-gulch",
-      "head-butt",
-      "kneecapper",
-      "lucky-blow",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "evasion",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "allonzo-montoya": [
-      "dry-gulch",
-      "head-butt",
-      "kneecapper",
-      "lucky-blow",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "evasion",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ],
-    "juicy-johnes": [
-      "dry-gulch",
-      "head-butt",
-      "kneecapper",
-      "lucky-blow",
-      "reckless-swing",
-      "stinging-wound",
-      "dodge",
-      "evasion",
-      "fancy-footwork",
-      "run-like-hell",
-      "surprise-attack"
-    ]
-  },
+
   "equipment_assignments": [
     {
-      "card_name": "Gooshy Gooze",
-      "target": "Count Vladimir Rustovitch",
-      "priority": 65,
-      "desc": "Gooshy Gooze — Count Vladimir Rustovitch"
-    },
-    {
-      "card_name": "Gooshy Gooze",
-      "target": "Allonzo Montoya",
-      "priority": 65,
-      "desc": "Gooshy Gooze — Allonzo Montoya"
-    },
-    {
-      "card_name": "Chronicle of the Black Labyrinth",
-      "target": "Count Vladimir Rustovitch",
-      "priority": 65,
-      "desc": "Chronicle of the Black Labyrinth — Count Vladimir Rustovitch"
-    },
-    {
-      "card_name": "Chronicle of the Black Labyrinth",
-      "target": "Allonzo Montoya",
-      "priority": 65,
-      "desc": "Chronicle of the Black Labyrinth — Allonzo Montoya"
-    },
-    {
       "card_name": "Skin of the Hellbound",
       "target": "Count Vladimir Rustovitch",
-      "priority": 65,
-      "desc": "Skin of the Hellbound — Count Vladimir Rustovitch"
+      "priority": 95,
+      "desc": "Skin of Hellbound — Imune a Rg>=6. Vladimir e o alpha principal."
     },
     {
       "card_name": "Skin of the Hellbound",
       "target": "Allonzo Montoya",
-      "priority": 65,
-      "desc": "Skin of the Hellbound — Allonzo Montoya"
+      "priority": 90,
+      "desc": "Skin of Hellbound — Protecao para Allonzo (Hl:7+imune)."
+    },
+    {
+      "card_name": "Chronicle of the Black Labyrinth",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 88,
+      "desc": "Chronicle — Victims valem 2 VP para Wyrm. Essencial."
+    },
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Count Vladimir Rustovitch",
+      "priority": 75,
+      "desc": "Gooshy Gooze — Oponente perde 1 Rg e 1 Gn no combate."
+    },
+    {
+      "card_name": "Gooshy Gooze",
+      "target": "Allonzo Montoya",
+      "priority": 70,
+      "desc": "Gooshy Gooze — Segundo atacante com debuff."
     }
   ],
-  "umbra_strategy": {
-    "enter_characters": [
-      "Count Vladimir Rustovitch",
-      "Allonzo Montoya"
-    ],
-    "save_for_combat": [
-      "Count Vladimir Rustovitch"
-    ],
-    "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
+
+  "resource_play_order": [
+    "equipment",
+    "gift",
+    "event",
+    "action",
+    "character",
+    "ally"
+  ],
+
+  "combat_action_preferences": {
+    "count-vladimir-rustovitch": {
+      "priorities": [
+        {"slug": "dry-gulch", "priority": 95},
+        {"slug": "head-butt", "priority": 88},
+        {"slug": "surprise-attack", "priority": 85},
+        {"slug": "kneecapper", "priority": 82},
+        {"slug": "lucky-blow", "priority": 78},
+        {"slug": "reckless-swing", "priority": 75},
+        {"slug": "stinging-wound", "priority": 70},
+        {"slug": "fancy-footwork", "priority": 65},
+        {"slug": "evasion", "priority": 60},
+        {"slug": "dodge", "priority": 55},
+        {"slug": "run-like-hell", "priority": 50}
+      ]
+    },
+    "allonzo-montoya": {
+      "priorities": [
+        {"slug": "dry-gulch", "priority": 95},
+        {"slug": "head-butt", "priority": 88},
+        {"slug": "surprise-attack", "priority": 85},
+        {"slug": "kneecapper", "priority": 82},
+        {"slug": "lucky-blow", "priority": 78},
+        {"slug": "reckless-swing", "priority": 75},
+        {"slug": "stinging-wound", "priority": 70},
+        {"slug": "fancy-footwork", "priority": 65},
+        {"slug": "evasion", "priority": 60},
+        {"slug": "dodge", "priority": 55},
+        {"slug": "run-like-hell", "priority": 50}
+      ]
+    }
   },
+
+  "event_priorities": [
+    {
+      "slug": "mass-pollution",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Mass Pollution — Wyrm +1 Gn, oponentes -1 Gn. Essencial para controle de Gnosis."
+    },
+    {
+      "slug": "eater-of-souls",
+      "priority": 80,
+      "condition": "has_fetish_equipment",
+      "desc": "Eater-of-Souls — Permite equipar Fetish. Prioridade alta se tiver Fetish na mao."
+    }
+  ],
+
+  "action_priorities": [
+    {
+      "slug": "friends-in-high-places",
+      "priority": 95,
+      "condition": "needs_key_card_or_emergency",
+      "desc": "Friends in High Places — Compra cartas OU encerra combate. Prioridade maxima."
+    },
+    {
+      "slug": "sneak-attack",
+      "priority": 90,
+      "condition": "has_good_target",
+      "desc": "Sneak Attack — Ataque surpresa bypassando protocolo de combate."
+    }
+  ],
+
   "target_priority": {
-    "prefer_low_health": true,
+    "prefer_hg_over_characters": true,
+    "hunting_grounds_kill_order": ["Victim"],
     "character_kill_order": "lowest_health",
-    "avoid_overextend": true
+    "prefer_weakest": true,
+    "threat_response": {
+      "luna-s-armor": "consumption_of_gaia",
+      "resist-pain": "consumption_of_gaia",
+      "stench-of-death": "consumption_of_gaia",
+      "heightened-senses": "consumption_of_gaia",
+      "spirit-of-the-fray": "consumption_of_gaia",
+      "flak-jacket": "attack_with_high_damage",
+      "war-knife-of-benning-simon": "attack_first",
+      "skin-of-the-hellbound": "attack_with_low_rage"
+    }
   },
+
+  "victim_strategy": {
+    "priority": "kill_with_chronicle",
+    "desc": "Chronicle of the Black Labyrinth faz Victims valerem 2 VP. Atacar Victims no HG do oponente e prioridade #1."
+  },
+
+  "moot_strategy": {
+    "always_beckons": true,
+    "desc": "Beckons 1 VP toda Moot. Nao participar de outras propostas."
+  },
+
+  "umbra_strategy": {
+    "enter_characters": [],
+    "desc": "Nao entrar na Umbra. Personagens ficam no pack para combate."
+  },
+
   "redraw_rules": {
     "never_discard": [
-      "Count Vladimir Rustovitch",
-      "Allonzo Montoya",
-      "Disquiet",
-      "World of Human"
+      "Skin of the Hellbound",
+      "Chronicle of the Black Labyrinth",
+      "Mass Pollution",
+      "Arms of the Abyss",
+      "Friends in High Places"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
+    "always_discard_if_duplicate": [
+      "Gooshy Gooze",
+      "Sneak Attack"
+    ],
+    "prefer_keep_types": ["equipment", "gift", "event"]
   }
 }
