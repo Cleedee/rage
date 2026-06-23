@@ -57,6 +57,12 @@ def _eval_condition(cond: str, game: GameState,
         "has_character_named:<slug>" — personagem com slug=<slug> esta vivo
         "combat_likely"              — fase Combat ou tem oponentes no pack
         "combat_active"              — combate ativo no momento
+        "has_good_target"            — ha Victim/Enemy no HG ou personagem fraco
+        "in_combat_with_victim"      — esta em combate com Victim
+        "about_to_attack"            — fase de declaracao de combate
+        "character_under_attack"     — personagem esta sendo atacado
+        "character_receives_mortal_wound" — personagem prestes a morrer
+        "defensive_emergency"        — personagem com HP <= 2
         "ffa_mode"                   — 3+ jogadores ativos
         "card_in_hand:<nome>"        — carta com nome <nome> esta na mao
         "character_in_umbra"         — algum Character esta na Umbra
@@ -124,6 +130,61 @@ def _eval_condition(cond: str, game: GameState,
         return False
     if cond == 'combat_active':
         return game.combat.is_active
+    if cond == 'has_good_target':
+        # Ha um alvo viavel para atacar (Victim/Enemy no HG ou personagem fraco)
+        for c in player.hunting_grounds:
+            if c.health_current > 0:
+                ct = (c.card_type or '').lower()
+                if 'victim' in ct or 'enemy' in ct:
+                    return True
+        # Ou personagem oponente com HP baixo
+        for opp in game.players:
+            if opp.id == player.id or opp.eliminado:
+                continue
+            for c in opp.pack_home:
+                if c.health_current > 0 and c.health_current <= 4:
+                    return True
+        return False
+    if cond == 'in_combat_with_victim':
+        # O jogador esta em combate com um Victim
+        if not game.combat.is_active:
+            return False
+        for cid in game.combat.combatants:
+            card = game.get_card(cid)
+            if card and 'victim' in (card.card_type or '').lower():
+                return True
+        return False
+    if cond == 'about_to_attack':
+        # O jogador esta prestes a atacar (fase de declaracao)
+        if not game.combat.is_active:
+            return False
+        step = game.combat.current_step
+        return step in ('declaration', 'alpha_action', 'pre_combat')
+    if cond == 'character_under_attack':
+        # Algum personagem do jogador esta sendo atacado
+        if not game.combat.is_active:
+            return False
+        return True  # Se esta em combate, ha ameaca
+    if cond == 'character_receives_mortal_wound':
+        # Um personagem do jogador esta prestes a morrer
+        if not game.combat.is_active:
+            return False
+        for cid in game.combat.combatants:
+            card = game.get_card(cid)
+            if card and card.owner_id == player.id:
+                if card.health_current <= 0:
+                    return True
+        return False
+    if cond == 'defensive_emergency':
+        # Situacao defensiva critica
+        if not game.combat.is_active:
+            return False
+        for cid in game.combat.combatants:
+            card = game.get_card(cid)
+            if card and card.owner_id == player.id:
+                if card.health_current <= 2:
+                    return True
+        return False
     if cond == 'ffa_mode':
         ativos = sum(1 for p in game.players if not p.eliminado)
         return ativos >= 3
@@ -201,6 +262,20 @@ class StrategyEngine:
 
     # ─── Gifts ───────────────────────────────────────────────────────
 
+    @staticmethod
+    def _card_by_slug(slug: str):
+        """Busca carta no banco por slug, com fallback de app context."""
+        from rage_web.models.card import Card as CardModel
+        from rage_web import create_app
+        from rage_web.ext.database import db
+        try:
+            return CardModel.query.filter(CardModel.slug == slug).first()
+        except RuntimeError:
+            flask_app = create_app()
+            with flask_app.app_context():
+                return db.session.query(CardModel).filter(
+                    CardModel.slug == slug).first()
+
     def _resolve_card_ref(self, entry: dict, game: GameState | None = None) -> int | None:
         """Resolve uma referencia de carta (slug ou card_id) para card_id.
 
@@ -213,9 +288,7 @@ class StrategyEngine:
             return int(cid)
         slug = entry.get('slug')
         if slug:
-            # Busca no banco de dados pelo slug
-            from rage_web.models.card import Card as CardModel
-            card = CardModel.query.filter(CardModel.slug == slug).first()
+            card = self._card_by_slug(slug)
             if card:
                 return card.id
         return None
@@ -263,8 +336,7 @@ class StrategyEngine:
             # Tambem resolve por slug
             slug = entry.get('slug')
             if slug:
-                from rage_web.models.card import Card as CardModel
-                card = CardModel.query.filter(CardModel.slug == slug).first()
+                card = self._card_by_slug(slug)
                 if card and card.id == card_id:
                     return entry.get('priority', 0)
         return 0
@@ -316,6 +388,47 @@ class StrategyEngine:
         scored.sort(key=lambda x: x[0], reverse=True)
         return scored
 
+    # ─── Action cards (Friends in High Places, Sneak Attack, etc.) ────
+
+    def sorted_actions(self, hand_cards: list[CardInstance],
+                       game: GameState, player: PlayerState,
+                       bot) -> list[tuple[int, CardInstance]]:
+        """Ordena Action cards na mao por prioridade definida na config.
+
+        Usado pelo bot na Resource phase para jogar Action cards
+        estrategicos (Friends in High Places, Sneak Attack, etc.)
+        ANTES de tentar outros tipos de carta.
+
+        Retorna lista de (priority, CardInstance) ordenada decrescente.
+        Se nao ha config, retorna lista vazia (usa heuristica padrao).
+        """
+        priorities = self.get('action_priorities', [])
+        if not priorities:
+            return []
+
+        priority_map: dict[int, tuple[int, str]] = {}
+        for entry in priorities:
+            cid = self._resolve_card_ref(entry, game)
+            if cid:
+                condicao = entry.get('condition', 'always')
+                priority_map[cid] = (entry.get('priority', 50), condicao)
+
+        scored = []
+        for card in hand_cards:
+            ct = (card.card_type or '')
+            if ct != 'Action':
+                continue
+            entry = priority_map.get(card.card_id)
+            if entry is None:
+                continue
+            prio, cond = entry
+            if not _eval_condition(cond, game, player, bot):
+                prio -= 100  # Reduz drasticamente se condicao nao satisfeita
+            scored.append((prio, card))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return scored
+
     # ─── Combat Events (jogados face-down no play_card step) ─────────
 
     def sorted_combat_events(self, combat_hand_cards: list) -> list[tuple[int, object]]:
@@ -353,9 +466,8 @@ class StrategyEngine:
                 priority_map[cid] = entry.get('priority', 50)
 
         # Formato legado: dict slug -> priority
-        from rage_web.models.card import Card as CardModel
         for slug, prio in priorities_dict.items():
-            card = CardModel.query.filter(CardModel.slug == slug).first()
+            card = self._card_by_slug(slug)
             if card:
                 # So adiciona se nao foi definido pelo formato novo
                 if card.id not in priority_map:
@@ -492,9 +604,7 @@ class StrategyEngine:
             if isinstance(ref, int):
                 ids.append(ref)
             elif isinstance(ref, str):
-                # Slug — busca no banco
-                from rage_web.models.card import Card as CardModel
-                card = CardModel.query.filter(CardModel.slug == ref).first()
+                card = self._card_by_slug(ref)
                 if card:
                     ids.append(card.id)
         return ids

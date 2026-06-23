@@ -1268,6 +1268,10 @@ class GameState:
     #   'action': callable(game) -> bool (True = novo combate iniciado),
     # }
     end_of_combat_triggers: list[dict] = field(default_factory=list)
+    _victim_attacks_this_phase: int = field(default=0)
+    """Contador de ataques de Victims nesta fase de combate."""
+    _MAX_VICTIM_ATTACKS_PER_PHASE: int = 5
+    """Limite de ataques de Victims por fase de combate para evitar loops."""
 
     def _registrar_trigger_fim_combate(self, trigger_type: str, source: str,
                                         condition, action):
@@ -1394,6 +1398,9 @@ class GameState:
                 # (cartas como Rewards of Leadership sao jogadas DURANTE
                 #  a fase moot, apos vencer junta, nao no combat seguinte)
                 self.moot_atual = None
+
+                # Reseta contador de ataques de Victims para a nova fase
+                self._victim_attacks_this_phase = 0
 
                 # Redraw de combate ao entrar no Combat phase
                 for p in self.players:
@@ -1734,6 +1741,15 @@ class GameState:
         _processar_eventos_fim_combate(), que inicia combate completo
         via start_combat() para cada presa.
         """
+        # Limite de ataques de Victims por fase para evitar loops infinitos
+        if self._victim_attacks_this_phase >= self._MAX_VICTIM_ATTACKS_PER_PHASE:
+            self.add_log(
+                f'[VICTIM] Limite de {self._MAX_VICTIM_ATTACKS_PER_PHASE} '
+                f'ataques de Victims atingido nesta fase. '
+                f'Parando de registrar novos ataques.'
+            )
+            return
+        
         vitimas = self._coletar_todas_vitimas_hg()
         if not vitimas:
             return
@@ -1819,6 +1835,7 @@ class GameState:
                     }
                 trigger = _fabricar_trigger()
                 self.end_of_combat_triggers.append(trigger)
+                self._victim_attacks_this_phase += 1
 
         # ── Fomori Cop registra trigger de descarte de equipamento ──
         for vitima, dono_vitima_id in vitimas:

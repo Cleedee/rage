@@ -362,7 +362,16 @@ class PriorityBot:
                         score = max(score, prio)
                         break
 
-            # 10. Gift / Event: util se tem personagens
+            # ── Strategy Engine: action_priorities (Friends in High Places, etc.) ──
+            if ct == 'Action' and self._has_strategy:
+                actions = self.strategy.sorted_actions(
+                    me.hand, self.game, me, self)
+                for prio, ac in actions:
+                    if ac.card_id == card.card_id:
+                        score = max(score, prio)
+                        break
+
+            # 10. Gift / Event / Action: util se tem personagens
             elif ct == 'Gift':
                 if tem_character:
                     score += 35
@@ -370,7 +379,13 @@ class PriorityBot:
                     score -= 10
             elif ct in ('Event',):
                 score += 20
-            # Action cards sao para combate, nao recurso
+            elif ct == 'Action':
+                # Action cards sao jogadas durante Open Play (Resource phase)
+                # Amigos em Alto Lugar, Sneak Attack, etc.
+                if tem_character:
+                    score += 25
+                else:
+                    score -= 5
 
             # 11. Cartas sem modelo_id: inuteis
             if not card.modelo_id and score < 50:
@@ -1152,6 +1167,23 @@ class PriorityBot:
             action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
             if action:
                 self._cards_played_this_turn += 1
+                return action
+
+        elif strategy == 'defensive_pacing':
+            # Defensive: sobreviver > eliminar ameaca > desenvolver > atacar
+            # Prioridade maxima: sobreviver e proteger personagens
+            action = self._try_survive()
+            if action:
+                return action
+            action = self._try_eliminate_threat()
+            if action:
+                return action
+            action = self._try_develop_board() if self._cards_played_this_turn < 3 else None
+            if action:
+                self._cards_played_this_turn += 1
+                return action
+            action = self._try_attack()
+            if action:
                 return action
 
         else:
