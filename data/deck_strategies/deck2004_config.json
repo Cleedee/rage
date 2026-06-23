@@ -1,185 +1,202 @@
 {
   "deck_id": 2004,
   "name": "Classic: Questor Defence",
-  "style": "control",
+  "style": "victim_execution",
+  "desc": "Wyrm Victim-execution. VP engine: The Pit (+1VP/victim) + Chronicle (+1VP/victim) + Questor (+1VP/victim) = 4VP cada victim. 9 victims no deck (Renegade Werewolf Hunter Hl:4, Vigilante Hl:5, Wild Animals Hl:4). Longtooth Soulkiller (Hl:8 Rg:8) tanque principal. Gaia's Will Corrupted (5 dano na Withdrawal). Skin Hellbound x3. 53 cartas.",
+
   "gift_priorities": [
     {
       "slug": "gaia-s-will-corrupted",
-      "priority": 90,
-      "condition": "always",
-      "desc": "Gaia's Will Corrupted (Gn:7)"
+      "priority": 95,
+      "condition": "in_combat_with_victim",
+      "desc": "Gaia's Will Corrupted (Gn:7) — 5 dano a Victim na Withdrawal. ESSENCIAL para matar Victims rapidamente."
     }
   ],
-  "resource_play_order": [
-    "character",
-    "caern",
-    "territory",
-    "gift",
-    "event",
-    "equipment",
-    "action",
-    "ally",
-    "victim",
-    "enemy"
-  ],
-  "combat_action_preferences": {
-    "blossom": [
-      "dry-gulch",
-      "septum-crushed",
-      "vital-blow",
-      "curb-stomp",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "block-and-strike",
-      "dodge",
-      "evasion",
-      "fancy-footwork"
-    ],
-    "longtooth-soulkiller": [
-      "dry-gulch",
-      "septum-crushed",
-      "vital-blow",
-      "curb-stomp",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "block-and-strike",
-      "dodge",
-      "evasion",
-      "fancy-footwork"
-    ],
-    "questor": [
-      "dry-gulch",
-      "septum-crushed",
-      "vital-blow",
-      "curb-stomp",
-      "lucky-blow",
-      "off-balanced-attack",
-      "stinging-wound",
-      "block-and-strike",
-      "dodge",
-      "evasion",
-      "fancy-footwork"
-    ]
-  },
+
   "equipment_assignments": [
     {
-      "card_name": "Chronicle of the Black Labyrinth",
-      "target": "Blossom",
-      "priority": 65,
-      "desc": "Chronicle of the Black Labyrinth — Blossom"
+      "card_name": "Skin of the Hellbound",
+      "target": "Longtooth Soulkiller",
+      "priority": 95,
+      "desc": "Skin em Longtooth — imune Rg>=6, Hl:8 = tanque indestrutivel."
     },
     {
       "card_name": "Chronicle of the Black Labyrinth",
       "target": "Longtooth Soulkiller",
-      "priority": 65,
-      "desc": "Chronicle of the Black Labyrinth — Longtooth Soulkiller"
+      "priority": 92,
+      "desc": "Chronicle — Victims=2VP. Longtooth e o alpha que mata."
     },
     {
       "card_name": "Skin of the Hellbound",
-      "target": "Blossom",
-      "priority": 65,
-      "desc": "Skin of the Hellbound — Blossom"
-    },
-    {
-      "card_name": "Skin of the Hellbound",
-      "target": "Longtooth Soulkiller",
-      "priority": 65,
-      "desc": "Skin of the Hellbound — Longtooth Soulkiller"
-    },
-    {
-      "card_name": "Spiral Boomerang",
-      "target": "Blossom",
-      "priority": 65,
-      "desc": "Spiral Boomerang — Blossom"
-    },
-    {
-      "card_name": "Spiral Boomerang",
-      "target": "Longtooth Soulkiller",
-      "priority": 65,
-      "desc": "Spiral Boomerang — Longtooth Soulkiller"
-    },
-    {
-      "card_name": "Tambertail's heart",
-      "target": "Blossom",
-      "priority": 65,
-      "desc": "Tambertail's heart — Blossom"
-    },
-    {
-      "card_name": "Tambertail's heart",
-      "target": "Longtooth Soulkiller",
-      "priority": 65,
-      "desc": "Tambertail's heart — Longtooth Soulkiller"
-    },
-    {
-      "card_name": "Vampire Blood",
-      "target": "Blossom",
-      "priority": 65,
-      "desc": "Vampire Blood — Blossom"
+      "target": "Questor",
+      "priority": 90,
+      "desc": "Skin em Questor — imune Rg>=6. Questor (Hl:3) precisa de protecao."
     },
     {
       "card_name": "Vampire Blood",
       "target": "Longtooth Soulkiller",
-      "priority": 65,
-      "desc": "Vampire Blood — Longtooth Soulkiller"
+      "priority": 85,
+      "desc": "Vampire Blood — cura rapida para Longtooth apos ataque dos Victims."
     },
     {
-      "card_name": "War Knife of Benning Simon",
-      "target": "Blossom",
+      "card_name": "Vampire Blood",
+      "target": "Questor",
       "priority": 80,
-      "desc": "War Knife of Benning Simon — Blossom"
+      "desc": "Vampire Blood — cura para Questor (Hl:3 fragil)."
     },
     {
       "card_name": "War Knife of Benning Simon",
       "target": "Longtooth Soulkiller",
-      "priority": 80,
-      "desc": "War Knife of Benning Simon — Longtooth Soulkiller"
+      "priority": 75,
+      "desc": "War Knife — dano agravado Rg<=4. Bom contra personagens com Skin."
     },
     {
-      "card_name": "Whip of the Wicked",
-      "target": "Blossom",
+      "card_name": "Tambertail's heart",
+      "target": "Longtooth Soulkiller",
+      "priority": 70,
+      "desc": "Tambertail's heart — previne ataques surpresa."
+    },
+    {
+      "card_name": "Spiral Boomerang",
+      "target": "Questor",
       "priority": 65,
-      "desc": "Whip of the Wicked — Blossom"
+      "desc": "Spiral Boomerang — manda char inimigo para Umbra por 2 turnos."
     },
     {
       "card_name": "Whip of the Wicked",
       "target": "Longtooth Soulkiller",
-      "priority": 65,
-      "desc": "Whip of the Wicked — Longtooth Soulkiller"
+      "priority": 60,
+      "desc": "Whip — oponente joga block/dodge antes de outras acoes."
     }
   ],
-  "umbra_strategy": {
-    "enter_characters": [
-      "Blossom",
-      "Longtooth Soulkiller",
-      "Questor"
-    ],
-    "save_for_combat": [
-      "Blossom"
-    ],
-    "always_enter_if_opponent_cannot": true,
-    "enter_with_high_gnosis": true
-  },
-  "target_priority": {
-    "prefer_low_health": true,
-    "character_kill_order": "lowest_health",
-    "hunting_grounds": {
-      "prefer_prey_over_enemy": true,
-      "priority_types": [
-        "Victim",
-        "Enemy"
+
+  "resource_play_order": [
+    "territory",
+    "character",
+    "equipment",
+    "gift",
+    "event",
+    "victim",
+    "action"
+  ],
+
+  "combat_action_preferences": {
+    "longtooth-soulkiller": {
+      "priorities": [
+        {"slug": "vital-blow", "priority": 95},
+        {"slug": "dry-gulch", "priority": 92},
+        {"slug": "septum-crushed", "priority": 88},
+        {"slug": "curb-stomp", "priority": 82},
+        {"slug": "block-and-strike", "priority": 75},
+        {"slug": "off-balanced-attack", "priority": 70},
+        {"slug": "evasion", "priority": 65},
+        {"slug": "fancy-footwork", "priority": 60},
+        {"slug": "stinging-wound", "priority": 55},
+        {"slug": "lucky-blow", "priority": 50},
+        {"slug": "dodge", "priority": 45}
       ]
     },
-    "avoid_overextend": true
+    "default": {
+      "priorities": [
+        {"slug": "evasion", "priority": 85},
+        {"slug": "fancy-footwork", "priority": 80},
+        {"slug": "dodge", "priority": 75},
+        {"slug": "block-and-strike", "priority": 70},
+        {"slug": "off-balanced-attack", "priority": 60},
+        {"slug": "lucky-blow", "priority": 55},
+        {"slug": "stinging-wound", "priority": 50}
+      ]
+    }
   },
+
+  "combat_event_priorities": [
+    {
+      "slug": "shieldmate",
+      "priority": 85,
+      "condition": "character_under_attack",
+      "desc": "Shieldmate — divide dano entre chars. Protege Questor (Hl:3)."
+    },
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 80,
+      "condition": "character_receives_mortal_wound",
+      "desc": "Taking the Death Blow — redireciona ferimento mortal."
+    },
+    {
+      "slug": "frenzy",
+      "priority": 75,
+      "condition": "about_to_attack",
+      "desc": "Frenzy — +Rage no combate. Usar em Longtooth antes de atacar Victim."
+    },
+    {
+      "slug": "fox-frenzy",
+      "priority": 70,
+      "condition": "defensive_emergency",
+      "desc": "Fox Frenzy — remove personagem do combate (fuga)."
+    }
+  ],
+
+  "event_priorities": [],
+  "action_priorities": [
+    {
+      "slug": "friends-in-high-places",
+      "priority": 95,
+      "condition": "needs_key_card",
+      "desc": "Friends in High Places — busca The Pit, Chronicle, Skin."
+    },
+    {
+      "slug": "sneak-attack",
+      "priority": 90,
+      "condition": "has_good_target",
+      "desc": "Sneak Attack — ataque surpresa no Victim."
+    }
+  ],
+
+  "hunting_grounds_strategy": {
+    "priority_cards": ["Renegade Werewolf Hunter", "Wild Animals", "Vigilante"],
+    "always_play_if_available": ["Renegade Werewolf Hunter"],
+    "victim_kill_priority": true,
+    "desc": "Play victims to HG. Priority: Werewolf Hunter (Hl:4, faceis de matar) -> Wild Animals (Hl:4) -> Vigilante (Hl:5). Matar com Longtooth + Gaia's Will Corrupted."
+  },
+
+  "target_priority": {
+    "prefer_hg_victims": true,
+    "character_kill_order": "lowest_health",
+    "threat_response": {
+      "luna-s-armor": "attack_with_high_damage",
+      "flak-jacket": "attack_with_vital_blow",
+      "skin-of-the-hellbound": "attack_with_rage_6_plus",
+      "stench-of-death": "ignore"
+    }
+  },
+
+  "territory_strategy": {
+    "protect": ["The Pit"],
+    "desc": "The Pit e o multiplicador de VP (+1 VP/victim). Proteger a todo custo."
+  },
+
+  "umbra_strategy": {
+    "enter_characters": [],
+    "save_for_combat": ["Longtooth Soulkiller", "Questor"],
+    "desc": "Nao entrar na Umbra. Ficar no pack para matar Victims."
+  },
+
   "redraw_rules": {
     "never_discard": [
-      "Blossom",
       "Longtooth Soulkiller",
-      "Gaia's Will Corrupted"
+      "Questor",
+      "Blossom",
+      "Skin of the Hellbound",
+      "Chronicle of the Black Labyrinth",
+      "The Pit",
+      "Gaia's Will Corrupted",
+      "Friends in High Places"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": []
+    "always_discard_if_duplicate": [
+      "Vampire Blood",
+      "Sneak Attack",
+      "Spiral Boomerang"
+    ],
+    "prefer_keep_types": ["character", "equipment", "territory", "gift"]
   }
 }
