@@ -1,0 +1,234 @@
+{
+  "deck_id": 2033,
+  "name": "Vampire Lords — Sangue Eterno",
+  "style": "wyrm_aggro",
+  "desc": "Wyrm Vampire. Harold Zettler (Rn:10 Hl:7 Rg:5 Gn:10) + Allonzo Montoya (Rn:9 Hl:7 Rg:5 Gn:6). Stench of Death (so espiritos/Banes/Metis atacam). Beast-of-War (+3 Rg). Victims no HG p/ VP. 55 cards.",
+
+  "gift_priorities": [
+    {
+      "slug": "stench-of-death",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Stench of Death (Gn:2) — So espiritos/Banes/Metis podem atacar. Harold e Allonzo sao imunes (nao sao espiritos/Banes/Metis). Protecao ABSURDA."
+    },
+    {
+      "slug": "roar-of-the-wyrm",
+      "priority": 90,
+      "condition": "in_combat",
+      "desc": "Roar of the Wyrm (Gn:4) — Oponente nao joga Combat Action."
+    },
+    {
+      "slug": "true-fear",
+      "priority": 85,
+      "condition": "in_combat",
+      "desc": "True Fear (Gn:4) — Oponente nao joga Combat Actions por 1 round."
+    },
+    {
+      "slug": "wyrm-hide",
+      "priority": 80,
+      "condition": "always",
+      "desc": "Wyrm Hide (Gn:3) — +2 Health. Harold Hl:7->9, Allonzo Hl:7->9."
+    },
+    {
+      "slug": "laughter-of-the-soul",
+      "priority": 75,
+      "condition": "opponent_has_strong_character",
+      "desc": "Laughter of the Soul (Gn:5) — Alvo nao age. Fora de combate."
+    },
+    {
+      "slug": "night-terror",
+      "priority": 70,
+      "condition": "opponent_has_full_hand",
+      "desc": "Night terror (Gn:5) — Skipa redraw do oponente."
+    },
+    {
+      "slug": "kiss-of-the-wyrm",
+      "priority": 60,
+      "condition": "character_damaged",
+      "desc": "Kiss of the Wyrm (Gn:6) — Cura dano ate 7."
+    },
+    {
+      "slug": "call-of-the-wyrm",
+      "priority": 55,
+      "condition": "multiple_wyrm_alphas",
+      "desc": "Call of the Wyrm (Gn:4) — Forca alphas Wyrm a atacar usuario."
+    },
+    {
+      "slug": "corrupting-presence",
+      "priority": 50,
+      "condition": "opponent_caern",
+      "desc": "Corrupting Presence (Gn:5) — +3 Gauntlet em caern inimiga."
+    }
+  ],
+
+  "equipment_assignments": [
+    {
+      "card_name": "Blood Dagger",
+      "target": "Harold Zettler",
+      "priority": 90,
+      "desc": "Blood Dagger — +1 Rg (5->6). Fetish (precisa Eater-of-Souls)."
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Harold Zettler",
+      "priority": 85,
+      "desc": "Vampire Blood — Cura lowest damage card. Bane Fetish."
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Harold Zettler",
+      "priority": 80,
+      "desc": "Assegai — bloqueia 1 dano."
+    },
+    {
+      "card_name": "Assegai",
+      "target": "Allonzo Montoya",
+      "priority": 75,
+      "desc": "Assegai — +1 bloqueio."
+    },
+    {
+      "card_name": "Blood Diamond",
+      "target": "Harold Zettler",
+      "priority": 65,
+      "desc": "Blood Diamond — +2 votos em Juntas."
+    }
+  ],
+
+  "combat_action_preferences": {
+    "harold-zettler": {
+      "priorities": [
+        {"slug": "massive-wound", "priority": 95, "condition": "beast_of_war_active"},
+        {"slug": "maim", "priority": 92, "condition": "beast_of_war_active"},
+        {"slug": "head-butt", "priority": 80},
+        {"slug": "block-and-strike", "priority": 75},
+        {"slug": "evasion", "priority": 70},
+        {"slug": "lucky-blow", "priority": 65},
+        {"slug": "dodge", "priority": 60},
+        {"slug": "blood-lust", "priority": 55, "condition": "emergency"},
+        {"slug": "bonded-in-blood", "priority": 50, "condition": "receiving_damage"}
+      ]
+    },
+    "allonzo-montoya": {
+      "priorities": [
+        {"slug": "massive-wound", "priority": 95, "condition": "beast_of_war_active"},
+        {"slug": "maim", "priority": 92, "condition": "beast_of_war_active"},
+        {"slug": "head-butt", "priority": 80},
+        {"slug": "block-and-strike", "priority": 75},
+        {"slug": "evasion", "priority": 70},
+        {"slug": "lucky-blow", "priority": 65},
+        {"slug": "dodge", "priority": 60},
+        {"slug": "bonded-in-blood", "priority": 50, "condition": "receiving_damage"}
+      ]
+    },
+    "default": {
+      "priorities": [
+        {"slug": "dodge", "priority": 85},
+        {"slug": "evasion", "priority": 80},
+        {"slug": "lucky-blow", "priority": 65}
+      ]
+    }
+  },
+
+  "combat_event_priorities": [
+    {
+      "slug": "pack-defense",
+      "priority": 85,
+      "condition": "defending",
+      "desc": "Pack Defense — ate 15 Rn entram na defensiva."
+    },
+    {
+      "slug": "shieldmate",
+      "priority": 80,
+      "condition": "teammate_attacked",
+      "desc": "Shieldmate — packmate junta, +1 card."
+    },
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 75,
+      "condition": "mortal_wound",
+      "desc": "Taking the Death Blow — redireciona p/ Frenar."
+    }
+  ],
+
+  "event_priorities": [
+    {
+      "slug": "beast-of-war",
+      "priority": 95,
+      "condition": "before_combat",
+      "desc": "Beast-of-War — Pack Totem. +3 Rg, -1 Gn. Habilita Massive Wound/Maim (Rg:7)!"
+    },
+    {
+      "slug": "eater-of-souls",
+      "priority": 85,
+      "condition": "has_fetish_equipment",
+      "desc": "Eater-of-Souls — Pack Totem. Habilita fetish equip (Vampire Blood, Blood Dagger)."
+    },
+    {
+      "slug": "knight-entropy",
+      "priority": 75,
+      "condition": "aggressive",
+      "desc": "Knight Entropy — VP por Territory/Caern destruidos."
+    },
+    {
+      "slug": "hyperion",
+      "priority": 70,
+      "condition": "has_aggravated_damage",
+      "desc": "Hyperion — regen dano agravado."
+    }
+  ],
+
+  "action_priorities": [
+    {
+      "slug": "friends-in-high-places",
+      "priority": 85,
+      "condition": "needs_cards_or_end_combat",
+      "desc": "Friends in High Places — compra cartas ou encerra combate."
+    },
+    {
+      "slug": "sneak-attack",
+      "priority": 75,
+      "condition": "has_good_target",
+      "desc": "Sneak Attack — ataca qualquer alvo."
+    }
+  ],
+
+  "hunting_grounds_strategy": {
+    "priority_cards": ["Victim 1", "Victim 2", "Victim 3", "Cultist", "Hapless Villagers"],
+    "desc": "Victims no HG. Wyrn mata Victims = VP. Atacar HG frequente."
+  },
+
+  "caern_preferences": [
+    {
+      "card_name": "Hive of the Dark Mother",
+      "priority": 85,
+      "desc": "Hive of the Dark Mother (Gn:3) — Spirit allies regeneram (nao usamos, mas e a unica caern Wyrm)."
+    }
+  ],
+
+  "target_priority": {
+    "character_kill_order": "weakest_first",
+    "prefer_hg_attack": true,
+    "hg_vp_priority": 90,
+    "desc": "Atacar HG para matar Victims = VP. Matar chars ameacadores em segundo lugar."
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Harold Zettler",
+      "Allonzo Montoya",
+      "Frenar",
+      "Stench of Death",
+      "Beast-of-War",
+      "Roar of the Wyrm",
+      "Blood Dagger",
+      "Assegai"
+    ],
+    "always_discard_if_duplicate": [
+      "Victim 1",
+      "Victim 2",
+      "Lucky Blow",
+      "Dodge"
+    ],
+    "prefer_keep_types": ["character", "equipment", "gift", "event", "combat action"]
+  }
+}
