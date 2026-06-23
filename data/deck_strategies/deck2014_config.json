@@ -2,7 +2,7 @@
   "deck_id": 2014,
   "name": "Drain Team v1 — Wyrm Pentex Control",
   "style": "control",
-  "desc": "Wyrm Pentex control. VP via Chronicle of the Black Labyrinth (Victims valem 2 VP) + Beckons (1 VP/turno Moot). Defesa: Skin of Hellbound (imune Rg>=6) + Mass Pollution (-1 Gn oponentes) + Gooshy Gooze (-1 Rg/-1 Gn). Arms of the Abyss permanente = 2 combat cards no 1o round. Consumption of Gaia cancela gifts Gn<=6. 3 chars (Vladimir Rn:10, Allonzo Rn:9, Juicy Rn:1). 53 cartas.",
+  "desc": "Wyrm Pentex control. VP matando personagens + Beckons (1 VP/Moot) + Chronicle (Victims=2VP, oportunistico). Defesa: Skin Hellbound (imune Rg>=6) + Mass Pollution (-1 Gn oponentes) + Gooshy Gooze (-1 Rg/-1 Gn). Arms of the Abyss permanente = 2 combat cards no 1o round. Consumption of Gaia cancela gifts Gn<=6. 3 chars. Nao forca HG — ataca personagens normalmente, ThreatAnalyzer detecta opportunities.",
 
   "gift_priorities": [
     {
@@ -71,12 +71,12 @@
   ],
 
   "resource_play_order": [
+    "character",
+    "ally",
     "equipment",
     "gift",
     "event",
-    "action",
-    "character",
-    "ally"
+    "action"
   ],
 
   "combat_action_preferences": {
@@ -143,8 +143,6 @@
   ],
 
   "target_priority": {
-    "prefer_hg_over_characters": true,
-    "hunting_grounds_kill_order": ["Victim"],
     "character_kill_order": "lowest_health",
     "prefer_weakest": true,
     "threat_response": {
@@ -159,11 +157,6 @@
     }
   },
 
-  "victim_strategy": {
-    "priority": "kill_with_chronicle",
-    "desc": "Chronicle of the Black Labyrinth faz Victims valerem 2 VP. Atacar Victims no HG do oponente e prioridade #1."
-  },
-
   "moot_strategy": {
     "always_beckons": true,
     "desc": "Beckons 1 VP toda Moot. Nao participar de outras propostas."
@@ -176,6 +169,8 @@
 
   "redraw_rules": {
     "never_discard": [
+      "Count Vladimir Rustovitch",
+      "Allonzo Montoya",
       "Skin of the Hellbound",
       "Chronicle of the Black Labyrinth",
       "Mass Pollution",
@@ -186,6 +181,6 @@
       "Gooshy Gooze",
       "Sneak Attack"
     ],
-    "prefer_keep_types": ["equipment", "gift", "event"]
+    "prefer_keep_types": ["character", "equipment", "gift", "event"]
   }
 }

@@ -215,7 +215,9 @@ O ThreatAnalyzer é perfeito para este deck porque:
 4. **Disquiet** remove Allies problemáticos (Dreamspeaker Mage, Kinfolk Cop)
 
 ### Prioridade de Alvos
-1. **Victims no HG** (2 VP cada com Chronicle)
-2. Personagens com gifts perigosos (cancelar primeiro)
+1. Personagens com gifts perigosos (cancelar com Consumption of Gaia primeiro)
+2. **Victims no HG** (se existirem — 2 VP cada com Chronicle)
 3. Personagens sem Skin protection (Rg < 6)
 4. Personagens de baixo HP
+
+> A config NÃO força ataque ao HG. O bot ataca personagens normalmente e usa o ThreatAnalyzer para detectar Victims no HG como oportunidade, nao como obrigacao.
