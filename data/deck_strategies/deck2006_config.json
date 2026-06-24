@@ -1,7 +1,7 @@
 {
   "deck_id": 2006,
   "name": "Classic: Wyrm Frenzy",
-  "style": "control",
+  "style": "moot_control",
   "gift_priorities": [
     {
       "slug": "subjugation-of-gaia",

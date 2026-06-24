@@ -1,9 +1,8 @@
 {
   "deck_id": 2011,
   "name": "Hakimu - Gaia Umbra",
-  "style": "control",
+  "style": "moot_control",
   "desc": "Gaia Umbra control. Lord Hakimu (Rn:10, Hl:4, Gn:8) concede Umbra-only actions no mundo real (Gnosis Bomb = 8dano!). 11 gifts de controle: Submit (cancela gifts), Ojas Surge (+2Rg/+2Rn alpha), Fortuna (replay combat), Clawstorm (draw2+play3), Night terror (skip redraw). Submit + ThreatAnalyzer = resposta a ameacas. 61 cartas.",
-
   "gift_priorities": [
     {
       "slug": "ojas-surge",
@@ -78,7 +77,6 @@
       "desc": "Spirit of the Tiger (Gn:4) — +1 combat card em Battlefield."
     }
   ],
-
   "event_priorities": [
     {
       "slug": "checking-the-classifieds",
@@ -111,7 +109,6 @@
       "desc": "Umbral Wave — Todos na Umbra revertem a breed forms. Emergencia."
     }
   ],
-
   "action_priorities": [
     {
       "slug": "step-sideways",
@@ -132,7 +129,6 @@
       "desc": "Sneak Attack — Ataque surpresa."
     }
   ],
-
   "equipment_assignments": [
     {
       "card_name": "Assegai",
@@ -159,7 +155,6 @@
       "desc": "Lost Map — pode agir como alpha defensor em QUALQUER Battlefield."
     }
   ],
-
   "resource_play_order": [
     "territory",
     "character",
@@ -170,60 +165,172 @@
     "enemy",
     "victim"
   ],
-
   "combat_action_preferences": {
     "lord-hakimu": {
       "priorities": [
-        {"slug": "gnosis-bomb", "priority": 95},
-        {"slug": "maim", "priority": 92},
-        {"slug": "disembowelment", "priority": 88},
-        {"slug": "umbral-flurry", "priority": 85},
-        {"slug": "head-butt", "priority": 82},
-        {"slug": "planned-strike", "priority": 80},
-        {"slug": "spirited-strike", "priority": 78},
-        {"slug": "hamstringed", "priority": 75},
-        {"slug": "disarm", "priority": 72},
-        {"slug": "careful-strike", "priority": 68},
-        {"slug": "block-and-strike", "priority": 65},
-        {"slug": "fancy-footwork", "priority": 60},
-        {"slug": "dodge", "priority": 55},
-        {"slug": "umbral-escape", "priority": 50},
-        {"slug": "fetal-position", "priority": 48},
-        {"slug": "lucky-blow", "priority": 45},
-        {"slug": "bite", "priority": 40},
-        {"slug": "block", "priority": 35}
+        {
+          "slug": "gnosis-bomb",
+          "priority": 95
+        },
+        {
+          "slug": "maim",
+          "priority": 92
+        },
+        {
+          "slug": "disembowelment",
+          "priority": 88
+        },
+        {
+          "slug": "umbral-flurry",
+          "priority": 85
+        },
+        {
+          "slug": "head-butt",
+          "priority": 82
+        },
+        {
+          "slug": "planned-strike",
+          "priority": 80
+        },
+        {
+          "slug": "spirited-strike",
+          "priority": 78
+        },
+        {
+          "slug": "hamstringed",
+          "priority": 75
+        },
+        {
+          "slug": "disarm",
+          "priority": 72
+        },
+        {
+          "slug": "careful-strike",
+          "priority": 68
+        },
+        {
+          "slug": "block-and-strike",
+          "priority": 65
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 60
+        },
+        {
+          "slug": "dodge",
+          "priority": 55
+        },
+        {
+          "slug": "umbral-escape",
+          "priority": 50
+        },
+        {
+          "slug": "fetal-position",
+          "priority": 48
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 45
+        },
+        {
+          "slug": "bite",
+          "priority": 40
+        },
+        {
+          "slug": "block",
+          "priority": 35
+        }
       ]
     },
     "markhat": {
       "priorities": [
-        {"slug": "maim", "priority": 92},
-        {"slug": "disembowelment", "priority": 85},
-        {"slug": "head-butt", "priority": 82},
-        {"slug": "hamstringed", "priority": 78},
-        {"slug": "disarm", "priority": 75},
-        {"slug": "careful-strike", "priority": 70},
-        {"slug": "block-and-strike", "priority": 68},
-        {"slug": "riposte", "priority": 65},
-        {"slug": "evasion", "priority": 60},
-        {"slug": "fancy-footwork", "priority": 55},
-        {"slug": "dodge", "priority": 50},
-        {"slug": "umbral-escape", "priority": 45},
-        {"slug": "lucky-blow", "priority": 42},
-        {"slug": "bite", "priority": 38},
-        {"slug": "block", "priority": 35}
+        {
+          "slug": "maim",
+          "priority": 92
+        },
+        {
+          "slug": "disembowelment",
+          "priority": 85
+        },
+        {
+          "slug": "head-butt",
+          "priority": 82
+        },
+        {
+          "slug": "hamstringed",
+          "priority": 78
+        },
+        {
+          "slug": "disarm",
+          "priority": 75
+        },
+        {
+          "slug": "careful-strike",
+          "priority": 70
+        },
+        {
+          "slug": "block-and-strike",
+          "priority": 68
+        },
+        {
+          "slug": "riposte",
+          "priority": 65
+        },
+        {
+          "slug": "evasion",
+          "priority": 60
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 55
+        },
+        {
+          "slug": "dodge",
+          "priority": 50
+        },
+        {
+          "slug": "umbral-escape",
+          "priority": 45
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 42
+        },
+        {
+          "slug": "bite",
+          "priority": 38
+        },
+        {
+          "slug": "block",
+          "priority": 35
+        }
       ]
     },
     "zari": {
       "priorities": [
-        {"slug": "dodge", "priority": 85},
-        {"slug": "block", "priority": 80},
-        {"slug": "umbral-escape", "priority": 75},
-        {"slug": "lucky-blow", "priority": 60},
-        {"slug": "bite", "priority": 50}
+        {
+          "slug": "dodge",
+          "priority": 85
+        },
+        {
+          "slug": "block",
+          "priority": 80
+        },
+        {
+          "slug": "umbral-escape",
+          "priority": 75
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 60
+        },
+        {
+          "slug": "bite",
+          "priority": 50
+        }
       ]
     }
   },
-
   "combat_event_priorities": [
     {
       "slug": "pack-defense",
@@ -244,7 +351,6 @@
       "desc": "Superior Tactics — Oponente so pode atacar 2 chars escolhidos."
     }
   ],
-
   "target_priority": {
     "character_kill_order": "lowest_health",
     "prefer_weakest": true,
@@ -259,19 +365,24 @@
       "skin-of-the-hellbound": "gnosis_bomb"
     }
   },
-
   "territory_strategy": {
-    "priority_cards": ["Hidden Lair", "Dead Zone"],
+    "priority_cards": [
+      "Hidden Lair",
+      "Dead Zone"
+    ],
     "desc": "Hidden Lair: remove char do jogo ate fim do combate. Dead Zone: anula gifts de todos."
   },
-
   "umbra_strategy": {
-    "enter_characters": ["Lord Hakimu", "Markhat"],
-    "save_for_combat": ["Lord Hakimu"],
+    "enter_characters": [
+      "Lord Hakimu",
+      "Markhat"
+    ],
+    "save_for_combat": [
+      "Lord Hakimu"
+    ],
     "always_enter_if_possible": false,
     "desc": "Hakimu (Gn:8) pode entrar na Umbra, mas sua habilidade de conceder Umbra actions no mundo real e MAIS IMPORTANTE. So entrar se necessario."
   },
-
   "redraw_rules": {
     "never_discard": [
       "Lord Hakimu",
@@ -287,6 +398,10 @@
       "Anaconda Gafflings",
       "Umbral Escape"
     ],
-    "prefer_keep_types": ["character", "gift", "combat action"]
+    "prefer_keep_types": [
+      "character",
+      "gift",
+      "combat action"
+    ]
   }
 }

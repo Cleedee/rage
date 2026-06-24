@@ -1,9 +1,8 @@
 {
   "deck_id": 2005,
   "name": "Classic: Wailer special",
-  "style": "control",
+  "style": "moot_control",
   "desc": "Wyrm pack combat control. Core: Wailer — flip para Battle form, oponentes com menos Gn nao jogam CAs. Aliados + Ass Whuppin Lynch Mob para pack attack. Stench of Death bloqueia ataques. Caern of Unwashed Child + Mass Pollution + Gooshy Gooze destroem stats (-5Rg/-6Gn no deploy). Barnaby: alpha com SMG + draw. Blossom: controle. Fangs: corpo forte + Beast-of-War. 38 sept, 21 combat.",
-
   "gift_priorities": [
     {
       "slug": "stench-of-death",
@@ -24,7 +23,6 @@
       "desc": "Infectious Touch (Gn:3) — -1Rg/-1Gn permanente. RARELY USEFUL na pratica — so usar se nao houver better play."
     }
   ],
-
   "equipment_assignments": [
     {
       "card_name": "Gooshy Gooze",
@@ -45,7 +43,6 @@
       "desc": "Gooshy Gooze — Wailer como atacante de reserva. Cuidado: Gn:3, pode ser afetado por debuffs."
     }
   ],
-
   "resource_play_order": [
     "ally",
     "caern",
@@ -56,37 +53,93 @@
     "victim",
     "action"
   ],
-
   "combat_action_preferences": {
     "barnaby-shadrack": {
       "priorities": [
-        {"slug": "head-or-gut", "priority": 95},
-        {"slug": "beat-unmerciful", "priority": 90, "desc": "Impede fugas (Run Like Hell, Fox Frenzy — ambos Rg:1)"},
-        {"slug": "surprise-attack", "priority": 82},
-        {"slug": "lucky-blow", "priority": 78},
-        {"slug": "reckless-swing", "priority": 75},
-        {"slug": "overextended-attack", "priority": 72},
-        {"slug": "off-balanced-attack", "priority": 68},
-        {"slug": "stinging-wound", "priority": 65},
-        {"slug": "fancy-footwork", "priority": 60},
-        {"slug": "dodge", "priority": 55},
-        {"slug": "run-like-hell", "priority": 50}
+        {
+          "slug": "head-or-gut",
+          "priority": 95
+        },
+        {
+          "slug": "beat-unmerciful",
+          "priority": 90,
+          "desc": "Impede fugas (Run Like Hell, Fox Frenzy — ambos Rg:1)"
+        },
+        {
+          "slug": "surprise-attack",
+          "priority": 82
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 78
+        },
+        {
+          "slug": "reckless-swing",
+          "priority": 75
+        },
+        {
+          "slug": "overextended-attack",
+          "priority": 72
+        },
+        {
+          "slug": "off-balanced-attack",
+          "priority": 68
+        },
+        {
+          "slug": "stinging-wound",
+          "priority": 65
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 60
+        },
+        {
+          "slug": "dodge",
+          "priority": 55
+        },
+        {
+          "slug": "run-like-hell",
+          "priority": 50
+        }
       ]
     },
     "default": {
       "priorities": [
-        {"slug": "lucky-blow", "priority": 85},
-        {"slug": "reckless-swing", "priority": 82},
-        {"slug": "overextended-attack", "priority": 78},
-        {"slug": "off-balanced-attack", "priority": 75},
-        {"slug": "stinging-wound", "priority": 72},
-        {"slug": "fancy-footwork", "priority": 65},
-        {"slug": "dodge", "priority": 60},
-        {"slug": "run-like-hell", "priority": 55}
+        {
+          "slug": "lucky-blow",
+          "priority": 85
+        },
+        {
+          "slug": "reckless-swing",
+          "priority": 82
+        },
+        {
+          "slug": "overextended-attack",
+          "priority": 78
+        },
+        {
+          "slug": "off-balanced-attack",
+          "priority": 75
+        },
+        {
+          "slug": "stinging-wound",
+          "priority": 72
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 65
+        },
+        {
+          "slug": "dodge",
+          "priority": 60
+        },
+        {
+          "slug": "run-like-hell",
+          "priority": 55
+        }
       ]
     }
   },
-
   "event_priorities": [
     {
       "slug": "mass-pollution",
@@ -101,7 +154,6 @@
       "desc": "Beast-of-War — +3 Rage, -1 Gn. CUIDADO: pode undermine Wailer se oponente ganhar Gn > Wailer!"
     }
   ],
-
   "combat_event_priorities": [
     {
       "slug": "ass-whuppin-lynch-mob",
@@ -128,7 +180,6 @@
       "desc": "Taking the Death Blow — Redireciona ferimento mortal para ally descartavel."
     }
   ],
-
   "action_priorities": [
     {
       "slug": "sneak-attack",
@@ -143,7 +194,6 @@
       "desc": "Shapeshift — RARELY USEFUL. Colocar Wailer de volta em Homid para frenzar novamente. Diversao."
     }
   ],
-
   "caern_preferences": [
     {
       "card_name": "Caern of the Unwashed Child",
@@ -151,14 +201,17 @@
       "desc": "Caern of the Unwashed Child (Gn:4) — ESSENCIAL. Oponente perde 2 Gn ou 2 Rg. Jogar 3 copias."
     }
   ],
-
   "hunting_grounds_strategy": {
-    "priority_cards": ["Greenpeace Assault Team", "A Bus Full of People"],
-    "always_play_if_available": ["Greenpeace Assault Team"],
+    "priority_cards": [
+      "Greenpeace Assault Team",
+      "A Bus Full of People"
+    ],
+    "always_play_if_available": [
+      "Greenpeace Assault Team"
+    ],
     "victim_kill_priority": false,
     "desc": "Victims sao targets para Wailer FLIP, NAO para VP. Greenpeace destroi caerns — usar so se necessario. O objetivo e pack attack em QUALQUER alvo que Wailer possa flipar."
   },
-
   "target_priority": {
     "prefer_wailer_flip_targets": true,
     "character_kill_order": "lowest_health",
@@ -172,17 +225,14 @@
     },
     "desc": "Alvo principal: personagens que Wailer pode flipar (Gn < 3). Priorizar pack attack quando Wailer esta em Battle form."
   },
-
   "moot_strategy": {
     "vote_with_executives": true,
     "desc": "Pentex Executives (3 votos cada) dao poder de voto na Junta. RISCO: sao kills faceis para oponentes."
   },
-
   "umbra_strategy": {
     "enter_characters": [],
     "desc": "Nao entrar na Umbra. Personagens ficam no pack para defesa e ataque."
   },
-
   "redraw_rules": {
     "never_discard": [
       "Barnaby Shadrack",
@@ -196,9 +246,13 @@
       "Gooshy Gooze",
       "Mass Pollution"
     ],
-    "prefer_keep_types": ["ally", "character", "gift", "caern"]
+    "prefer_keep_types": [
+      "ally",
+      "character",
+      "gift",
+      "caern"
+    ]
   },
-
   "combat_notes": {
     "wailer_flip": "Wailer em Battle form: oponentes com Gn < Wailer nao jogam CAs no proximo round. ESSENCIAL para controle.",
     "beast_of_war_risk": "Beast-of-War da +3 Rage mas -1 Gn. Se oponente ganhar Gn > Wailer, habilidade falha. Usar so quando seguro.",

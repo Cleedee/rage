@@ -24,11 +24,11 @@ Exemplos existentes:
 
 | Arquivo | Deck | Estilo |
 |---|---|---|
-| `data/deck_strategies/deck1055_config.json` | O Julgamento (Philodox) | control |
-| `data/deck_strategies/deck1044_config.json` | Ajaba — Hienas da Savana | combo |
-| `data/deck_strategies/deck465_config.json` | Apocalypse — Primeiro Esquadrão #21 | aggro |
-| `data/deck_strategies/deck2004_config.json` | Classic: Questor Defence | defensive_pacing |
-| `data/deck_strategies/deck2008_config.json` | Classic: Grimfang Moot | control |
+| `data/deck_strategies/deck1055_config.json` | O Julgamento (Philodox) | moot_control |
+| `data/deck_strategies/deck1044_config.json` | Ajaba — Hienas da Savana | engine |
+| `data/deck_strategies/deck465_config.json` | Apocalypse — Primeiro Esquadrão #21 | pack_combat |
+| `data/deck_strategies/deck2004_config.json` | Classic: Questor Defence | victim_hunt |
+| `data/deck_strategies/deck2008_config.json` | Classic: Grimfang Moot | moot_control |
 
 ---
 
@@ -38,7 +38,7 @@ Exemplos existentes:
 {
   "deck_id": 1055,
   "name": "O Julgamento (Philodox)",
-  "style": "control | combo | aggro | midrange | defensive_pacing | ffa",
+  "style": "pack_combat | moot_control | hg_control | victim_hunt | engine | balanced | ffa",
 
   "gift_priorities": [ ... ],
   "resource_play_order": [ ... ],
@@ -562,7 +562,7 @@ print(r)
 ### Passo 2: Identificar gifts-chave
 
 Quais gifts são o motor do deck? Ex: para Ajaba, Song of Rage + Spirit of
-the Fray + Razor Claws são o combo principal (priority 90-100).
+the Fray + Razor Claws são o engine principal (priority 90-100).
 
 Quais gifts são situacionais? Power of the Ways (só útil na Umbra),
 Geas (só se há alvo forte).
@@ -604,7 +604,7 @@ done
 {
   "deck_id": 9001,
   "name": "Meu Deck",
-  "style": "midrange",
+  "style": "balanced",
 
   "gift_priorities": [
     {"slug": "power-of-the-ways", "priority": 100, "condition": "always", "desc": "Power of the Ways"}

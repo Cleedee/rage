@@ -1,9 +1,8 @@
 {
   "deck_id": 2004,
   "name": "Classic: Questor Defence",
-  "style": "defensive_pacing",
+  "style": "victim_hunt",
   "desc": "Deck defensivo/wyrm. Longtooth (Hl:8 Rg:8) e Questor (Hl:3 Rg:3 Gn:7) sao champions complementares. Blossom (Hl:2) completa o pack com espaco sobrando. Estrategia: receber o maximo de ataques possivel, sobreviver com equipamentos defensivos (Skin Hellbound, Tambertail escape, Vampire Blood cura), e ganhar VP incidentalmente de Victims. Chronicle e The Pit sao flavor — nice-to-have, nao essenciais. Gaia's Will Corrupted (5 dano na Withdrawal) mata Victims Hl:4 de um golpe. Friends in High Places encerra combates desfavoraveis. Frenzy + Taking the Death Blow + Fox Frenzy sao peças defensivas chave.",
-
   "gift_priorities": [
     {
       "slug": "gaia-s-will-corrupted",
@@ -12,7 +11,6 @@
       "desc": "Gaia's Will Corrupted (Gn:7) — 5 dano a Victim na Withdrawal. Mata Victims Hl:4 em 1 golpe. So usar em combate com Victim."
     }
   ],
-
   "equipment_assignments": [
     {
       "card_name": "Skin of the Hellbound",
@@ -69,7 +67,6 @@
       "desc": "Chronicle — +1 VP por Victim. Nice-to-have, nao essencial (humano diz 'never did too much')."
     }
   ],
-
   "resource_play_order": [
     "territory",
     "equipment",
@@ -79,38 +76,90 @@
     "event",
     "victim"
   ],
-
   "combat_action_preferences": {
     "longtooth-soulkiller": {
       "priorities": [
-        {"slug": "dry-gulch", "priority": 90},
-        {"slug": "septum-crushed", "priority": 88},
-        {"slug": "vital-blow", "priority": 85},
-        {"slug": "block-and-strike", "priority": 82},
-        {"slug": "curb-stomp", "priority": 78},
-        {"slug": "lucky-blow", "priority": 72},
-        {"slug": "evasion", "priority": 68},
-        {"slug": "fancy-footwork", "priority": 65},
-        {"slug": "off-balanced-attack", "priority": 55},
-        {"slug": "stinging-wound", "priority": 50},
-        {"slug": "dodge", "priority": 48}
+        {
+          "slug": "dry-gulch",
+          "priority": 90
+        },
+        {
+          "slug": "septum-crushed",
+          "priority": 88
+        },
+        {
+          "slug": "vital-blow",
+          "priority": 85
+        },
+        {
+          "slug": "block-and-strike",
+          "priority": 82
+        },
+        {
+          "slug": "curb-stomp",
+          "priority": 78
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 72
+        },
+        {
+          "slug": "evasion",
+          "priority": 68
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 65
+        },
+        {
+          "slug": "off-balanced-attack",
+          "priority": 55
+        },
+        {
+          "slug": "stinging-wound",
+          "priority": 50
+        },
+        {
+          "slug": "dodge",
+          "priority": 48
+        }
       ],
       "desc": "Longtooth: ataque com Dry Gulch/Vital Blow/Septum Crushed. Evasion/Fancy Footwork/Dodge para defesa. Off-balanced Attack e Stinging Wound sao Rage 1 — importantes quando Vital Blow reduz Rage do oponente."
     },
     "default": {
       "priorities": [
-        {"slug": "evasion", "priority": 88},
-        {"slug": "fancy-footwork", "priority": 85},
-        {"slug": "dodge", "priority": 82},
-        {"slug": "block-and-strike", "priority": 75},
-        {"slug": "off-balanced-attack", "priority": 60},
-        {"slug": "lucky-blow", "priority": 55},
-        {"slug": "stinging-wound", "priority": 50}
+        {
+          "slug": "evasion",
+          "priority": 88
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 85
+        },
+        {
+          "slug": "dodge",
+          "priority": 82
+        },
+        {
+          "slug": "block-and-strike",
+          "priority": 75
+        },
+        {
+          "slug": "off-balanced-attack",
+          "priority": 60
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 55
+        },
+        {
+          "slug": "stinging-wound",
+          "priority": 50
+        }
       ],
       "desc": "Default: defesa maxima (Evasion/Fancy Footwork/Dodge). Questor e Blossom precisam sobreviver."
     }
   },
-
   "combat_event_priorities": [
     {
       "slug": "frenzy",
@@ -137,9 +186,7 @@
       "desc": "Shieldmate — packmate junta-se a defesa. Divide dano entre chars."
     }
   ],
-
   "event_priorities": [],
-
   "action_priorities": [
     {
       "slug": "friends-in-high-places",
@@ -154,13 +201,15 @@
       "desc": "Sneak Attack — bypass alpha cycle, engaja qualquer personagem/ally/enemy. Util para atacar Victims ou personagens especificos."
     }
   ],
-
   "hunting_grounds_strategy": {
-    "priority_cards": ["Renegade Werewolf Hunter", "Wild Animals", "Vigilante"],
+    "priority_cards": [
+      "Renegade Werewolf Hunter",
+      "Wild Animals",
+      "Vigilante"
+    ],
     "victim_kill_priority": false,
     "desc": "NAO jogar Victims prematuramente. Jogar Victims ao HG SOMENTE DEPOIS de Skin of Hellbound equipada. Victims atacam SEUS chars todo turno — e o ponto do deck: receber ataques e sobreviver. Longtooth (Hl:8) suporta. Questor (Hl:3) precisa de Skin + Vampire Blood."
   },
-
   "target_priority": {
     "prefer_hg_victims": false,
     "prefer_low_health": true,
@@ -173,18 +222,20 @@
     },
     "desc": "Foco em sobrevivencia, nao em matacao. Atacar Victims apenas quando necessario para VP. Priorizar defesa sobre ofensiva."
   },
-
   "territory_strategy": {
-    "protect": ["The Pit"],
+    "protect": [
+      "The Pit"
+    ],
     "desc": "The Pit e flavor (humano diz 'never did too much'). Nao priorizar protecao sobre sobrevivencia."
   },
-
   "umbra_strategy": {
     "enter_characters": [],
-    "save_for_combat": ["Longtooth Soulkiller", "Questor"],
+    "save_for_combat": [
+      "Longtooth Soulkiller",
+      "Questor"
+    ],
     "desc": "Nao entrar na Umbra. Ficar no pack para matar Victims e receber ataques."
   },
-
   "redraw_rules": {
     "never_discard": [
       "Longtooth Soulkiller",
@@ -203,10 +254,14 @@
       "Sneak Attack",
       "Spiral Boomerang"
     ],
-    "prefer_keep_types": ["character", "equipment", "gift", "combat_event"],
+    "prefer_keep_types": [
+      "character",
+      "equipment",
+      "gift",
+      "combat_event"
+    ],
     "note": "Manter Rage 1 CAs (Off-balanced Attack, Stinging Wound, Dodge) — importantes quando oponente usa Vital Blow."
   },
-
   "combat_notes": {
     "vital_blow_contingency": "Se oponente usa Vital Blow no seu char, ele so pode jogar CAs Rage 1. Manter Off-balanced Attack (Rg:1), Stinging Wound (Rg:1) e Dodge (Rg:1) na mao de combate.",
     "friends_in_high_places": "Friends in High Places encerra QUALQUER combate sem frenzy. Usar para: (1) encerrar combate que seu char vai perder, (2) desacelerar oponentes em FFA, (3) proteger Questor/Blossom de morte.",

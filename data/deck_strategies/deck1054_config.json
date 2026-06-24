@@ -1,7 +1,7 @@
 {
   "deck_id": 1054,
   "name": "A Peste Negra — Ratkin (praga, contagio, enxame)",
-  "style": "control",
+  "style": "moot_control",
   "gift_priorities": [
     {
       "slug": "crawling-poison",

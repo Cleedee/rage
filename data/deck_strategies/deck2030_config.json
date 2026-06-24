@@ -1,39 +1,164 @@
 {
   "deck_id": 2030,
   "name": "Pack Attack — Fianna v4",
-  "style": "aggro",
+  "style": "pack_combat",
   "game_plan": "Gloom At Midnight (Renown 10, Rg=4) ataca como alpha. Bum Rush traz o pack + allies. Water Spirit cura, Shadow Walker ataca com Rg=5, Dreamspeaker Mage step sideways, Kinfolk Folk Singer gera card draw. Sky River Caern para recursos.",
   "gift_priorities": [
-    {"priority": 100, "condition": "always", "slug": "master-of-the-pack", "desc": "Master of the Pack — reforcos para o pack"},
-    {"priority": 90, "condition": "combat_likely", "slug": "battle-song", "desc": "Battle Song — +dano no combate em pack"},
-    {"priority": 85, "condition": "combat_likely", "slug": "inspiration", "desc": "Inspiration — compra + buff Rage/Gnosis"},
-    {"priority": 80, "condition": "combat_likely", "slug": "mindspeak", "desc": "Mindspeak — vincula packmate para coordenação"},
-    {"priority": 65, "condition": "always", "slug": "whispering-campaign", "desc": "Whispering Campaign — disrupção"},
-    {"priority": 55, "condition": "has_injured_character", "slug": "mists-of-vengeance", "desc": "Mists of Vengeance — defesa"},
-    {"priority": 50, "condition": "always", "slug": "moon-bridge-escape", "desc": "Moon Bridge Escape — fuga tática"},
-    {"priority": 75, "condition": "combat_likely", "slug": "rilkean-heart", "desc": "Rilkean Heart — protege Combat Actions do alpha"},
-    {"priority": 70, "condition": "combat_likely", "slug": "spirit-of-the-fray", "desc": "Spirit of the Fray — fast striking para Laora"},
-    {"priority": 60, "condition": "combat_attacked", "slug": "phantasm", "desc": "Phantasm — cura total por rodada em Bron"},
-    {"priority": 40, "condition": "always", "slug": "roll-over", "desc": "Roll Over — remoção de equipamento"}
+    {
+      "priority": 100,
+      "condition": "always",
+      "slug": "master-of-the-pack",
+      "desc": "Master of the Pack — reforcos para o pack"
+    },
+    {
+      "priority": 90,
+      "condition": "combat_likely",
+      "slug": "battle-song",
+      "desc": "Battle Song — +dano no combate em pack"
+    },
+    {
+      "priority": 85,
+      "condition": "combat_likely",
+      "slug": "inspiration",
+      "desc": "Inspiration — compra + buff Rage/Gnosis"
+    },
+    {
+      "priority": 80,
+      "condition": "combat_likely",
+      "slug": "mindspeak",
+      "desc": "Mindspeak — vincula packmate para coordenação"
+    },
+    {
+      "priority": 65,
+      "condition": "always",
+      "slug": "whispering-campaign",
+      "desc": "Whispering Campaign — disrupção"
+    },
+    {
+      "priority": 55,
+      "condition": "has_injured_character",
+      "slug": "mists-of-vengeance",
+      "desc": "Mists of Vengeance — defesa"
+    },
+    {
+      "priority": 50,
+      "condition": "always",
+      "slug": "moon-bridge-escape",
+      "desc": "Moon Bridge Escape — fuga tática"
+    },
+    {
+      "priority": 75,
+      "condition": "combat_likely",
+      "slug": "rilkean-heart",
+      "desc": "Rilkean Heart — protege Combat Actions do alpha"
+    },
+    {
+      "priority": 70,
+      "condition": "combat_likely",
+      "slug": "spirit-of-the-fray",
+      "desc": "Spirit of the Fray — fast striking para Laora"
+    },
+    {
+      "priority": 60,
+      "condition": "combat_attacked",
+      "slug": "phantasm",
+      "desc": "Phantasm — cura total por rodada em Bron"
+    },
+    {
+      "priority": 40,
+      "condition": "always",
+      "slug": "roll-over",
+      "desc": "Roll Over — remoção de equipamento"
+    }
   ],
   "event_priorities": [
-    {"priority": 100, "condition": "always", "slug": "sky-river-caern", "desc": "Sky River Caern — recurso e regeneracao"},
-    {"priority": 90, "condition": "always", "slug": "grandfather-thunder", "desc": "Grandfather Thunder — ataque direto"},
-    {"priority": 85, "condition": "always", "slug": "fenris", "desc": "Fenris — buff de combate"},
-    {"priority": 75, "condition": "always", "slug": "connections", "desc": "Connections — busca cartas no sept deck"},
-    {"priority": 65, "condition": "always", "slug": "scouting-mission", "desc": "Scouting Mission — busca no combat deck"},
-    {"priority": 60, "condition": "always", "slug": "hidden-supplies", "desc": "Hidden Supplies — recursos"},
-    {"priority": 55, "condition": "always", "slug": "saving-face", "desc": "Saving Face — defesa social"},
-    {"priority": 50, "condition": "always", "slug": "town-meeting", "desc": "Town Meeting — junta"},
-    {"priority": 80, "condition": "always", "slug": "stag", "desc": "Stag — pack totem Fianna, draw em ataques HG"},
-    {"priority": 40, "condition": "always", "slug": "falcon", "desc": "Falcon — totem escoteiro"}
+    {
+      "priority": 100,
+      "condition": "always",
+      "slug": "sky-river-caern",
+      "desc": "Sky River Caern — recurso e regeneracao"
+    },
+    {
+      "priority": 90,
+      "condition": "always",
+      "slug": "grandfather-thunder",
+      "desc": "Grandfather Thunder — ataque direto"
+    },
+    {
+      "priority": 85,
+      "condition": "always",
+      "slug": "fenris",
+      "desc": "Fenris — buff de combate"
+    },
+    {
+      "priority": 75,
+      "condition": "always",
+      "slug": "connections",
+      "desc": "Connections — busca cartas no sept deck"
+    },
+    {
+      "priority": 65,
+      "condition": "always",
+      "slug": "scouting-mission",
+      "desc": "Scouting Mission — busca no combat deck"
+    },
+    {
+      "priority": 60,
+      "condition": "always",
+      "slug": "hidden-supplies",
+      "desc": "Hidden Supplies — recursos"
+    },
+    {
+      "priority": 55,
+      "condition": "always",
+      "slug": "saving-face",
+      "desc": "Saving Face — defesa social"
+    },
+    {
+      "priority": 50,
+      "condition": "always",
+      "slug": "town-meeting",
+      "desc": "Town Meeting — junta"
+    },
+    {
+      "priority": 80,
+      "condition": "always",
+      "slug": "stag",
+      "desc": "Stag — pack totem Fianna, draw em ataques HG"
+    },
+    {
+      "priority": 40,
+      "condition": "always",
+      "slug": "falcon",
+      "desc": "Falcon — totem escoteiro"
+    }
   ],
   "combat_event_priorities": [
-    {"priority": 95, "slug": "bum-rush", "desc": "Bum Rush — traz todo o pack para combate"},
-    {"priority": 90, "slug": "hunting-party", "desc": "Hunting Party — allies entram no combate"},
-    {"priority": 85, "slug": "attacking-the-wyrm", "desc": "Attacking the Wyrm — pack ataca HG inimigo"},
-    {"priority": 80, "slug": "pack-defense", "desc": "Pack Defense — pack defende em bloco"},
-    {"priority": 70, "slug": "reinforcements", "desc": "Reinforcements — substituto de combate"}
+    {
+      "priority": 95,
+      "slug": "bum-rush",
+      "desc": "Bum Rush — traz todo o pack para combate"
+    },
+    {
+      "priority": 90,
+      "slug": "hunting-party",
+      "desc": "Hunting Party — allies entram no combate"
+    },
+    {
+      "priority": 85,
+      "slug": "attacking-the-wyrm",
+      "desc": "Attacking the Wyrm — pack ataca HG inimigo"
+    },
+    {
+      "priority": 80,
+      "slug": "pack-defense",
+      "desc": "Pack Defense — pack defende em bloco"
+    },
+    {
+      "priority": 70,
+      "slug": "reinforcements",
+      "desc": "Reinforcements — substituto de combate"
+    }
   ],
   "resource_play_order": [
     "character",
@@ -45,21 +170,94 @@
     "action"
   ],
   "combat_action_preferences": {
-    "Gloom At Midnight": ["head_butt", "body_slam", "careful_strike", "toss", "savage_beatdown", "block_and_roll", "block"],
-    "Laora d'Avennes": ["head_butt", "careful_strike", "savage_beatdown", "toss", "block", "block_and_roll", "fancy_footwork"],
-    "Duncan MacIvor": ["head_butt", "careful_strike", "savage_beatdown", "block_and_roll", "dodge"],
-    "Bron Mac Fionn": ["block", "block_and_roll", "head_butt", "dodge", "lucky_blow"]
+    "Gloom At Midnight": [
+      "head_butt",
+      "body_slam",
+      "careful_strike",
+      "toss",
+      "savage_beatdown",
+      "block_and_roll",
+      "block"
+    ],
+    "Laora d'Avennes": [
+      "head_butt",
+      "careful_strike",
+      "savage_beatdown",
+      "toss",
+      "block",
+      "block_and_roll",
+      "fancy_footwork"
+    ],
+    "Duncan MacIvor": [
+      "head_butt",
+      "careful_strike",
+      "savage_beatdown",
+      "block_and_roll",
+      "dodge"
+    ],
+    "Bron Mac Fionn": [
+      "block",
+      "block_and_roll",
+      "head_butt",
+      "dodge",
+      "lucky_blow"
+    ]
   },
   "equipment_assignments": [
-    {"card_name": "William Wallace's Bones", "target": "Bron Mac Fionn", "priority": 90, "desc": "Bron ganha +2 Rage efetiva"},
-    {"card_name": "Mantle of El Dorado", "target": "Gloom At Midnight", "priority": 85, "desc": "+3 sept cards no Equip/Ally Phase"},
-    {"card_name": "Vampire Blood", "target": "Gloom At Midnight", "priority": 75, "desc": "Cura emergencial para o alpha"},
-    {"card_name": "Cellular Phone", "target": "Gloom At Midnight", "priority": 90, "desc": "Pack attack/defend com Duncan"},
-    {"card_name": "Cellular Phone", "target": "Duncan MacIvor", "priority": 80, "desc": "Pack attack/defend com Gloom"},
-    {"card_name": "Bivouac", "target": "Gloom At Midnight", "priority": 95, "desc": "Regeneracao extra para o alpha"},
-    {"card_name": "Suit of Mirrors", "target": "Laora d'Avennes", "priority": 85, "desc": "Defesa para a lutadora"},
-    {"card_name": "Anubis Stone", "target": "Duncan MacIvor", "priority": 80, "desc": "Draw de cartas"},
-    {"card_name": "Concertina Wire", "target": "", "priority": 70, "desc": "Dano em quem o atacar"}
+    {
+      "card_name": "William Wallace's Bones",
+      "target": "Bron Mac Fionn",
+      "priority": 90,
+      "desc": "Bron ganha +2 Rage efetiva"
+    },
+    {
+      "card_name": "Mantle of El Dorado",
+      "target": "Gloom At Midnight",
+      "priority": 85,
+      "desc": "+3 sept cards no Equip/Ally Phase"
+    },
+    {
+      "card_name": "Vampire Blood",
+      "target": "Gloom At Midnight",
+      "priority": 75,
+      "desc": "Cura emergencial para o alpha"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Gloom At Midnight",
+      "priority": 90,
+      "desc": "Pack attack/defend com Duncan"
+    },
+    {
+      "card_name": "Cellular Phone",
+      "target": "Duncan MacIvor",
+      "priority": 80,
+      "desc": "Pack attack/defend com Gloom"
+    },
+    {
+      "card_name": "Bivouac",
+      "target": "Gloom At Midnight",
+      "priority": 95,
+      "desc": "Regeneracao extra para o alpha"
+    },
+    {
+      "card_name": "Suit of Mirrors",
+      "target": "Laora d'Avennes",
+      "priority": 85,
+      "desc": "Defesa para a lutadora"
+    },
+    {
+      "card_name": "Anubis Stone",
+      "target": "Duncan MacIvor",
+      "priority": 80,
+      "desc": "Draw de cartas"
+    },
+    {
+      "card_name": "Concertina Wire",
+      "target": "",
+      "priority": 70,
+      "desc": "Dano em quem o atacar"
+    }
   ],
   "alpha_priority": {
     "Gloom At Midnight": 100,
@@ -67,7 +265,10 @@
     "Laora d'Avennes": 50
   },
   "caern_preferences": [
-    {"card_name": "Sky River Caern", "priority": 100}
+    {
+      "card_name": "Sky River Caern",
+      "priority": 100
+    }
   ],
   "target_priority": {
     "prefer_low_health": true,
@@ -75,8 +276,16 @@
     "avoid_overextend": false
   },
   "redraw_rules": {
-    "never_discard": ["Bum Rush", "Pack Defense", "Bivouac", "Sky River Caern"],
-    "prefer_discard_types": ["Event", "Moot"]
+    "never_discard": [
+      "Bum Rush",
+      "Pack Defense",
+      "Bivouac",
+      "Sky River Caern"
+    ],
+    "prefer_discard_types": [
+      "Event",
+      "Moot"
+    ]
   },
   "notes": {
     "estrategia": "Pack attack Fianna v4. 4 chars + 4 allies. Bum Rush traz o pack. Cellular Phone x2 enable pack attack/defend entre Gloom e Duncan. Toss (Rg:4, Fianna bonus 6 dmg) como combat action chave. Rilkean Heart protege Combat Actions do alpha. Spirit of the Fray da fast striking para Laora. Phantasm em Bron regenera tudo por rodada (vs Ratkin/plague). Mantle of El Dorado + Stag para consistencia de draw. Vampire Blood para cura emergencial. Water Spirit cura, Shadow Walker (Rg=5) ataca forte. Kinfolk Folk Singer gera card draw (descarta sept card, compra 2). Sky River Caern para recursos. 68 cartas (30 combat + 38 sept).",

@@ -1,9 +1,8 @@
 {
   "deck_id": 2031,
   "name": "Os Indestrutíveis — Tanques de Gaia v2",
-  "style": "control",
+  "style": "moot_control",
   "desc": "Deck ultra-resistente com 2 tanques (Modi Hl:10, Cernonous Hl:7). Estrategia defensiva: prefere HG targets (Caern of Rytthiku), mas ataca personagens perigosos detectados pelo ThreatAnalyzer (severidade >= 0.50). ThreatAnalyzer prioriza eliminar equipamentos/gifts ameacadores. Defesa em 4 camadas: Caerns, gifts, equipamentos, combat actions. 52 cartas.",
-
   "gift_priorities": [
     {
       "slug": "luna-s-armor",
@@ -42,7 +41,6 @@
       "desc": "Shroud (Gn:2) — Encerra qualquer combate instantaneamente. Fuga de emergência."
     }
   ],
-
   "resource_play_order": [
     "caern",
     "gift",
@@ -55,7 +53,6 @@
     "victim",
     "enemy"
   ],
-
   "caern_preferences": [
     {
       "card_name": "Sky River Caern",
@@ -78,7 +75,6 @@
       "desc": "Caern of Rytthiku (Gn:3) — Permite atacar inimigos no HG por VP (vitória alternativa)."
     }
   ],
-
   "combat_action_preferences": {
     "modi-votishal": [
       "block-and-strike",
@@ -103,7 +99,6 @@
       "run-like-hell"
     ]
   },
-
   "equipment_assignments": [
     {
       "card_name": "Flak Jacket",
@@ -160,29 +155,35 @@
       "desc": "War Knife — Dano agravado para quando precisar atacar (raramente)."
     }
   ],
-
   "umbra_strategy": {
-    "enter_characters": ["Cernonous"],
-    "save_for_combat": ["Modi Votishal"],
+    "enter_characters": [
+      "Cernonous"
+    ],
+    "save_for_combat": [
+      "Modi Votishal"
+    ],
     "always_enter_if_opponent_cannot": true,
     "enter_with_high_gnosis": true,
     "desc": "Cernonous (Gn:7) entra na Umbra para explorar. Modi (Gn:8, Hl:10+2) fica no HG como tanque. Sky River Caern protege Modi quando Cernonous está na Umbra."
   },
-
   "target_priority": {
     "prefer_low_health": true,
     "character_kill_order": "lowest_health",
     "hunting_grounds": {
       "prefer_prey_over_enemy": false,
-      "priority_types": ["Enemy", "Victim"],
-      "enemy_kill_order": ["Hogling"],
+      "priority_types": [
+        "Enemy",
+        "Victim"
+      ],
+      "enemy_kill_order": [
+        "Hogling"
+      ],
       "desc": "Atacar inimigos no HG primeiro (Hogling Rn:5 com Caern of Rytthiku). Se HG vazio, atacar personagens do oponente (fallback). Gaia ganha 0 VP por Victims."
     },
     "ffa_diplomacy": "weaken_largest",
     "defensive_only": true,
     "never_initiate_alpha_combat": false
   },
-
   "redraw_rules": {
     "never_discard": [
       "Modi Votishal",
@@ -198,6 +199,8 @@
       "Run Like Hell",
       "Hogling"
     ],
-    "prefer_discard_types": ["enemy"]
+    "prefer_discard_types": [
+      "enemy"
+    ]
   }
 }

@@ -1,9 +1,8 @@
 {
   "deck_id": 2016,
   "name": "Umbral Wardens",
-  "style": "umbra",
+  "style": "hg_control",
   "desc": "Gaia Umbra Combat. Combate na Umbra com Sap Spirit (inbloqueavel) + Umbral Flurry (cartas extras). 3 chars: Modi (Rn:9 Hl:10 Rg:7 Gn:8), Cernonous (Rn:6 Hl:7 Gn:7), Fade-To-Black (Rn:5 +2Gn para Umbra=Gn:8). Grand Klaive (dano agravado). Enemies no HG para VP (Gaia kills Enemy=VP). Step Sideways+Fast Shift entram na Umbra. 53 cartas.",
-
   "gift_priorities": [
     {
       "slug": "power-of-the-ways",
@@ -24,7 +23,6 @@
       "desc": "Parting the Velvet Curtain (Gn:4) — Traz 1 nao-Garou para a Umbra. Situacional."
     }
   ],
-
   "equipment_assignments": [
     {
       "card_name": "Grand Klaive",
@@ -51,7 +49,6 @@
       "desc": "Concertina Wire — protege Territories. Fade carrega."
     }
   ],
-
   "resource_play_order": [
     "caern",
     "character",
@@ -61,7 +58,6 @@
     "enemy",
     "action"
   ],
-
   "action_priorities": [
     {
       "slug": "step-sideways",
@@ -82,7 +78,6 @@
       "desc": "Fast Shift — Entrar na Umbra em qualquer fase. Depois deve ser alpha."
     }
   ],
-
   "event_priorities": [
     {
       "slug": "chimera",
@@ -133,51 +128,142 @@
       "desc": "The Breaking of the Storm — Embaralha descartes nos decks. Emergencia."
     }
   ],
-
   "combat_action_preferences": {
     "modi-votishal": {
       "priorities": [
-        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
-        {"slug": "massive-wound", "priority": 93},
-        {"slug": "maim", "priority": 92},
-        {"slug": "vital-blow", "priority": 88},
-        {"slug": "disembowelment", "priority": 85},
-        {"slug": "umbral-flurry", "priority": 90, "umbra_only": true},
-        {"slug": "block-and-strike", "priority": 75},
-        {"slug": "evasion", "priority": 65},
-        {"slug": "umbral-escape", "priority": 60},
-        {"slug": "lucky-blow", "priority": 55}
+        {
+          "slug": "sap-spirit",
+          "priority": 95,
+          "umbra_only": true
+        },
+        {
+          "slug": "massive-wound",
+          "priority": 93
+        },
+        {
+          "slug": "maim",
+          "priority": 92
+        },
+        {
+          "slug": "vital-blow",
+          "priority": 88
+        },
+        {
+          "slug": "disembowelment",
+          "priority": 85
+        },
+        {
+          "slug": "umbral-flurry",
+          "priority": 90,
+          "umbra_only": true
+        },
+        {
+          "slug": "block-and-strike",
+          "priority": 75
+        },
+        {
+          "slug": "evasion",
+          "priority": 65
+        },
+        {
+          "slug": "umbral-escape",
+          "priority": 60
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 55
+        }
       ]
     },
     "cernonous": {
       "priorities": [
-        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
-        {"slug": "massive-wound", "priority": 90},
-        {"slug": "maim", "priority": 88},
-        {"slug": "vital-blow", "priority": 85},
-        {"slug": "disembowelment", "priority": 82},
-        {"slug": "umbral-flurry", "priority": 85, "umbra_only": true},
-        {"slug": "evasion", "priority": 70},
-        {"slug": "block-and-strike", "priority": 68},
-        {"slug": "umbral-escape", "priority": 55},
-        {"slug": "lucky-blow", "priority": 50}
+        {
+          "slug": "sap-spirit",
+          "priority": 95,
+          "umbra_only": true
+        },
+        {
+          "slug": "massive-wound",
+          "priority": 90
+        },
+        {
+          "slug": "maim",
+          "priority": 88
+        },
+        {
+          "slug": "vital-blow",
+          "priority": 85
+        },
+        {
+          "slug": "disembowelment",
+          "priority": 82
+        },
+        {
+          "slug": "umbral-flurry",
+          "priority": 85,
+          "umbra_only": true
+        },
+        {
+          "slug": "evasion",
+          "priority": 70
+        },
+        {
+          "slug": "block-and-strike",
+          "priority": 68
+        },
+        {
+          "slug": "umbral-escape",
+          "priority": 55
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 50
+        }
       ]
     },
     "fade-to-black": {
       "priorities": [
-        {"slug": "sap-spirit", "priority": 95, "umbra_only": true},
-        {"slug": "umbral-flurry", "priority": 93, "umbra_only": true},
-        {"slug": "massive-wound", "priority": 90},
-        {"slug": "maim", "priority": 88},
-        {"slug": "vital-blow", "priority": 85},
-        {"slug": "disembowelment", "priority": 80},
-        {"slug": "evasion", "priority": 70},
-        {"slug": "umbral-escape", "priority": 65},
-        {"slug": "lucky-blow", "priority": 55}
+        {
+          "slug": "sap-spirit",
+          "priority": 95,
+          "umbra_only": true
+        },
+        {
+          "slug": "umbral-flurry",
+          "priority": 93,
+          "umbra_only": true
+        },
+        {
+          "slug": "massive-wound",
+          "priority": 90
+        },
+        {
+          "slug": "maim",
+          "priority": 88
+        },
+        {
+          "slug": "vital-blow",
+          "priority": 85
+        },
+        {
+          "slug": "disembowelment",
+          "priority": 80
+        },
+        {
+          "slug": "evasion",
+          "priority": 70
+        },
+        {
+          "slug": "umbral-escape",
+          "priority": 65
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 55
+        }
       ]
     }
   },
-
   "caern_preferences": [
     {
       "card_name": "Sky River Caern",
@@ -190,17 +276,23 @@
       "desc": "Caern of the Snow Leopard (Gn:2) — Ressurreição na Umbra. Salva char morto na Umbra."
     }
   ],
-
   "hunting_grounds_strategy": {
-    "priority_cards": ["Excitable Good Ol' Boy", "Fomori Cop", "Hogling"],
-    "always_play_if_available": ["Hogling"],
+    "priority_cards": [
+      "Excitable Good Ol' Boy",
+      "Fomori Cop",
+      "Hogling"
+    ],
+    "always_play_if_available": [
+      "Hogling"
+    ],
     "desc": "Enemies no HG para VP (Gaia kills Enemy = VP). Hogling (Hl:5) e prioridade. Good Ol Boy atrapalha (ataca alpha fraco). Fomori Cop descarta equipamento."
   },
-
   "target_priority": {
     "character_kill_order": "lowest_health",
     "prefer_weakest": true,
-    "hunting_grounds_kill_order": ["Victim"],
+    "hunting_grounds_kill_order": [
+      "Victim"
+    ],
     "threat_response": {
       "flak-jacket": "attack_from_umbra",
       "luna-s-armor": "attack_from_umbra",
@@ -209,14 +301,16 @@
       "skin-of-the-hellbound": "attack_from_umbra"
     }
   },
-
   "umbra_strategy": {
-    "enter_characters": ["Modi Votishal", "Cernonous", "Fade-To-Black"],
+    "enter_characters": [
+      "Modi Votishal",
+      "Cernonous",
+      "Fade-To-Black"
+    ],
     "save_for_combat": [],
     "always_enter_if_possible": true,
     "desc": "TODOS os personagens entram na Umbra. Modi (Gn:8), Cernonous (Gn:7), Fade (Gn:6+2=8) passam Gauntlet 3 com folga. Combat actions Umbra sao superiores (Sap Spirit inbloqueavel)."
   },
-
   "redraw_rules": {
     "never_discard": [
       "Modi Votishal",
@@ -236,6 +330,11 @@
       "Fomori Cop",
       "Hogling"
     ],
-    "prefer_keep_types": ["character", "action", "combat action", "equipment"]
+    "prefer_keep_types": [
+      "character",
+      "action",
+      "combat action",
+      "equipment"
+    ]
   }
 }

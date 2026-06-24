@@ -1,9 +1,8 @@
 {
   "deck_id": 2014,
   "name": "Drain Team v1 — Wyrm Pentex Control",
-  "style": "control",
+  "style": "moot_control",
   "desc": "Wyrm Pentex control enxuto. Config MINIMA: so adiciona ThreatAnalyzer + Consumption of Gaia. Nao muda comportamento natural do bot (que ja era 5-0).",
-
   "gift_priorities": [
     {
       "slug": "arms-of-the-abyss",
@@ -30,7 +29,6 @@
       "desc": "Disquiet (Gn:5) — Remove Ally/Prey Homid por 1 turno."
     }
   ],
-
   "equipment_assignments": [
     {
       "card_name": "Skin of the Hellbound",
@@ -57,7 +55,6 @@
       "desc": "Gooshy — debuff no combate."
     }
   ],
-
   "target_priority": {
     "threat_response": {
       "luna-s-armor": "consumption_of_gaia",
@@ -67,11 +64,9 @@
       "spirit-of-the-fray": "consumption_of_gaia"
     }
   },
-
   "moot_strategy": {
     "always_beckons": true
   },
-
   "redraw_rules": {
     "never_discard": [
       "Count Vladimir Rustovitch",
@@ -81,6 +76,9 @@
       "Arms of the Abyss",
       "Friends in High Places"
     ],
-    "prefer_keep_types": ["character", "equipment"]
+    "prefer_keep_types": [
+      "character",
+      "equipment"
+    ]
   }
 }

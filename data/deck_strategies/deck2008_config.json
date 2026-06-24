@@ -1,16 +1,14 @@
 {
   "deck_id": 2008,
   "name": "Classic: Grimfang Moot",
-  "style": "control",
+  "style": "moot_control",
   "desc": "Moot deck. VP via sept: Silver Record, Winter Wolf, Legendary Leadership, Caern Building, Umbral Quest. Combat deck = escape only. Grimfang = voting lynchpin. No anti-Wyrm.",
-
   "combat_notes": {
     "philosophy": "ESCAPE ONLY. Your combat deck exists to END combats, not to win them. You have 7 escape routes. Always have a suitable escape in hand.",
     "who_fights": "Flame Spirits are good alphas. Never use voting characters in combat if avoidable.",
     "run_like_hell": "Voting characters (Grimfang, Storm-Chaser) should NOT use Run Like Hell. Prey and allies can.",
     "spirit_drain": "Spirit Drain is there primarily to DENY a kill, not to be aggressive."
   },
-
   "moot_strategy": {
     "always_call_moot": true,
     "preferred_caller": "Grimfang",
@@ -58,10 +56,15 @@
         "desc": "The Litany's Guidance (Rn:7) — Denies VP from Gaia enemies."
       }
     ],
-    "equipment_for_voting": ["The Silver Crown", "Elder Stone"],
-    "gifts_for_voting": ["Aegis", "Falcon"]
+    "equipment_for_voting": [
+      "The Silver Crown",
+      "Elder Stone"
+    ],
+    "gifts_for_voting": [
+      "Aegis",
+      "Falcon"
+    ]
   },
-
   "gift_priorities": [
     {
       "slug": "falcon",
@@ -82,7 +85,6 @@
       "desc": "Spirit Drain (Gn:8) — PRIMARY use: deny opponent a kill. Secondary: remove spirit."
     }
   ],
-
   "equipment_assignments": [
     {
       "slug": "the-silver-crown",
@@ -97,26 +99,68 @@
       "desc": "Elder Stone (+3 Gn). Backup for Grimfang or second copy."
     }
   ],
-
   "combat_action_preferences": {
     "_default": {
       "defense_first": true,
       "escape_priority": "ALWAYS escape. Never attack unless forced and no escape available.",
       "escape_order": [
-        {"slug": "umbral-escape", "priority": 95, "desc": "Escape to Umbra — safest option"},
-        {"slug": "evasion", "priority": 93, "desc": "Dodge — avoids damage entirely"},
-        {"slug": "fancy-footwork", "priority": 91, "desc": "Advanced dodge"},
-        {"slug": "run-like-hell", "priority": 88, "desc": "Flee combat — USE ONLY for prey/allies, NOT voting chars"},
-        {"slug": "fox-frenzy", "priority": 85, "desc": "Leave combat between rounds — escape route"},
-        {"slug": "taking-the-death-blow", "priority": 80, "desc": "Redirect mortal wound — save key character"},
-        {"slug": "frenzy", "priority": 60, "desc": "Last resort — frenzy to survive"}
+        {
+          "slug": "umbral-escape",
+          "priority": 95,
+          "desc": "Escape to Umbra — safest option"
+        },
+        {
+          "slug": "evasion",
+          "priority": 93,
+          "desc": "Dodge — avoids damage entirely"
+        },
+        {
+          "slug": "fancy-footwork",
+          "priority": 91,
+          "desc": "Advanced dodge"
+        },
+        {
+          "slug": "run-like-hell",
+          "priority": 88,
+          "desc": "Flee combat — USE ONLY for prey/allies, NOT voting chars"
+        },
+        {
+          "slug": "fox-frenzy",
+          "priority": 85,
+          "desc": "Leave combat between rounds — escape route"
+        },
+        {
+          "slug": "taking-the-death-blow",
+          "priority": 80,
+          "desc": "Redirect mortal wound — save key character"
+        },
+        {
+          "slug": "frenzy",
+          "priority": 60,
+          "desc": "Last resort — frenzy to survive"
+        }
       ],
       "attack_only_if_no_escape": [
-        {"slug": "lucky-blow", "priority": 30},
-        {"slug": "off-balanced-attack", "priority": 25},
-        {"slug": "stinging-wound", "priority": 20},
-        {"slug": "beat-unmerciful", "priority": 15},
-        {"slug": "surprise-attack", "priority": 10}
+        {
+          "slug": "lucky-blow",
+          "priority": 30
+        },
+        {
+          "slug": "off-balanced-attack",
+          "priority": 25
+        },
+        {
+          "slug": "stinging-wound",
+          "priority": 20
+        },
+        {
+          "slug": "beat-unmerciful",
+          "priority": 15
+        },
+        {
+          "slug": "surprise-attack",
+          "priority": 10
+        }
       ]
     },
     "grimfang": {
@@ -137,22 +181,35 @@
       "special": "ALPHA STRIKER. Use Flame Spirits as alpha attack. They are expendable."
     }
   },
-
   "card_play_priority": {
     "resource_play_order": [
-      "equipment", "caern", "ally", "gift", "past_life"
+      "equipment",
+      "caern",
+      "ally",
+      "gift",
+      "past_life"
     ],
     "desc": "Equipment FIRST (voting power), then Caerns, then Allies (TV Reporters, Flame Spirits).",
-    "gift_order": ["Falcon", "Aegis", "Spirit Drain"],
-    "equipment_order": ["The Silver Crown", "Elder Stone"]
+    "gift_order": [
+      "Falcon",
+      "Aegis",
+      "Spirit Drain"
+    ],
+    "equipment_order": [
+      "The Silver Crown",
+      "Elder Stone"
+    ]
   },
-
   "umbra_strategy": {
-    "enter_characters": ["Yuri Tvarivich"],
-    "save_for_moot": ["Grimfang", "Old Storm-Chaser"],
+    "enter_characters": [
+      "Yuri Tvarivich"
+    ],
+    "save_for_moot": [
+      "Grimfang",
+      "Old Storm-Chaser"
+    ],
     "desc": "Yuri Tvarivich enters Umbra via Past Life. NEVER put Grimfang or Storm-Chaser at risk."
   },
-
   "target_priority": {
     "never_initiate_alpha_combat": true,
     "desc": "DO NOT initiate combat. Let opponents come to you. Your combat deck is escape-only.",
@@ -161,10 +218,27 @@
     "avoid_all_combat": true,
     "challenge_preference": "never",
     "redraw_rules": {
-      "never_discard": ["Grimfang", "Old Storm-Chaser", "Silver Crown", "Falcon", "Aegis"],
-      "always_discard_if_duplicate": ["Ivan Korda", "Diem"],
-      "prefer_keep_types": ["moot", "equipment", "ally", "gift"],
-      "prefer_discard_types": ["combat_action", "combat_event"],
+      "never_discard": [
+        "Grimfang",
+        "Old Storm-Chaser",
+        "Silver Crown",
+        "Falcon",
+        "Aegis"
+      ],
+      "always_discard_if_duplicate": [
+        "Ivan Korda",
+        "Diem"
+      ],
+      "prefer_keep_types": [
+        "moot",
+        "equipment",
+        "ally",
+        "gift"
+      ],
+      "prefer_discard_types": [
+        "combat_action",
+        "combat_event"
+      ],
       "desc": "Keep voting pieces. Discard combat cards — you only need enough escapes."
     }
   }

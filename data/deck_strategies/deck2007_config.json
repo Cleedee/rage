@@ -1,9 +1,8 @@
 {
   "deck_id": 2007,
   "name": "Classic: Gaia Weenie",
-  "style": "swarm",
+  "style": "pack_combat",
   "desc": "Enxame de 8 chars + 9 allies (17 bodies). VP primario: Pentex Refinery (Rn:14, Hl:15) no HG — Gaia mata Enemy por 14VP. Card draw via Friends in High Places. Entrail Rend (Rg:10)+Chainsaw = dano massivo. Sticky Paws rouba equipamentos. Personagens frágeis (Hl:1-2), compensa por numero. 63 cartas.",
-
   "gift_priorities": [
     {
       "slug": "sticky-paws",
@@ -12,29 +11,60 @@
       "desc": "Sticky Paws (Gn:3) — Rouba melhor equipamento do oponente. Excelente resposta a Flak Jacket/War Knife."
     }
   ],
-
   "combat_action_preferences": {
     "banana-split": {
       "priorities": [
-        {"slug": "entrail-rend", "priority": 95},
-        {"slug": "bite", "priority": 80},
-        {"slug": "dodge", "priority": 70}
+        {
+          "slug": "entrail-rend",
+          "priority": 95
+        },
+        {
+          "slug": "bite",
+          "priority": 80
+        },
+        {
+          "slug": "dodge",
+          "priority": 70
+        }
       ]
     },
     "default": {
       "priorities": [
-        {"slug": "reckless-swing", "priority": 85},
-        {"slug": "stinging-wound", "priority": 80},
-        {"slug": "lucky-blow", "priority": 75},
-        {"slug": "off-balanced-attack", "priority": 70},
-        {"slug": "overextended-attack", "priority": 65},
-        {"slug": "bitch-slap", "priority": 60},
-        {"slug": "dodge", "priority": 50},
-        {"slug": "run-like-hell", "priority": 45}
+        {
+          "slug": "reckless-swing",
+          "priority": 85
+        },
+        {
+          "slug": "stinging-wound",
+          "priority": 80
+        },
+        {
+          "slug": "lucky-blow",
+          "priority": 75
+        },
+        {
+          "slug": "off-balanced-attack",
+          "priority": 70
+        },
+        {
+          "slug": "overextended-attack",
+          "priority": 65
+        },
+        {
+          "slug": "bitch-slap",
+          "priority": 60
+        },
+        {
+          "slug": "dodge",
+          "priority": 50
+        },
+        {
+          "slug": "run-like-hell",
+          "priority": 45
+        }
       ]
     }
   },
-
   "equipment_assignments": [
     {
       "card_name": "Chainsaw",
@@ -43,7 +73,6 @@
       "desc": "Chainsaw em Banana Split (Rg:3 -> permite Combat Actions ate Rg:10). Entrail Rend + Chainsaw = combo letal."
     }
   ],
-
   "resource_play_order": [
     "character",
     "ally",
@@ -54,16 +83,21 @@
     "event",
     "enemy"
   ],
-
   "hunting_grounds_strategy": {
-    "priority_cards": ["Pentex Refinery"],
-    "always_play_if_available": ["Pentex Refinery"],
+    "priority_cards": [
+      "Pentex Refinery"
+    ],
+    "always_play_if_available": [
+      "Pentex Refinery"
+    ],
     "desc": "Pentex Refinery (Rn:14, Hl:15) e a prioridade #1. Colocar no HG o mais cedo possivel. Matar por VP (Gaia kills Enemy = VP)."
   },
-
   "target_priority": {
     "prefer_hg_over_characters": true,
-    "hunting_grounds_kill_order": ["Pentex Refinery", "Pentex First Team 43"],
+    "hunting_grounds_kill_order": [
+      "Pentex Refinery",
+      "Pentex First Team 43"
+    ],
     "character_kill_order": "lowest_health",
     "prefer_weakest": true,
     "threat_response": {
@@ -73,13 +107,17 @@
       "skin-of-the-hellbound": "avoid_high_rage"
     }
   },
-
   "umbra_strategy": {
-    "enter_characters": ["Shadow Walker"],
-    "save_for_combat": ["Carleson Ruah", "Susan Anthony", "Banana Split"],
+    "enter_characters": [
+      "Shadow Walker"
+    ],
+    "save_for_combat": [
+      "Carleson Ruah",
+      "Susan Anthony",
+      "Banana Split"
+    ],
     "desc": "Shadow Walker (Gn:5) entra na Umbra. Personagens principais ficam para combate."
   },
-
   "action_priorities": [
     {
       "slug": "friends-in-high-places",
@@ -100,7 +138,6 @@
       "desc": "Stand like a Fool — trava Combat Cards do oponente por 1 round."
     }
   ],
-
   "event_priorities": [
     {
       "slug": "new-moon",
@@ -115,7 +152,6 @@
       "desc": "Wyldstorm — reset: chars mais fortes duelam. Emergencia."
     }
   ],
-
   "combat_event_priorities": [
     {
       "slug": "hunting-party",
@@ -136,7 +172,6 @@
       "desc": "Attacking the Wyrm — bonus contra Wyrm."
     }
   ],
-
   "redraw_rules": {
     "never_discard": [
       "Pentex Refinery",
@@ -149,6 +184,10 @@
       "Ka Spirit",
       "Kinfolk Small Town Cop"
     ],
-    "prefer_keep_types": ["character", "ally", "action"]
+    "prefer_keep_types": [
+      "character",
+      "ally",
+      "action"
+    ]
   }
 }

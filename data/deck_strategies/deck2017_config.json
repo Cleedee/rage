@@ -1,9 +1,8 @@
 {
   "deck_id": 2017,
   "name": "Fúria e Sabedoria",
-  "style": "control",
+  "style": "moot_control",
   "desc": "Deck Fianna Wyrm-hunter com apenas 2 personagens (Big Fisher + Margrave Konietzko). Big Fisher pode jogar 2 Combat Actions por rodada em Homid — combo devastador com Spirit of the Fray + War Knife of Benning Simon (dano agravado em ações Rg≤4). Estratégia: sobreviver, equipar Big Fisher, eliminar ameaças Wyrm no Hunting Grounds.",
-
   "gift_priorities": [
     {
       "slug": "luna-s-armor",
@@ -24,7 +23,6 @@
       "desc": "Silver Claws (Gn:3) — Dano agravado, bom mas situacional"
     }
   ],
-
   "event_priorities": [
     {
       "slug": "iron-will",
@@ -39,7 +37,6 @@
       "desc": "Wendigo — +1 mao de combate. Big Fisher com mais opcoes = 2 ataques melhores"
     }
   ],
-
   "resource_play_order": [
     "gift",
     "caern",
@@ -52,7 +49,6 @@
     "victim",
     "enemy"
   ],
-
   "caern_preferences": [
     {
       "card_name": "Sky River Caern",
@@ -60,7 +56,6 @@
       "desc": "Sky River Caern (Gn:3) — Protege nao-alfa de challenge/sneak attack"
     }
   ],
-
   "combat_action_preferences": {
     "big-fisher": [
       "massive-wound",
@@ -91,7 +86,6 @@
       "run-like-hell"
     ]
   },
-
   "equipment_assignments": [
     {
       "card_name": "War Knife of Benning Simon",
@@ -130,27 +124,35 @@
       "desc": "Skin of the Hellbound — Imune a dano Rg≥6. Protege contra ataques pesados"
     }
   ],
-
   "umbra_strategy": {
-    "enter_characters": ["Margrave Konietzko"],
-    "save_for_combat": ["Big Fisher"],
+    "enter_characters": [
+      "Margrave Konietzko"
+    ],
+    "save_for_combat": [
+      "Big Fisher"
+    ],
     "always_enter_if_opponent_cannot": true,
     "enter_with_high_gnosis": true,
     "desc": "Margrave (Gn:7) entra na Umbra para explorar. Big Fisher (Gn:7, Rg:5) fica no Hunting Grounds como atacante principal. Se oponente entrar, Margrave segue para counter."
   },
-
   "target_priority": {
     "prefer_low_health": true,
     "character_kill_order": "lowest_health",
     "hunting_grounds": {
       "prefer_prey_over_enemy": false,
-      "priority_types": ["Enemy", "Victim"],
-      "enemy_kill_order": ["Hogling", "Fomori Cop", "Excitable Good Ol' Boy"],
+      "priority_types": [
+        "Enemy",
+        "Victim"
+      ],
+      "enemy_kill_order": [
+        "Hogling",
+        "Fomori Cop",
+        "Excitable Good Ol' Boy"
+      ],
       "desc": "Hogling primeiro (imune a equipamento nao-fetichizado), depois Fomori Cop (destroi equipamento), depois Good Ol' Boy (ataca alfa)"
     },
     "ffa_diplomacy": "weaken_largest"
   },
-
   "redraw_rules": {
     "never_discard": [
       "Big Fisher",
@@ -163,6 +165,8 @@
     "always_discard_if_duplicate": [
       "Run Like Hell"
     ],
-    "prefer_discard_types": ["enemy"]
+    "prefer_discard_types": [
+      "enemy"
+    ]
   }
 }

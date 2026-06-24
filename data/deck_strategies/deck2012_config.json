@@ -1,7 +1,7 @@
 {
   "deck_id": 2012,
   "name": "Os Porteiros (The Gatekeepers)",
-  "style": "control",
+  "style": "moot_control",
   "gift_priorities": [
     {
       "slug": "aegis",

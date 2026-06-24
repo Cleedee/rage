@@ -1,7 +1,7 @@
 {
   "deck_id": 2015,
   "name": "Trovão dos Metis v2 — Crinos Combat",
-  "style": "moot",
+  "style": "moot_control",
   "gift_priorities": [
     {
       "slug": "purity-of-spirit",
