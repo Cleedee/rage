@@ -298,8 +298,9 @@ def run_analysis():
     for p in game.players:
         bots[p.id] = PriorityBot(game, p.id, difficulty='hard')
 
-    # Captura snapshot inicial (estado do jogo antes de qualquer ação)
-    log_offset = _capture_state(game, states, log_offset)
+    # NÃO captura snapshot inicial — o primeiro será o estado
+    # final da fase redraw (quando a fase mudar)
+    log_offset = 0
 
     # Loop principal para avançar a partida
     stale = 0
@@ -357,8 +358,8 @@ def run_analysis():
         # Detecta mudança de fase/turno
         fase_mudou = (game.turn_number != last_turn or game.phase != last_phase)
         if fase_mudou:
-            # Captura snapshot do estado FINAL da fase anterior
-            log_offset = _capture_state(game, states, log_offset)
+            # Captura snapshot com a fase ANTERIOR (a que acabou de terminar)
+            log_offset = _capture_state(game, states, log_offset, phase=last_phase)
             stale = 0
             if game.phase != 'combat':
                 _alpha_order.clear()
@@ -428,9 +429,17 @@ def run_analysis():
                             game_id=game_id, state_index=0))
 
 
-def _capture_state(game, states, log_offset: int) -> int:
-    """Cria um snapshot do estado atual e retorna o novo offset do log."""
-    snap = Snapshot(game, game.turn_number, game.phase, log_offset)
+def _capture_state(game, states, log_offset: int, phase: str = None) -> int:
+    """Cria um snapshot do estado atual e retorna o novo offset do log.
+
+    Args:
+        game: Estado do jogo.
+        states: Lista de snapshots.
+        log_offset: Offset do log para este snapshot.
+        phase: Fase a exibir (opcional). Se None, usa game.phase.
+               Usar para capturar a fase ANTERIOR quando a fase muda.
+    """
+    snap = Snapshot(game, game.turn_number, phase or game.phase, log_offset)
     states.append(snap)
     return len(game.log)
 
