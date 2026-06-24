@@ -4069,7 +4069,7 @@ class PriorityBot:
         if all_passed:
             self.game.next_phase()
             for p in self.game.players:
-                p.reset_pass()
+                p.reset_pass(self.game.turn_number)
             self.game.add_log(f'Todos passaram. Fase: {self.game.phase}')
         else:
             self.game.next_player()

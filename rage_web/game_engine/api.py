@@ -542,7 +542,7 @@ def api_pass(game_id: str):
     if all_passed:
         game.next_phase()
         for p in game.players:
-            p.reset_pass()
+            p.reset_pass(game.turn_number)
         game.add_log(f'Todos passaram. Avancando para {game.phase}')
     else:
         game.next_player()

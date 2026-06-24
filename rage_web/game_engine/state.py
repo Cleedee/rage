@@ -803,10 +803,17 @@ class PlayerState:
         """Marca que o jogador passou a vez."""
         self.has_passed = True
 
-    def reset_pass(self):
-        """Reseta o passe para o novo turno."""
+    def reset_pass(self, turn_number: int = 0):
+        """Reseta o passe para o novo turno.
+
+        Args:
+            turn_number: Numero do turno atual. Se fornecido, so reseta
+                         is_first_turn quando o turno muda (nao a cada fase).
+        """
         self.has_passed = False
-        self.is_first_turn = False
+        # So reseta is_first_turn quando o turno muda (nao a cada fase)
+        if turn_number > 1:
+            self.is_first_turn = False
 
 
 @dataclass
@@ -1372,7 +1379,7 @@ class GameState:
             self.phase = nova_fase
             # Reseta passes ao entrar em cada nova fase
             for p in self.players:
-                p.reset_pass()
+                p.reset_pass(self.turn_number)
             # Executa acoes automaticas na transicao
             if self.phase == 'regeneration':
                 for p in self.players:
@@ -1549,7 +1556,7 @@ class GameState:
             self.turn_number += 1
             self.current_player_index = 0
             for p in self.players:
-                p.reset_pass()
+                p.reset_pass(self.turn_number)
             # Reseta efeitos 1x/turno
             self.used_effects.clear()
             # Aplica efeitos de Fase Lunar (ex: Full Moon -> Unlucky Lune)

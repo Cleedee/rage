@@ -4213,7 +4213,7 @@ def end_combat(game: GameState) -> bool:
     # durante o combate como defensores, e precisam de nova chance
     # para agir na fase de combate apos o encerramento - regra 6.3)
     for p in game.players:
-        p.reset_pass()
+        p.reset_pass(game.turn_number)
     game.add_log('--- Fim do combate ---')
     return True
 

@@ -945,7 +945,7 @@ class RageCLI(cmd.Cmd):
         if all_passed:
             g.next_phase()
             for p in g.players:
-                p.reset_pass()
+                p.reset_pass(g.turn_number)
             g.add_log(f'Todos passaram. Avancando para {g.phase}')
             print(f'  Todos passaram. Fase atual: {g.phase.upper()}')
         else:
