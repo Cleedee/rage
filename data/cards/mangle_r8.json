@@ -1,0 +1,36 @@
+{
+  "_metadata": {
+    "card_id": 1281,
+    "name": "Mangle",
+    "version": "1.0",
+    "source": "manual"
+  },
+  "card_id": 1281,
+  "name": "Mangle",
+  "type": "combat_action",
+  "rage_cost": 8,
+  "damage": 6,
+  "modes": [
+    {
+      "id": "mangle_attack",
+      "name": "Mangle Attack",
+      "type": "DANO",
+      "damage": 6,
+      "special": "slow",
+      "description": "Crinos form only. Cannot be bluffed. Slow Striking. Target cannot take any actions until end of next combat round.",
+      "effects": [
+        {
+          "type": "DANO",
+          "target": "opponent",
+          "value": 6
+        },
+        {
+          "type": "TAPAR",
+          "target": "opponent",
+          "duration": "next_combat_round",
+          "description": "Target cannot take any actions until end of next combat round"
+        }
+      ]
+    }
+  ]
+}
