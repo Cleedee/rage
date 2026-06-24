@@ -385,3 +385,123 @@ Encerra **qualquer combate sem frenzy**. Usar para:
 ### Frenzy Timing
 
 Frenzy dá +Rage cards e +hack-apart level. Usar **ANTES** de atacar para garantir kill com Gaia's Will Corrupted na Withdrawal step.
+
+---
+
+## Sistema de Efeitos Estruturados
+
+O motor de jogo usa um sistema de efeitos estruturados para cartas com JSON em `data/cards/`. Cada carta tem modos com efeitos que são resolvidos automaticamente.
+
+### Arquitetura
+
+```
+data/cards/<slug>.json  →  ModeloCarta  →  ResolvedorEfeitos  →  GameState
+```
+
+### ModeloCarta
+
+```python
+@dataclass
+class ModeloCarta:
+    id: str                          # ID da carta (slug)
+    nome: str                        # Nome legível
+    tipo: str                        # Tipo (Gift, Event, etc.)
+    modos: list[Modo]                # Modos de uso
+    descartar_apos_uso: bool = False # Descartar após usar (Clawstorm)
+```
+
+### Modo
+
+```python
+@dataclass
+class Modo:
+    descricao: str                   # Descrição do modo
+    efeitos: list[Efeito]            # Lista de efeitos
+    condicao_uso: Optional[str]      # Condição para usar (ex: between_rounds_only)
+    restricoes: list[str]            # Restrições (ex: no_firearm)
+```
+
+### EfeitoTipo
+
+| Tipo | Descrição |
+|---|---|
+| `dano` | Dano a uma criatura |
+| `curar` | Cura uma criatura |
+| `destruir` | Destrói uma criatura |
+| `descarte` | Descarta cartas da mão |
+| `comprar` | Compra cartas do deck |
+| `equipar` | Equipa um item |
+| `tocar` | Toca uma carta (ativa efeito) |
+| `mover_umbra` | Move para/da Umbra |
+| `ganhar_vp` | Ganha Victory Points |
+| `perder_vp` | Perde Victory Points |
+| `moot_*` | Efeitos de Moot (VP, restrições, etc.) |
+| `impedir_acoes` | Impede ações por X rounds |
+| `impedir_retirada` | Impede fugir do combate |
+| `impedir_frenzy` | Impede frenzy (global) |
+| `impedir_bluff` | Impede blufar por resto do combate |
+| `acao_extra_por_rodada` | Ações extras de combate (Clawstorm, Devilwhip) |
+| `imune_combate_rage` | Imune a CAs de certo Rage |
+| `modificar_atributo_passivo` | Buff passivo persistente |
+| `modificar_gauntlet` | Modifica o Gauntlet |
+| `modificar_hand_size` | Modifica tamanho da mão |
+| `descartar_apos_uso` | Descarta carta após uso |
+
+### Condições de Uso (`condicao_uso`)
+
+| Condição | Descrição |
+|---|---|
+| `between_rounds_only` | Só pode ser usado entre rodadas de combate |
+| `personagem_na_umbra` | Precisa de personagem na Umbra |
+| `nao_frenetico` | Não pode estar em frenzy |
+| `fase_umbra_mokole` | Fase de Umbra do Mokole |
+| `alpha_attack_hg` | Alpha atacando Hunting Grounds |
+| `apos_vencer_junta` | Após vencer uma Junta |
+| `tem_ratkin_character` | Tem personagem Ratkin no pack |
+
+### Restrições do Modo (`restricoes`)
+
+| Restrição | Descrição |
+|---|---|
+| `no_firearm` | Não pode ser usado com Firearm equipado |
+
+### Exemplo: Clawstorm
+
+```json
+{
+  "id": "clawstorm",
+  "nome": "Clawstorm",
+  "tipo": "Gift",
+  "gnosis": 5,
+  "requires": "Bastet",
+  "modos": [
+    {
+      "descricao": "Play between rounds. Draw 2 combat cards. Play up to 3 CAs.",
+      "condicao_uso": "between_rounds_only",
+      "efeitos": [
+        { "tipo": "comprar", "alvo": "self", "quantidade": 2 },
+        { "tipo": "acao_extra_por_rodada", "alvo": "self", "quantidade": 3 },
+        { "tipo": "impedir_bluff", "alvo": "self", "duracao": "end_of_combat" },
+        { "tipo": "descartar_apos_uso", "alvo": "self" }
+      ],
+      "restricoes": ["no_firearm"]
+    }
+  ],
+  "descartar_apos_uso": true
+}
+```
+
+### Fluxo de Resolução
+
+1. **Validação**: `aplicar_carta()` verifica `condicao_uso` e `restricoes`
+2. **Pagamento**: Bot paga custos de Rage/Gnosis automaticamente
+3. **Resolução**: Cada efeito é resolvido pelo `ResolvedorEfeitos`
+4. **Descarte**: Se `descartar_apos_uso=true`, carta vai para discard_sept
+
+### Adicionando Novos Efeitos
+
+1. Adicione o tipo ao enum `EfeitoTipo` em `effects.py`
+2. Implemente o resolver em `ResolvedorEfeitos`
+3. Registre no dicionário `_RESOLVER_MAP`
+4. Crie o JSON da carta em `data/cards/`
+5. Adicione testes em `tests/test_game_engine_effects.py`
