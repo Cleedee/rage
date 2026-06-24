@@ -73,10 +73,23 @@ class PriorityBot:
                 return p
         raise ValueError(f'Jogador {self.player_id} nao encontrado')
 
+    # Mapeamento de estilos antigos (MTG) para novos (Rage)
+    _STYLE_ALIAS = {
+        'aggro': 'pack_combat',
+        'control': 'moot_control',
+        'combo': 'engine',
+        'defensive_pacing': 'victim_hunt',
+        'swarm': 'pack_combat',
+        'moot': 'moot_control',
+        'umbra': 'hg_control',
+        'midrange': 'balanced',
+    }
+
     @property
     def _deck_strategy(self) -> str:
-        """Retorna a estrategia do deck deste bot."""
-        return self.player.deck_strategy or 'midrange'
+        """Retorna a estrategia do deck deste bot (normalizada)."""
+        raw = self.player.deck_strategy or 'balanced'
+        return self._STYLE_ALIAS.get(raw, raw)
 
     def _is_strategy(self, strategy: str) -> bool:
         """Verifica se a estrategia do bot corresponde."""
@@ -1134,8 +1147,8 @@ class PriorityBot:
             if action:
                 return action
 
-        elif strategy == 'aggro':
-            # Aggro: eliminar > atacar > desenvolver > sobreviver
+        elif strategy == 'pack_combat':
+            # Pack Combate: eliminar > atacar > desenvolver > sobreviver
             action = self._try_eliminate_threat()
             if action:
                 return action
@@ -1166,8 +1179,8 @@ class PriorityBot:
             if action:
                 return action
 
-        elif lento or strategy == 'swarm':
-            # Lento/Swarm: eliminar > atacar > sobreviver > desenvolver
+        elif lento or strategy == 'pack_combat':
+            # Lento/Pack Combate: eliminar > atacar > sobreviver > desenvolver
             action = self._try_eliminate_threat()
             if action:
                 return action
@@ -1182,8 +1195,8 @@ class PriorityBot:
                 self._cards_played_this_turn += 1
                 return action
 
-        elif strategy == 'defensive_pacing':
-            # Defensive: sobreviver > eliminar ameaca > desenvolver > atacar
+        elif strategy == 'victim_hunt':
+            # Victim Hunt: sobreviver > eliminar ameaca > desenvolver > atacar
             # Prioridade maxima: sobreviver e proteger personagens
             action = self._try_survive()
             if action:
@@ -1200,7 +1213,7 @@ class PriorityBot:
                 return action
 
         else:
-            # midrange / default: sobreviver > desenvolver > eliminar > atacar
+            # balanced / default: sobreviver > desenvolver > eliminar > atacar
             action = self._try_survive()
             if action:
                 return action
@@ -3103,7 +3116,7 @@ class PriorityBot:
         fase de combate.
 
         Estrategia:
-        - aggro: ataca mesmo com chance menor (50% do Rage)
+        - pack_combat: ataca mesmo com chance menor (50% do Rage)
         - swarm: ataca mesmo sem chance de matar (desgasta)
         - control: so ataca se pode eliminar
         - vp_race: evita combate arriscado
@@ -3148,8 +3161,8 @@ class PriorityBot:
                 # Reordena opponents para priorizar o alvo da estrategia
                 opponents.sort(key=lambda p: p.id != target_id)
 
-        # Swarm: ataca mesmo sem chance de matar (desgaste)
-        if strategy == 'swarm':
+        # Pack Combate: ataca mesmo sem chance de matar (desgaste)
+        if strategy == 'pack_combat':
             all_attackers = [c for c in me.pack_home
                              if self._pode_atacar(c)]
             if all_attackers:
@@ -3230,7 +3243,7 @@ class PriorityBot:
         # Prioriza alvos que dao VP (Characters): menor HP primeiro
         if alvos_character:
             alvos_character.sort(key=lambda c: c.health_current)
-            modo_lento_eff = lento or self._is_strategy('aggro')
+            modo_lento_eff = lento or self._is_strategy('pack_combat')
             for alvo in alvos_character:
                 atacante = self.prioritizer.best_attacker_for(alvo, available)
                 if atacante:

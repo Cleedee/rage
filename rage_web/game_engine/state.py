@@ -403,7 +403,7 @@ class PlayerState:
     gnosis_pool: int = 0
     victory_points: int = 0
     renown_level: int = 20
-    deck_strategy: str = 'midrange'
+    deck_strategy: str = 'balanced'
     deck_id: int = 0
     has_passed: bool = False
     hand_size_sept: int = 5
