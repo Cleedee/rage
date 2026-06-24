@@ -3804,11 +3804,36 @@ class ResolvedorEfeitos:
         Regra (4.4.2): "Choose 2 tribes. Characters from these tribes
         must attack each other before they attack any other opponents."
 
-        O bot recebe a lista de tribos em jogo e escolhe as 2 mais
-        perigosas (maior Renome total).
+        Se o MootState ja tem tribal_war_tribes pre-selecionadas
+        (definido pelo bot via config de estrategia), usa essas.
+        Senao, usa heuristica: escolhe as 2 tribos oponentes com
+        maior Renome, excluindo as do proprio jogador.
         """
-        # Coleta tribos em jogo com seu Renome total
-        tribos = {}  # tribe -> total_renown
+        # Verifica se o bot ja pre-selecionou as tribos
+        if self.game.moot_atual and self.game.moot_atual.tribal_war_tribes:
+            tribos = self.game.moot_atual.tribal_war_tribes
+            if len(tribos) >= 2:
+                t1, t2 = tribos[0], tribos[1]
+                modifier = GameModifier(
+                    card_uid=id(origem),
+                    modifier='tribal_war_active',
+                    ativo=True,
+                )
+                modifier.tribes = [t1, t2]
+                self.game.game_modifiers.append(modifier)
+                self.game.add_log(
+                    f'[Moot] Tribal War: {t1.title()} vs {t2.title()}')
+                return True
+
+        # Fallback: heuristica padrao (escolhe tribos oponentes)
+        meus_tribes = set()
+        oponentes_tribes = {}  # tribe -> total_renown
+
+        TRIBOS_CONHECIDAS = ['bone gnawer', 'children of gaia', 'fianna',
+                             'get of fenris', 'hellhounds', 'red talon',
+                             'shadow lord', 'silent strider', 'silver fang',
+                             'wendigo', 'thunder serpent']
+
         for p in self.game.players:
             for c in p.pack_home:
                 if c.health_current <= 0:
@@ -3817,38 +3842,39 @@ class ResolvedorEfeitos:
                 if 'character' not in ct and 'ally' not in ct:
                     continue
                 kw = (c.keywords or '').lower()
-                # Extrai tribo das keywords
-                for tribe in ['bone gnawer', 'children of gaia', 'fianna',
-                              'get of fenris', 'hellhounds', 'red talon',
-                              'shadow lord', 'silent strider', 'silver fang',
-                              'wendigo', 'thunder serpent']:
+                for tribe in TRIBOS_CONHECIDAS:
                     if tribe in kw:
-                        if tribe not in tribos:
-                            tribos[tribe] = 0
-                        tribos[tribe] += c.renown
+                        if p.id == jogador.id:
+                            meus_tribes.add(tribe)
+                        else:
+                            if tribe not in oponentes_tribes:
+                                oponentes_tribes[tribe] = 0
+                            oponentes_tribes[tribe] += c.renown
                         break
 
-        if len(tribos) < 2:
+        if len(oponentes_tribes) < 2:
             self.game.add_log(
-                '[Moot] Tribal War: menos de 2 tribos em jogo, ')
+                '[Moot] Tribal War: menos de 2 tribos oponentes em jogo')
             return False
 
-        # Escolhe as 2 tribos com maior Renome total
-        sorted_tribos = sorted(tribos.items(), key=lambda x: x[1], reverse=True)
+        opcoes = {t: r for t, r in oponentes_tribes.items()
+                  if t not in meus_tribes}
+        if len(opcoes) < 2:
+            opcoes = oponentes_tribes.copy()
+
+        sorted_tribos = sorted(opcoes.items(),
+                               key=lambda x: x[1], reverse=True)
         t1, t2 = sorted_tribos[0][0], sorted_tribos[1][0]
 
-        # Aplica restricao global
         modifier = GameModifier(
             card_uid=id(origem),
             modifier='tribal_war_active',
             ativo=True,
         )
-        modifier.tribes = [t1, t2]  # Armazena as tribos escolhidas
+        modifier.tribes = [t1, t2]
         self.game.game_modifiers.append(modifier)
-
         self.game.add_log(
-            f'[Moot] Tribal War: {t1.title()} vs {t2.title()} '
-            f'(devem se atacar primeiro)')
+            f'[Moot] Tribal War: {t1.title()} vs {t2.title()}')
         return True
 
     def _resolver_moot_rebaixar_forma(self, efeito: Efeito,

@@ -812,6 +812,30 @@ class StrategyEngine:
                 return True
         return False
 
+    def get_tribal_war_strategy(self) -> dict:
+        """Retorna config de estrategia para Tribal War.
+
+        Configuracoes suportadas:
+        - prefer_opponent_tribes: bool (default True) — escolhe tribos
+          dos oponentes, nao as proprias
+        - avoid_my_tribes: bool (default True) — exclui tribos do jogador
+        - priority_tribes: list[str] — tribos preferidas para selecionar
+        - avoid_tribes: list[str] — tribos a evitar
+
+        Exemplo:
+        ```json
+        "moot_strategy": {
+          "tribal_war": {
+            "prefer_opponent_tribes": true,
+            "avoid_my_tribes": true,
+            "priority_tribes": ["silver fang", "shadow lord"],
+            "avoid_tribes": ["bone gnawer"]
+          }
+        }
+        ```
+        """
+        return self.get('moot_strategy', {}).get('tribal_war', {})
+
     def should_vote_yes(self, moot_name: str, owner_id: str,
                         game: GameState, player_id: str) -> Optional[bool]:
         """Retorna se deve votar sim em uma Junta.

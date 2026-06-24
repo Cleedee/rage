@@ -988,6 +988,14 @@ class PriorityBot:
                 g.chamar_moot(self.player_id, nome=card.name,
                               modelo_id=modelo_id, card_uid=id(card),
                               is_board_meeting=is_board)
+                # ── Tribal War: pre-calcula tribos baseado na estrategia ──
+                if 'tribal war' in card.name.lower():
+                    tribos = self._escolher_tribos_tribal_war()
+                    if tribos:
+                        g.moot_atual.tribal_war_tribes = tribos
+                        g.add_log(
+                            f'[Moot] {self.player.name} escolheu '
+                            f'{tribos[0].title()} vs {tribos[1].title()}')
                 card.zone = Zone.DISCARD_SEPT
                 self.player.discard_sept.append(
                     self.player.hand.pop(i))
@@ -1299,6 +1307,89 @@ class PriorityBot:
 
         # Cenario padrao: vota contra
         return False
+
+    def _escolher_tribos_tribal_war(self) -> list:
+        """Escolhe 2 tribos para Tribal War baseado na estrategia.
+
+        Estrategia defensiva:
+        1. Se config tem 'tribal_war.priority_tribes', usa essas
+        2. Se config tem 'tribal_war.avoid_tribes', exclui essas
+        3. Remove tribos do proprio jogador (evitar afetar a si)
+        4. Escolhe as 2 com maior Renome total
+
+        Returns:
+            Lista com 2 tribos (ex: ['silver fang', 'fianna'])
+        """
+        me = self.player
+        tribal_war_cfg = {}
+        if self._has_strategy:
+            tribal_war_cfg = self.strategy.get_tribal_war_strategy()
+
+        prefer_opponent = tribal_war_cfg.get('prefer_opponent_tribes', True)
+        avoid_my = tribal_war_cfg.get('avoid_my_tribes', True)
+        priority_tribes = tribal_war_cfg.get('priority_tribes', [])
+        avoid_tribes = tribal_war_cfg.get('avoid_tribes', [])
+
+        # Coleta tribos por jogador
+        TRIBOS_CONHECIDAS = ['bone gnawer', 'children of gaia', 'fianna',
+                             'get of fenris', 'hellhounds', 'red talon',
+                             'shadow lord', 'silent strider', 'silver fang',
+                             'wendigo', 'thunder serpent']
+
+        meus_tribes = set()
+        oponentes_tribes = {}  # tribe -> total_renown
+
+        for p in self.game.players:
+            for c in p.pack_home:
+                if c.health_current <= 0:
+                    continue
+                ct = (c.card_type or '').lower()
+                if 'character' not in ct and 'ally' not in ct:
+                    continue
+                kw = (c.keywords or '').lower()
+                for tribe in TRIBOS_CONHECIDAS:
+                    if tribe in kw:
+                        if p.id == self.player_id:
+                            meus_tribes.add(tribe)
+                        else:
+                            if tribe not in oponentes_tribes:
+                                oponentes_tribes[tribe] = 0
+                            oponentes_tribes[tribe] += c.renown
+                        break
+
+        # Priority: se config tem tribos preferidas, tenta usa-las
+        if priority_tribes and len(priority_tribes) >= 2:
+            validas = [t for t in priority_tribes
+                       if t in oponentes_tribes or t in meus_tribes]
+            if len(validas) >= 2:
+                return validas[:2]
+
+        # Filtra tribos
+        opcoes = {}
+        for t, r in oponentes_tribes.items():
+            if avoid_my and t in meus_tribes:
+                continue
+            if t in avoid_tribes:
+                continue
+            opcoes[t] = r
+
+        # Se sobrou menos de 2, usa todas as oponentes
+        if len(opcoes) < 2:
+            for t, r in oponentes_tribes.items():
+                if t not in avoid_tribes:
+                    opcoes[t] = r
+
+        # Se ainda assim menos de 2, inclui todas
+        if len(opcoes) < 2:
+            for t, r in oponentes_tribes.items():
+                opcoes[t] = r
+            if len(opcoes) < 2:
+                return []
+
+        # Escolhe as 2 com maior Renome
+        sorted_tribos = sorted(opcoes.items(),
+                               key=lambda x: x[1], reverse=True)
+        return [sorted_tribos[0][0], sorted_tribos[1][0]]
 
     def _agir_alpha(self) -> Optional[str]:
         """Acao alfa: o alpha do jogador age.

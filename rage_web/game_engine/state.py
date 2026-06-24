@@ -1127,6 +1127,7 @@ class MootState:
     is_board_meeting: bool = False  # True = Board Meeting (Wyrm), False = Moot (Gaia)
     modelo_id: str = ''  # ID do modelo de carta (ex: 'card_1185')
     card_uid: int = 0    # Python id() da instancia real da carta
+    tribal_war_tribes: list = field(default_factory=list)  # Tribos pre-selecionadas (Tribal War)
 
     @property
     def resultado(self) -> str:

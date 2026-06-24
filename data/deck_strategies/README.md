@@ -418,6 +418,35 @@ Controla **como votar** nas Juntas (Board Meetings).
 | `vote_no_against` | string[] | `"Leader"` = vota não contra o líder; ou nomes de cartas |
 | `strategic_vote` | bool | Vota com base na situação do jogo (não aleatório) |
 
+#### Tribal War (`moot_strategy.tribal_war`)
+
+Subseção específica para a carta Tribal War (Moot). Controla **quais tribos** o bot escolhe quando usa Tribal War.
+
+```json
+"moot_strategy": {
+  "call_if_available": ["Moot", "Board Meeting"],
+  "tribal_war": {
+    "prefer_opponent_tribes": true,
+    "avoid_my_tribes": true,
+    "priority_tribes": ["silver fang", "shadow lord"],
+    "avoid_tribes": ["bone gnawer"]
+  }
+}
+```
+
+| Campo | Tipo | Default | Descrição |
+|---|---|---|---|
+| `prefer_opponent_tribes` | bool | true | Escolhe tribos dos oponentes, não as próprias |
+| `avoid_my_tribes` | bool | true | Exclui tribos do jogador (não afetar a si mesmo) |
+| `priority_tribes` | string[] | [] | Tribos preferidas para selecionar (se disponíveis) |
+| `avoid_tribes` | string[] | [] | Tribos a evitar (ex: a sua própria tribo) |
+
+**Estratégia defensiva:**
+1. Se seus personagens são todos bastet (kith, sem tribo garou), eles **não são afetados**
+2. Escolha duas tribos dos oponentes para se atacarem entre si
+3. Seus personagens ficam livres para atacar qualquer alvo
+4. Use `avoid_my_tribes: true` para garantir que sua tribo não seja incluída
+
 ### 13. `combat_notes` (notas táticas)
 
 Notas táticas para o bot, usadas como referência.
