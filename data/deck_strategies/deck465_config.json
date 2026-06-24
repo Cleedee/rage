@@ -1,172 +1,162 @@
 {
   "deck_id": 465,
-  "name": "Apocalypse — Primeiro Esquadrão #21 (Pentex)",
-  "style": "engine",
+  "name": "Apocalypse — First Team #21 (Pentex)",
+  "style": "pack_combat",
+  "desc": "Wyrm Pentex pack combat. T.F. MacNeil lidera e compra +2 CAs. Equipment é essencial (Shotgun/Rocket Launcher) para desbloquear CAs de alto Rage.",
+
   "gift_priorities": [
     {
-      "priority": 100,
-      "condition": "always",
-      "desc": "Consumption of Gaia x3 — UNICO GIFT JOGAVEL. Draw engine (Eater-of-Souls). Carlotta/Leergo/Melvin usam.",
-      "slug": "consumption-of-gaia"
-    },
-    {
-      "priority": 90,
-      "condition": "has_characters",
-      "desc": "Consumption of Gaia — segunda copia, manter draw ativo",
-      "slug": "consumption-of-gaia"
-    },
-    {
+      "slug": "mindspeak",
       "priority": 80,
       "condition": "always",
-      "desc": "Consumption of Gaia — terceira copia, nunca parar de comprar",
-      "slug": "consumption-of-gaia"
+      "desc": "Mindspeak (Gn:3, Galliard) — Corinna pode usar. Utility."
+    },
+    {
+      "slug": "scent-of-distinction",
+      "priority": 70,
+      "condition": "always",
+      "desc": "Scent of Distinction (Gn:2, Galliard) — Corinna. Search utility."
+    },
+    {
+      "slug": "airt-gateway",
+      "priority": 60,
+      "condition": "always",
+      "desc": "Airt Gateway (Gn:2, Bane) — Ragnor. Umbra access."
     }
   ],
+
   "resource_play_order": [
-    "caern",
     "equipment",
     "character",
-    "event",
-    "action",
+    "caern",
     "gift",
-    "quest",
-    "ally"
+    "event",
+    "action"
   ],
+
   "combat_action_preferences": {
-    "Charlene Brell": [
+    "_default": [
       "overextended_attack",
-      "rapid_reload",
-      "iron_skin",
+      "dry_gulch",
       "dismember",
       "aggressive_bite",
       "lobotomy",
-      "whirlwind_defense",
-      "eat_hot_lead_dog_breath",
-      "stunning_strike",
-      "dry_gulch",
-      "entrail_rend"
-    ],
-    "Elwood 'Slicer' Nedervitch (Crinos)": [
-      "overextended_attack",
-      "rapid_reload",
-      "iron_skin",
-      "dismember",
-      "aggressive_bite",
-      "lobotomy",
-      "whirlwind_defense",
-      "eat_hot_lead_dog_breath",
-      "stunning_strike",
-      "dry_gulch",
-      "entrail_rend"
-    ],
-    "Melvin Spivey": [
-      "overextended_attack",
       "rapid_reload",
       "iron_skin",
       "whirlwind_defense"
     ],
-    "Carlotta Stearns": [
+    "t_f_macneil": [
       "overextended_attack",
-      "iron_skin",
+      "dry_gulch",
+      "dismember",
+      "aggressive_bite",
+      "lobotomy"
+    ],
+    "corinna": [
+      "overextended_attack",
+      "dry_gulch",
+      "lobotomy",
+      "aggressive_bite",
+      "iron_skin"
+    ],
+    "sybil": [
+      "overextended_attack",
+      "dry_gulch",
+      "dismember",
+      "aggressive_bite",
       "rapid_reload"
     ],
-    "Leergo Cat Swallower": [
+    "ragnor": [
       "overextended_attack",
-      "rapid_reload",
+      "lobotomy",
       "iron_skin",
       "whirlwind_defense"
     ]
   },
+
   "equipment_assignments": [
     {
-      "card_name": "Shotgun",
-      "target": "Charlene Brell",
+      "slug": "shotgun",
       "priority": 100,
-      "desc": "Shotgun = CAs ate Rg:7. Charlene e a principal combatente (Rg:2→4 Crinos + Shotgun = Rg:7)."
+      "assign_to": "t_f_macneil",
+      "desc": "Shotgun no líder — Rg:3 base + Shotgun = Rg:7, desbloqueia todas as CAs."
     },
     {
-      "card_name": "Shotgun",
-      "target": "Elwood 'Slicer' Nedervitch (Crinos)",
-      "priority": 85,
-      "desc": "Segundo Shotgun no segundo Iliad Fomori (Rg:1→4 Crinos + Shotgun = Rg:7)."
-    },
-    {
-      "card_name": "Shotgun",
-      "target": "Melvin Spivey",
-      "priority": 60,
-      "desc": "Terceiro Shotgun no Pentex Executive (Rg:3 base + Shotgun = Rg:7)."
-    },
-    {
-      "card_name": "Rocket Launcher",
-      "target": "Charlene Brell",
+      "slug": "rocket-launcher",
       "priority": 95,
-      "desc": "Rocket Launcher = UMA CA ate Rg:12. Usar Entrail Rend (Rg:10, Dmg:8) para destruir qualquer coisa."
+      "assign_to": "sybil",
+      "desc": "Rocket Launcher na Sybil — 1 CA até Rg:12 para emergências."
     },
     {
-      "card_name": "Rocket Launcher",
-      "target": "Elwood 'Slicer' Nedervitch (Crinos)",
-      "priority": 75,
-      "desc": "Segundo Rocket Launcher no segundo Iliad."
-    }
-  ],
-  "caern_preferences": [
+      "slug": "experimental-cybernetics",
+      "priority": 85,
+      "assign_to": "t_f_macneil",
+      "desc": "Experimental Cybernetics no líder — +2 Rage, +1 Health."
+    },
     {
-      "card_name": "Caern of Rytthiku",
-      "priority": 100,
-      "desc": "Caern Wyrm — Eater-of-Souls. Carlotta/Leergo/Melvin tem EoS. Da acesso a Umbra e regeneracao extra."
+      "slug": "shotgun",
+      "priority": 80,
+      "assign_to": "corinna",
+      "desc": "Shotgun na Corinna — backup se líder morrer."
+    },
+    {
+      "slug": "bureaucratic-blueprints",
+      "priority": 70,
+      "assign_to": "t_f_macneil",
+      "desc": "Bureaucratic Blueprints — surprise attack do HG."
     }
   ],
-  "umbra_strategy": {
-    "enter_characters": [
-      "Carlotta Stearns",
-      "Leergo Cat Swallower"
-    ],
-    "save_for_combat": [
-      "Charlene Brell",
-      "Elwood 'Slicer' Nedervitch (Crinos)"
-    ],
-    "always_enter_if_opponent_cannot": true
-  },
+
+  "combat_event_priorities": [
+    {
+      "slug": "no-escape",
+      "priority": 90,
+      "desc": "No Escape — impede fuga do oponente."
+    }
+  ],
+
   "target_priority": {
     "prefer_low_health": true,
     "character_kill_order": "lowest_health",
     "ffa_diplomacy": "weaken_largest",
     "hunting_grounds": {
-      "priority_types": []
+      "prefer_prey_over_enemy": false,
+      "priority_types": ["Victim", "Enemy"]
     }
   },
+
+  "umbra_strategy": {
+    "enter_characters": ["corinna"],
+    "save_for_combat": ["t_f_macneil", "sybil", "ragnor"],
+    "always_enter_if_opponent_cannot": true
+  },
+
   "redraw_rules": {
     "never_discard": [
-      "Consumption of Gaia",
-      "Rocket Launcher",
+      "T. F. MacNeil",
       "Shotgun",
-      "Charlene Brell",
-      "Caern of Rytthiku",
-      "Friends in High Places",
+      "Rocket Launcher",
       "Sneak Attack",
-      "New Moon"
+      "Friends in High Places"
     ],
-    "always_discard_if_duplicate": [],
-    "prefer_discard_types": [
-      "Moot",
-      "Board Meeting"
-    ]
+    "always_discard_if_duplicate": [
+      "overextended_attack",
+      "iron_skin"
+    ],
+    "prefer_discard_types": ["Moot", "Board Meeting"]
   },
+
   "moot_strategy": {
     "call_if_available": [],
-    "always_vote_yes": [
-      "Own"
-    ],
-    "vote_no_against": [
-      "Leader"
-    ],
+    "always_vote_yes": ["Own"],
+    "vote_no_against": ["Leader"],
     "strategic_vote": true
   },
+
   "notes": {
-    "gift_situacao": "APENAS Consumption of Gaia (Eater-of-Souls) e jogavel. Psychotic Hallucinations (Odyssey Fomori-7thGen) NINGUEM usa. Webbing (Ananasi-Iliad) NINGUEM usa. Whispering Campaign (PentexExec-Government) NINGUEM usa. 9 das 12 copias de gifts sao DECORACAO.",
-    "combate_situacao": "Rage base maxima = 3 (Melvin). Charlene Crinos Rg:4, Elwood Crinos Rg:4. Sem Shotgun/Rocket Launcher, quase TODAS as CAs sao injogaveis. Equipamento e ESSENCIAL para qualquer acao ofensiva.",
-    "combo_principal": "Equipar Shotgun (CAs ate Rg:7) + Rocket Launcher (1 CA ate Rg:12). Entrail Rend (Rg:10, Dmg:8) e a carta mais forte do deck — usar com Rocket Launcher na Charlene.",
-    "vitoria_estrategia": "Wyrm ganha 0 VP de Enemies. Foco em matar Characters para VP. Sneak Attack para vantagem de combate. In the Public Eye x3 (Melvin = Pentex Executive) como VP alternativa.",
-    "acoes_chave": "Friends in High Places (Wyrm) busca cartas. Sneak Attack x3 inicia combate surpresa. New Moon x3 controla fase lunar. Stuck Sideways x3 prende personagens na Umbra."
+    "combo_principal": "Equipar Shotgun (CAs até Rg:7) em T.F. MacNeil. Ele compra +2 CAs extras = 7 CAs por rodada de combate. Compack attack = todos atacam juntos.",
+    "gift_limitacao": "Gifts muito limitados. Corinna usa Mindspeak/Scent. Ragnor usa Airt Gateway. Sybil e T.F. MacNeil não têm gifts usáveis.",
+    "vitoria_estrategia": "Pack attack com Team #21. T.F. MacNeil compra 2 CAs extras = vantagem numérica. Equipment é essencial para desbloquear CAs de alto Rage.",
+    "fraqueza": "Sem Anti-Wyrm. Sem removal de Moot. Fraco contra decks de controle de Moot."
   }
 }
