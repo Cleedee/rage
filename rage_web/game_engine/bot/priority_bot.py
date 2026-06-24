@@ -985,17 +985,31 @@ class PriorityBot:
             if ct in ('moot', 'board meeting'):
                 is_board = (ct == 'board meeting')
                 modelo_id = card.modelo_id or ''
-                g.chamar_moot(self.player_id, nome=card.name,
-                              modelo_id=modelo_id, card_uid=id(card),
-                              is_board_meeting=is_board)
-                # ── Tribal War: pre-calcula tribos baseado na estrategia ──
+
+                # ── Tribal War: avalia se vale a pena usar ──
                 if 'tribal war' in card.name.lower():
                     tribos = self._escolher_tribos_tribal_war()
-                    if tribos:
+                    if not tribos or len(tribos) < 2:
+                        # Nao ha tribos viaveis - melhor descartar na Redraw
+                        # Pula esta carta e continua procurando
+                        continue
+                    g.chamar_moot(self.player_id, nome=card.name,
+                                  modelo_id=modelo_id, card_uid=id(card),
+                                  is_board_meeting=is_board)
+                    if g.moot_atual:
                         g.moot_atual.tribal_war_tribes = tribos
                         g.add_log(
                             f'[Moot] {self.player.name} escolheu '
                             f'{tribos[0].title()} vs {tribos[1].title()}')
+                    card.zone = Zone.DISCARD_SEPT
+                    self.player.discard_sept.append(
+                        self.player.hand.pop(i))
+                    return f'moot_chamar_{card.name}'
+
+                # Demais Moots: chama normalmente
+                g.chamar_moot(self.player_id, nome=card.name,
+                              modelo_id=modelo_id, card_uid=id(card),
+                              is_board_meeting=is_board)
                 card.zone = Zone.DISCARD_SEPT
                 self.player.discard_sept.append(
                     self.player.hand.pop(i))
@@ -1334,7 +1348,21 @@ class PriorityBot:
         TRIBOS_CONHECIDAS = ['bone gnawer', 'children of gaia', 'fianna',
                              'get of fenris', 'hellhounds', 'red talon',
                              'shadow lord', 'silent strider', 'silver fang',
-                             'wendigo', 'thunder serpent']
+                             'wendigo', 'thunder serpent',
+                             # Tribos Bastet
+                             'simba', 'bagheera', 'balam', 'bubasti', 'khan',
+                             # Tribos Corax
+                             'corax', 'corvus',
+                             # Tribos Ajaba
+                             'ajaba', 'hyena',
+                             # Tribos Mokole
+                             'mokole', 'gator', 'crocodile',
+                             # Tribos Nagah
+                             'nagah', 'serpent',
+                             # Tribos Ratkin
+                             'ratkin', 'rat',
+                             # Tribos Rokea
+                             'rokea', 'shark']
 
         meus_tribes = set()
         oponentes_tribes = {}  # tribe -> total_renown
@@ -1373,16 +1401,15 @@ class PriorityBot:
                 continue
             opcoes[t] = r
 
-        # Se sobrou menos de 2, usa todas as oponentes
+        # Se sobrou menos de 2, retorna vazio
+        # (melhor nao usar Tribal War do que se prejudicar)
         if len(opcoes) < 2:
-            for t, r in oponentes_tribes.items():
+            # Se oponente tem menos de 2 tribos viaveis, tenta
+            # incluir a propria tribo como fallback estrategico
+            # (forcar oponente a atacar com alpha fraco)
+            for t in meus_tribes:
                 if t not in avoid_tribes:
-                    opcoes[t] = r
-
-        # Se ainda assim menos de 2, inclui todas
-        if len(opcoes) < 2:
-            for t, r in oponentes_tribes.items():
-                opcoes[t] = r
+                    opcoes[t] = 0  # sem Renome, mas e opcao
             if len(opcoes) < 2:
                 return []
 

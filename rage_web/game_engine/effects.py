@@ -3832,7 +3832,21 @@ class ResolvedorEfeitos:
         TRIBOS_CONHECIDAS = ['bone gnawer', 'children of gaia', 'fianna',
                              'get of fenris', 'hellhounds', 'red talon',
                              'shadow lord', 'silent strider', 'silver fang',
-                             'wendigo', 'thunder serpent']
+                             'wendigo', 'thunder serpent',
+                             # Tribos Bastet
+                             'simba', 'bagheera', 'balam', 'bubasti', 'khan',
+                             # Tribos Corax
+                             'corax', 'corvus',
+                             # Tribos Ajaba
+                             'ajaba', 'hyena',
+                             # Tribos Mokole
+                             'mokole', 'gator', 'crocodile',
+                             # Tribos Nagah
+                             'nagah', 'serpent',
+                             # Tribos Ratkin
+                             'ratkin', 'rat',
+                             # Tribos Rokea
+                             'rokea', 'shark']
 
         for p in self.game.players:
             for c in p.pack_home:

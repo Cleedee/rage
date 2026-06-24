@@ -1327,6 +1327,12 @@ def start_combat(game: GameState, attackers: list[str],
     if game.combat.is_active:
         return False
 
+    # ── Tribal War: termina quando um ataque ocorre ──
+    for m in list(game.game_modifiers):
+        if m.modifier == 'tribal_war_active':
+            game.game_modifiers.remove(m)
+            game.add_log('[Moot] Tribal War encerrado pelo ataque')
+
     # Limpa restricoes temporarias de combates anteriores
     # (preserva restricoes permanentes de efeitos como rage_breed)
     RESTRICOES_COMBATE = {'nao_pode_esquivar'}
