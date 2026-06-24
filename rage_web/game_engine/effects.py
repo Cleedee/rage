@@ -109,7 +109,8 @@ class EfeitoTipo(str, Enum):
     # Efeitos de Moot (Juntas)
     MOOT_REMOVER_PERSONAGEM = 'moot_remover_personagem'  # Remove personagem do jogo (Skindancer, Winter Wolf)
     MOOT_GANHAR_VP = 'moot_ganhar_vp'  # Ganha VP por Moot aprovado (Silver Record, Legendary Leadership)
-    MOOT_RESTRICAO_GLOBAL = 'moot_restricao_global'  # Restricao global (Tribal War, Litany's Guidance)
+    MOOT_RESTRICAO_GLOBAL = 'moot_restricao_global'  # Restricao global (Litany's Guidance)
+    MOOT_TRIBAL_WAR = 'moot_tribal_war'  # Tribal War: 2 tribos devem se atacar primeiro
     MOOT_REBAIXAR_FORMA = 'moot_rebaixar_forma'  # Reverte a forma breed (The Stolen Wolf)
     MOOT_CONSTRUIR_CAERN = 'moot_construir_caern'  # Constrói um Caern (Caern Building)
     RECRUTAR_TEMPORARIO = 'recrutar_temporario'  # Recruta inimigos do HG temporariamente por 1 combate (Allies Below)
@@ -331,6 +332,7 @@ class ResolvedorEfeitos:
             EfeitoTipo.MOOT_REMOVER_PERSONAGEM: self._resolver_moot_remover_personagem,
             EfeitoTipo.MOOT_GANHAR_VP: self._resolver_moot_ganhar_vp,
             EfeitoTipo.MOOT_RESTRICAO_GLOBAL: self._resolver_moot_restricao_global,
+            EfeitoTipo.MOOT_TRIBAL_WAR: self._resolver_moot_tribal_war,
             EfeitoTipo.MOOT_REBAIXAR_FORMA: self._resolver_moot_rebaixar_forma,
             EfeitoTipo.MOOT_CONSTRUIR_CAERN: self._resolver_moot_construir_caern,
             EfeitoTipo.REMOVER_RENOME_BAIXO: self._resolver_remover_renome_baixo,
@@ -3791,6 +3793,62 @@ class ResolvedorEfeitos:
         )
         self.game.game_modifiers.append(modifier)
         self.game.add_log(f'[Moot] {descricao}')
+        return True
+
+    def _resolver_moot_tribal_war(self, efeito: Efeito,
+                                   origem: CardInstance,
+                                   jogador: PlayerState,
+                                   alvo) -> bool:
+        """Tribal War: escolhe 2 tribos que devem se atacar primeiro.
+
+        Regra (4.4.2): "Choose 2 tribes. Characters from these tribes
+        must attack each other before they attack any other opponents."
+
+        O bot recebe a lista de tribos em jogo e escolhe as 2 mais
+        perigosas (maior Renome total).
+        """
+        # Coleta tribos em jogo com seu Renome total
+        tribos = {}  # tribe -> total_renown
+        for p in self.game.players:
+            for c in p.pack_home:
+                if c.health_current <= 0:
+                    continue
+                ct = (c.card_type or '').lower()
+                if 'character' not in ct and 'ally' not in ct:
+                    continue
+                kw = (c.keywords or '').lower()
+                # Extrai tribo das keywords
+                for tribe in ['bone gnawer', 'children of gaia', 'fianna',
+                              'get of fenris', 'hellhounds', 'red talon',
+                              'shadow lord', 'silent strider', 'silver fang',
+                              'wendigo', 'thunder serpent']:
+                    if tribe in kw:
+                        if tribe not in tribos:
+                            tribos[tribe] = 0
+                        tribos[tribe] += c.renown
+                        break
+
+        if len(tribos) < 2:
+            self.game.add_log(
+                '[Moot] Tribal War: menos de 2 tribos em jogo, ')
+            return False
+
+        # Escolhe as 2 tribos com maior Renome total
+        sorted_tribos = sorted(tribos.items(), key=lambda x: x[1], reverse=True)
+        t1, t2 = sorted_tribos[0][0], sorted_tribos[1][0]
+
+        # Aplica restricao global
+        modifier = GameModifier(
+            card_uid=id(origem),
+            modifier='tribal_war_active',
+            ativo=True,
+        )
+        modifier.tribes = [t1, t2]  # Armazena as tribos escolhidas
+        self.game.game_modifiers.append(modifier)
+
+        self.game.add_log(
+            f'[Moot] Tribal War: {t1.title()} vs {t2.title()} '
+            f'(devem se atacar primeiro)')
         return True
 
     def _resolver_moot_rebaixar_forma(self, efeito: Efeito,

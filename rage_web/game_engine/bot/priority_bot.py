@@ -3249,6 +3249,39 @@ class PriorityBot:
                         else:
                             alvos_nao_character.append(c)
 
+        # ── Tribal War: so pode atacar criaturas das tribos inimigas ──
+        tribal_war_tribes = []
+        for mod in self.game.game_modifiers:
+            if mod.modifier == 'tribal_war_active' and mod.tribes:
+                tribal_war_tribes = mod.tribes
+                break
+        if tribal_war_tribes:
+            # Coleta tribo de cada atacante
+            me_tribes = set()
+            for c in me.pack_home:
+                kw = (c.keywords or '').lower()
+                for tribe in tribal_war_tribes:
+                    if tribe in kw:
+                        me_tribes.add(tribe)
+                        break
+            # Se temos personagens de uma das tribos, so podemos atacar
+            # personagens da OUTRA tribo
+            if me_tribes:
+                enemy_tribe = None
+                for t in tribal_war_tribes:
+                    if t not in me_tribes:
+                        enemy_tribe = t
+                        break
+                if enemy_tribe:
+                    # Filtra alvos para apenas da tribo inimiga
+                    def _tem_tribe_enemy(c):
+                        kw = (c.keywords or '').lower()
+                        return enemy_tribe in kw
+                    alvos_character = [c for c in alvos_character
+                                       if _tem_tribe_enemy(c)]
+                    alvos_nao_character = [c for c in alvos_nao_character
+                                            if _tem_tribe_enemy(c)]
+
         # Prioriza alvos que dao VP (Characters): menor HP primeiro
         if alvos_character:
             alvos_character.sort(key=lambda c: c.health_current)

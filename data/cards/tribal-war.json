@@ -4,11 +4,10 @@
   "tipo": "Moot",
   "modos": [
     {
-      "descricao": "Forca personagens de 2 tribos a se atacarem antes de outros oponentes.",
+      "descricao": "Escolhe 2 tribos. Personagens dessas tribos devem se atacar primeiro.",
       "efeitos": [
         {
-          "tipo": "moot_restricao_global",
-          "restricao": "tribal_war_active",
+          "tipo": "moot_tribal_war",
           "descricao": "Tribal War: tribos devem se atacar primeiro"
         }
       ]

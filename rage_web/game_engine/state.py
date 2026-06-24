@@ -61,6 +61,7 @@ class GameModifier:
     attribute: str = ''  # 'gauntlet'
     value: int = 0
     source: str = ''  # nome da carta origem
+    tribes: list = field(default_factory=list)  # Tribos afetadas (Tribal War)
 
 
 @dataclass
