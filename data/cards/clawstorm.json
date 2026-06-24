@@ -26,11 +26,6 @@
           "alvo": "self",
           "duracao": "end_of_combat",
           "descricao": "Cannot bluff for rest of combat"
-        },
-        {
-          "tipo": "descartar_apos_uso",
-          "alvo": "self",
-          "descricao": "Discard this Gift after use"
         }
       ],
       "restricoes": [
@@ -38,11 +33,11 @@
       ]
     }
   ],
+  "descartar_apos_uso": true,
   "_metadata": {
     "fonte": "manual",
     "card_id": 1426,
     "texto_original": "You may not use this Gift with a Firearm. Play between rounds of combat. Draw 2 combat cards. You may play up to 3 combat actions next round. You may not bluff for the rest of the combat. Discard this Gift after use.",
     "slug": "clawstorm"
-  },
-  "descartar_apos_uso": true
+  }
 }

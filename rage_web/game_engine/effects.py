@@ -260,11 +260,6 @@ class ResolvedorEfeitos:
 
         resultado = resolvedor(efeito, origem, jogador, alvo)
 
-        # Descartar apos uso: move a carta para discard_sept
-        if resultado and efeito.tipo != EfeitoTipo.DESCARTAR_APOS_USO:
-            # Verifica se o efeito original tinha descartar_apos_uso
-            pass
-
         return resultado
 
     def _get_resolvedor(self, tipo: EfeitoTipo

@@ -298,30 +298,27 @@ def run_analysis():
     for p in game.players:
         bots[p.id] = PriorityBot(game, p.id, difficulty='hard')
 
-    # Snapshots iniciais: cada fase do turno 1
+    # Captura snapshot inicial (estado do jogo antes de qualquer ação)
     log_offset = _capture_state(game, states, log_offset)
 
     # Loop principal para avançar a partida
     stale = 0
     last_turn = game.turn_number
     last_phase = game.phase
-    max_steps = max_turns * 200  # Margem segura para ações por turno
+    max_steps = max_turns * 200
     step = 0
     _alpha_order = []
     _alpha_index = 0
     _alpha_map = {}
     _alpha_phase = False
-    _alpha_cycle_done = False  # True apos todos alfas agirem
+    _alpha_cycle_done = False
 
     from rage_web.game_engine.combat_queue import (
         _tem_character, _eliminar_jogador
     )
 
     while step < max_steps:
-        # Gerenciamento de alphas (mesma lógica do match.py)
-        # So popula _alpha_order na primeira entrada em combate.
-        # Apos todos os alfas agirem, nao repopula mesmo se um novo
-        # combate (ex: ataque de presa) reiniciar a fase de combate.
+        # Gerenciamento de alphas
         if (game.phase == 'combat' and game.combat.alpha_order
                 and not _alpha_order and not _alpha_cycle_done):
             _alpha_order = list(game.combat.alpha_order)
@@ -342,7 +339,7 @@ def run_analysis():
                 cp = game.current_player
         else:
             _alpha_phase = False
-            _alpha_cycle_done = True  # Todos alfas agiram
+            _alpha_cycle_done = True
             cp = game.current_player
 
         bot = bots.get(cp.id)
@@ -358,7 +355,10 @@ def run_analysis():
             _alpha_index += 1
 
         # Detecta mudança de fase/turno
-        if game.turn_number != last_turn or game.phase != last_phase:
+        fase_mudou = (game.turn_number != last_turn or game.phase != last_phase)
+        if fase_mudou:
+            # Captura snapshot do estado FINAL da fase anterior
+            log_offset = _capture_state(game, states, log_offset)
             stale = 0
             if game.phase != 'combat':
                 _alpha_order.clear()
@@ -366,11 +366,10 @@ def run_analysis():
                 _alpha_map.clear()
                 _alpha_phase = False
                 _alpha_cycle_done = False
-            # Captura snapshot ao mudar de fase
-            log_offset = _capture_state(game, states, log_offset)
         else:
             stale += 1
         last_phase = game.phase
+        last_turn = game.turn_number
 
         # Se ficou muito tempo sem mudar de fase (ex: combate longo),
         # aumenta o limite em vez de abortar
