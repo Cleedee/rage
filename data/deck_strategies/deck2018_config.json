@@ -1,0 +1,160 @@
+{
+  "deck_id": 2018,
+  "name": "Fan only: Lake Nassar",
+  "style": "hg_control",
+  "desc": "Umbra control. Mude-se rapidamente para a Umbra e fique lá, eliminando prey umbral enquanto oponentes brigam no mundo físico. Lake Nasser Wallow permite usar gifts através do Gauntlet.",
+
+  "gift_priorities": [
+    {
+      "slug": "chant-of-morpheus",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Chant of Morpheus (Gn:5) — Sweet Luna usa. Remove alvo do jogo até fim da próxima fase. Controle puro."
+    },
+    {
+      "slug": "the-badger-s-heart",
+      "priority": 85,
+      "condition": "has_strong_target",
+      "desc": "The Badger's Heart (Gn:6) — Sweet Luna usa. Reduz Rage do oponente para Breed form. Devastador."
+    },
+    {
+      "slug": "primal-anger",
+      "priority": 40,
+      "condition": "always",
+      "desc": "Primal Anger (Gn:1) — Ninguém no pack tem Ajaba. Só funciona se recrutar ally com Ajaba."
+    }
+  ],
+
+  "resource_play_order": [
+    "caern",
+    "ally",
+    "character",
+    "equipment",
+    "gift",
+    "territory",
+    "event",
+    "rite",
+    "quest"
+  ],
+
+  "combat_action_preferences": {
+    "_default": [
+      "aggressive_bite",
+      "head_butt",
+      "savage_beatdown",
+      "anatomy_lesson",
+      "submission_hold",
+      "tail_lash",
+      "duck_and_cover",
+      "block_and_roll",
+      "flicker",
+      "searching_for_weakness",
+      "desperate_struggles",
+      "instinctive_attack"
+    ],
+    "sweet_luna_s_smile": [
+      "aggressive_bite",
+      "head_butt",
+      "savage_beatdown",
+      "anatomy_lesson",
+      "submission_hold",
+      "tail_lash",
+      "duck_and_cover",
+      "block_and_roll",
+      "flicker"
+    ],
+    "sand_s_last_king": [
+      "aggressive_bite",
+      "head_butt",
+      "savage_beatdown",
+      "anatomy_lesson",
+      "submission_hold",
+      "tail_lash",
+      "instinctive_attack"
+    ],
+    "lone_wolf_circles": [
+      "block_and_roll",
+      "duck_and_cover",
+      "flicker",
+      "searching_for_weakness",
+      "aggressive_bite",
+      "head_butt"
+    ]
+  },
+
+  "equipment_assignments": [
+    {
+      "slug": "animal-mummy",
+      "priority": 95,
+      "assign_to": "sand_s_last_king",
+      "desc": "Animal Mummy (Gn:8) — Sand's Last King (Gn:10) pode equipar. Boost massivo."
+    },
+    {
+      "slug": "assegai",
+      "priority": 80,
+      "assign_to": "sweet_luna_s_smile",
+      "desc": "Assegai — arma para Sweet Luna."
+    },
+    {
+      "slug": "assegai",
+      "priority": 70,
+      "assign_to": "sand_s_last_king",
+      "desc": "Assegai — arma para Sand's Last King."
+    }
+  ],
+
+  "umbra_strategy": {
+    "enter_characters": ["sweet_luna_s_smile", "sand_s_last_king", "lone_wolf_circles"],
+    "keep_in_umbra": ["sweet_luna_s_smile", "sand_s_last_king"],
+    "save_for_combat": [],
+    "always_enter_if_opponent_cannot": true,
+    "approach": "aggressive",
+    "desc": " TODOS entram na Umbra. Lake Nasser Wallow permite gifts através do Gauntlet."
+  },
+
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "ffa_diplomacy": "weaken_largest",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": ["Victim", "Enemy"]
+    },
+    "desc": "Foco em prey umbral (Dream Hunter, Elethoi). Evitar combate desnecessário."
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Sand's Last King",
+      "Sweet Luna's Smile",
+      "Lake Nasser Wallow",
+      "Chant of Morpheus",
+      "Dreamspeaker Mage"
+    ],
+    "always_discard_if_duplicate": [
+      "carpet_snake",
+      "dream_hunter",
+      "elethoi"
+    ],
+    "prefer_discard_types": ["Combat Action", "Combat Event"]
+  },
+
+  "moot_strategy": {
+    "call_if_available": [],
+    "always_vote_yes": ["Own"],
+    "vote_no_against": [],
+    "strategic_vote": true
+  },
+
+  "combat_notes": {
+    "philosophy": "Combate é último recurso. Foco em controlar Umbra e eliminar prey.",
+    "umbra_advantage": "Lake Nasser Wallow permite gifts através do Gauntlet. Usar isso para controlar o jogo.",
+    "ally_power": "Dreamspeaker Mage (Rn:8), Haunter (Rn:7), Oracle of Sobek (Rn:5) são muito fortes."
+  },
+
+  "notes": {
+    "combo_principal": "Lake Nasser Wallow + gifts que cruzam Gauntlet. Chant of Morpheus remove alvos do jogo.",
+    "mokole_advantage": "Sand's Last King pode recrutar allies de Ajaba/Bastet/Silent Striders.",
+    "sweet_luna": "Sweet Luna's Smile regenera dano agravado e ganha +1 stats com Lunar Phase."
+  }
+}
