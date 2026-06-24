@@ -1,0 +1,206 @@
+{
+  "deck_id": 2019,
+  "name": "Classic: Bloodsucking Champions",
+  "style": "pack_combat",
+  "desc": "Vampire deck de controle. Vladimir Rustovitch como líder (Rn:10, regenera após kill, gifts BSD via Mage's Talisman). Allonzo Montoya (Rn:9) como secundário. Juicy Johnes (Rn:1) como sacrifício (-2 Gnosis ao oponente).",
+
+  "gift_priorities": [
+    {
+      "slug": "consumption-of-gaia",
+      "priority": 95,
+      "condition": "always",
+      "desc": "Consumption of Gaia (Gn:4) — Vladimir cancela gifts inimigos."
+    },
+    {
+      "slug": "true-fear",
+      "priority": 90,
+      "condition": "combat_active",
+      "desc": "True Fear (Gn:4) — Allonzo (Shadow Lords) trava oponente por 1 rodada."
+    },
+    {
+      "slug": "wyrm-hide",
+      "priority": 85,
+      "condition": "combat_active",
+      "desc": "Wyrm Hide (Gn:3) — Vladimir ganha +2 Health."
+    },
+    {
+      "slug": "horns-of-the-impaler",
+      "priority": 80,
+      "condition": "combat_active",
+      "desc": "Horns of the Impaler (Gn:3) — Vladimir ganha +2 Rage temporário."
+    },
+    {
+      "slug": "patagia",
+      "priority": 75,
+      "condition": "combat_active",
+      "desc": "Patagia (Gn:5) — Vladimir voa, só pode ser hit por CAs melee."
+    },
+    {
+      "slug": "subjugation-of-gaia",
+      "priority": 70,
+      "condition": "opponent_has_fetish_equipment",
+      "desc": "Subjugation of Gaia (Gn:7) — Vladimir remove fetish equipment."
+    }
+  ],
+
+  "resource_play_order": [
+    "character",
+    "equipment",
+    "caern",
+    "gift",
+    "event",
+    "action"
+  ],
+
+  "combat_action_preferences": {
+    "_default": [
+      "vital_blow",
+      "dry_gulch",
+      "mangle",
+      "entrail_rend",
+      "feint",
+      "surprise_attack",
+      "disarm",
+      "evasion",
+      "dodge",
+      "run_like_hell",
+      "umbral_escape"
+    ],
+    "count_vladimir_rustovitch": [
+      "vital_blow",
+      "dry_gulch",
+      "mangle",
+      "entrail_rend",
+      "feint",
+      "disarm",
+      "evasion",
+      "dodge",
+      "umbral_escape"
+    ],
+    "allonzo_montoya": [
+      "vital_blow",
+      "dry_gulch",
+      "mangle",
+      "entrail_rend",
+      "feint",
+      "surprise_attack",
+      "disarm",
+      "evasion",
+      "dodge"
+    ],
+    "juicy_johnes": [
+      "evasion",
+      "dodge",
+      "run_like_hell",
+      "umbral_escape"
+    ]
+  },
+
+  "equipment_assignments": [
+    {
+      "slug": "mages-talisman",
+      "priority": 100,
+      "assign_to": "count_vladimir_rustovitch",
+      "desc": "Mage's Talisman — Vladimir usa QUALQUER gift (BSD/7th Gen/Homid/Shadow Lords). Essencial."
+    },
+    {
+      "slug": "whip-of-the-wicked",
+      "priority": 90,
+      "assign_to": "count_vladimir_rustovitch",
+      "desc": "Whip of the Wicked — força oponente a usar block/dodge primeiro."
+    },
+    {
+      "slug": "skin-of-the-hellbound",
+      "priority": 85,
+      "assign_to": "allonzo_montoya",
+      "desc": "Skin of the Hellbound — Allonzo (Hl:7) com armadura Rg:6+."
+    },
+    {
+      "slug": "spiral-boomerang",
+      "priority": 75,
+      "assign_to": "count_vladimir_rustovitch",
+      "desc": "Spiral Boomerang — envia oponente para Umbra por 2 turnos."
+    },
+    {
+      "slug": "skin-of-the-hellbound",
+      "priority": 70,
+      "assign_to": "count_vladimir_rustovitch",
+      "desc": "Skin of the Hellbound — backup no líder."
+    }
+  ],
+
+  "combat_event_priorities": [
+    {
+      "slug": "frenzy",
+      "priority": 80,
+      "desc": "Frenzy — último recurso para sobreviver."
+    },
+    {
+      "slug": "taking-the-death-blow",
+      "priority": 70,
+      "desc": "Taking the Death Blow — redirecionar ferimento mortal."
+    },
+    {
+      "slug": "surprise-ally",
+      "priority": 60,
+      "desc": "Surprise Ally — traz ally para combate."
+    }
+  ],
+
+  "target_priority": {
+    "prefer_low_health": true,
+    "character_kill_order": "lowest_health",
+    "ffa_diplomacy": "weaken_largest",
+    "hunting_grounds": {
+      "prefer_prey_over_enemy": true,
+      "priority_types": ["Victim", "Enemy"]
+    },
+    "desc": "Vladimir regenera após kill — matar é prioridade."
+  },
+
+  "umbra_strategy": {
+    "enter_characters": [],
+    "save_for_combat": ["count_vladimir_rustovitch", "allonzo_montoya"],
+    "always_enter_if_opponent_cannot": false,
+    "approach": "defensive",
+    "desc": "Ficar no mundo físico para combate. Não entrar na Umbra."
+  },
+
+  "redraw_rules": {
+    "never_discard": [
+      "Count Vladimir Rustovitch",
+      "Allonzo Montoya",
+      "Mage's Talisman",
+      "Sneak Attack",
+      "Friends in High Places",
+      "Consumption of Gaia",
+      "Caern of Rytthiku"
+    ],
+    "always_discard_if_duplicate": [
+      "skin-of-the-hellbound",
+      "feint",
+      "dodge"
+    ],
+    "prefer_discard_types": ["Moot", "Board Meeting"]
+  },
+
+  "moot_strategy": {
+    "call_if_available": [],
+    "always_vote_yes": ["Own"],
+    "vote_no_against": ["Leader"],
+    "strategic_vote": true
+  },
+
+  "combat_notes": {
+    "philosophy": "Vampire aggressive. Vladimir regenera após kill — sempre procure matar.",
+    "vladimir_synergy": "Mage's Talisman permite TODOS os gifts. True Fear trava oponente. Patagia voa. Wyrm Hide cura.",
+    "juicy_johnes": "Sacrifício. -2 Gnosis ao oponente que matá-lo. Enviar em combate suicida.",
+    "allonzo": "Secundário. True Fear (Shadow Lords). Skin of the Hellbound para tanque."
+  },
+
+  "notes": {
+    "combo_principal": "Vladimir com Mage's Talisman → todos os gifts BSD disponíveis. True Fear trava oponente por 1 rodada. Patagia voa. Subjugation remove equipment.",
+    "vampire_advantage": "Vladimir regenera após kill. Allonzo é abomination (Garou+Vampire). Juicy Johnes penaliza oponente.",
+    "fraqueza": "Sem anti-Moot. Sem cura fora de combate. Dependente de equipment (Mage's Talisman)."
+  }
+}
