@@ -498,9 +498,32 @@ Comentários sobre a estratégia do deck, não usado pelo motor.
 |---|---|
 | `losing_board_position` | Jogador tem menos personagens que o oponente |
 | `no_pack_totem` | Não tem Pack Totem no pack |
-| `no_pack_totem` | Não tem Pack Totem no pack |
+| `has_pack_totem_active` | Tem Pack Totem ativo no pack |
+| `opponent_pack_totem_active` | Oponente tem Pack Totem ativo |
 | `no_lunar_phase` | Não está na fase lunar (simplificação: fora de combate) |
 | `both_decks_nearly_empty` | Ambos os decks têm ≤ 3 cartas |
+| `is_late_game` | Jogador ou oponente tem ≤ 5 cartas no deck |
+
+### Condições de Contagem
+
+| Condição | Quando é verdadeira |
+|---|---|
+| `player_count:<tipo>:<X>` | Jogador tem exatamente X cartas do tipo (character, ally, etc.) |
+| `opponent_count:<tipo>:<X>` | Oponente tem exatamente X cartas do tipo |
+| `player_pack_size:<X>` | Jogador tem exatamente X personagens vivos no pack |
+| `opponent_pack_size:<X>` | Oponente tem exatamente X personagens vivos no pack |
+| `total_pack_size:<X>` | Total de personagens vivos (jogador + oponente) é X |
+| `opponent_hunting_grounds_count:<X>` | Oponente tem exatamente X cartas no HG |
+| `opponent_territory_count:<X>` | Oponente tem exatamente X Territories |
+
+### Condições de Equipamento
+
+| Condição | Quando é verdadeira |
+|---|---|
+| `has_fetish_weapon` | Jogador tem equipamento Fetish (Weapon) |
+| `opponent_has_fetish_weapon` | Oponente tem equipamento Fetish (Weapon) |
+| `opponent_has_permanent_gift` | Oponente tem gift permanente (Pack Totem, etc.) |
+| `opponent_has_terrain_advantage` | Oponente tem Territory + Caern (vantagem de terreno) |
 
 ### Condições de Fase
 
@@ -684,3 +707,73 @@ O bot para de atacar desnecessariamente e foca em Moots.
 
 6. **Teste antes de comitar:** Sempre rode uma partida de teste após
    criar/modificar um config para garantir que o bot não quebra.
+
+---
+
+## Sistema de Efeitos (JSONs em `data/cards/`)
+
+Além do config JSON por deck, cartas individuais podem ter efeitos
+estruturados em `data/cards/<slug>.json`. Esses JSONs são lidos pelo
+motor de jogo para resolver efeitos automaticamente.
+
+### Campos Suportados no JSON da Carta
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `id` | string | Slug da carta |
+| `nome` | string | Nome legível |
+| `tipo` | string | Tipo (Gift, Event, Action, etc.) |
+| `gnosis` | int | Gnosis requerido (opcional) |
+| `requires` | string | Requisito (ex: "Bastet", "Garou") |
+| `descartar_apos_uso` | bool | Descarta carta após usar (ex: Clawstorm) |
+| `modos` | array | Lista de modos de uso |
+
+### Campos do Modo
+
+| Campo | Tipo | Descrição |
+|---|---|
+| `descricao` | string | Descrição do modo |
+| `efeitos` | array | Lista de efeitos a resolver |
+| `condicao_uso` | string | Condição para usar o modo |
+| `restricoes` | array | Restrições do modo |
+
+### Condições de Uso (`condicao_uso`)
+
+| Condição | Descrição |
+|---|---|
+| `between_rounds_only` | Só pode ser usado entre rodadas de combate |
+| `personagem_na_umbra` | Precisa de personagem na Umbra |
+| `nao_frenetico` | Não pode estar em frenzy |
+| `alpha_attack_hg` | Alpha atacando Hunting Grounds |
+
+### Restrições do Modo (`restricoes`)
+
+| Restrição | Descrição |
+|---|---|
+| `no_firearm` | Não pode ser usado com Firearm equipado |
+
+### Exemplo: Clawstorm
+
+```json
+{
+  "id": "clawstorm",
+  "nome": "Clawstorm",
+  "tipo": "Gift",
+  "gnosis": 5,
+  "requires": "Bastet",
+  "modos": [
+    {
+      "descricao": "Play between rounds. Draw 2 combat cards.",
+      "condicao_uso": "between_rounds_only",
+      "efeitos": [
+        { "tipo": "comprar", "alvo": "self", "quantidade": 2 },
+        { "tipo": "acao_extra_por_rodada", "alvo": "self", "quantidade": 3 },
+        { "tipo": "impedir_bluff", "alvo": "self", "duracao": "end_of_combat" },
+        { "tipo": "descartar_apos_uso", "alvo": "self" }
+      ],
+      "restricoes": ["no_firearm"]
+    }
+  ],
+  "descartar_apos_uso": true
+}
+```
