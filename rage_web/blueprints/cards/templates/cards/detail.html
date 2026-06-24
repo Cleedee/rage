@@ -191,16 +191,27 @@
 </nav>
 
 <div class="card-layout">
-  <!-- Imagem Original -->
+  <!-- Imagens da Carta -->
   <div class="card-image-panel">
     <div class="img-container">
       {% set orig_url = get_original_image_url(card) %}
+      {% set back_url = get_back_image_url(card) %}
       {% if orig_url %}
-        <img src="{{ orig_url }}" alt="{{ card.name }}">
+        <img src="{{ orig_url }}" alt="{{ card.name }}" id="card-front-img"
+             style="display:block">
       {% else %}
         <div class="no-image">
           <i class="bi bi-image" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
           Sem imagem disponível
+        </div>
+      {% endif %}
+      {% if back_url %}
+        <div style="margin-top:0.5rem; border-top:1px solid #eee; padding-top:0.5rem;">
+          <img src="{{ back_url }}" alt="{{ card.name }} (Crinos)" id="card-back-img"
+               style="display:block;width:100%;height:auto;opacity:0.9;">
+          <p class="is-size-7 has-text-grey mt-1" style="text-align:center;">
+            <i class="bi bi-arrow-left-right"></i> Forma alternada (Crinos / versão 2)
+          </p>
         </div>
       {% endif %}
     </div>

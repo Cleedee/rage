@@ -301,3 +301,26 @@ def get_card_image_url_by_id(card_id: int) -> str | None:
     if not card:
         return None
     return get_card_image_url(card)
+
+
+def get_back_image_url(card: Card) -> str | None:
+    """Retorna URL da imagem de VERSO (Crinos/alternate form) de uma carta.
+
+    O campo image_file pode conter multiplas imagens separadas por virgula.
+    A primeira e a imagem da frente (standard form), a segunda e o verso
+    (Crinos/alternate form para personagens, ou imagem secundaria).
+    """
+    if not card.image_file:
+        return None
+    parts = [p.strip() for p in card.image_file.split(',')]
+    if len(parts) < 2:
+        return None
+    back_img = parts[1]
+    if not back_img:
+        return None
+    from flask import current_app
+    instance_path = current_app.instance_path
+    local_path = os.path.join(instance_path, 'images', back_img + '.jpg')
+    if os.path.exists(local_path):
+        return f'/instance/images/{back_img}.jpg'
+    return None
