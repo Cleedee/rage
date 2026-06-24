@@ -2,52 +2,62 @@
   "deck_id": 2019,
   "name": "Classic: Bloodsucking Champions",
   "style": "pack_combat",
-  "desc": "Vampire deck de controle. Vladimir Rustovitch como líder (Rn:10, regenera após kill, gifts BSD via Mage's Talisman). Allonzo Montoya (Rn:9) como secundário. Juicy Johnes (Rn:1) como sacrifício (-2 Gnosis ao oponente).",
+  "desc": "Double-champion vampire deck. Vladimir (Rn:10) + Allonzo (Rn:9) = highest stats in the game. Heavy combat, frenzy, lots of healing. Mage's Talisman gives Vladimir access to all BSD gifts.",
+
+  "combat_notes": {
+    "philosophy": "VERY damage-heavy combat deck. Get into combat and smash things. That's about as subtle as it gets.",
+    "vladimir_synergy": "Mage's Talisman → all BSD gifts. Wyrm Hide = healing (+2 Health each, can stack 2x). Patagia/Spiral Boomerang = combat enders.",
+    "whip_control": "Whip of the Wicked + Eyes of Hate = control what opponent plays. Opponent forced to play block/dodge first.",
+    "surprise_ally": "Surprise Ally = double firepower OR just draw a card when attacking. Don't waste it.",
+    "run_like_hell": "Emergency release. Last resort escape.",
+    "juicy_johnes": "Sacrifice. -2 Gnosis to killer. Send on suicide missions.",
+    "frenzy": "Frenzy is important for this deck. Not just last resort."
+  },
 
   "gift_priorities": [
     {
       "slug": "consumption-of-gaia",
       "priority": 95,
       "condition": "always",
-      "desc": "Consumption of Gaia (Gn:4) — Vladimir cancela gifts inimigos."
-    },
-    {
-      "slug": "true-fear",
-      "priority": 90,
-      "condition": "combat_active",
-      "desc": "True Fear (Gn:4) — Allonzo (Shadow Lords) trava oponente por 1 rodada."
+      "desc": "Consumption of Gaia (Gn:4) — Cancel enemy gifts. Core disruption."
     },
     {
       "slug": "wyrm-hide",
-      "priority": 85,
-      "condition": "combat_active",
-      "desc": "Wyrm Hide (Gn:3) — Vladimir ganha +2 Health."
+      "priority": 92,
+      "condition": "always",
+      "desc": "Wyrm Hide (Gn:3) — +2 Health. THIS IS YOUR HEALING. Stack 2x for +4 Health total."
     },
     {
-      "slug": "horns-of-the-impaler",
-      "priority": 80,
+      "slug": "true-fear",
+      "priority": 88,
       "condition": "combat_active",
-      "desc": "Horns of the Impaler (Gn:3) — Vladimir ganha +2 Rage temporário."
+      "desc": "True Fear (Gn:4) — Allonco (Shadow Lords) locks opponent for 1 round. Devastating."
     },
     {
       "slug": "patagia",
-      "priority": 75,
+      "priority": 85,
       "condition": "combat_active",
-      "desc": "Patagia (Gn:5) — Vladimir voa, só pode ser hit por CAs melee."
+      "desc": "Patagia (Gn:5) — FLY AWAY. Combat ender. Use to escape bad combats."
+    },
+    {
+      "slug": "horns-of-the-impaler",
+      "priority": 60,
+      "condition": "combat_active",
+      "desc": "Horns of the Impaler (Gn:3) — +2 Rage. NOT CRITICAL. Just resilience."
     },
     {
       "slug": "subjugation-of-gaia",
-      "priority": 70,
+      "priority": 75,
       "condition": "opponent_has_fetish_equipment",
-      "desc": "Subjugation of Gaia (Gn:7) — Vladimir remove fetish equipment."
+      "desc": "Subjugation of Gaia (Gn:7) — Remove fetish equipment/totems."
     }
   ],
 
   "resource_play_order": [
     "character",
     "equipment",
-    "caern",
     "gift",
+    "caern",
     "event",
     "action"
   ],
@@ -59,7 +69,6 @@
       "mangle",
       "entrail_rend",
       "feint",
-      "surprise_attack",
       "disarm",
       "evasion",
       "dodge",
@@ -83,7 +92,6 @@
       "mangle",
       "entrail_rend",
       "feint",
-      "surprise_attack",
       "disarm",
       "evasion",
       "dodge"
@@ -101,49 +109,49 @@
       "slug": "mages-talisman",
       "priority": 100,
       "assign_to": "count_vladimir_rustovitch",
-      "desc": "Mage's Talisman — Vladimir usa QUALQUER gift (BSD/7th Gen/Homid/Shadow Lords). Essencial."
+      "desc": "Mage's Talisman — Vladimir uses ANY gift. ESSENTIAL."
     },
     {
       "slug": "whip-of-the-wicked",
-      "priority": 90,
+      "priority": 95,
       "assign_to": "count_vladimir_rustovitch",
-      "desc": "Whip of the Wicked — força oponente a usar block/dodge primeiro."
+      "desc": "Whip of the Wicked — Opponent FORCED to play block/dodge first. Control tool."
     },
     {
       "slug": "skin-of-the-hellbound",
-      "priority": 85,
+      "priority": 90,
       "assign_to": "allonzo_montoya",
-      "desc": "Skin of the Hellbound — Allonzo (Hl:7) com armadura Rg:6+."
+      "desc": "Skin of the Hellbound — Allonco (Hl:7) with armor. Mirror-match friendly."
     },
     {
       "slug": "spiral-boomerang",
-      "priority": 75,
+      "priority": 85,
       "assign_to": "count_vladimir_rustovitch",
-      "desc": "Spiral Boomerang — envia oponente para Umbra por 2 turnos."
+      "desc": "Spiral Boomerang — COMBAT ENDER. Sends opponent to Umbra for 2 turns."
     },
     {
       "slug": "skin-of-the-hellbound",
       "priority": 70,
       "assign_to": "count_vladimir_rustovitch",
-      "desc": "Skin of the Hellbound — backup no líder."
+      "desc": "Skin of the Hellbound — Backup on leader."
     }
   ],
 
   "combat_event_priorities": [
     {
       "slug": "frenzy",
-      "priority": 80,
-      "desc": "Frenzy — último recurso para sobreviver."
+      "priority": 90,
+      "desc": "Frenzy — IMPORTANT for this deck. Not just last resort. Use to survive AND attack."
+    },
+    {
+      "slug": "surprise-ally",
+      "priority": 85,
+      "desc": "Surprise Ally — Double firepower OR just draw a card when attacking. Don't waste."
     },
     {
       "slug": "taking-the-death-blow",
       "priority": 70,
-      "desc": "Taking the Death Blow — redirecionar ferimento mortal."
-    },
-    {
-      "slug": "surprise-ally",
-      "priority": 60,
-      "desc": "Surprise Ally — traz ally para combate."
+      "desc": "Taking the Death Blow — Redirect mortal wound."
     }
   ],
 
@@ -155,7 +163,7 @@
       "prefer_prey_over_enemy": true,
       "priority_types": ["Victim", "Enemy"]
     },
-    "desc": "Vladimir regenera após kill — matar é prioridade."
+    "desc": "Vladimir regenerates after kill. ALWAYS seek kills."
   },
 
   "umbra_strategy": {
@@ -163,7 +171,7 @@
     "save_for_combat": ["count_vladimir_rustovitch", "allonzo_montoya"],
     "always_enter_if_opponent_cannot": false,
     "approach": "defensive",
-    "desc": "Ficar no mundo físico para combate. Não entrar na Umbra."
+    "desc": "Stay in physical world for combat. Don't enter Umbra."
   },
 
   "redraw_rules": {
@@ -171,10 +179,11 @@
       "Count Vladimir Rustovitch",
       "Allonzo Montoya",
       "Mage's Talisman",
+      "Whip of the Wicked",
       "Sneak Attack",
-      "Friends in High Places",
       "Consumption of Gaia",
-      "Caern of Rytthiku"
+      "Caern of Rytthiku",
+      "Wyrm Hide"
     ],
     "always_discard_if_duplicate": [
       "skin-of-the-hellbound",
@@ -191,16 +200,12 @@
     "strategic_vote": true
   },
 
-  "combat_notes": {
-    "philosophy": "Vampire aggressive. Vladimir regenera após kill — sempre procure matar.",
-    "vladimir_synergy": "Mage's Talisman permite TODOS os gifts. True Fear trava oponente. Patagia voa. Wyrm Hide cura.",
-    "juicy_johnes": "Sacrifício. -2 Gnosis ao oponente que matá-lo. Enviar em combate suicida.",
-    "allonzo": "Secundário. True Fear (Shadow Lords). Skin of the Hellbound para tanque."
-  },
-
   "notes": {
-    "combo_principal": "Vladimir com Mage's Talisman → todos os gifts BSD disponíveis. True Fear trava oponente por 1 rodada. Patagia voa. Subjugation remove equipment.",
-    "vampire_advantage": "Vladimir regenera após kill. Allonzo é abomination (Garou+Vampire). Juicy Johnes penaliza oponente.",
-    "fraqueza": "Sem anti-Moot. Sem cura fora de combate. Dependente de equipment (Mage's Talisman)."
+    "combo_principal": "Vladimir + Mage's Talisman → all BSD gifts. Wyrm Hide x2 = +4 Health (healing). Whip + True Fear = control. Patagia/Spiral Boomerang = combat enders.",
+    "healing": "Wyrm Hide is your healing. +2 Health each, can stack 2x for +4 Health. Vladimir regenerates after kills. That's your sustain.",
+    "combat_enders": "Patagia (fly away) and Spiral Boomerang (send to Umbra 2 turns) END combats. Use them to escape bad situations.",
+    "surprise_ally_tip": "Surprise Ally can be played just to DRAW A CARD when attacking. You don't have to bring in a packmate. Use this for card advantage.",
+    "double_champion": "Both Vladimir (Rn:10) and Allonco (Rn:9) are champions. Use BOTH aggressively. Don't hide one.",
+    "whip_timing": "Whip of the Wicked forces opponent to play block/dodge FIRST. Time your attacks around this."
   }
 }
