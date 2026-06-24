@@ -1,32 +1,15 @@
 {
-  "_metadata": {
-    "card_id": 1324,
-    "name": "Umbral Escape",
-    "version": "1.0",
-    "source": "manual"
-  },
-  "card_id": 1324,
-  "name": "Umbral Escape",
-  "type": "combat_action",
-  "rage_cost": 0,
-  "damage": null,
-  "modes": [
+  "id": "umbral-escape",
+  "nome": "Umbral Escape",
+  "tipo": "Combat Action",
+  "modos": [
     {
-      "id": "umbral_escape",
-      "name": "Umbral Escape",
-      "type": "ESCAPE",
-      "special": "fast",
-      "description": "Fast Striking. Creature steps sideways into Umbra. Returns at start of next turn.",
-      "effects": [
+      "descricao": "Umbral Escape. Rg:0. Fast Striking. Creature steps sideways into Umbra. Returns at start of next turn.",
+      "efeitos": [
         {
-          "type": "STEP_SIDEBARS",
-          "target": "self",
-          "description": "Creature steps sideways into Umbra"
-        },
-        {
-          "type": "END_COMBAT",
-          "target": "self",
-          "description": "Creature leaves combat"
+          "tipo": "mover_para",
+          "alvo": "self",
+          "destino": "umbra"
         }
       ]
     }

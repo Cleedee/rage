@@ -446,14 +446,22 @@ def pode_usar_gift(player: 'PlayerState',
         return False
 
     # Verifica se algum personagem tem habilidade especial de Gifts
-    # (Mage of Celestial Chorus = ANY Gifts, Unlucky Lune = Auspice Gifts)
+    # (Mage of Celestial Chorus = ANY Gifts, Unlucky Lune = Auspice Gifts,
+    #  Mage's Talisman = ANY Gifts, Vladimir/Allonco = specific factions)
+    game = player.game if hasattr(player, 'game') else None
     for char in characters:
         char_text = _info_char(char).lower()
         # 4.5.3: Gifts cannot be played while frenzied
         if getattr(char, 'is_frenzied', False):
             continue
-        # ANY Gifts: pode usar qualquer gift
+        # ANY Gifts: pode usar qualquer gift (via character text)
         if 'mage of the celestial chorus' in char_text:
+            if char.gnosis >= (gift_card.gnosis or 0):
+                return True
+        # ANY Gifts: pode usar qualquer gift (via game_modifier)
+        if game and any(m.modifier == 'can_use_any_gift'
+                        and m.card_uid == id(char.card)
+                        for m in game.game_modifiers):
             if char.gnosis >= (gift_card.gnosis or 0):
                 return True
         # Auspice Gifts: pode usar gifts com "Auspice" no requisito
@@ -466,6 +474,15 @@ def pode_usar_gift(player: 'PlayerState',
         if 'stalks death' in char_text:
             req_lower = (gift_card.requires or '').lower()
             if 'philodox' in req_lower:
+                if char.gnosis >= (gift_card.gnosis or 0):
+                    return True
+        # Allonzo Montoya (29): pode usar Shadow Lords, Metis, BSD Gifts
+        if game and any(m.modifier == 'can_use_sl_metis_bsd_gifts'
+                        and m.card_uid == id(char.card)
+                        for m in game.game_modifiers):
+            req_lower = (gift_card.requires or '').lower()
+            if any(faction in req_lower for faction in
+                   ['shadow lords', 'metis', 'black spiral dancer']):
                 if char.gnosis >= (gift_card.gnosis or 0):
                     return True
 

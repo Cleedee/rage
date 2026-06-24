@@ -11,7 +11,8 @@
           "renown_min": 0,
           "renown_max": 99,
           "vp_por_renown": false,
-          "colocar_hg": true
+          "colocar_hg": true,
+          "keyword_required": "Garou"
         }
       ]
     }

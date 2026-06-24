@@ -3560,7 +3560,8 @@ class ResolvedorEfeitos:
     def _auto_target_moot_personagem(
             self, jogador: PlayerState,
             renown_min: int = 0, renown_max: int = 99,
-            origem: Optional[CardInstance] = None) -> Optional[CardInstance]:
+            origem: Optional[CardInstance] = None,
+            keyword_required: str = '') -> Optional[CardInstance]:
         """Auto-target: encontra o melhor personagem inimigo para efeitos
         de Moot (Winter Wolf, Skindancer, The Stolen Wolf).
 
@@ -3568,6 +3569,7 @@ class ResolvedorEfeitos:
         1. Maior Renome dentro do range
         2. Personagens em Pack Home (nao em Umbra/HG)
         3. Personagens vivos (health_current > 0)
+        4. Se keyword_required, personagem deve ter essa keyword
         """
         melhores = []
         for p in self.game.players:
@@ -3579,6 +3581,11 @@ class ResolvedorEfeitos:
                     continue
                 if c.health_current <= 0:
                     continue
+                # Skindancer: apenas Garou
+                if keyword_required:
+                    kw = (c.keywords or '').lower()
+                    if keyword_required.lower() not in kw:
+                        continue
                 if renown_min <= c.renown <= renown_max:
                     melhores.append(c)
         if not melhores:
@@ -3605,8 +3612,9 @@ class ResolvedorEfeitos:
         if not isinstance(alvo, CardInstance):
             # Auto-target: encontra o personagem inimigo com maior
             # Renome dentro do range
+            kw_req = efeito.params.get('keyword_required', '')
             alvo = self._auto_target_moot_personagem(
-                jogador, renown_min, renown_max, origem)
+                jogador, renown_min, renown_max, origem, kw_req)
             if not alvo:
                 self.game.add_log(
                     f'[Moot] Nenhum alvo viavel (Ren {renown_min}-{renown_max})'

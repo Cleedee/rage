@@ -476,6 +476,26 @@ def _processar_morte(game: GameState, alvo: CardInstance, origem: CardInstance,
         # Death triggers (disparam mesmo se Hacked Apart / frenzied)
         game.check_death_triggers(alvo, origem, dono_origem)
         game.check_kill_bonuses(alvo, dono_origem)
+
+        # Count Vladimir Rustovitch (18): regenera carta de dano mais baixa
+        # apos combate se matou oponente
+        if origem and dono_origem:
+            for m in game.game_modifiers:
+                if (m.modifier == 'vladimir_auto_regenerate'
+                        and m.card_uid == id(origem.card)):
+                    # Encontra carta de dano mais baixa no Vladimir
+                    damage_cards = [c for c in origem.damage_cards
+                                   if c.damage_value is not None]
+                    if damage_cards:
+                        lowest = min(damage_cards,
+                                    key=lambda c: c.damage_value)
+                        origem.damage_cards.remove(lowest)
+                        game.add_log(
+                            f'  {origem.name}: regenerou '
+                            f'{lowest.name} (dano mais baixo) '
+                            f'após matar {alvo.name}')
+                    break
+
         # Tracking para Vigilante (565): registra quem matou a vitima
         # de menor Renome
         ct_alvo = (alvo.card_type or '').lower()

@@ -11,7 +11,8 @@
           "condicao_alvo": "criatura_inimiga_moot",
           "renown_min": 0,
           "renown_max": 99,
-          "vp": 0
+          "vp": 0,
+          "keyword_required": "Garou"
         }
       ]
     }
