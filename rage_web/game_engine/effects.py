@@ -245,6 +245,11 @@ class ResolvedorEfeitos:
             )
             return False
 
+        # Regra 4.4.2: Prey special abilities nao afetam criaturas
+        # do mesmo alinhamento (fora de combate)
+        if not self._validar_restricao_prey(origem, alvo, jogador):
+            return False
+
         # Armazena ultimo alvo para condicao_estado
         self._ultimo_alvo = alvo if not isinstance(alvo, list) else (alvo[0] if alvo else None)
 
@@ -580,6 +585,59 @@ class ResolvedorEfeitos:
 
         # Mesmo lado = podem interagir
         return lado_origem == lado_alvo
+
+    def _validar_restricao_prey(self, origem: CardInstance,
+                                alvo: Any,
+                                jogador: PlayerState) -> bool:
+        """Valida se Prey pode afetar criatura do mesmo alinhamento.
+
+        Regra (4.4.2):
+        - Enemy special abilities NAO afetam Wyrm creatures (fora de combate)
+        - Victim special abilities NAO afetam Gaia creatures (fora de combate)
+        - Durante combate, afeta normalmente
+
+        Returns:
+            True se o efeito pode ser aplicado.
+        """
+        # So aplica para cartas Prey (Enemy ou Victim)
+        if not origem:
+            return True
+        ct_origem = (origem.card_type or '').lower()
+        eh_enemy = 'enemy' in ct_origem
+        eh_victim = 'victim' in ct_origem
+        if not eh_enemy and not eh_victim:
+            return True
+
+        # So aplica fora de combate
+        if self.game.combat.is_active:
+            return True
+
+        # Alvo deve ser CardInstance
+        if not isinstance(alvo, CardInstance):
+            return True
+
+        # Verifica alinhamento do alvo
+        ct_alvo = (alvo.card_type or '').lower()
+        kw_alvo = (alvo.keywords or '').lower()
+        text_alvo = f'{ct_alvo} {kw_alvo}'
+
+        # Enemy nao afeta Wyrm creatures
+        if eh_enemy and 'wyrm' in text_alvo:
+            self.log.append(
+                f'{origem.name} (Enemy): nao afeta {alvo.name} '
+                f'(Wyrm creature) fora de combate'
+            )
+            return False
+
+        # Victim nao afeta Gaia creatures
+        if eh_victim and 'gaia' in text_alvo:
+            self.log.append(
+                f'{origem.name} (Victim): nao afeta {alvo.name} '
+                f'(Gaia creature) fora de combate'
+            )
+            return False
+
+        return True
 
     def _escolher_jogador(self, jogadores: list[PlayerState]
                            ) -> Optional[PlayerState]:
