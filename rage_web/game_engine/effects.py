@@ -78,6 +78,7 @@ class EfeitoTipo(str, Enum):
     REMOVER_DO_COMBATE = 'remover_do_combate'  # Remover criatura do combate em andamento
     FORCAR_BLUFF = 'forcar_bluff'  # Proxima Combat Action do alvo e bluff
     IMPEDIR_FRENZY = 'impedir_frenzy'  # Ninguem pode frenzir (global)
+    IMPEDIR_BLUFF = 'impedir_bluff'  # Alvo nao pode bluffar (Clawstorm)
     OLHAR_TOPO_DECK = 'olhar_topo_deck'  # Olhar topo do deck do oponente
     DESCARTAR_MAO_COMBATE = 'descartar_mao_combate'  # Oponente descarta toda mao de combate
     REGISTRAR_TRIGGER_COMBATE = 'registrar_trigger_combate'  # Registrar trigger de combate (ex: Tzinzie)
@@ -169,6 +170,7 @@ class Modo:
     descricao: str
     efeitos: list[Efeito] = field(default_factory=list)
     condicao_uso: Optional[str] = None
+    restricoes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -178,6 +180,7 @@ class ModeloCarta:
     nome: str
     tipo: str
     modos: list[Modo] = field(default_factory=list)
+    descartar_apos_uso: bool = False
 
     def modo_por_indice(self, idx: int) -> Optional[Modo]:
         if 0 <= idx < len(self.modos):
@@ -256,6 +259,12 @@ class ResolvedorEfeitos:
         )
 
         resultado = resolvedor(efeito, origem, jogador, alvo)
+
+        # Descartar apos uso: move a carta para discard_sept
+        if resultado and efeito.tipo != EfeitoTipo.DESCARTAR_APOS_USO:
+            # Verifica se o efeito original tinha descartar_apos_uso
+            pass
+
         return resultado
 
     def _get_resolvedor(self, tipo: EfeitoTipo
@@ -290,6 +299,7 @@ class ResolvedorEfeitos:
     EfeitoTipo.REMOVER_DO_COMBATE: self._resolver_remover_do_combate,
     EfeitoTipo.FORCAR_BLUFF: self._resolver_forcar_bluff,
     EfeitoTipo.IMPEDIR_FRENZY: self._resolver_impedir_frenzy,
+    EfeitoTipo.IMPEDIR_BLUFF: self._resolver_impedir_bluff,
     EfeitoTipo.ENTRAR_FRENESI: self._resolver_entrar_frenesi,
     EfeitoTipo.OLHAR_TOPO_DECK: self._resolver_olhar_topo_deck,
     EfeitoTipo.DESCARTAR_MAO_COMBATE: self._resolver_descartar_mao_combate,
@@ -2495,6 +2505,29 @@ class ResolvedorEfeitos:
         self.game.add_log(f'{origem.name}: ninguem pode frenzir (New Moon)')
         return True
 
+    def _resolver_impedir_bluff(self, efeito: Efeito,
+                                 origem: CardInstance,
+                                 jogador: PlayerState, alvo) -> bool:
+        """Impede que o alvo blufhe por resto do combate.
+
+        Usado por: Clawstorm.
+        Adiciona restricao 'nao_pode_bluffar' ao alvo.
+        """
+        alvo_obj = alvo if isinstance(alvo, CardInstance) else None
+        if not alvo_obj:
+            # Tenta encontrar criatura do jogador
+            for c in jogador.pack_home:
+                if 'Character' in (c.card_type or ''):
+                    alvo_obj = c
+                    break
+        if alvo_obj:
+            if 'nao_pode_bluffar' not in alvo_obj.restricoes:
+                alvo_obj.restricoes.append('nao_pode_bluffar')
+            self.game.add_log(
+                f'{alvo_obj.name}: nao pode blufhar por resto do combate'
+            )
+        return True
+
     def _resolver_entrar_frenesi(self, efeito: Efeito,
                                    origem: CardInstance,
                                    jogador: PlayerState, alvo) -> bool:
@@ -3980,6 +4013,8 @@ def _validar_condicao_uso(game: GameState, jogador: 'PlayerState',
             lambda: _condicao_apos_vencer_junta(game, jogador),
         'tem_ratkin_character':
             lambda: _condicao_tem_ratkin_character(game, jogador),
+        'between_rounds_only':
+            lambda: game.combat.step == 'between_rounds' if game.combat.is_active else False,
     }
     validador = validadores.get(condicao)
     if validador:
@@ -4274,6 +4309,17 @@ def aplicar_carta(game: GameState, modelo: ModeloCarta,
         if not _validar_condicao_uso(game, jogador, modo.condicao_uso):
             return [f'Condicao de uso nao atendida: {modo.condicao_uso}']
 
+    # Valida restricoes do modo
+    for restricao in modo.restricoes:
+        if restricao == 'no_firearm':
+            # Verifica se alguma criatura do jogador tem firearm equipado
+            for c in jogador.pack_home:
+                if hasattr(c, 'equipment') and c.equipment:
+                    for eq in c.equipment:
+                        kw = (eq.keywords or '').lower()
+                        if 'firearm' in kw:
+                            return [f'Nao pode usar com Firearm equipado']
+
     # NOTA: A validacao de Gauntlet e feita durante a aplicacao
     # de cada efeito (em aplicar_efeito), quando o alvo e conhecido.
     # Isso permite verificar se o alvo esta no mesmo lado do Gauntlet.
@@ -4382,12 +4428,14 @@ def _json_para_modelo(dados: dict) -> ModeloCarta:
             descricao=m['descricao'],
             efeitos=efeitos,
             condicao_uso=m.get('condicao_uso'),
+            restricoes=m.get('restricoes', []),
         ))
     return ModeloCarta(
         id=dados['id'],
         nome=dados['nome'],
         tipo=dados.get('tipo', 'event'),
         modos=modos,
+        descartar_apos_uso=dados.get('descartar_apos_uso', False),
     )
 
 

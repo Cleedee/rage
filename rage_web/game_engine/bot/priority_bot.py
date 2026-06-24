@@ -3057,6 +3057,15 @@ class PriorityBot:
             if card_real.zone in (Zone.OUT_OF_PLAY, Zone.HAND):
                 card_real.zone = Zone.DISCARD_SEPT
                 self.player.discard_sept.append(card_real)
+        # Gifts com 'descartar_apos_uso': Clawstorm, etc.
+        elif 'gift' in ct and modelo and getattr(modelo, 'descartar_apos_uso', False):
+            if card_real.zone in (Zone.OUT_OF_PLAY, Zone.HAND, Zone.PACK_HOME):
+                if card_real in self.player.pack_home:
+                    self.player.pack_home.remove(card_real)
+                card_real.zone = Zone.DISCARD_SEPT
+                self.player.discard_sept.append(card_real)
+                self.game.add_log(
+                    f'{card_real.name} descartado apos uso (Clawstorm)')
 
         return desc
 

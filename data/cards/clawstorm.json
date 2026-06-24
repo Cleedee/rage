@@ -2,34 +2,47 @@
   "id": "clawstorm",
   "nome": "Clawstorm",
   "tipo": "Gift",
+  "gnosis": 5,
+  "requires": "Bastet",
   "modos": [
     {
-      "descricao": "Compra 2 combat cards, joga ate 3 combat actions",
+      "descricao": "Play between rounds of combat. Draw 2 combat cards. Play up to 3 CAs next round. Cannot bluff for rest of combat. Discard after use.",
+      "condicao_uso": "between_rounds_only",
       "efeitos": [
         {
           "tipo": "comprar",
-          "condicao_alvo": "jogador_aliado",
-          "params": {
-            "valor": 2,
-            "descricao": "Clawstorm: compra 2 combat cards"
-          }
+          "alvo": "self",
+          "quantidade": 2,
+          "descricao": "Draw 2 combat cards"
         },
         {
           "tipo": "acao_extra_por_rodada",
-          "condicao_alvo": "criatura_aliada",
-          "params": {
-            "valor": 3,
-            "descricao": "Clawstorm: ate 3 combat actions"
-          }
+          "alvo": "self",
+          "quantidade": 3,
+          "descricao": "Play up to 3 combat actions next round"
+        },
+        {
+          "tipo": "impedir_bluff",
+          "alvo": "self",
+          "duracao": "end_of_combat",
+          "descricao": "Cannot bluff for rest of combat"
+        },
+        {
+          "tipo": "descartar_apos_uso",
+          "alvo": "self",
+          "descricao": "Discard this Gift after use"
         }
+      ],
+      "restricoes": [
+        "no_firearm"
       ]
     }
   ],
   "_metadata": {
-    "fonte": "deck_ratos",
+    "fonte": "manual",
     "card_id": 1426,
-    "texto_original": "Play between rounds of combat. Draw 2 combat cards. You may play up to 3 combat actions.",
-    "precisa_revisao": false,
+    "texto_original": "You may not use this Gift with a Firearm. Play between rounds of combat. Draw 2 combat cards. You may play up to 3 combat actions next round. You may not bluff for the rest of the combat. Discard this Gift after use.",
     "slug": "clawstorm"
-  }
+  },
+  "descartar_apos_uso": true
 }
