@@ -1833,27 +1833,42 @@ class ResolvedorEfeitos:
         A origem deve ser a carta de equipamento real (vinda da mao).
         Valida restricoes de forma do equipamento (ex: Assegai requer
         Homid ou Crinos).
+
+        Se o alvo passado nao for viavel, tenta TODOS os candidatos
+        no pack (em vez de falhar e descartar a carta).
         """
-        if not isinstance(alvo, CardInstance):
-            return False
+        if isinstance(alvo, CardInstance):
+            # Tenta o alvo selecionado primeiro
+            if self._validar_restricoes_equipamento(origem, alvo):
+                # 4.3.2: Equipar e uma ACTION — criaturas impedidas de agir nao podem equipar
+                from rage_web.game_engine.combat_queue import pode_tomar_acao
+                if pode_tomar_acao(alvo, 'equipar'):
+                    return self._anexar_equipamento(origem, alvo)
 
-        # 4.3.2: Equipar e uma ACTION — criaturas impedidas de agir nao podem equipar
-        from rage_web.game_engine.combat_queue import pode_tomar_acao
-        if not pode_tomar_acao(alvo, 'equipar'):
-            self.game.add_log(
-                f'{alvo.name} nao pode equipar {origem.name} '
-                f'(impedido de agir)')
-            return False
+        # Alvo nao viavel: tenta todos os personagens/Ally no pack
+        for alvo_candidate in jogador.pack_home:
+            if alvo_candidate is alvo:
+                continue  # Ja tentamos este
+            ct = (alvo_candidate.card_type or '').lower()
+            if not any(t in ct for t in ('character', 'ally')):
+                continue
+            if not self._validar_restricoes_equipamento(origem, alvo_candidate):
+                continue
+            from rage_web.game_engine.combat_queue import pode_tomar_acao
+            if pode_tomar_acao(alvo_candidate, 'equipar'):
+                return self._anexar_equipamento(origem, alvo_candidate)
 
-        # Valida restricoes de forma do equipamento
-        if not self._validar_restricoes_equipamento(origem, alvo):
-            return False
+        self.game.add_log(
+            f'{origem.name} nao pode ser equipado — nenhum alvo viavel')
+        return False
 
-        origem.zone = Zone.OUT_OF_PLAY
-        alvo.attached_equipment.append(origem)
-        # 🔧 Registra referencia reversa: equipamento -> criatura
-        origem.attached_to = alvo
-        self.game.add_log(f'{origem.name} equipado em {alvo.name}')
+    def _anexar_equipamento(self, equipamento: CardInstance,
+                            alvo: CardInstance) -> bool:
+        """Anexa um equipamento validado a um alvo."""
+        equipamento.zone = Zone.OUT_OF_PLAY
+        alvo.attached_equipment.append(equipamento)
+        equipamento.attached_to = alvo
+        self.game.add_log(f'{equipamento.name} equipado em {alvo.name}')
         return True
 
     def _validar_restricoes_equipamento(self, equipamento: CardInstance,
