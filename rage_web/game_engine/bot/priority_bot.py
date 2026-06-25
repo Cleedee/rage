@@ -460,19 +460,9 @@ class PriorityBot:
                 return f'play_territory_{card.card_id}'
 
             elif 'equipment' in ct.lower():
-                from rage_web.game_engine.effects import CARTAS_EXEMPLO
-                if card.modelo_id:
-                    modelo = CARTAS_EXEMPLO.get(card.modelo_id)
-                    if modelo and modelo.modos:
-                        tem_equipar = any(
-                            e.tipo == 'equipar'
-                            for modo in modelo.modos
-                            for e in modo.efeitos
-                        )
-                        if tem_equipar:
-                            modo_idx = self._escolher_melhor_modo(card.modelo_id)
-                            self._cards_played_this_turn += 1
-                            return self._usar_carta_efeito(i, modo_idx, card)
+                # Equipment vai direto para _play_card → _equip_card_to_pack
+                # que tem scoring inteligente (melhor personagem, validacao)
+                # Nao passa pelo sistema de efeitos (evita alvo aleatorio)
                 self._play_card(i)
                 self._cards_played_this_turn += 1
                 return f'play_equipment_{card.card_id}'
