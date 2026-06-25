@@ -1875,38 +1875,30 @@ class ResolvedorEfeitos:
 
         # ── 1. Eater-of-Souls check: fetish equipment precisa de enabler ──
         eh_non_fetish = 'non-fetish' in kw
-        eh_fetish = not eh_non_fetish and ('gaia fetish' in kw
-                    or ('fetish' in kw and 'bane fetish' not in kw))
+        eh_gaia_fetish = not eh_non_fetish and 'gaia fetish' in kw
         eh_bane_fetish = not eh_non_fetish and 'bane fetish' in kw
         eh_ambos = not eh_non_fetish and 'gaia fetish' in kw and 'bane fetish' in kw
 
-        if (eh_fetish or eh_bane_fetish) and not eh_non_fetish:
-            if not self.game.has_modifier('can_equip_fetish'):
-                self.game.add_log(
-                    f'Precisa de Eater-of-Souls ou similar para equipar '
-                    f'{equipamento.name} (Fetish)'
-                )
-                return False
-
-        # ── 2. Fetish / Bane Fetish alignment restriction ──
-        # Fetish: apenas Gaia podem equipar
-        # Bane Fetish: apenas Wyrm podem equipar
-        # (alguns cards sao ambos - 'Fetish - Bane Fetish' - podem ambos)
-        # Nota: 'Non-Fetish' contem 'Fetish' mas NAO e Fetish
-
+        # Regra (4.3.2): Gaia Fetish → qualquer personagem Gaia com Gnosis suficiente
+        # Regra (4.3.2): Bane Fetish → qualquer personagem Wyrm com Gnosis suficiente
+        # Eater-of-Souls (Event) permite que QUALQUER personagem equipe Fetish
+        # (incluindo Wyrm equipando Gaia Fetish).
+        # So bloqueia se o alvo NAO e do alinhamento correto E nao ha Eater-of-Souls.
         if not eh_ambos and not eh_non_fetish:
-            # Gaia Fetish: alvo deve ser Gaia
-            if eh_fetish and 'gaia' not in alvo_text:
+            alvo_e_gaia = 'gaia' in alvo_text
+            alvo_e_wyrm = 'wyrm' in alvo_text
+            tem_eater = self.game.has_modifier('can_equip_fetish')
+
+            if eh_gaia_fetish and not alvo_e_gaia and not tem_eater:
                 self.game.add_log(
-                    f'{equipamento.name} e Fetish (Gaia), mas '
-                    f'{alvo.name} nao e Gaia'
+                    f'{equipamento.name} e Gaia Fetish, mas '
+                    f'{alvo.name} nao e Gaia (nem tem Eater-of-Souls)'
                 )
                 return False
-            # Bane Fetish: alvo deve ser Wyrm
-            if eh_bane_fetish and 'wyrm' not in alvo_text:
+            if eh_bane_fetish and not alvo_e_wyrm and not tem_eater:
                 self.game.add_log(
-                    f'{equipamento.name} e Bane Fetish (Wyrm), mas '
-                    f'{alvo.name} nao e Wyrm'
+                    f'{equipamento.name} e Bane Fetish, mas '
+                    f'{alvo.name} nao e Wyrm (nem tem Eater-of-Souls)'
                 )
                 return False
 

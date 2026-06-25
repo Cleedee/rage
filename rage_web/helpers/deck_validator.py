@@ -753,26 +753,26 @@ def _check_viability(result: ValidationResult,
         requires_raw = card.requires or ""
         requires = requires_raw.strip()
 
-        # ── Verificação A: Eater-of-Souls (todo fetish precisa) ──
-        if is_fetish and not has_eater_of_souls:
-            unplayable.append(
-                (card, qty,
-                 f"Fetish ({keyword_raw}) precisa de Eater-of-Souls ou similar "
-                 f"para ser equipado — nenhuma carta no deck fornece can_equip_fetish"))
-            continue
+        # ── Verificação A: Alinhamento — Gaia vs Wyrm ──
+        # Regra (4.3.2): Gaia Fetish → qualquer personagem Gaia com Gnosis suficiente
+        # Regra (4.3.2): Bane Fetish → qualquer personagem Wyrm com Gnosis suficiente
+        # Eater-of-Souls permite que qualquer personagem equipe qualquer Fetish
+        # (cross-alignment).
+        if is_gaia_fetish and not is_both_fetish:
+            if pack_alignment != 'gaia' and not has_eater_of_souls:
+                unplayable.append(
+                    (card, qty,
+                     f"Gaia Fetish — pack é {pack_alignment.upper()}, "
+                     f"precisa ser Gaia ou ter Eater-of-Souls"))
+                continue
 
-        # ── Verificação B: Alinhamento — Gaia vs Wyrm ──
-        if is_gaia_fetish and not is_both_fetish and pack_alignment != 'gaia':
-            unplayable.append(
-                (card, qty,
-                 f"Gaia Fetish — pack é {pack_alignment.upper()}, precisa ser Gaia"))
-            continue
-
-        if is_bane_fetish and not is_both_fetish and pack_alignment != 'wyrm':
-            unplayable.append(
-                (card, qty,
-                 f"Bane Fetish — pack é {pack_alignment.upper()}, precisa ser Wyrm"))
-            continue
+        if is_bane_fetish and not is_both_fetish:
+            if pack_alignment != 'wyrm' and not has_eater_of_souls:
+                unplayable.append(
+                    (card, qty,
+                     f"Bane Fetish — pack é {pack_alignment.upper()}, "
+                     f"precisa ser Wyrm ou ter Eater-of-Souls"))
+                continue
 
         # ── Verificação C: Gnosis ──
         if gnosis_req > max_char_gnosis:

@@ -2976,34 +2976,43 @@ class PriorityBot:
         """Prioridade 3: Desenvolver mesa.
 
         Joga personagens primeiro, depois efeitos viaveis.
+
+        NOTA: Fase de Combate so pode jogar efeitos (Gift/Event/Action)
+        e Combat Actions. Characters, Equipment, Ally, Territory, Caern
+        sao exclusivos da Resource Phase.
         """
         me = self.player
+        em_combate = self.game.phase == 'combat'
 
         if not me.hand:
             return None
 
-        # 1. Joga personagens
-        for i, card in enumerate(me.hand):
-            if card.card_type == 'Character':
-                self._play_card(i)
-                return f'play_character_{card.card_id}'
+        # 1. Joga personagens (Resource Phase ONLY)
+        if not em_combate:
+            for i, card in enumerate(me.hand):
+                if card.card_type == 'Character':
+                    self._play_card(i)
+                    return f'play_character_{card.card_id}'
 
         # 2. Joga cartas de HG (Victim/Enemy/Battlefield + subtipos)
-        for i, card in enumerate(me.hand):
-            from rage_web.game_engine.rules import zona_da_carta
-            if zona_da_carta(card.card_type or '') == 'hunting_grounds':
-                self._play_card(i)
-                return f'play_hg_{card.card_id}'
+        #    (Resource Phase ONLY - nao sao efeitos de combate)
+        if not em_combate:
+            for i, card in enumerate(me.hand):
+                from rage_web.game_engine.rules import zona_da_carta
+                if zona_da_carta(card.card_type or '') == 'hunting_grounds':
+                    self._play_card(i)
+                    return f'play_hg_{card.card_id}'
 
-        # 3. Joga Ally (incluindo subtipos), Equipment, Territory, Caern
-        for i, card in enumerate(me.hand):
-            ct = card.card_type or ''
-            eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
-            if (eh_ally
-                or ct in ('Equipment', 'Territory', 'Caern')
-                or ct == 'Equipment - Fetish - Bane Fetish'):
-                self._play_card(i)
-                return f'play_{card.card_type.lower()}_{card.card_id}'
+        # 3. Joga Ally, Equipment, Territory, Caern (Resource Phase ONLY)
+        if not em_combate:
+            for i, card in enumerate(me.hand):
+                ct = card.card_type or ''
+                eh_ally = ('Ally' in ct and zona_da_carta(ct) == 'pack_home')
+                if (eh_ally
+                    or ct in ('Equipment', 'Territory', 'Caern')
+                    or ct == 'Equipment - Fetish - Bane Fetish'):
+                    self._play_card(i)
+                    return f'play_{card.card_type.lower()}_{card.card_id}'
 
         # 3.5 Joga Rites
         for i, card in enumerate(me.hand):
