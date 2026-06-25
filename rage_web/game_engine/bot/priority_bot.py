@@ -336,9 +336,9 @@ class PriorityBot:
                     if tem_alvo:
                         score += 45
                     else:
-                        score -= 30  # Nao tem quem equipe
+                        score = -100  # Nao jogar: sem alvo viavel
                 else:
-                    score -= 20  # Equipment sem personagem e inutil
+                    score = -100  # Nao jogar: sem personagens
 
             # 8. Rite: util se tem personagens com Renown
             elif ct == 'Rite':
