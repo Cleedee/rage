@@ -1,9 +1,0 @@
-https://huogerac.hashnode.dev/estrutura-e-organizacao-de-pastas-em-projetos-flask
-
-https://github.com/redis/redis-om-python
-
-https://flask-wtf.readthedocs.io/en/1.2.x/
-
-https://htmx.org
-
-https://bulma.io/documentation/layout/container/
