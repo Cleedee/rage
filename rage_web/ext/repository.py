@@ -1,4 +1,5 @@
 
+import hashlib
 import os
 from typing import List, Optional
 from sqlalchemy import select, func
@@ -97,6 +98,29 @@ def delete_deck(deck: Deck):
     db.session.delete(deck)
     db.session.commit()
 
+# --- Conteúdo do deck (hash canônico) ---
+
+def hash_conteudo(cartas: list[tuple[int, int]]) -> str:
+    """SHA-256 canônico do conteúdo: pares (card_id, quantidade) ordenados.
+
+    Independe da ordem de inserção e do nome/descrição do deck.
+    """
+    payload = '|'.join(f'{c}x{q}' for c, q in sorted(cartas))
+    return hashlib.sha256(payload.encode('utf-8')).hexdigest()
+
+
+def deck_content_hash(deck_id: int) -> str:
+    """Calcula o content_hash do deck atual no banco (não persiste)."""
+    stmt = select(deck_cards.c.card_id, deck_cards.c.quantity).where(
+        deck_cards.c.deck_id == deck_id)
+    pairs = [(r[0], r[1]) for r in db.session.execute(stmt).all()]
+    return hash_conteudo(pairs)
+
+
+def recalcular_content_hash(deck: Deck) -> None:
+    """Recomputa e atualiza deck.content_hash (chamar antes do commit)."""
+    deck.content_hash = deck_content_hash(deck.id)
+
 # --- Deck <-> Card ---
 
 def deck_add_card(deck: Deck, card: Card, quantity: int = 1):
@@ -123,6 +147,7 @@ def deck_add_card(deck: Deck, card: Card, quantity: int = 1):
                 quantity=quantity,
             )
         )
+    recalcular_content_hash(deck)
     db.session.commit()
 
 
@@ -134,6 +159,7 @@ def deck_remove_card(deck: Deck, card: Card):
             deck_cards.c.card_id == card.id,
         )
     )
+    recalcular_content_hash(deck)
     db.session.commit()
 
 
@@ -147,6 +173,7 @@ def deck_update_quantity(deck: Deck, card: Card, quantity: int):
             deck_cards.c.card_id == card.id,
         ).values(quantity=quantity)
     )
+    recalcular_content_hash(deck)
     db.session.commit()
 
 

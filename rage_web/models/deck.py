@@ -35,6 +35,12 @@ class Deck(db.Model):
     is_public: Mapped[bool] = mapped_column(default=False, server_default='0')
     telegram_owner_id: Mapped[int | None] = mapped_column(nullable=True)
     usage_count: Mapped[int] = mapped_column(default=0, server_default='0')
+
+    # ── Identificação por conteúdo ──
+    # SHA-256 do conteúdo (card_id + quantity), independente de nome/ordem.
+    content_hash: Mapped[str] = mapped_column(String(64), default='',
+                                              index=True)
+
     created_at: Mapped[datetime] = mapped_column(
         default=datetime.utcnow, nullable=True
     )

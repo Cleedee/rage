@@ -160,6 +160,7 @@ def init_app(app):
                 "strategy": deck.strategy,
                 "is_public": deck.is_public,
                 "telegram_owner_id": deck.telegram_owner_id,
+                "content_hash": deck.content_hash,
                 "total_cards": sum(q for _, q, _, _ in cards),
                 "total_renown": total_ren,
                 "cards": [
@@ -230,6 +231,8 @@ def init_app(app):
                             deck_cards.insert().values(deck_id=did, card_id=cid, quantity=qty)
                         )
 
+                from rage_web.ext.repository import recalcular_content_hash
+                recalcular_content_hash(deck)
                 db.session.commit()
                 click.echo(f"  ✅ Deck {did}: {data['name']}")
                 importados += 1
@@ -239,6 +242,23 @@ def init_app(app):
                 erros += 1
 
         click.echo(f"\n📦 {importados} decks importados, {erros} erros")
+
+    @app.cli.command("backfill-deck-hash")
+    def backfill_deck_hash():
+        """Recomputa o content_hash de todos os decks (idempotente)."""
+        from rage_web.models.deck import Deck
+        from rage_web.ext.repository import deck_content_hash
+
+        decks = Deck.query.all()
+        atualizados = 0
+        for deck in decks:
+            novo = deck_content_hash(deck.id)
+            if deck.content_hash != novo:
+                deck.content_hash = novo
+                atualizados += 1
+        db.session.commit()
+        click.echo(f"✅ {atualizados} deck(s) atualizado(s) "
+                   f"({len(decks)} no total)")
 
     @app.cli.command("db-health")
     def db_health():
