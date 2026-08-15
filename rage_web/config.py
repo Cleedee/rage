@@ -8,8 +8,12 @@ class Config(object):
 
 class ProductionConfig(Config): ...
 
+
 class TestingConfig(Config):
     TESTING = True
+    # SQLite em memória: testes não tocam o banco real.
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    WTF_CSRF_ENABLED = False
 
 
 configs = {

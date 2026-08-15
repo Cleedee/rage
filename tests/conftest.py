@@ -9,12 +9,9 @@ from rage_web.models.picture import Picture
 
 @pytest.fixture()
 def app():
-    app = create_app()
-    app.config.update({
-        'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
-        'WTF_CSRF_ENABLED': False,
-    })
+    # create_app('testing') usa SQLite em memória (ver TestingConfig),
+    # evitando que os testes cadastrem decks/cartas no banco real.
+    app = create_app('testing')
 
     with app.app_context():
         _db.create_all()
