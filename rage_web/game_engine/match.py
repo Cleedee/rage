@@ -134,12 +134,16 @@ def run_match(seed: int = 42, max_turns: int = 30,
               deck_ids: list[int] | None = None,
               difficulties: list[str] | None = None,
               vp_to_win: int | None = None,
-              verbose: int | None = None) -> str:
+              verbose: int | None = None,
+              bot_factory=None) -> str:
     """Roda uma partida entre bots (2 ou mais jogadores).
 
     Args:
         verbose: 0=só resultado, 1=narrativa, 2=debug.
                  None = usa o nivel global _VERBOSE.
+        bot_factory: callable opcional (game, player_id) -> bot.
+                     Se informado, substitui a criação de bots por
+                     dificuldade (usado pelo treinamento Q-Learning).
         Demais parametros: vide match.py original.
     """
     global _VERBOSE
@@ -153,7 +157,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
         return _run_match_impl(seed, max_turns, max_steps_override,
                                difficulty_p1, difficulty_p2,
                                deck1_id, deck2_id, delay,
-                               deck_ids, difficulties, vp_to_win)
+                               deck_ids, difficulties, vp_to_win,
+                               bot_factory=bot_factory)
     finally:
         if old_verbose is not None:
             _VERBOSE = old_verbose
@@ -162,7 +167,8 @@ def run_match(seed: int = 42, max_turns: int = 30,
 def _run_match_impl(seed, max_turns, max_steps_override,
                     difficulty_p1, difficulty_p2,
                     deck1_id, deck2_id, delay,
-                    deck_ids, difficulties, vp_to_win):
+                    deck_ids, difficulties, vp_to_win,
+                    bot_factory=None):
     """Implementacao interna do loop de partida."""
     # ── Setup ──
     if deck_ids and len(deck_ids) >= 2:
@@ -194,6 +200,9 @@ def _run_match_impl(seed, max_turns, max_steps_override,
 
     bots = {}
     for p in game.players:
+        if bot_factory is not None:
+            bots[p.id] = bot_factory(game, p.id)
+            continue
         idx = game.players.index(p)
         diff = diffs[idx] if idx < len(diffs) else 'hard'
         bots[p.id] = PriorityBot(game, p.id, difficulty=diff)

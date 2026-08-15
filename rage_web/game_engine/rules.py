@@ -805,8 +805,8 @@ def pode_usar_rite(player: 'PlayerState',
     if not tem_classe:
         # Fallback: se tem keyword 'Garou' ou similar no texto
         tem_garou_keyword = any(
-            'garou' in (c.keyword or '').lower()
-            or 'fera' in (c.keyword or '').lower()
+            'garou' in (c.keywords or '').lower()
+            or 'fera' in (c.keywords or '').lower()
             for c in characters
         )
         if not tem_garou_keyword:
