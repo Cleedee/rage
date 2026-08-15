@@ -25,6 +25,9 @@ backups/
 # Auto-generated JSONs (criados por scripts de deck)
 data/cards/auto_*.json
 
+# Modelos Q-Learning (artefatos de treino, regenerados pelo rage-train)
+data/ql/
+
 # Telegram bot databases (auto-generated)
 rage_web/telegram_bot/persistence.db
 rage_web/telegram_bot/stats.db

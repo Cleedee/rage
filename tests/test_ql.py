@@ -1,5 +1,7 @@
 """Testes do agente Q-Learning (macro-ações + Q-Linear numpy)."""
 
+import os
+
 import numpy as np
 import pytest
 
@@ -251,3 +253,134 @@ def test_agente_usado_como_factory_retorna_bot(game, learner):
     bot = QLearningBot(game, game.players[0].id, learner=learner,
                        greedy=True)
     assert isinstance(bot, PriorityBot)
+
+
+# ── Per-deck: factory recebe deck_id ──────────────────────────────────
+
+def test_match_factory_recebe_deck_id():
+    """Factory com 3 args recebe o deck_id de cada jogador (None no sample)."""
+    seen = {}
+
+    def factory(game, player_id, deck_id):
+        seen[player_id] = deck_id
+        return QLearningBot(
+            game, player_id,
+            learner=LinearQLearner(n_features=n_features(),
+                                   n_actions=N_ACTIONS, seed=1),
+            greedy=True)
+
+    result = run_match(seed=3, max_turns=2, delay=0, verbose=0,
+                       bot_factory=factory)
+    assert result in ('p1', 'p2', 'draw', 'timeout')
+    assert set(seen) == {'p1', 'p2'}
+    assert seen['p1'] is None and seen['p2'] is None
+
+
+def test_match_factory_none_cai_no_prioritybot():
+    """Factory retornando None para p2 → run_match cria PriorityBot."""
+    learners = {}
+
+    def factory(game, player_id, deck_id):
+        if player_id == 'p1':
+            ag = QLearningBot(
+                game, player_id,
+                learner=LinearQLearner(n_features=n_features(),
+                                       n_actions=N_ACTIONS, seed=1),
+                greedy=False)
+            learners[player_id] = ag
+            return ag
+        return None
+
+    result = run_match(seed=4, max_turns=3, delay=0, verbose=0,
+                       difficulty_p2='easy', bot_factory=factory)
+    assert result in ('p1', 'p2', 'draw', 'timeout')
+    assert 'p1' in learners
+    learners['p1'].finish_episode(result)
+    assert np.isfinite(learners['p1'].learner.theta).all()
+
+
+def test_match_factory_2args_retrocompat():
+    """Factory com 2 args (assinatura antiga) continua funcionando."""
+    def factory(game, player_id):
+        return QLearningBot(
+            game, player_id,
+            learner=LinearQLearner(n_features=n_features(),
+                                   n_actions=N_ACTIONS, seed=1),
+            greedy=True)
+
+    result = run_match(seed=5, max_turns=2, delay=0, verbose=0,
+                       bot_factory=factory)
+    assert result in ('p1', 'p2', 'draw', 'timeout')
+
+
+def test_match_multideck_factory_recebe_deck_por_jogador():
+    """Partida com 3 decks: factory vê o deck de cada jogador."""
+    ids = [465, 1044, 1045]
+    seen = {}
+
+    def factory(game, player_id, deck_id):
+        seen[player_id] = deck_id
+        return QLearningBot(
+            game, player_id,
+            learner=LinearQLearner(n_features=n_features(),
+                                   n_actions=N_ACTIONS, seed=1),
+            greedy=True)
+
+    result = run_match(seed=6, max_turns=3, deck_ids=ids, delay=0,
+                       verbose=0, bot_factory=factory)
+    if result == 'error':
+        pytest.skip('decks 465/1044/1045 indisponíveis no banco')
+    assert seen == {'p1': ids[0], 'p2': ids[1], 'p3': ids[2]}
+    assert result in ('p1', 'p2', 'p3', 'draw', 'timeout')
+
+
+# ── Per-deck: treino e persistência ───────────────────────────────────
+
+def test_parse_pairs_multi_deck():
+    from rage_web.game_engine.bot.ql import train as tr
+    assert tr._parse_pairs('7-90,1050-90') == [(7, 90), (1050, 90)]
+    assert tr._parse_pairs('7,90,1050') == [(7, 90, 1050)]
+    assert tr._parse_pairs('1,2,3;4,5,6') == [(1, 2, 3), (4, 5, 6)]
+    assert tr._parse_pairs('7-90;1050-90') == [(7, 90), (1050, 90)]
+    assert tr._parse_pairs(None) == tr.DEFAULT_PAIRS
+    assert tr._parse_pairs('7,90') == [(7, 90)]
+
+
+def test_treino_salva_modelo_por_deck(tmp_path):
+    from rage_web.game_engine.bot.ql import train as tr
+    l7 = LinearQLearner(n_features=n_features(), n_actions=N_ACTIONS, seed=1)
+    l90 = LinearQLearner(n_features=n_features(), n_actions=N_ACTIONS, seed=2)
+    l7.theta[3, 0] = 42.0
+    out = str(tmp_path)
+    tr._save_learners({'7': l7, '90': l90}, out)
+    assert os.path.exists(os.path.join(out, 'deck7.npz'))
+    assert os.path.exists(os.path.join(out, 'deck90.npz'))
+
+    novo7 = LinearQLearner(n_features=n_features(), n_actions=N_ACTIONS, seed=3)
+    novo90 = LinearQLearner(n_features=n_features(), n_actions=N_ACTIONS, seed=4)
+    assert novo7.load(os.path.join(out, 'deck7.npz'))
+    assert novo90.load(os.path.join(out, 'deck90.npz'))
+    assert float(novo7.theta[3, 0]) == 42.0
+    assert float(novo90.theta[3, 0]) == 0.0
+
+
+def test_make_deck_aware_factory_seleciona_modelo(tmp_path):
+    """A factory por deck carrega o npz certo e cacheia por deck."""
+    from rage_web.game_engine.bot.ql import train as tr
+    l7 = LinearQLearner(n_features=n_features(), n_actions=N_ACTIONS, seed=1)
+    l90 = LinearQLearner(n_features=n_features(), n_actions=N_ACTIONS, seed=2)
+    l7.theta[3, 0] = 42.0
+    tr._save_learners({'7': l7, '90': l90}, str(tmp_path))
+
+    factory = tr.make_deck_aware_factory(models_dir=str(tmp_path), greedy=True)
+    game = create_sample_game(seed=1)
+    bot7 = factory(game, 'p1', 7)
+    bot90 = factory(game, 'p1', 90)
+    assert float(bot7.learner.theta[3, 0]) == 42.0
+    assert float(bot90.learner.theta[3, 0]) == 0.0
+    # cache: segundo bot do deck 7 usa o mesmo learner
+    assert factory(game, 'p1', 7).learner is bot7.learner
+    # sem deck (sample) → modelo 'sample'
+    bot_sample = factory(game, 'p2', None)
+    assert float(bot_sample.learner.theta[3, 0]) == 0.0
+

@@ -18,6 +18,7 @@ import argparse
 import time
 import sys
 import os
+import inspect
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -141,9 +142,12 @@ def run_match(seed: int = 42, max_turns: int = 30,
     Args:
         verbose: 0=só resultado, 1=narrativa, 2=debug.
                  None = usa o nivel global _VERBOSE.
-        bot_factory: callable opcional (game, player_id) -> bot.
-                     Se informado, substitui a criação de bots por
-                     dificuldade (usado pelo treinamento Q-Learning).
+        bot_factory: callable opcional (game, player_id, deck_id) -> bot|None.
+                     Se informado, substitui a criação de bots por dificuldade
+                     (usado pelo treinamento Q-Learning). Retorne None para
+                     deixar o run_match criar um PriorityBot com a dificuldade
+                     da posição. Recebe o deck_id do jogador (None em partidas
+                     sample ou se o jogador não tem deck no banco).
         Demais parametros: vide match.py original.
     """
     global _VERBOSE
@@ -199,11 +203,17 @@ def _run_match_impl(seed, max_turns, max_steps_override,
             p.renown_level = vp_to_win
 
     bots = {}
-    for p in game.players:
+    for idx, p in enumerate(game.players):
         if bot_factory is not None:
-            bots[p.id] = bot_factory(game, p.id)
-            continue
-        idx = game.players.index(p)
+            deck_id = p.deck_id or None
+            b = None
+            if len(inspect.signature(bot_factory).parameters) >= 3:
+                b = bot_factory(game, p.id, deck_id)
+            else:
+                b = bot_factory(game, p.id)
+            if b is not None:
+                bots[p.id] = b
+                continue
         diff = diffs[idx] if idx < len(diffs) else 'hard'
         bots[p.id] = PriorityBot(game, p.id, difficulty=diff)
 
