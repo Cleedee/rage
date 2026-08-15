@@ -622,9 +622,14 @@ class TestAnatomyLesson:
         """Anatomy Lesson ignora block do defensor."""
         game.players[0].pack_home.append(attacker)
         game.players[1].pack_home.append(defender)
+        carta = CardInstance(
+            card_id=280, name='Anatomy Lesson', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, ['100'], ['200'])
         declare_action(game, '100', 'anatomy_lesson',
-                       acoes_extra=['anatomy_lesson'])
+                       acoes_extra=['anatomy_lesson'], carta_combate=carta)
         declare_action(game, '200', 'block')
         resolve_combat(game)
         # Defensor deveria ter levado dano (unblockable)
@@ -636,9 +641,14 @@ class TestAnatomyLesson:
         """Criatura ferida por Anatomy Lesson retira do combate."""
         game.players[0].pack_home.append(attacker)
         game.players[1].pack_home.append(defender)
+        carta = CardInstance(
+            card_id=280, name='Anatomy Lesson', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, ['100'], ['200'])
         declare_action(game, '100', 'anatomy_lesson',
-                       acoes_extra=['anatomy_lesson'])
+                       acoes_extra=['anatomy_lesson'], carta_combate=carta)
         declare_action(game, '200', 'strike')
         resolve_combat(game)
         # Defensor deve ter sido retirado do combate (descarte de sept)
@@ -741,9 +751,14 @@ class TestSavageBeatdown:
 
         game.players[0].pack_home.append(attacker)
         game.players[1].pack_home.append(frenzied_defender)
+        carta = CardInstance(
+            card_id=281, name='Savage Beatdown', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, ['100'], ['200'])
         declare_action(game, '100', 'savage_beatdown',
-                       acoes_extra=['savage_beatdown'])
+                       acoes_extra=['savage_beatdown'], carta_combate=carta)
         declare_action(game, '200', 'strike')
         resolve_combat(game)
         # Oponente deveria ter descartado metade (4/2 = 2)
@@ -829,9 +844,14 @@ class TestSubmissionHold:
         """Submission Hold em criatura nao-frenzied remove do combate."""
         game.players[0].pack_home.append(attacker)
         game.players[1].pack_home.append(normal_defender)
+        carta = CardInstance(
+            card_id=282, name='Submission Hold', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, ['100'], ['201'])
         declare_action(game, '100', 'submission_hold',
-                       acoes_extra=['submission_hold'])
+                       acoes_extra=['submission_hold'], carta_combate=carta)
         declare_action(game, '201', 'strike')
         resolve_combat(game)
         # Defensor deve ter sido retirado do combate (descarte de sept)
@@ -843,9 +863,14 @@ class TestSubmissionHold:
         """Submission Hold em criatura frenzied impede dodge."""
         game.players[0].pack_home.append(attacker)
         game.players[1].pack_home.append(frenzied_defender)
+        carta = CardInstance(
+            card_id=282, name='Submission Hold', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, ['100'], ['200'])
         declare_action(game, '100', 'submission_hold',
-                       acoes_extra=['submission_hold'])
+                       acoes_extra=['submission_hold'], carta_combate=carta)
         declare_action(game, '200', 'strike')
         resolve_combat(game)
         # Defensor deve ter restricao nao_pode_esquivar
@@ -860,7 +885,12 @@ class TestSubmissionHold:
         start_combat(game, ['100'], ['200'])
         # Simula restricao aplicada por Submission Hold na rodada anterior
         frenzied_defender.restricoes.append('nao_pode_esquivar')
-        declare_action(game, '100', 'strike')
+        carta = CardInstance(
+            card_id=283, name='Strike', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
+        declare_action(game, '100', 'strike', carta_combate=carta)
         declare_action(game, '200', 'dodge')
         resolve_combat(game)
         # Defensor deveria ter levado dano (dodge falhou)
@@ -1009,8 +1039,13 @@ class TestAssegai:
         from rage_web.game_engine.combat_queue import (
             start_combat, declare_action, resolve_combat,
         )
+        carta = CardInstance(
+            card_id=284, name='Strike', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p2', controller_id='p2',
+            damage='0',
+        )
         start_combat(game, ['200'], ['10'])
-        declare_action(game, '200', 'strike')
+        declare_action(game, '200', 'strike', carta_combate=carta)
         declare_action(game, '10', 'strike')
         resolve_combat(game)
         # Dano deveria ser Rage(4) - reducao(1) = 3
@@ -1258,8 +1293,13 @@ class TestTheBadgersHeart:
         from rage_web.game_engine.combat_queue import (
             start_combat, declare_action, resolve_combat,
         )
+        carta = CardInstance(
+            card_id=285, name='Strike', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, ['100'], ['200'])
-        declare_action(game, '100', 'strike')
+        declare_action(game, '100', 'strike', carta_combate=carta)
         declare_action(game, '200', 'strike')
         resolve_combat(game)
         # Dano deveria ser effective_rage(2) em vez de rage(5)
@@ -1452,8 +1492,13 @@ class TestElethoiImmunity:
         p1.umbra.append(atacante)
         p2.umbra.append(elethoi)
         a_id, e_id = '20', '1341'
+        carta = CardInstance(
+            card_id=286, name='Strike', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
         start_combat(game, [a_id], [e_id])
-        declare_action(game, a_id, 'strike')
+        declare_action(game, a_id, 'strike', carta_combate=carta)
         declare_action(game, e_id, 'strike')
         resolve_combat(game)
         # Elethoi sofreu dano do ataque umbral (ambos na Umbra)
@@ -3016,7 +3061,12 @@ class TestTerritoryAttack:
         result = start_combat(game, ['100'], ['200'])
         assert result
         # Simula combate
-        declare_action(game, '100', 'strike')
+        carta = CardInstance(
+            card_id=287, name='Strike', card_type='Combat Action',
+            zone=Zone.OUT_OF_PLAY, owner_id='p1', controller_id='p1',
+            damage='0',
+        )
+        declare_action(game, '100', 'strike', carta_combate=carta)
         declare_action(game, '300', 'block')
         reveal_all(game)
         resolve_combat(game)

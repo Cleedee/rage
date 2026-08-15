@@ -3226,6 +3226,8 @@ def _processar_bluff(game: GameState) -> bool:
 
 
 ACOES_OFENSIVAS = {
+    # Acoes basicas (ainda exigem Combat Action real para causar dano, 6.4)
+    'strike', 'claw', 'bite', 'ranged_strike', 'weapon_strike',
     'head_butt', 'tail_lash', 'anatomy_lesson',
     'savage_beatdown', 'submission_hold',
     'careful_strike', 'fast_strike', 'planned_strike',
